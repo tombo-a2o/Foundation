@@ -49,7 +49,7 @@
 #include <CoreFoundation/CFMessagePort.h>
 #endif
 
-#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || TARGET_OS_WIN32
+#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || TARGET_OS_EMSCRIPTEN || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || TARGET_OS_WIN32
 #include <CoreFoundation/CFRunLoop.h>
 #include <CoreFoundation/CFSocket.h>
 #include "CFBundlePriv.h"
@@ -571,7 +571,7 @@ CF_EXPORT CFMessagePortRef _CFMessagePortCreateLocalEx(CFAllocatorRef allocator,
 
 #endif
 
-#if TARGET_OS_MAC || TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_LINUX
+#if TARGET_OS_MAC || TARGET_OS_EMSCRIPTEN || TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_LINUX
 #include <pthread.h>
 #else
 // Avoid including the pthread header
@@ -608,7 +608,7 @@ CF_EXPORT bool _CFPropertyListCreateSingleValue(CFAllocatorRef allocator, CFData
 // Returns a subset of the property list, only including the keyPaths in the CFSet. If the top level object is not a dictionary, you will get back an empty dictionary as the result.
 CF_EXPORT bool _CFPropertyListCreateFiltered(CFAllocatorRef allocator, CFDataRef data, CFOptionFlags option, CFSetRef keyPaths, CFPropertyListRef *value, CFErrorRef *error) CF_AVAILABLE(10_8, 6_0);
 
-#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || TARGET_OS_WIN32
+#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || TARGET_OS_EMSCRIPTEN || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || TARGET_OS_WIN32
 
 // Returns a subset of a bundle's Info.plist. The keyPaths follow the same rules as above CFPropertyList function. This function takes platform and product keys into account.
 typedef CF_OPTIONS(CFOptionFlags, _CFBundleFilteredPlistOptions) {

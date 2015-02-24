@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -63,7 +63,7 @@ CF_EXTERN_C_END
 
 // ---- CFBundle material ----------------------------------------
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_WINDOWS
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include "CFBundlePriv.h"
 
 CF_EXTERN_C_BEGIN
@@ -94,7 +94,7 @@ CF_EXTERN_C_END
 // ---- CFPreferences material ----------------------------------------
 
 #define DEBUG_PREFERENCES_MEMORY 0
- 
+
 #if DEBUG_PREFERENCES_MEMORY
 #include "../Tests/CFCountingAllocator.h"
 #endif
@@ -221,7 +221,7 @@ CF_EXTERN_C_BEGIN
    with the char specified by lossByte; if 0, then lossy conversion is not allowed
    and conversion stops, returning partial results.
    generatingExternalFile indicates that any extra stuff to allow this data to be
-   persistent (for instance, BOM) should be included. 
+   persistent (for instance, BOM) should be included.
    Pass buffer==NULL if you don't care about the converted string (but just the
    convertability, or number of bytes required, indicated by usedBufLen).
    Does not zero-terminate. If you want to create Pascal or C string, allow one
@@ -247,7 +247,7 @@ CF_INLINE Boolean __CFStringEncodingIsSupersetOfASCII(CFStringEncoding encoding)
         case 0x200: // ISO range
             if (encoding == kCFStringEncodingISOLatinArabic) return false;
             return true;
-            
+
         case 0x600: // National standards range
             if (encoding != kCFStringEncodingASCII) return false;
             return true;
@@ -529,7 +529,7 @@ CF_INLINE CFHashCode _CFHashDouble(double d) {
 
 
 /* These four functions are used by NSError in formatting error descriptions. They take NS or CFError as arguments and return a retained CFString or NULL.
-*/ 
+*/
 CF_EXPORT CFStringRef _CFErrorCreateLocalizedDescription(CFErrorRef err);
 CF_EXPORT CFStringRef _CFErrorCreateLocalizedFailureReason(CFErrorRef err);
 CF_EXPORT CFStringRef _CFErrorCreateLocalizedRecoverySuggestion(CFErrorRef err);
@@ -599,7 +599,7 @@ extern id _objc_rootAutorelease(id obj);
 static inline id ___CFAllocateObject2(Class cls, size_t extraBytes) {
     id obj = class_createInstance(cls, extraBytes);
     if (obj == NULL) {
-        // Good luck: it couldnt allocate room for one measly object, yet this is going to allocate atleast 2 (and probably a few more underneath)     
+        // Good luck: it couldnt allocate room for one measly object, yet this is going to allocate atleast 2 (and probably a few more underneath)
         CFStringRef reason = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("Could not allocate class %s"), class_getName(cls));
         reason = (CFStringRef)_objc_rootAutorelease((id)reason);
         @throw [NSException exceptionWithName:NSMallocException reason:(NSString *)reason userInfo:NULL];
@@ -644,4 +644,3 @@ static inline id ___CFAllocateObject(Class cls) {
 #endif
 
 #endif /* ! __COREFOUNDATION_FORFOUNDATIONONLY__ */
-

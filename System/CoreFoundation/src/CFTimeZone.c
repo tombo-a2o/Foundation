@@ -40,14 +40,14 @@
 #include <string.h>
 #include <unicode/ucal.h>
 #include <CoreFoundation/CFDateFormatter.h>
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/fcntl.h>
 #endif
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED
 #include <tzfile.h>
-#elif DEPLOYMENT_TARGET_LINUX
+#elif DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 #ifndef TZDIR
 #define TZDIR	"/usr/share/zoneinfo" /* Time zone object file directory */
 #endif /* !defined TZDIR */
@@ -68,7 +68,7 @@ struct tzhead {
 };
 #endif
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 #define TZZONELINK	TZDEFAULT
 #define TZZONEINFO	TZDIR "/"
 #elif DEPLOYMENT_TARGET_WINDOWS
@@ -161,7 +161,7 @@ static CFMutableArrayRef __CFCopyWindowsTimeZoneList() {
     RegCloseKey(hkResult);
     return result;
 }
-#elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 static CFMutableArrayRef __CFCopyRecursiveDirectoryList() {
     CFMutableArrayRef result = CFArrayCreateMutable(kCFAllocatorSystemDefault, 0, &kCFTypeArrayCallBacks);
 #if DEPLOYMENT_TARGET_WINDOWS

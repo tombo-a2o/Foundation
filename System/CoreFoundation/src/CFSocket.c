@@ -954,10 +954,13 @@ Boolean __CFSocketGetBytesAvailable(CFSocketRef s, CFIndex* ctBytesAvailable) {
 #include <sys/types.h>
 #include <math.h>
 #include <limits.h>
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <sys/sysctl.h>
 #include <sys/un.h>
-#include <libc.h>
+//#include <libc.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/ioctl.h>
 #include <dlfcn.h>
 #endif
 #include <CoreFoundation/CFArray.h>
@@ -967,6 +970,10 @@ Boolean __CFSocketGetBytesAvailable(CFSocketRef s, CFIndex* ctBytesAvailable) {
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CFPropertyList.h>
 #include "CFInternal.h"
+
+#if DEPLOYMENT_TARGET_EMSCRIPTEN
+#define NBBY 8
+#endif
 
 #if DEPLOYMENT_TARGET_WINDOWS
 
@@ -1005,7 +1012,7 @@ CF_PRIVATE int _NS_gettimeofday(struct timeval *tv, struct timezone *tz);
 
 //#define LOG_CFSOCKET
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_EMSCRIPTEN
 #define INVALID_SOCKET (CFSocketNativeHandle)(-1)
 #define closesocket(a) close((a))
 #define ioctlsocket(a,b,c) ioctl((a),(b),(c))
@@ -1993,7 +2000,7 @@ __attribute__ ((noreturn))	// mostly interesting for shutting up a warning
 #endif /* __GNUC__ */
 static void __CFSocketManager(void * arg)
 {
-    pthread_setname_np("com.apple.CFSocket.private");
+    //pthread_setname_np("com.apple.CFSocket.private");
     if (objc_collectingEnabled()) objc_registerThreadWithCollector();
     SInt32 nrfds, maxnrfds, fdentries = 1;
     SInt32 rfds, wfds;

@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -88,7 +88,7 @@ CF_EXTERN_C_BEGIN
 #include "CFLogUtilities.h"
 #include "CFRuntime.h"
 #include <limits.h>
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX
 #include <xlocale.h>
 #include <unistd.h>
 #include <sys/time.h>
@@ -138,6 +138,10 @@ CF_PRIVATE CFIndex __CFActiveProcessorCount();
 
 #if DEPLOYMENT_TARGET_WINDOWS
 #define __builtin_unreachable() do { } while (0)
+#endif
+
+#if DEPLOYMENT_TARGET_EMSCRIPTEN
+    #define HALT do {exit(1); } while (0)
 #endif
 
 #if defined(__i386__) || defined(__x86_64__)
@@ -304,7 +308,7 @@ CF_PRIVATE CFStringRef _CFCopyResolvedFormatStringWithConfiguration(CFTypeRef an
 /* result is long long or int, depending on doLonglong
 */
 extern Boolean __CFStringScanInteger(CFStringInlineBuffer *buf, CFTypeRef locale, SInt32 *indexPtr, Boolean doLonglong, void *result);
-extern Boolean __CFStringScanDouble(CFStringInlineBuffer *buf, CFTypeRef locale, SInt32 *indexPtr, double *resultPtr); 
+extern Boolean __CFStringScanDouble(CFStringInlineBuffer *buf, CFTypeRef locale, SInt32 *indexPtr, double *resultPtr);
 extern Boolean __CFStringScanHex(CFStringInlineBuffer *buf, SInt32 *indexPtr, unsigned *result);
 
 extern const char *__CFgetenv(const char *n);
@@ -459,7 +463,7 @@ CF_INLINE Boolean __CFSpinLockTry(volatile CFSpinLock_t *lock) {
     return (InterlockedCompareExchange((LONG volatile *)lock, ~0, 0) == 0);
 }
 
-#elif DEPLOYMENT_TARGET_LINUX
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_LINUX
 
 typedef int32_t CFSpinLock_t;
 #define CFSpinLockInit 0
@@ -519,12 +523,12 @@ extern void *__CFStartSimpleThread(void *func, void *arg);
 
 /* ==================== Simple file access ==================== */
 /* For dealing with abstract types.  MF:!!! These ought to be somewhere else and public. */
-    
+
 CF_EXPORT CFStringRef _CFCopyExtensionForAbstractType(CFStringRef abstractType);
 
 /* ==================== Simple file access ==================== */
 /* These functions all act on a c-strings which must be in the file system encoding. */
-    
+
 CF_EXPORT Boolean _CFCreateDirectory(const char *path);
 CF_EXPORT Boolean _CFRemoveDirectory(const char *path);
 CF_EXPORT Boolean _CFDeleteFile(const char *path);
@@ -600,6 +604,10 @@ extern void _CFRuntimeSetInstanceTypeIDAndIsa(CFTypeRef cf, CFTypeID newTypeID);
 #define CF_TAGGED_OBJ_TYPE(PTR)	0
 #endif
 
+#define CF_OBJC_FUNCDISPATCHV(typeID, ret, obj, ...) do{} while(0)
+#define CF_OBJC_CALLV(obj, ...) (0)
+
+/*
 #define CF_OBJC_FUNCDISPATCHV(typeID, ret, obj, ...) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wreturn-type\"") \
@@ -611,6 +619,7 @@ if (CF_IS_OBJC(typeID, obj)) { \
 _Pragma("clang diagnostic pop")
 
 #define CF_OBJC_CALLV(obj, ...) [obj __VA_ARGS__]
+*/
 
 #define CF_IS_OBJC(typeID, obj) ({ \
 	Class cls = object_getClass((id)obj); \
@@ -811,4 +820,3 @@ CF_INLINE const char *CFPathRelativeToAppleFrameworksRoot(const char *path, Bool
 CF_EXTERN_C_END
 
 #endif /* ! __COREFOUNDATION_CFINTERNAL__ */
-

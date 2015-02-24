@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -102,13 +102,13 @@ CF_PRIVATE Boolean _CFDeleteFile(const char *path) {
 
 CF_PRIVATE Boolean _CFReadBytesFromPathAndGetFD(CFAllocatorRef alloc, const char *path, void **bytes, CFIndex *length, CFIndex maxLength, int extraOpenFlags, int *fd) {    // maxLength is the number of bytes desired, or 0 if the whole file is desired regardless of length.
     struct statinfo statBuf;
-    
+
     *bytes = NULL;
-    
-    
+
+
     int no_hang_fd = openAutoFSNoWait();
     *fd = open(path, O_RDONLY|extraOpenFlags|CF_OPENFLGS, 0666);
-    
+
     if (*fd < 0) {
         closeAutoFSNoWait(no_hang_fd);
         return false;
@@ -165,7 +165,7 @@ CF_PRIVATE Boolean _CFReadBytesFromPath(CFAllocatorRef alloc, const char *path, 
 }
 CF_PRIVATE Boolean _CFReadBytesFromFile(CFAllocatorRef alloc, CFURLRef url, void **bytes, CFIndex *length, CFIndex maxLength, int extraOpenFlags) {
     // maxLength is the number of bytes desired, or 0 if the whole file is desired regardless of length.
-    
+
     char path[CFMaxPathSize];
     if (!CFURLGetFileSystemRepresentation(url, true, (uint8_t *)path, CFMaxPathSize)) {
         return false;
@@ -228,7 +228,7 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
     // This is a replacement for 'dirent' below, and also uses wchar_t to support unicode paths
     wchar_t extBuff[CFMaxPathSize];
     int extBuffInteriorDotCount = 0; //people insist on using extensions like ".trace.plist", so we need to know how many dots back to look :(
-    
+
     if (targetExtLen > 0) {
         CFIndex usedBytes = 0;
         CFStringGetBytes(extension, CFRangeMake(0, targetExtLen), kCFStringEncodingUTF16, 0, false, (uint8_t *)extBuff, CFMaxPathLength, &usedBytes);
@@ -237,22 +237,22 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
         wchar_t *extBuffStr = (wchar_t *)extBuff;
         if (extBuffStr[0] == '.')
             extBuffStr++; //skip the first dot, it's legitimate to have ".plist" for example
-        
+
         wchar_t *extBuffDotPtr = extBuffStr;
         while ((extBuffDotPtr = wcschr(extBuffStr, '.'))) { //find the next . in the extension...
             extBuffInteriorDotCount++;
             extBuffStr = extBuffDotPtr + 1;
         }
     }
-    
+
     wchar_t pathBuf[CFMaxPathSize];
-    
+
     if (!dirPath) {
         if (!_CFURLGetWideFileSystemRepresentation(dirURL, true, pathBuf, CFMaxPathLength)) {
             if (extension) CFRelease(extension);
             return NULL;
         }
-        
+
         pathLength = wcslen(pathBuf);
 
     } else {
@@ -260,17 +260,17 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
         // Get the real length of the string in UTF16 characters
         CFStringRef dirPathStr = CFStringCreateWithCString(kCFAllocatorSystemDefault, dirPath, kCFStringEncodingUTF8);
         CFIndex strLen = CFStringGetLength(dirPathStr);
-        
+
         // Copy the string into the buffer and terminate
         CFStringGetCharacters(dirPathStr, CFRangeMake(0, strLen), (UniChar *)pathBuf);
         pathBuf[strLen] = 0;
-        
+
         CFRelease(dirPathStr);
     }
-    
+
     WIN32_FIND_DATAW  file;
     HANDLE handle;
-    
+
     if (pathLength + 2 >= CFMaxPathLength) {
         if (extension) {
             CFRelease(extension);
@@ -303,9 +303,9 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
 
         if (targetExtLen > 0) {
 	    if (file.cFileName[namelen - 1] == '.') continue; //filename ends with a dot, no extension
-	    
+
 	    wchar_t *fileExt = NULL;
-            
+
             if (extBuffInteriorDotCount == 0) {
                 fileExt = wcsrchr(file.cFileName, '.');
             } else { //find the Nth occurrence of . from the end of the string, to handle ".foo.bar"
@@ -321,17 +321,17 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
                     }
                 }
             }
-	    
+
 	    if (!fileExt) continue; //no extension
-	    
+
 	    if (((const wchar_t *)extBuff)[0] != '.')
 		fileExt++; //omit the dot if the target file extension omits the dot
-	    
+
 	    CFIndex fileExtLen = wcslen(fileExt);
-	    
+
 	    //if the extensions are different lengths, they can't possibly match
 	    if (fileExtLen != targetExtLen) continue;
-	    
+
             // Check to see if it matches the extension we're looking for.
             if (_wcsicmp(fileExt, (const wchar_t *)extBuff) != 0) {
                 continue;
@@ -356,23 +356,23 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
 #elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD
     uint8_t extBuff[CFMaxPathSize];
     int extBuffInteriorDotCount = 0; //people insist on using extensions like ".trace.plist", so we need to know how many dots back to look :(
-    
+
     if (targetExtLen > 0) {
         CFStringGetBytes(extension, CFRangeMake(0, targetExtLen), CFStringFileSystemEncoding(), 0, false, extBuff, CFMaxPathLength, &targetExtLen);
         extBuff[targetExtLen] = '\0';
         char *extBuffStr = (char *)extBuff;
         if (extBuffStr[0] == '.')
             extBuffStr++; //skip the first dot, it's legitimate to have ".plist" for example
-        
+
         char *extBuffDotPtr = extBuffStr;
         while ((extBuffDotPtr = strchr(extBuffStr, '.'))) { //find the next . in the extension...
             extBuffInteriorDotCount++;
             extBuffStr = extBuffDotPtr + 1;
         }
     }
-    
+
     uint8_t pathBuf[CFMaxPathSize];
-    
+
     if (!dirPath) {
         if (!CFURLGetFileSystemRepresentation(dirURL, true, pathBuf, CFMaxPathLength)) {
             if (extension) CFRelease(extension);
@@ -382,13 +382,13 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
             pathLength = strlen(dirPath);
         }
     }
-    
+
     struct dirent buffer;
     struct dirent *dp;
     int err;
-   
+
     int no_hang_fd = __CFProphylacticAutofsAccess ? open("/dev/autofs_nowait", 0) : -1;
- 
+
     DIR *dirp = opendir(dirPath);
     if (!dirp) {
         if (extension) {
@@ -408,15 +408,15 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
 	if (dp->d_name[0] == '.' && (namelen == 1 || (namelen == 2 && dp->d_name[1] == '.'))) {
             continue;
         }
-        
+
         if (targetExtLen > namelen) continue;    // if the extension is the same length or longer than the name, it can't possibly match.
-                
+
         if (targetExtLen > 0) {
 	    if (dp->d_name[namelen - 1] == '.') continue; //filename ends with a dot, no extension
-	      
+
             char *fileExt = NULL;
             if (extBuffInteriorDotCount == 0) {
-                fileExt = strrchr(dp->d_name, '.'); 
+                fileExt = strrchr(dp->d_name, '.');
             } else { //find the Nth occurrence of . from the end of the string, to handle ".foo.bar"
                 char *save = dp->d_name;
                 while ((save = strchr(save, '.')) && !fileExt) {
@@ -430,17 +430,17 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
                     }
                 }
             }
-	    
+
 	    if (!fileExt) continue; //no extension
-	    
+
 	    if (((char *)extBuff)[0] != '.')
 		fileExt++; //omit the dot if the target extension omits the dot; safe, because we checked to make sure it isn't the last character just before
-	    
+
 	    size_t fileExtLen = strlen(fileExt);
-	    
+
 	    //if the extensions are different lengths, they can't possibly match
 	    if (fileExtLen != targetExtLen) continue;
-	    
+
 	    // Check to see if it matches the extension we're looking for.
             if (strncmp(fileExt, (char *)extBuff, fileExtLen) != 0) {
                 continue;
@@ -490,11 +490,13 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
         }
         return NULL;
     }
-    
+
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+#warning Not implemented
 #else
-    
+
 #error _CFCreateContentsOfDirectory() unknown architecture, not implemented
-    
+
 #endif
 
     if (extension) {
@@ -509,14 +511,14 @@ CF_PRIVATE CFMutableArrayRef _CFCreateContentsOfDirectory(CFAllocatorRef alloc, 
 CF_PRIVATE SInt32 _CFGetPathProperties(CFAllocatorRef alloc, char *path, Boolean *exists, SInt32 *posixMode, int64_t *size, CFDateRef *modTime, SInt32 *ownerID, CFArrayRef *dirContents) {
     Boolean fileExists;
     Boolean isDirectory = false;
-    
+
     if ((exists == NULL) && (posixMode == NULL) && (size == NULL) && (modTime == NULL) && (ownerID == NULL) && (dirContents == NULL)) {
         // Nothing to do.
         return 0;
     }
-    
+
     struct statinfo statBuf;
-    
+
     if (stat(path, &statBuf) != 0) {
         // stat failed, but why?
         if (thread_errno() == ENOENT) {
@@ -528,35 +530,35 @@ CF_PRIVATE SInt32 _CFGetPathProperties(CFAllocatorRef alloc, char *path, Boolean
         fileExists = true;
         isDirectory = ((statBuf.st_mode & S_IFMT) == S_IFDIR);
     }
-    
-    
+
+
     if (exists != NULL) {
         *exists = fileExists;
     }
-    
+
     if (posixMode != NULL) {
         if (fileExists) {
-            
+
             *posixMode = statBuf.st_mode;
-            
+
         } else {
             *posixMode = 0;
         }
     }
-    
+
     if (size != NULL) {
         if (fileExists) {
-            
+
             *size = statBuf.st_size;
-            
+
         } else {
             *size = 0;
         }
     }
-    
+
     if (modTime != NULL) {
         if (fileExists) {
-#if DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || ANDROID
+#if DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || ANDROID || DEPLOYMENT_TARGET_EMSCRIPTEN
             struct timespec ts = {statBuf.st_mtime, 0};
 #else
             struct timespec ts = statBuf.st_mtimespec;
@@ -566,22 +568,22 @@ CF_PRIVATE SInt32 _CFGetPathProperties(CFAllocatorRef alloc, char *path, Boolean
             *modTime = NULL;
         }
     }
-    
+
     if (ownerID != NULL) {
         if (fileExists) {
-            
+
             *ownerID = statBuf.st_uid;
-            
+
         } else {
             *ownerID = -1;
         }
     }
-    
+
     if (dirContents != NULL) {
         if (fileExists && isDirectory) {
-            
+
             CFMutableArrayRef contents = _CFCreateContentsOfDirectory(alloc, (char *)path, NULL, NULL, NULL);
-            
+
             if (contents) {
                 *dirContents = contents;
             } else {
@@ -595,7 +597,7 @@ CF_PRIVATE SInt32 _CFGetPathProperties(CFAllocatorRef alloc, char *path, Boolean
 }
 
 CF_PRIVATE SInt32 _CFGetFileProperties(CFAllocatorRef alloc, CFURLRef pathURL, Boolean *exists, SInt32 *posixMode, int64_t *size, CFDateRef *modTime, SInt32 *ownerID, CFArrayRef *dirContents) {
-    
+
     char path[CFMaxPathSize];
 
     if (!CFURLGetFileSystemRepresentation(pathURL, true, (uint8_t *)path, CFMaxPathLength)) {
@@ -777,14 +779,14 @@ CF_PRIVATE Boolean _CFAppendPathExtension2(CFMutableStringRef path, CFStringRef 
     if (!path) {
         return false;
     }
-    
+
     if (0 < CFStringGetLength(extension) && IS_SLASH(CFStringGetCharacterAtIndex(extension, 0))) {
         return false;
     }
     if (1 < CFStringGetLength(extension)) {
         if (_hasDrive(extension)) return false;
     }
-    
+
     Boolean destHasDrive = (1 < CFStringGetLength(path)) && _hasDrive(path);
     while (((destHasDrive && 3 < CFStringGetLength(path)) || (!destHasDrive && 1 < CFStringGetLength(path))) && IS_SLASH(CFStringGetCharacterAtIndex(path, CFStringGetLength(path) - 1))) {
         CFStringDelete(path, CFRangeMake(CFStringGetLength(path) - 1, 1));
@@ -793,7 +795,7 @@ CF_PRIVATE Boolean _CFAppendPathExtension2(CFMutableStringRef path, CFStringRef 
     if (CFStringGetLength(path) == 0) {
         return false;
     }
-    
+
     UniChar firstChar = CFStringGetCharacterAtIndex(path, 0);
     CFIndex newLength = CFStringGetLength(path);
     switch (newLength) {
@@ -896,7 +898,7 @@ CF_PRIVATE CFStringRef _CFCreateLastPathComponent(CFAllocatorRef alloc, CFString
         if (slashIndex) *slashIndex = -1;
         return (CFStringRef)CFRetain(path);
     }
-    
+
     // Find the last slash
     for (CFIndex i = len - 1; i >= 0; i--) {
         if (IS_SLASH(CFStringGetCharacterAtIndex(path, i))) {
@@ -904,13 +906,13 @@ CF_PRIVATE CFStringRef _CFCreateLastPathComponent(CFAllocatorRef alloc, CFString
             return CFStringCreateWithSubstring(alloc, path, CFRangeMake(i + 1, len - i - 1));
         }
     }
-    
+
     // Strip any drive if we have one
     if (len > 2 && _hasDrive(path)) {
         if (slashIndex) *slashIndex = -1;
         return CFStringCreateWithSubstring(alloc, path, CFRangeMake(2, len - 2));
     }
-    
+
     // No slash, so just return the same string
     if (slashIndex) *slashIndex = -1;
     return (CFStringRef)CFRetain(path);
@@ -1028,18 +1030,18 @@ CF_PRIVATE CFIndex _CFLengthAfterDeletingPathExtension(UniChar *unichars, CFInde
 CF_PRIVATE void _CFIterateDirectory(CFStringRef directoryPath, Boolean (^fileHandler)(CFStringRef fileName, uint8_t fileType)) {
     char directoryPathBuf[CFMaxPathSize];
     if (!CFStringGetFileSystemRepresentation(directoryPath, directoryPathBuf, CFMaxPathSize)) return;
-    
+
 #if DEPLOYMENT_TARGET_WINDOWS
     CFIndex cpathLen = strlen(directoryPathBuf);
     // Make sure there is room for the additional space we need in the win32 api
     if (cpathLen + 2 < CFMaxPathSize) {
         WIN32_FIND_DATAW file;
         HANDLE handle;
-        
+
         directoryPathBuf[cpathLen++] = '\\';
         directoryPathBuf[cpathLen++] = '*';
         directoryPathBuf[cpathLen] = '\0';
-        
+
         // Convert UTF8 buffer to windows appropriate UTF-16LE
         // Get the real length of the string in UTF16 characters
         CFStringRef cfStr = CFStringCreateWithCString(kCFAllocatorSystemDefault, directoryPathBuf, kCFStringEncodingUTF8);
@@ -1050,7 +1052,7 @@ CF_PRIVATE void _CFIterateDirectory(CFStringRef directoryPath, Boolean (^fileHan
         CFStringGetCharacters(cfStr, CFRangeMake(0, cpathLen), (UniChar *)wideBuf);
         wideBuf[cpathLen] = 0;
         CFRelease(cfStr);
-        
+
         handle = FindFirstFileW(wideBuf, (LPWIN32_FIND_DATAW)&file);
         if (handle != INVALID_HANDLE_VALUE) {
             do {
@@ -1058,18 +1060,18 @@ CF_PRIVATE void _CFIterateDirectory(CFStringRef directoryPath, Boolean (^fileHan
                 if (file.cFileName[0] == '.' && (nameLen == 1 || (nameLen == 2  && file.cFileName[1] == '.'))) {
                     continue;
                 }
-                
+
                 CFStringRef fileName = CFStringCreateWithBytes(kCFAllocatorSystemDefault, (const uint8_t *)file.cFileName, nameLen * sizeof(wchar_t), kCFStringEncodingUTF16, NO);
                 if (!fileName) {
                     continue;
                 }
-                
+
                 Boolean isDirectory = file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
                 Boolean result = fileHandler(fileName, isDirectory ? DT_DIR : DT_REG);
                 CFRelease(fileName);
                 if (!result) break;
             } while (FindNextFileW(handle, &file));
-            
+
             FindClose(handle);
         }
         free(wideBuf);
@@ -1079,7 +1081,7 @@ CF_PRIVATE void _CFIterateDirectory(CFStringRef directoryPath, Boolean (^fileHan
     struct dirent *dent;
     if ((dirp = opendir(directoryPathBuf))) {
         while ((dent = readdir(dirp))) {
-#if DEPLOYMENT_TARGET_LINUX || ANDROID
+#if DEPLOYMENT_TARGET_LINUX || ANDROID || DEPLOYMENT_TARGET_EMSCRIPTEN
             CFIndex nameLen = strlen(dent->d_name);
             if (0 == nameLen || ('.' == dent->d_name[0] && (1 == nameLen || (2 == nameLen && '.' == dent->d_name[1]) || '_' == dent->d_name[1]))) {
                 continue;
@@ -1090,7 +1092,7 @@ CF_PRIVATE void _CFIterateDirectory(CFStringRef directoryPath, Boolean (^fileHan
                 continue;
             }
 #endif
-            
+
             CFStringRef fileName = CFStringCreateWithFileSystemRepresentation(kCFAllocatorSystemDefault, dent->d_name);
             if (!fileName) {
                 continue;
@@ -1104,4 +1106,3 @@ CF_PRIVATE void _CFIterateDirectory(CFStringRef directoryPath, Boolean (^fileHan
     }
 #endif
 }
-

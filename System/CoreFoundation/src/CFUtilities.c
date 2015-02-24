@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -30,7 +30,7 @@
 #include "CFInternal.h"
 #include "CFLocaleInternal.h"
 #include "CFPriv.h"
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <CoreFoundation/CFBundle.h>
 #endif
 #include <CoreFoundation/CFURLAccess.h>
@@ -49,7 +49,7 @@
 #else
 #ifndef NDEBUG
 #define ASL_LEVEL_EMERG 0
-#define ASL_LEVEL_DEBUG 7    
+#define ASL_LEVEL_DEBUG 7
 #else
 #define ASL_LEVEL_EMERG 0
 #define ASL_LEVEL_DEBUG 3
@@ -81,7 +81,7 @@
 #include <dlfcn.h>
 #include <sys/mman.h>
 #endif
-#if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD
+#if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <string.h>
 #include <pthread.h>
 #endif
@@ -111,7 +111,7 @@
    } else {
    	* Found *
    }
-   
+
 */
 CF_PRIVATE CFIndex CFBSearch(const void *element, CFIndex elementSize, const void *list, CFIndex count, CFComparatorFunction comparator, void *context) {
     const char *ptr = (const char *)list;
@@ -195,17 +195,17 @@ struct _args {
     HANDLE handle;
 };
 static unsigned __stdcall __CFWinThreadFunc(void *arg) {
-    struct _args *args = (struct _args*)arg; 
+    struct _args *args = (struct _args*)arg;
     ((void (*)(void *))args->func)(args->arg);
     CloseHandle(args->handle);
     CFAllocatorDeallocate(kCFAllocatorSystemDefault, arg);
     _endthreadex(0);
-    return 0; 
+    return 0;
 }
 #endif
 
 CF_PRIVATE void *__CFStartSimpleThread(void *func, void *arg) {
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD || DEPLOYMENT_TARGET_EMSCRIPTEN
     pthread_attr_t attr;
     pthread_t tid = 0;
     pthread_attr_init(&attr);
@@ -257,11 +257,11 @@ static CFStringRef _CFCopyLocalizedVersionKey(CFBundleRef *bundlePtr, CFStringRe
 
 static CFDictionaryRef _CFCopyVersionDictionary(CFStringRef path) {
     CFPropertyListRef plist = NULL;
-    
+
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
     CFDataRef data;
     CFURLRef url;
-    
+
     url = CFURLCreateWithFileSystemPath(kCFAllocatorSystemDefault, path, kCFURLPOSIXPathStyle, false);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated"
@@ -298,7 +298,7 @@ static CFDictionaryRef _CFCopyVersionDictionary(CFStringRef path) {
         build = (CFStringRef)CFDictionaryGetValue((CFDictionaryRef)plist, _kCFSystemVersionBuildVersionKey);
         fullVersion = CFStringCreateWithFormat(kCFAllocatorSystemDefault, NULL, fullVersionString, (vers ? vers : CFSTR("?")), build ? build : CFSTR("?"));
         if (vers && versExtra) CFRelease(vers);
-        
+
 	CFDictionarySetValue((CFMutableDictionaryRef)plist, _kCFSystemVersionProductVersionStringKey, versionString);
 	CFDictionarySetValue((CFMutableDictionaryRef)plist, _kCFSystemVersionBuildStringKey, buildString);
 	CFDictionarySetValue((CFMutableDictionaryRef)plist, CFSTR("FullVersionString"), fullVersion);
@@ -315,17 +315,17 @@ static CFDictionaryRef _CFCopyVersionDictionary(CFStringRef path) {
     if (!result) return NULL;
 
     plist = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 10, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    
+
     // e.g. 10.7
     CFStringRef versionString = CFStringCreateWithFormat(kCFAllocatorSystemDefault, NULL, CFSTR("%ld.%ld(%ld,%ld)"), osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.wServicePackMajor, osvi.wServicePackMinor);
-    
+
     // e.g. 11A508
     CFStringRef buildString = CFStringCreateWithFormat(kCFAllocatorSystemDefault, NULL, CFSTR("%ld"), osvi.dwBuildNumber);
-        
+
     CFDictionarySetValue((CFMutableDictionaryRef)plist, _kCFSystemVersionProductVersionKey, versionString);
-    CFDictionarySetValue((CFMutableDictionaryRef)plist, _kCFSystemVersionBuildVersionKey, buildString);    
+    CFDictionarySetValue((CFMutableDictionaryRef)plist, _kCFSystemVersionBuildVersionKey, buildString);
     CFDictionarySetValue((CFMutableDictionaryRef)plist, _kCFSystemVersionProductNameKey, CFSTR("Windows")); // hard coded for now
-    
+
     CFRelease(versionString);
     CFRelease(buildString);
 #endif
@@ -504,7 +504,7 @@ const char *_CFPrintForDebugger(const void *obj) {
 	} else {
 		str = (CFStringRef)CFRetain(CFSTR("(null)"));
 	}
-	
+
 	if (str != NULL) {
 		CFStringGetBytes(str, CFRangeMake(0, CFStringGetLength(str)), kCFStringEncodingUTF8, 0, FALSE, NULL, 0, &cnt);
 	}
@@ -686,7 +686,7 @@ static void __CFLogCString(int32_t lev, const char *message, size_t length, char
         if (banner) {
             // Copy the banner into the debug string
             memmove_s(buf, bufLen, banner, bannerLen);
-            
+
             // Copy the message into the debug string
             strcpy_s(buf + bannerLen, bufLen - bannerLen, message);
         } else {
@@ -703,7 +703,7 @@ static void __CFLogCString(int32_t lev, const char *message, size_t length, char
         if (banner) {
             // Copy the banner into the debug string
             memmove(buf, banner, bannerLen);
-            
+
             // Copy the message into the debug string
             strncpy(buf + bannerLen, message, bufLen - bannerLen);
         } else {
@@ -714,7 +714,7 @@ static void __CFLogCString(int32_t lev, const char *message, size_t length, char
         free(buf);
 #endif
     }
-    
+
     if (thread) free(thread);
     if (time) free(time);
     if (banner) free(banner);
@@ -759,7 +759,7 @@ CF_PRIVATE void _CFLogSimple(int32_t lev, char *format, ...) {
 
 void CFLog(int32_t lev, CFStringRef format, ...) {
     va_list args;
-    va_start(args, format); 
+    va_start(args, format);
     _CFLogvEx(NULL, NULL, NULL, lev, format, args);
     va_end(args);
 }
@@ -1015,7 +1015,7 @@ CF_PRIVATE ThrottleTypeB __CFCreateThrottleTypeB(uint64_t amount, uint64_t nanos
 #endif
 
 #pragma mark File Reading
-    
+
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -1029,13 +1029,13 @@ CF_PRIVATE ThrottleTypeB __CFCreateThrottleTypeB(uint64_t amount, uint64_t nanos
 #define stat _NS_stat
 #define fstat _fstat
 #define statinfo _stat
-    
+
 #define mach_task_self() 0
 
 #else
 #define statinfo stat
 #endif
-    
+
 static CFErrorRef _CFErrorWithFilePathCodeDomain(CFStringRef domain, CFIndex code, CFStringRef path) {
     CFStringRef key = CFSTR("NSFilePath");
     CFDictionaryRef userInfo = CFDictionaryCreate(kCFAllocatorSystemDefault, (const void **)&key, (const void **)&path, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
@@ -1094,7 +1094,7 @@ CF_PRIVATE Boolean _CFReadMappedFromFile(CFStringRef path, Boolean map, Boolean 
     if (0LL == statBuf.st_size) {
         bytes = malloc(8); // don't return constant string -- it's freed!
 	length = 0;
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
     } else if (map) {
         if((void *)-1 == (bytes = mmap(0, (size_t)statBuf.st_size, PROT_READ, MAP_PRIVATE, fd, 0))) {
 	    int32_t savederrno = errno;
@@ -1113,7 +1113,7 @@ CF_PRIVATE Boolean _CFReadMappedFromFile(CFStringRef path, Boolean map, Boolean 
 	size_t numBytesRemaining = (size_t)statBuf.st_size;
 	void *readLocation = bytes;
 	while (numBytesRemaining > 0) {
-	    size_t numBytesRequested = (numBytesRemaining < (1LL << 31)) ? numBytesRemaining : ((1LL << 31) - 1);	// This loop is basically a workaround for 4870206 
+	    size_t numBytesRequested = (numBytesRemaining < (1LL << 31)) ? numBytesRemaining : ((1LL << 31) - 1);	// This loop is basically a workaround for 4870206
 	    ssize_t numBytesRead = read(fd, readLocation, numBytesRequested);
 	    if (numBytesRead <= 0) {
 		if (numBytesRead < 0) {

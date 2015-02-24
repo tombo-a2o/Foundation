@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Apple Inc. All rights reserved.
+ * Copyright (c) 2014 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
  * 
@@ -41,6 +41,16 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 
+#include <emscripten.h>
+
+#undef dispatch_once
+void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) {
+	if(*predicate != ~0l) {
+		*predicate = ~0l;
+		block();
+	}
+}
+
 static void logIt(CFStringRef format, ...) {
     va_list args;
     va_start(args, format); 
@@ -63,6 +73,7 @@ static void logIt(CFStringRef format, ...) {
 
 static CFMutableDataRef createDataFromFile(const char *fname) {
     int fd = open(fname, O_RDONLY);
+	printf("fname=%s,fd=%d\n",fname, fd);
     CFMutableDataRef res = CFDataCreateMutable(kCFAllocatorSystemDefault, 0);
     char buf[4096];
     
@@ -90,14 +101,23 @@ static bool writeDataToFile(CFDataRef data, const char *fname) {
 }
 
 int main(int argc, char **argv) {
-    
+#ifdef EMSCRIPTEN
+	    EM_ASM(
+				        FS.mkdir('/working');
+						        FS.mount(NODEFS, { root: '.' }, '/working');
+								        FS.chdir("/working");
+										    );
+#endif
+
     if (argc != 3) {
         printf("Usage: plconvert <in file> <out file>\nIf the in file is an XML property list, convert to binary property list in out file. If the in file is a binary property list, convert to XML property list in out file.\n");
     } else {
+		printf("%s\n", argv[1]);
         CFMutableDataRef plistData = createDataFromFile(argv[1]);
         if (!plistData) {
             printf("Unable to create data from file name: %s", argv[1]);
         } else {
+			printf("%ld\n", CFDataGetLength(plistData));
             CFPropertyListFormat fmt;
             CFErrorRef err;
             CFPropertyListRef plist = CFPropertyListCreateWithData(kCFAllocatorSystemDefault, (CFDataRef)plistData, 0, &fmt, &err);

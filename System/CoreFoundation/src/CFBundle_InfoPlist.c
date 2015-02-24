@@ -146,6 +146,9 @@ CF_EXPORT CFStringRef _CFGetPlatformName(void) {
     return _CFBundleMacOSXPlatformName;
 #elif DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
     return _CFBundleiPhoneOSPlatformName;
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+#warning FIXIT
+    return _CFBundleiPhoneOSPlatformName;
 #elif DEPLOYMENT_TARGET_WINDOWS
     return _CFBundleWindowsPlatformName;
 #elif DEPLOYMENT_TARGET_SOLARIS
@@ -165,6 +168,9 @@ CF_EXPORT CFStringRef _CFGetAlternatePlatformName(void) {
 #if DEPLOYMENT_TARGET_MACOSX
     return _CFBundleAlternateMacOSXPlatformName;
 #elif DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+    return _CFBundleMacOSXPlatformName;
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+#warning FIXIT
     return _CFBundleMacOSXPlatformName;
 #elif DEPLOYMENT_TARGET_WINDOWS
     return CFSTR("");

@@ -86,7 +86,7 @@
 #include <CoreFoundation/CFUUID.h>
 #include <CoreFoundation/CFUtilities.h>
 
-#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || TARGET_OS_WIN32
+#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || TARGET_OS_EMSCRIPTEN || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || TARGET_OS_WIN32
 #include <CoreFoundation/CFBundle.h>
 #include <CoreFoundation/CFMessagePort.h>
 #include <CoreFoundation/CFPlugIn.h>

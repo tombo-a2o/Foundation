@@ -414,7 +414,7 @@ enum {
 #if DEPLOYMENT_TARGET_MACOSX
 #define NUM_EXTERN_TABLES 8
 #define EXTERN_TABLE_IDX(O) (((uintptr_t)(O) >> 8) & 0x7)
-#elif DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#elif DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 #define NUM_EXTERN_TABLES 1
 #define EXTERN_TABLE_IDX(O) 0
 #else
@@ -928,7 +928,7 @@ CF_PRIVATE const char *__CFgetenv(const char *n) {
 }
 
 CF_PRIVATE Boolean __CFProcessIsRestricted() {
-    return issetugid();
+    return true; //issetugid();
 }
 
 #if DEPLOYMENT_TARGET_WINDOWS
@@ -970,7 +970,7 @@ pthread_t _CF_pthread_main_thread_np(void) {
 
 #endif
 
-#if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD
+#if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD || DEPLOYMENT_TARGET_EMSCRIPTEN
 static void __CFInitialize(void) __attribute__ ((constructor));
 static
 #endif

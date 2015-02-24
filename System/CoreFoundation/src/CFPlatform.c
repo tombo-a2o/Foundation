@@ -168,7 +168,7 @@ const char *_CFProcessPath(void) {
 }
 #endif
 
-#if DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <unistd.h>
 
 const char *_CFProcessPath(void) {
@@ -273,6 +273,8 @@ CF_EXPORT CFStringRef CFCopyUserName(void) {
                 result = CFStringCreateWithCString(kCFAllocatorSystemDefault, cname, kCFPlatformInterfaceStringEncoding);
             }
 	}
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+	result = CFStringCreateWithCString(kCFAllocatorSystemDefault, "user", kCFPlatformInterfaceStringEncoding);
 #else
 #error Dont know how to compute user name on this platform
 #endif
@@ -287,6 +289,9 @@ CFURLRef CFCopyHomeDirectoryURL(void) {
     __CFGetUGIDs(&euid, NULL);
     struct passwd *upwd = getpwuid(euid ? euid : getuid());
     return _CFCopyHomeDirURLForUser(upwd, true);
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+	const char *homePath = __CFgetenv("HOME");
+	return CFURLCreateFromFileSystemRepresentation(kCFAllocatorSystemDefault, (uint8_t *)homePath, strlen(homePath), true);
 #elif DEPLOYMENT_TARGET_WINDOWS
     CFURLRef retVal = NULL;
     CFIndex len = 0;
@@ -366,6 +371,9 @@ CF_EXPORT CFURLRef CFCopyHomeDirectoryURLForUser(CFStringRef uName) {
         }
         return _CFCopyHomeDirURLForUser(upwd, false);
     }
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+	const char *homePath = __CFgetenv("HOME");
+	return CFURLCreateFromFileSystemRepresentation(kCFAllocatorSystemDefault, (uint8_t *)homePath, strlen(homePath), true);
 #elif DEPLOYMENT_TARGET_WINDOWS
     // This code can only get the directory for the current user
     CFStringRef userName = uName ? CFCopyUserName() : NULL;

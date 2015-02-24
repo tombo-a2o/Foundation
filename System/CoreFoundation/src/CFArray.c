@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -194,7 +194,7 @@ CF_INLINE bool __CFArrayCallBacksMatchCFType(const CFArrayCallBacks *c) {
 
 struct _releaseContext {
     void (*release)(CFAllocatorRef, const void *);
-    CFAllocatorRef allocator; 
+    CFAllocatorRef allocator;
 };
 
 static void __CFArrayReleaseValues(CFArrayRef array, CFRange range, bool releaseStorageIfPossible) {
@@ -355,7 +355,7 @@ static const CFRuntimeClass __CFArrayClass = {
     __CFArrayDeallocate,
     __CFArrayEqual,
     __CFArrayHash,
-    NULL,	// 
+    NULL,	//
     __CFArrayCopyDescription
 };
 
@@ -560,7 +560,7 @@ CFIndex CFArrayGetCount(CFArrayRef array) {
 
 CFIndex CFArrayGetCountOfValue(CFArrayRef array, CFRange range, const void *value) {
     CFIndex idx, count = 0;
-    __CFGenericValidateType(array, __kCFArrayTypeID);    
+    __CFGenericValidateType(array, __kCFArrayTypeID);
     __CFArrayValidateRange(array, range, __PRETTY_FUNCTION__);
     CHECK_FOR_MUTATION(array);
     const CFArrayCallBacks *cb = CF_IS_OBJC(CFArrayGetTypeID(), array) ? &kCFTypeArrayCallBacks : __CFArrayGetCallBacks(array);
@@ -633,7 +633,7 @@ CF_EXPORT unsigned long _CFArrayFastEnumeration(CFArrayRef array, struct __objcF
             state->itemsPtr = (unsigned long *)__CFArrayGetBucketsPtr(array);
             return array->_count;
         }
-        return 0;			
+        return 0;
     case __kCFArrayDeque:
         if (state->state == ATSTART) { /* first time */
             state->state = ATEND;
@@ -690,7 +690,7 @@ CFIndex CFArrayGetLastIndexOfValue(CFArrayRef array, CFRange range, const void *
 
 void CFArrayAppendValue(CFMutableArrayRef array, const void *value) {
     CF_OBJC_FUNCDISPATCHV(__kCFArrayTypeID, void, (NSMutableArray *)array, addObject:(id)value);
-    
+
     __CFGenericValidateType(array, __kCFArrayTypeID);
     CFAssert1(__CFArrayGetType(array) != __kCFArrayImmutable, __kCFLogAssertion, "%s(): array is immutable", __PRETTY_FUNCTION__);
     CHECK_FOR_MUTATION(array);
@@ -894,7 +894,7 @@ void _CFArraySetCapacity(CFMutableArrayRef array, CFIndex cap) {
 	    deque = (struct __CFArrayDeque *)CFAllocatorAllocate(allocator, size, isStrongMemory(array) ? __kCFAllocatorGCScannedMemory : 0);
 	    if (NULL == deque) __CFArrayHandleOutOfMemory(array, size);
 	    if (__CFOASafe) __CFSetLastAllocationEventName(deque, "CFArray (store-deque)");
-	    deque->_leftIdx = capacity / 2; 
+	    deque->_leftIdx = capacity / 2;
 	} else {
 	    struct __CFArrayDeque *olddeque = deque;
 	    CFIndex oldcap = deque->_capacity;
@@ -1111,5 +1111,3 @@ void CFArrayAppendArray(CFMutableArrayRef array, CFArrayRef otherArray, CFRange 
 	CFArrayAppendValue(array, CFArrayGetValueAtIndex(otherArray, idx));
     }
 }
-
-

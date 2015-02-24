@@ -36,7 +36,7 @@
 #include <math.h>
 #include <dispatch/dispatch.h>
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX
 #include <sys/time.h>
 #endif
 
@@ -62,6 +62,7 @@ CF_PRIVATE CFTimeInterval __CFTSRToTimeInterval(uint64_t tsr) {
     return (CFTimeInterval)((double)tsr * __CF1_TSRRate);
 }
 
+/*
 CF_PRIVATE CFTimeInterval __CFTimeIntervalUntilTSR(uint64_t tsr) {
     CFDateGetTypeID();
     uint64_t now = mach_absolute_time();
@@ -71,6 +72,7 @@ CF_PRIVATE CFTimeInterval __CFTimeIntervalUntilTSR(uint64_t tsr) {
         return -__CFTSRToTimeInterval(now - tsr);
     }
 }
+*/
 
 // Technically this is 'TSR units' not a strict 'TSR' absolute time
 CF_PRIVATE uint64_t __CFTSRToNanoseconds(uint64_t tsr) {
@@ -111,7 +113,7 @@ CF_PRIVATE void __CFDateInitialize(void) {
     }
     __CFTSRRate = (double)freq.QuadPart;
     __CF1_TSRRate = 1.0 / __CFTSRRate;
-#elif DEPLOYMENT_TARGET_LINUX
+#elif DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
     struct timespec res;
     if (clock_getres(CLOCK_MONOTONIC, &res) != 0) {
         HALT;

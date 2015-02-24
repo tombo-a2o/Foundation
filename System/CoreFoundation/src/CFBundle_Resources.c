@@ -43,7 +43,7 @@
 #include <errno.h>
 #include <sys/types.h>
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX
 #include <unistd.h>
 #include <sys/sysctl.h>
 #include <sys/stat.h>
@@ -1322,6 +1322,9 @@ CF_EXPORT CFStringRef _CFBundleGetCurrentPlatform(void) {
     return CFSTR("MacOS");
 #elif DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
     return CFSTR("iPhoneOS");
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+#warning FIXIT
+    return CFSTR("iPhoneOS");
 #elif DEPLOYMENT_TARGET_WINDOWS
     return CFSTR("Windows");
 #elif DEPLOYMENT_TARGET_SOLARIS
@@ -1339,6 +1342,9 @@ CF_EXPORT CFStringRef _CFBundleGetCurrentPlatform(void) {
 
 CF_PRIVATE CFStringRef _CFBundleGetPlatformExecutablesSubdirectoryName(void) {
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+    return CFSTR("MacOS");
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+#warning FIXIT
     return CFSTR("MacOS");
 #elif DEPLOYMENT_TARGET_WINDOWS
     return CFSTR("Windows");
@@ -1358,6 +1364,9 @@ CF_PRIVATE CFStringRef _CFBundleGetPlatformExecutablesSubdirectoryName(void) {
 CF_PRIVATE CFStringRef _CFBundleGetAlternatePlatformExecutablesSubdirectoryName(void) {
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
     return CFSTR("Mac OS X");
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+#warning FIXIT
+    return CFSTR("Mac OS X");
 #elif DEPLOYMENT_TARGET_WINDOWS
     return CFSTR("WinNT");
 #elif DEPLOYMENT_TARGET_SOLARIS
@@ -1376,6 +1385,9 @@ CF_PRIVATE CFStringRef _CFBundleGetAlternatePlatformExecutablesSubdirectoryName(
 CF_PRIVATE CFStringRef _CFBundleGetOtherPlatformExecutablesSubdirectoryName(void) {
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
     return CFSTR("MacOSClassic");
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+#warning FIXIT
+    return CFSTR("MacOSClassic");
 #elif DEPLOYMENT_TARGET_WINDOWS
     return CFSTR("Other");
 #elif DEPLOYMENT_TARGET_HPUX
@@ -1393,6 +1405,9 @@ CF_PRIVATE CFStringRef _CFBundleGetOtherPlatformExecutablesSubdirectoryName(void
 
 CF_PRIVATE CFStringRef _CFBundleGetOtherAlternatePlatformExecutablesSubdirectoryName(void) {
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+    return CFSTR("Mac OS 8");
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+#warning FIXIT
     return CFSTR("Mac OS 8");
 #elif DEPLOYMENT_TARGET_WINDOWS
     return CFSTR("Other");

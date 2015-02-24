@@ -37,7 +37,7 @@
 #include <CoreFoundation/CFNumber.h>
 #include "CFInternal.h"
 #include "CFLocaleInternal.h"
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
 #include <unicode/uloc.h>           // ICU locales
 #include <unicode/ulocdata.h>       // ICU locale data
 #include <unicode/ucal.h>
@@ -291,7 +291,7 @@ extern CFDictionaryRef __CFXPreferencesCopyCurrentApplicationState(void);
 static CFLocaleRef __CFLocaleCurrent = NULL;
 
 
-#if DEPLOYMENT_TARGET_MACOSX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMSCRIPTEN
 #define FALLBACK_LOCALE_NAME CFSTR("")
 #elif DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
 #define FALLBACK_LOCALE_NAME CFSTR("en_US")

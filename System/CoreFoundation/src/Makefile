@@ -4,8 +4,9 @@ include MakefileVersion
 MIN_MACOSX_VERSION=10.9
 MAX_MACOSX_VERSION=MAC_OS_X_VERSION_10_9
 
-OBJECTS = $(patsubst %.c,%.o,$(wildcard *.c))
-OBJECTS += CFBasicHash.o
+#SOURCES = CFApplicationPreferences.c CFArray.c CFBag.c CFBase.c CFBasicHash.c CFBigNumber.c CFBinaryHeap.c CFBinaryPList.c CFBitVector.c CFBuiltinConverters.c CFBundle.c CFBundle_InfoPlist.c CFBundle_Resources.c CFBurstTrie.c CFCalendar.c CFCharacterSet.c CFConcreteStreams.c CFData.c CFDate.c CFDateFormatter.c CFDictionary.c CFError.c CFFileUtilities.c CFICUConverters.c CFLocale.c CFLocaleIdentifier.c CFLocaleKeys.c CFMachPort.c CFMessagePort.c CFNumber.c CFNumberFormatter.c CFOldStylePList.c CFPlatform.c CFPlatformConverters.c CFPlugIn.c CFPlugIn_Factory.c CFPlugIn_Instance.c CFPlugIn_PlugIn.c CFPreferences.c CFPropertyList.c CFRunLoop.c CFRuntime.c CFSet.c CFSocket.c CFSocketStream.c CFSortFunctions.c CFStorage.c CFStream.c CFString.c CFStringEncodingConverter.c CFStringEncodingDatabase.c CFStringEncodings.c CFStringScanner.c CFStringUtilities.c CFSystemDirectories.c CFTimeZone.c CFTree.c CFURL.c CFURLAccess.c CFUUID.c CFUniChar.c CFUnicodeDecomposition.c CFUnicodePrecomposition.c CFUserNotification.c CFUtilities.c CFVersion.c CFWindowsUtilities.c CFXMLInputStream.c CFXMLNode.c CFXMLParser.c CFXMLPreferencesDomain.c CFXMLTree.c
+SOURCES = CFApplicationPreferences.c CFArray.c CFBag.c CFBase.c CFBasicHash.c CFBigNumber.c CFBinaryHeap.c CFBinaryPList.c CFBitVector.c CFBuiltinConverters.c CFBundle.c CFBundle_InfoPlist.c CFBundle_Resources.c CFBurstTrie.c CFCalendar.c CFCharacterSet.c CFConcreteStreams.c CFData.c CFDate.c CFDateFormatter.c CFDictionary.c CFError.c CFFileUtilities.c CFICUConverters.c CFLocale.c CFLocaleIdentifier.c CFLocaleKeys.c CFNumber.c CFNumberFormatter.c CFOldStylePList.c CFPlatform.c CFPlatformConverters.c CFPlugIn.c CFPlugIn_Factory.c CFPlugIn_Instance.c CFPlugIn_PlugIn.c CFPreferences.c CFPropertyList.c CFRuntime.c CFSet.c CFSocket.c CFSocketStream.c CFSortFunctions.c CFStorage.c CFStream.c CFString.c CFStringEncodingConverter.c CFStringEncodingDatabase.c CFStringEncodings.c CFStringScanner.c CFStringUtilities.c CFSystemDirectories.c CFTimeZone.c CFTree.c CFURL.c CFURLAccess.c CFUUID.c CFUniChar.c CFUnicodeDecomposition.c CFUnicodePrecomposition.c CFUtilities.c CFVersion.c CFWindowsUtilities.c CFXMLInputStream.c CFXMLNode.c CFXMLParser.c CFXMLPreferencesDomain.c CFXMLTree.c
+OBJECTS = $(patsubst %.c,%.o,$(SOURCES)) 
 HFILES = $(wildcard *.h)
 INTERMEDIATE_HFILES = $(addprefix $(OBJBASE)/CoreFoundation/,$(HFILES))
 
@@ -23,20 +24,20 @@ DSTBASE = $(if $(DSTROOT),$(DSTROOT)/System/Library/Frameworks,../CF-Root)
 STYLE=normal
 STYLE_CFLAGS=-O2
 STYLE_LFLAGS=
-ARCHFLAGS=-arch i386 -arch x86_64
+ARCHFLAGS=
 INSTALLNAME=/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation_$(STYLE)
 
-CC = /usr/bin/clang
+CC = emcc
 
-CFLAGS=-c -x c -pipe -std=gnu99 -Wmost -Wno-trigraphs -mmacosx-version-min=$(MIN_MACOSX_VERSION) -fconstant-cfstrings -fexceptions -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_MACOSX=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h
+CFLAGS=-v -c -x c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-arc -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../../../../objc4/include -I../../../../../objc4/lib/libclosure-65 -I../../../../../icu/source/buildEmscripten/out/include -I../../../../../libdispatch-442.1.4 -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h
 
-LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespace -fexceptions -init ___CFInitialize -compatibility_version 150 -current_version $(VERSION) -Wl,-alias_list,SymbolAliases -sectcreate __UNICODE __csbitmaps CFCharacterSetBitmaps.bitmap -sectcreate __UNICODE __properties CFUniCharPropertyDatabase.data -sectcreate __UNICODE __data $(call unicode_data_file_name,$(MACHINE_TYPE)) -segprot __UNICODE r r
+LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespace -fexceptions -compatibility_version 150 -current_version $(VERSION) -Wl,-alias_list,SymbolAliases 
 
 
 .PHONY: all install clean
 .PRECIOUS: $(OBJBASE)/CoreFoundation/%.h
 
-all: install
+all: $(OBJBASE)/CoreFoundation_$(STYLE).bc
 
 clean:
 	-/bin/rm -rf $(OBJBASE_ROOT)
@@ -53,8 +54,9 @@ $(OBJBASE)/%.o: %.c $(INTERMEDIATE_HFILES)
 $(OBJBASE)/%.o: %.m $(INTERMEDIATE_HFILES)
 	$(CC) $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJBASE)/CoreFoundation_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
-	$(CC) $(STYLE_LFLAGS) -install_name $(INSTALLNAME) $(ARCHFLAGS) $(LFLAGS) $^ -licucore.A -o $(OBJBASE)/CoreFoundation_$(STYLE)
+$(OBJBASE)/CoreFoundation_$(STYLE).bc: $(addprefix $(OBJBASE)/,$(OBJECTS))
+	#$(CC) $(STYLE_LFLAGS) -install_name $(INSTALLNAME) $(ARCHFLAGS) $(LFLAGS) $^ -licucore.A -o $(OBJBASE)/CoreFoundation_$(STYLE)
+	llvm-link $(STYLE_LFLAGS) $^ -o $(OBJBASE)/CoreFoundation_$(STYLE).bc
 
 install: $(OBJBASE)/CoreFoundation_$(STYLE)
 	/bin/rm -rf $(DSTBASE)/CoreFoundation.framework
@@ -71,11 +73,12 @@ install: $(OBJBASE)/CoreFoundation_$(STYLE)
 	/bin/cp $(PUBLIC_HEADERS) $(DSTBASE)/CoreFoundation.framework/Versions/A/Headers
 	/bin/cp $(PRIVATE_HEADERS) $(DSTBASE)/CoreFoundation.framework/Versions/A/PrivateHeaders
 	#/usr/bin/strip -S -o $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation $(OBJBASE)/CoreFoundation_$(STYLE)
+	/bin/cp $(OBJBASE)/CoreFoundation_$(STYLE) $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation.bc
 	/bin/cp $(OBJBASE)/CoreFoundation_$(STYLE) $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation
-	/usr/bin/dsymutil $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation -o $(DSTBASE)/CoreFoundation.framework.dSYM
+	#/usr/bin/dsymutil $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation -o $(DSTBASE)/CoreFoundation.framework.dSYM
 	/usr/sbin/chown -RH -f root:wheel $(DSTBASE)/CoreFoundation.framework
 	/bin/chmod -RH a-w,a+rX $(DSTBASE)/CoreFoundation.framework
 	/bin/chmod -RH u+w $(DSTBASE)
-	install_name_tool -id /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation
+	#install_name_tool -id /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation
 	@echo "Installing done.  The framework is in $(DSTBASE)"
 

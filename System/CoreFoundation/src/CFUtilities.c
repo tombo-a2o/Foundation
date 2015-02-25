@@ -84,6 +84,7 @@
 #if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <string.h>
 #include <pthread.h>
+#include <sys/mman.h>
 #endif
 
 /* Comparator is passed the address of the values. */

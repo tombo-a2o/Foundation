@@ -58,4 +58,6 @@
 #define CFN_CPP_END
 #endif
 
+#define CALLBACK_API_C(_type, _name) _type (*_name)
+
 #endif

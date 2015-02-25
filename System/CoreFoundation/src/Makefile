@@ -29,7 +29,7 @@ INSTALLNAME=/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreF
 
 CC = emcc
 
-CFLAGS=-v -c -x c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-arc -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../../../../objc4/include -I../../../../../objc4/lib/libclosure-65 -I../../../../../icu/source/buildEmscripten/out/include -I../../../../../libdispatch-442.1.4 -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h
+CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../../../../objc4/include -I../../../../../objc4/lib/libclosure-65 -I../../../../../icu/source/buildEmscripten/out/include -I../../../../../libdispatch-442.1.4 -I../../Foundation/include -I../../CFNetwork/include -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h
 
 LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespace -fexceptions -compatibility_version 150 -current_version $(VERSION) -Wl,-alias_list,SymbolAliases 
 

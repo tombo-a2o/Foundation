@@ -209,7 +209,7 @@ CF_PRIVATE uintptr_t __CFRuntimeObjCClassTable[__CFRuntimeClassTableSize] = {0};
 bool (*__CFObjCIsCollectable)(void *) = NULL;
 #endif
 
-#if !__CONSTANT_CFSTRINGS__ || DEPLOYMENT_TARGET_EMBEDDED_MINI || APPORTABLE
+#if !__CONSTANT_CFSTRINGS__ || DEPLOYMENT_TARGET_EMBEDDED_MINI || APPORTABLE || DEPLOYMENT_TARGET_EMSCRIPTEN
 // Compiler uses this symbol name; must match compiler built-in decl, so we use 'int'
 #if __LP64__
 int __CFConstantStringClassReference[24] = {0};
@@ -815,7 +815,7 @@ extern void __CFUUIDInitialize(void);
 extern void __CFBinaryHeapInitialize(void);
 extern void __CFBitVectorInitialize(void);
 extern void __CFStringTokenizerInitialize(void);
-#if DEPLOYMENT_TARGET_LINUX || ANDROID
+#if DEPLOYMENT_TARGET_LINUX || ANDROID || DEPLOYMENT_TARGET_EMSCRIPTEN
 CF_PRIVATE void __CFDateInitialize(void);
 CF_PRIVATE void __CFTSDLinuxInitialize();
 #endif
@@ -938,15 +938,15 @@ CF_PRIVATE Boolean __CFProcessIsRestricted() {
 #endif
 
 void _CFRuntimeBridgeClasses(CFTypeID type, const char *name) {
-    static OSSpinLock lock = OS_SPINLOCK_INIT;
-    OSSpinLockLock(&lock);
+    static CFSpinLock_t lock = CFSpinLockInit;
+    __CFSpinLock(&lock);
     Class cls = (Class)objc_getClass(name);
     if (cls != Nil) {
         __CFRuntimeObjCClassTable[type] = (uintptr_t)cls;
     } else {
-        DEBUG_BREAK();
+        HALT;
     }
-    OSSpinLockUnlock(&lock);
+    __CFSpinUnlock(&lock);
 }
 
 #undef kCFUseCollectableAllocator
@@ -993,10 +993,10 @@ void __CFInitialize(void) {
         udata_setCommonData(icuData, &err);
         if (err != 0)
         {
-            RELEASE_LOG("icu initialization failed with error %d", (int)err);
+            //RELEASE_LOG("icu initialization failed with error %d", (int)err);
         }
     } else {
-        RELEASE_LOG("No icu data found, using minimal built-in tables");
+        //RELEASE_LOG("No icu data found, using minimal built-in tables");
     }
 #if DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_IPHONESIMULATOR
         if (!pthread_main_np()) HALT;   // CoreFoundation must be initialized on the main thread

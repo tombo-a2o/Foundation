@@ -15,7 +15,7 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <stdio.h>
-#import <libv/libv.h>
+//#import <libv/libv.h>
 
 void __CFZombifyNSObject(void) {
     Class cls = objc_lookUpClass("NSObject");
@@ -24,9 +24,13 @@ void __CFZombifyNSObject(void) {
     method_exchangeImplementations(dealloc_zombie, dealloc);
 }
 
-BREAKPOINT_FUNCTION(void NSUnrecognizedForwarding())
+//BREAKPOINT_FUNCTION(void NSUnrecognizedForwarding())
+#warning FIXIT
+void NSUnrecognizedForwarding(){}
 
 // TODO: This should be split into Foundation
+
+#define _GETENV(type, name) getenv(name)
 
 @implementation NSObject (NSObject)
 
@@ -34,7 +38,7 @@ BREAKPOINT_FUNCTION(void NSUnrecognizedForwarding())
 {
     if (_GETENV(BOOL, "NSUnrecognizedForwardingDisabled"))
     {
-        RELEASE_LOG("+[%s %s]: unrecognized selector sent to instance %p; set a breakpoint on NSUnrecognizedForwarding to debug", class_getName(self), sel_getName(sel), self);
+        //RELEASE_LOG("+[%s %s]: unrecognized selector sent to instance %p; set a breakpoint on NSUnrecognizedForwarding to debug", class_getName(self), sel_getName(sel), self);
         NSUnrecognizedForwarding();
     }
     else
@@ -51,7 +55,7 @@ BREAKPOINT_FUNCTION(void NSUnrecognizedForwarding())
 {
     if (_GETENV(BOOL, "NSUnrecognizedForwardingDisabled"))
     {
-        RELEASE_LOG("+[%s %s]: unrecognized selector sent to instance %p; set a breakpoint on NSUnrecognizedForwarding to debug", object_getClassName(self), sel_getName(sel), self);
+        //RELEASE_LOG("+[%s %s]: unrecognized selector sent to instance %p; set a breakpoint on NSUnrecognizedForwarding to debug", object_getClassName(self), sel_getName(sel), self);
         NSUnrecognizedForwarding();
     }
     else

@@ -17,7 +17,7 @@
 #import "NSObjCRuntimeInternal.h"
 #import "NSZombie.h"
 
-#import <libv/libv.h>
+//#import <libv/libv.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
 #import <stdio.h>
@@ -33,7 +33,9 @@
 - (BOOL)_stret;
 @end
 
-BREAKPOINT_FUNCTION(void __NSForwardSignatureError());
+//BREAKPOINT_FUNCTION(void __NSForwardSignatureError());
+#warning FIXIT
+void __NSForwardSignatureError() {};
 
 struct objc_sendv_margs {
     int a[4];
@@ -142,7 +144,7 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
     NSUInteger signatureArgumentCount = [signature numberOfArguments];
     if (signatureVerification != signatureArgumentCount)
     {
-        RELEASE_LOG("Forward invocation was invoked with %d arguments but claims by signature to respond to %d arguments, break on __NSForwardSignatureError to debug", signatureVerification, signatureArgumentCount);
+        //RELEASE_LOG("Forward invocation was invoked with %d arguments but claims by signature to respond to %d arguments, break on __NSForwardSignatureError to debug", signatureVerification, signatureArgumentCount);
         __NSForwardSignatureError();
     }
 

@@ -80,7 +80,7 @@
 
 #import <Foundation/FoundationErrors.h>
 
-#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
+#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || TARGET_OS_EMSCRIPTEN
 
 #import <Foundation/NSAttributedString.h>
 #import <Foundation/NSByteCountFormatter.h>
@@ -98,7 +98,7 @@
 #import <Foundation/NSPredicate.h>
 #import <Foundation/NSUbiquitousKeyValueStore.h>
 #import <Foundation/NSUndoManager.h>
-#import <Foundation/NSURLSession.h>
+//#import <Foundation/NSURLSession.h>
 #import <Foundation/NSUUID.h>
 
 #endif

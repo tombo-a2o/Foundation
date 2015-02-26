@@ -10,6 +10,8 @@
 #import <Foundation/Foundation.h>
 #import <libkern/OSAtomic.h>
 
+#import "CFInternal.h"
+
 @interface _NSCacheObject : NSObject {
 @public
     id _object;
@@ -68,7 +70,7 @@
     NSInteger _costLimit;
     NSInteger _currentCost;
     BOOL _evictsContent;
-    OSSpinLock _accessLock;
+    CFSpinLock_t _accessLock;
     id _delegate;
     
     struct {
@@ -87,7 +89,7 @@
         _costLimit = 0;
         _currentCost = 0;
         _evictsContent = YES;
-        _accessLock = OS_SPINLOCK_INIT;
+        _accessLock = CFSpinLockInit;
         _delegate = nil;
         _discardableObjects = [[NSMutableSet alloc] init];
         _objects = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
@@ -158,9 +160,9 @@
 
 - (void)setCountLimit:(NSUInteger)limit
 {
-    OSSpinLockLock(&_accessLock);
+    __CFSpinLock(&_accessLock);
     _countLimit = limit;
-    OSSpinLockUnlock(&_accessLock);
+    __CFSpinUnlock(&_accessLock);
 }
 
 - (NSUInteger)countLimit
@@ -183,9 +185,9 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
     if(_evictsContent)
     {
         @autoreleasepool {
-            OSSpinLockLock(&_accessLock);
+            __CFSpinLock(&_accessLock);
             NSMutableSet *discardable = [_discardableObjects mutableCopy];
-            OSSpinLockUnlock(&_accessLock);
+            __CFSpinUnlock(&_accessLock);
             NSMutableArray *keysToRemove = [[NSMutableArray alloc] initWithCapacity:[discardable count]];
             
             for (_NSCacheObject *cacheObject in discardable)
@@ -210,17 +212,17 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
     CFIndex count = 0;
     id *keys;
     _NSCacheObject **caches;
-    OSSpinLockLock(&_accessLock);
+    __CFSpinLock(&_accessLock);
     if (_costLimit == 0 && _countLimit == 0)
     {
-        OSSpinLockUnlock(&_accessLock);
+        __CFSpinUnlock(&_accessLock);
         return;
     }
     
     count = CFDictionaryGetCount(_objects);
     if (count == 0)
     {
-        OSSpinLockUnlock(&_accessLock);
+        __CFSpinUnlock(&_accessLock);
         return;
     }
 
@@ -236,7 +238,7 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
         {
             _currentCost -= incomingCost;
         }
-        OSSpinLockUnlock(&_accessLock);
+        __CFSpinUnlock(&_accessLock);
         return;
     }
     
@@ -284,7 +286,7 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
     free(keys);
     free(caches);
     
-    OSSpinLockUnlock(&_accessLock);
+    __CFSpinUnlock(&_accessLock);
     
     for (id key in keysToRemove)
     {
@@ -304,14 +306,14 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
     if (_delegate && _delegateHas.willEvictObject)
     {
         _NSCacheObject *cacheObject = nil;
-        OSSpinLockLock(&_accessLock);
+        __CFSpinLock(&_accessLock);
         
         if (CFDictionaryGetValueIfPresent(_objects,key,(const void **)&cacheObject))
         {
             cacheObject = [cacheObject retain]; //prevent a little race in case setObject is called on two threads.
         }
         
-        OSSpinLockUnlock(&_accessLock);
+        __CFSpinUnlock(&_accessLock);
         if (cacheObject)
         {
             [_delegate cache:self willEvictObject:cacheObject.object];
@@ -341,7 +343,7 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
     [self _trimIfNecessaryWithIncomingObject:YES ofCost:num];
     [self _sendWillEvictObject:key];
     
-    OSSpinLockLock(&_accessLock);
+    __CFSpinLock(&_accessLock);
 
     if (CFDictionaryGetValueIfPresent(_objects,key,(const void **)&cacheObject))
     {
@@ -377,7 +379,7 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
         }
     }
 
-    OSSpinLockUnlock(&_accessLock);
+    __CFSpinUnlock(&_accessLock);
     [newObject release];
 }
 
@@ -396,7 +398,7 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
     _NSCacheObject *cacheObject = nil;
     id returnValue = nil;
 
-    OSSpinLockLock(&_accessLock);
+    __CFSpinLock(&_accessLock);
 
     if (CFDictionaryGetValueIfPresent(_objects,key,(const void **)&cacheObject))
     {
@@ -412,11 +414,11 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
         _currentCost -= cacheObject->_cost;
         CFDictionaryRemoveValue(_objects, key);
         [returnValue release];
-        OSSpinLockUnlock(&_accessLock);
+        __CFSpinUnlock(&_accessLock);
         return nil;
     }
 
-    OSSpinLockUnlock(&_accessLock);
+    __CFSpinUnlock(&_accessLock);
 
     return [returnValue autorelease];
 }
@@ -440,7 +442,7 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
 
     [self _sendWillEvictObject:key];
     BOOL sendDiscard = NO;
-    OSSpinLockLock(&_accessLock);
+    __CFSpinLock(&_accessLock);
     _NSCacheObject *cacheObject = nil;
 
     if (CFDictionaryGetValueIfPresent(_objects,key,(const void **)&cacheObject))
@@ -456,7 +458,7 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
         CFDictionaryRemoveValue(_objects, key);
     }
 
-    OSSpinLockUnlock(&_accessLock);
+    __CFSpinUnlock(&_accessLock);
 
     if (sendDiscard)
     {
@@ -471,14 +473,14 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
     if (_delegate && _delegateHas.willEvictObject)
     {
         int i = 0;
-        OSSpinLockLock(&_accessLock);
+        __CFSpinLock(&_accessLock);
         CFIndex count = CFDictionaryGetCount(_objects);
 
         if (count == 0)
         {
             [_discardableObjects removeAllObjects];
             _currentCost = 0;
-            OSSpinLockUnlock(&_accessLock);
+            __CFSpinUnlock(&_accessLock);
             return;
         }
 
@@ -494,7 +496,7 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
             [caches[i] retain];
         }
 
-        OSSpinLockUnlock(&_accessLock);
+        __CFSpinUnlock(&_accessLock);
         
         for(i = 0; i < count; i++)
         {
@@ -515,11 +517,11 @@ void didReceiveMemoryWarning (CFNotificationCenterRef center, void * observer, C
         free(caches);
     }
     
-    OSSpinLockLock(&_accessLock);
+    __CFSpinLock(&_accessLock);
     CFDictionaryRemoveAllValues(_objects);
     [_discardableObjects removeAllObjects];
     _currentCost = 0;
-    OSSpinLockUnlock(&_accessLock);
+    __CFSpinUnlock(&_accessLock);
 }
 
 @end

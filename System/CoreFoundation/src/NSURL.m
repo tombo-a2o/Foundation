@@ -15,6 +15,7 @@
 #import "CFPriv.h"
 #import "NSURLInternal.h"
 #import <objc/runtime.h>
+#import <sys/stat.h>
 
 #define STACK_BUFFER_SIZE 100 // pretty safe bet this will be quite unlikely to use more than this since there are only 94 properties
 
@@ -125,6 +126,10 @@ static void posixError(CFErrorRef *error) {
 
     CFRelease(err);
 }
+
+#define st_ctime_nsec st_ctim.tv_nsec
+#define st_atime_nsec st_atim.tv_nsec
+#define st_mtime_nsec st_mtim.tv_nsec
 
 static Boolean CFURLStat(CFURLRef url, struct stat *info) {
     UInt8 path[PATH_MAX] = { 0 };

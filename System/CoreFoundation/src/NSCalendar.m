@@ -10,6 +10,8 @@
 #import "NSCalendarInternal.h"
 #import "NSObjectInternal.h"
 
+#import "CFInternal.h"
+
 extern void CFCalendarSetGregorianStartDate(CFCalendarRef calendar, CFDateRef date);
 extern CFDateRef CFCalendarCopyGregorianStartDate(CFCalendarRef calendar);
 extern Boolean _CFCalendarDecomposeAbsoluteTimeV(CFCalendarRef calendar, CFAbsoluteTime at, const char *componentDesc, int **componentVector, int count);
@@ -314,7 +316,7 @@ US Locale Fiscal Quarters:
         }
         else
         {
-            DEBUG_BREAK();
+            HALT;
         }
     }
     if ((unitFlags & NSCalendarUnitHour) != 0)

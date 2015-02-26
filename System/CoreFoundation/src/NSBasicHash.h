@@ -45,7 +45,8 @@ static inline NSUInteger __NSBasicHashGetSizeIdx(NSUInteger size) {
         }
     }
 
-    DEBUG_BREAK();
+    //DEBUG_BREAK();
+	HALT;
     return NSNotFound;
 }
 

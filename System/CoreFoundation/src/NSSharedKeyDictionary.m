@@ -6,7 +6,7 @@
 //
 
 #import "NSSharedKeyDictionary.h"
-#import "NSKeyValueObserving.h"
+#import <Foundation/NSKeyValueObserving.h>
 
 @implementation NSSharedKeyDictionary
 

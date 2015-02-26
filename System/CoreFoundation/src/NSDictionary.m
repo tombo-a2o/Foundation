@@ -15,7 +15,7 @@
 
 #import "CFInternal.h"
 #import "NSFastEnumerationEnumerator.h"
-#import "NSKeyValueObserving.h"
+#import "Foundation/NSKeyValueObserving.h"
 #import "NSObjectInternal.h"
 #import "NSStringInternal.h"
 

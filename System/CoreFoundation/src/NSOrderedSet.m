@@ -2184,7 +2184,7 @@
 - (void)removeObjectsWithOptions:(NSEnumerationOptions)options passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))test
 {
 #warning TODO
-    DEBUG_BREAK();
+	HALT;
 }
 
 - (void)removeObjectsAtIndexes:(NSIndexSet *)indexes options:(NSEnumerationOptions)options passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))test
@@ -2196,7 +2196,7 @@
     }
 
 #warning TODO
-    DEBUG_BREAK();
+	HALT;
 }
 
 - (void)intersectOrderedSet:(NSOrderedSet *)orderedSet
@@ -3042,7 +3042,7 @@ static __NSPlaceholderOrderedSet *mutablePlaceholder = nil;
     }
     else
     {
-        DEBUG_BREAK();
+		HALT;
         return nil;
     }
 }
@@ -3051,7 +3051,7 @@ static __NSPlaceholderOrderedSet *mutablePlaceholder = nil;
 {
     if (self != mutablePlaceholder)
     {
-        DEBUG_BREAK();
+		HALT;
         return nil;
     }
 
@@ -3242,7 +3242,7 @@ SINGLETON_RR()
 {
     if (self == (__NSOrderedSetI *)immutablePlaceholder)
     {
-        DEBUG_BREAK();
+		HALT;
         [super dealloc];
     }
 
@@ -3537,7 +3537,7 @@ static CFBasicHashCallbacks __NSOrderedSetMCallbacks = {
 {
     if (self == (__NSOrderedSetM *)mutablePlaceholder)
     {
-        DEBUG_BREAK();
+        HALT;
         [super dealloc];
     }
 

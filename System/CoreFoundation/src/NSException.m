@@ -13,7 +13,7 @@
 #import "CFNumber.h"
 #import <dispatch/dispatch.h>
 #import <objc/runtime.h>
-#import <execinfo.h>
+//#import <execinfo.h>
 
 @interface NSException ()
 - (BOOL)_installStackTraceKeyIfNeeded;
@@ -158,6 +158,9 @@ NSString *const NSFileHandleOperationException = @"NSFileHandleOperationExceptio
 
     if (callStackSymbols == nil)
     {
+#warning FIXIT
+		return NO;
+		/*
         void *stack[128] = { NULL };
         CFStringRef symbols[128] = { nil };
         CFNumberRef returnAddresses[128] = { nil };
@@ -190,6 +193,7 @@ NSString *const NSFileHandleOperationException = @"NSFileHandleOperationExceptio
 
         [callStackSymbols release];
         [callStackReturnAddresses release];
+		*/
     }
 
     return callStackSymbols != nil;

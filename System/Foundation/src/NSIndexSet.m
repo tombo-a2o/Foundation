@@ -10,7 +10,7 @@
 #import <Foundation/NSIndexSet.h>
 #import <Foundation/NSException.h>
 #import <CoreFoundation/CFArray.h>
-#import <libv/utlist.h>
+#import <utlist.h>
 
 typedef struct RangeList {
     NSRange range;
@@ -109,6 +109,13 @@ static inline void NSIndexSetPurgeCache(NSIndexSetCache *cache)
     CFRelease(cache->ranges);
     
     free(cache);
+}
+
+static void * reallocf(void *ptr, size_t size) {
+	void *nptr;
+	nptr = realloc(ptr, size);
+	if(!nptr && ptr && size !=0) free(ptr);
+	return nptr;
 }
 
 static inline void NSIndexSetBuildCache(NSIndexSetCache **cache, RangeList *ranges)

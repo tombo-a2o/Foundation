@@ -16,6 +16,8 @@
 #import <dispatch/dispatch.h>
 #import <Foundation/NSKeyedArchiver.h>
 
+#define ULONG_LONG_MAX ULLONG_MAX
+
 static NSString *const KEY_EXPONENT = @"NS.exponent";
 static NSString *const KEY_LENGTH = @"NS.length";
 static NSString *const KEY_NEGATIVE = @"NS.negative";

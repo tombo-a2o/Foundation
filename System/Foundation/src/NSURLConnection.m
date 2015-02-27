@@ -4,6 +4,7 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
+#if 0
 
 #import <Foundation/NSURLConnection.h>
 #import <Foundation/NSArray.h>
@@ -684,3 +685,5 @@ static CFCachedURLResponseRef cache(const void *info, CFCachedURLResponseRef cac
 }
 
 @end
+
+#endif

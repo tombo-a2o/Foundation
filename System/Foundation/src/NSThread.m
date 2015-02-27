@@ -18,7 +18,7 @@
 #import <pthread.h>
 #import <unistd.h>
 #import <objc/message.h>
-#import <execinfo.h>
+//#import <execinfo.h>
 
 CFRunLoopRef _CFRunLoopGet0(pthread_t t);
 CFTypeRef _CFRunLoopGet2(CFRunLoopRef rl);
@@ -167,7 +167,7 @@ static void NSThreadEnd(NSThread *thread)
 + (NSArray *)callStackReturnAddresses
 {
     void *stack[128] = { NULL };
-    int count = backtrace(stack, sizeof(stack)/sizeof(stack[0]));
+    int count = 1; //backtrace(stack, sizeof(stack)/sizeof(stack[0]));
     CFNumberRef returnAddresses[128] = { nil };
     for (int i = 1; i < count; i++)
     {

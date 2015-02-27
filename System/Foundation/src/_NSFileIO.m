@@ -7,7 +7,7 @@
 
 #import "_NSFileIO.h"
 
-#import <libv/libv.h>
+//#import <libv/libv.h>
 #import <Foundation/FoundationErrors.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSURL.h>
@@ -20,6 +20,14 @@
 #import <sys/mman.h>
 #import <sys/stat.h>
 #import "NSErrorInternal.h"
+
+static void * reallocf(void *ptr, size_t size) {
+	void *nptr;
+	nptr = realloc(ptr, size);
+	if(!nptr && ptr && size !=0) free(ptr);
+	return nptr;
+}
+#define UNLIKELY(f) __builtin_expect((f), 0)
 
 void *_NSReadBytesFromFile(NSString *path, NSDataReadingOptions readOptionsMask, NSUInteger *length, BOOL *vm, NSError **err)
 {

@@ -13,6 +13,13 @@
 #import <sys/types.h>
 #import <pwd.h>
 
+#define st_ctime_nsec st_ctim.tv_nsec
+#define st_mtime_nsec st_mtim.tv_nsec
+enum {
+	  kUnknownType                  = 0x3F3F3F3F /* "????" QuickTime 3.0: default unknown ResType or OSType */
+};
+
+
 @implementation NSDictionary (NSFileAttributes)
 
 - (NSNumber *)fileGroupOwnerAccountID
@@ -162,7 +169,7 @@
         }
 
         dict[NSFileSize] = [NSNumber numberWithLongLong:info->st_size];
-#ifdef ANDROID
+#if defined(ANDROID) || DEPLOYMENT_TARGET_EMSCRIPTEN
         dict[NSFileCreationDate] = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)(info->st_ctime * NSEC_PER_SEC + info->st_ctime_nsec) / (NSTimeInterval)NSEC_PER_SEC];
         dict[NSFileModificationDate] = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)(info->st_mtime * NSEC_PER_SEC + info->st_mtime_nsec) / (NSTimeInterval)NSEC_PER_SEC];
 #else

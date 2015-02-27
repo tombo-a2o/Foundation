@@ -13,13 +13,13 @@
 #import <Foundation/NSUUID.h>
 #import "NSObjectInternal.h"
 #import <dispatch/dispatch.h>
-#import <crt_externs.h>
+//#import <crt_externs.h>
 #import <sys/param.h>
 #import <unistd.h>
 #import <sys/utsname.h>
 #import <sys/types.h>
 #import <sys/sysctl.h>
-#import <mach/mach_time.h>
+//#import <mach/mach_time.h>
 #import <stdio.h>
 
 extern char ***_NSGetEnviron();
@@ -97,7 +97,7 @@ SINGLETON_RR()
     if (arguments == nil)
     {
         arguments = [[NSMutableArray alloc] init];
-        char **argv = *_NSGetArgv();
+        char **argv = {NULL}; //*_NSGetArgv();
         while (*argv != NULL)
         {
             NSString *argument = [[NSString alloc] initWithUTF8String:*argv];
@@ -153,6 +153,8 @@ SINGLETON_RR()
     }
 }
 
+#include <time.h>
+
 - (NSString *)globallyUniqueString
 {
     NSString *unique = nil;
@@ -162,7 +164,7 @@ SINGLETON_RR()
     if (CFStringGetCString(str, buffer, 128, kCFStringEncodingASCII))
     {
         size_t buffer_len = strlen(buffer);
-        snprintf(buffer + buffer_len, 128 - buffer_len, "-%ld-%016llX", (long)getpid(), mach_absolute_time());
+        snprintf(buffer + buffer_len, 128 - buffer_len, "-%ld-%016llX", (long)getpid(), time(NULL)*1000ull);
         unique = [NSString stringWithUTF8String:buffer];
     }
     CFRelease(str);
@@ -255,7 +257,7 @@ SINGLETON_RR()
 {
     int count = 1;
     size_t len = sizeof(int);
-    if (sysctlbyname("hw.ncpu", &count, &len, 0, 0) != 0)
+    //if (sysctlbyname("hw.ncpu", &count, &len, 0, 0) != 0)
     {
         count = 1; // reset it to a reasonable value if it fails...
     }
@@ -266,7 +268,7 @@ SINGLETON_RR()
 {
     int count = 1;
     size_t len = sizeof(int);
-    if (sysctlbyname("hw.availcpu", &count, &len, 0, 0) != 0)
+    //if (sysctlbyname("hw.availcpu", &count, &len, 0, 0) != 0)
     {
         count = 1;
     }
@@ -278,7 +280,7 @@ SINGLETON_RR()
 {
     unsigned long long amt = 1;
     size_t len = sizeof(unsigned long long);
-    if (sysctlbyname("hw.physmem", &amt, &len, 0, 0) != 0)
+    //if (sysctlbyname("hw.physmem", &amt, &len, 0, 0) != 0)
     {
         amt = 1;
     }
@@ -289,7 +291,7 @@ SINGLETON_RR()
 {
     struct timeval t;
     size_t len = sizeof(struct timeval);
-    if (sysctlbyname("kern.boottime", &t, &len, 0, 0) != 0)
+    //if (sysctlbyname("kern.boottime", &t, &len, 0, 0) != 0)
     {
         return 0.0;
     }

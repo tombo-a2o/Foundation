@@ -4,6 +4,7 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
+#if 0
 
 #import <Foundation/NSZone.h>
 #import <Foundation/NSString.h>
@@ -127,3 +128,5 @@ NSUInteger NSRealMemoryAvailable(void)
         return 0;
     }
 }
+
+#endif

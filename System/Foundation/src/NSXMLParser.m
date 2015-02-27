@@ -4,6 +4,7 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
+#if 0
 
 #import <Foundation/NSXMLParser.h>
 
@@ -933,3 +934,5 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 }
 
 @end
+
+#endif

@@ -20,7 +20,7 @@ static void __NSLogCString(int32_t lev, const char *message, size_t length, char
     time_t now;
     struct tm *timeinfo;
     char dateFormat[80];
-    const char *processName = getprogname();
+    const char *processName = "hoge";//getprogname();
 
     pid_t pid = getpid();
     uid_t uid = getuid();

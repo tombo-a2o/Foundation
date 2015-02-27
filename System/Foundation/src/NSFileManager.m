@@ -16,7 +16,9 @@
 #import <sys/mount.h>
 #import <copyfile.h>
 #import <CoreFoundation/CFURL.h>
-#import <MacTypes.h> // for kUnknownType
+//#import <MacTypes.h> // for kUnknownType
+//#import <sys/stat.h>
+#import <sys/statfs.h>
 
 #import <Foundation/NSURL.h>
 #import <Foundation/NSData.h>
@@ -114,7 +116,8 @@ static void initializeDirectories(NSMutableSet *paths, NSSearchPathDirectory dir
     self = [super init];
     if (self)
     {
-        static pthread_mutex_t lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
+        //static pthread_mutex_t lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
+        static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
         static BOOL initialized = NO;
         pthread_mutex_lock(&lock);
         if (!initialized)
@@ -439,7 +442,7 @@ static inline BOOL _NSFileAccessibleForMode(NSString *path, int mode)
             }
             else if ([key isEqualToString:NSURLCreationDateKey])
             {
-#ifdef ANDROID
+#if defined(ANDROID) || DEPLOYMENT_TARGET_EMSCRIPTEN
                 value = [[NSDate alloc] initWithTimeIntervalSince1970:(NSTimeInterval)(s.st_ctime * NSEC_PER_SEC + s.st_ctime_nsec) / (NSTimeInterval)NSEC_PER_SEC];
 #else
 #error Implementation needed for file time specs
@@ -447,7 +450,7 @@ static inline BOOL _NSFileAccessibleForMode(NSString *path, int mode)
             }
             else if ([key isEqualToString:NSURLContentAccessDateKey])
             {
-#ifdef ANDROID
+#if defined(ANDROID) || DEPLOYMENT_TARGET_EMSCRIPTEN
                 value = [[NSDate alloc] initWithTimeIntervalSince1970:(NSTimeInterval)(s.st_atime * NSEC_PER_SEC + s.st_atime_nsec) / (NSTimeInterval)NSEC_PER_SEC];
 #else
 #error Implementation needed for file time specs
@@ -455,7 +458,7 @@ static inline BOOL _NSFileAccessibleForMode(NSString *path, int mode)
             }
             else if ([key isEqualToString:NSURLContentModificationDateKey])
             {
-#ifdef ANDROID
+#if defined(ANDROID) || DEPLOYMENT_TARGET_EMSCRIPTEN
                 value = [[NSDate alloc] initWithTimeIntervalSince1970:(NSTimeInterval)(s.st_mtime * NSEC_PER_SEC + s.st_mtime_nsec) / (NSTimeInterval)NSEC_PER_SEC];
 #else
 #error Implementation needed for file time specs
@@ -463,7 +466,7 @@ static inline BOOL _NSFileAccessibleForMode(NSString *path, int mode)
             }
             else if ([key isEqualToString:NSURLAttributeModificationDateKey])
             {
-#ifdef ANDROID
+#if defined(ANDROID) || DEPLOYMENT_TARGET_EMSCRIPTEN
                 value = [[NSDate alloc] initWithTimeIntervalSince1970:(NSTimeInterval)(s.st_mtime * NSEC_PER_SEC + s.st_mtime_nsec) / (NSTimeInterval)NSEC_PER_SEC];
 #else
 #error Implementation needed for file time specs

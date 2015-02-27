@@ -2340,7 +2340,11 @@ NSPredicate *_parsePredicateArray(NSString *format, NSArray *args)
 
 NSPredicate *_parsePredicateVarArgs(NSString *format, va_list originalArgs)
 {
-    __block va_list args = originalArgs;
+    //__block va_list args = originalArgs;
+	__block struct _tmp {
+		va_list args;
+	} tmp;
+	va_copy(originalArgs, tmp.args);
     __block BOOL done = NO;
 
     return parsePredicate(format, ^NSExpression *(NSString *formatType) {
@@ -2352,15 +2356,15 @@ NSPredicate *_parsePredicateVarArgs(NSString *format, va_list originalArgs)
         if ([formatType isEqualToString:@"@"] ||
             [formatType isEqualToString:@"K"])
         {
-            object = va_arg(args, id);
+            object = va_arg(tmp.args, id);
         }
         else if ([formatType isEqualToString:@"d"])
         {
-            object = [NSNumber numberWithInt:va_arg(args, int)];
+            object = [NSNumber numberWithInt:va_arg(tmp.args, int)];
         }
         else if ([formatType isEqualToString:@"f"])
         {
-            object = [NSNumber numberWithDouble:va_arg(args, double)];
+            object = [NSNumber numberWithDouble:va_arg(tmp.args, double)];
         }
         if (object == nil)
         {

@@ -21,6 +21,8 @@
 #import <Foundation/NSError.h>
 #import <Foundation/NSProgress.h>
 
+#import <sys/stat.h>
+
 NSString * const NSFileHandleConnectionAcceptedNotification = @"NSFileHandleConnectionAcceptedNotification";
 NSString * const NSFileHandleReadCompletionNotification = @"NSFileHandleReadCompletionNotification";
 NSString * const NSFileHandleReadToEndOfFileCompletionNotification = @"NSFileHandleReadToEndOfFileCompletionNotification";

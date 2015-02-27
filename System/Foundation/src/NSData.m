@@ -14,7 +14,7 @@
 #import <Foundation/NSURLRequest.h>
 #import "CFInternal.h"
 #import "NSCoderInternal.h"
-#import "NSKeyedArchiver.h"
+#import <Foundation/NSKeyedArchiver.h>
 #import "NSObjectInternal.h"
 #import "NSRangeCheck.h"
 #import "NSURLResponseInternal.h"

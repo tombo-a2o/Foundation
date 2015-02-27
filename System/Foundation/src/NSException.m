@@ -12,7 +12,7 @@
 
 #import <dispatch/dispatch.h>
 #import <objc/runtime.h>
-#import <libv/libv.h>
+//#import <libv/libv.h>
 #import <unistd.h>
 
 extern void objc_setUncaughtExceptionHandler(void (*handler)(id, void *));
@@ -29,7 +29,8 @@ static void _NSExceptionHandler(id exception, void *context)
 {
     if (handler != NULL)
     {
-        while (!__is_being_debugged__ && NSHangOnUncaughtException)
+        //while (!__is_being_debugged__ && NSHangOnUncaughtException)
+        while (NSHangOnUncaughtException)
         {
             usleep(100);
         }

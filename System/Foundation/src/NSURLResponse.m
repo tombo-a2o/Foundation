@@ -4,6 +4,7 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
+#if 0
 
 #import "NSURLResponseInternal.h"
 #import <Foundation/NSString.h>
@@ -463,3 +464,5 @@ static inline NSString *NSURLLocalizedString(NSString *key)
 }
 
 @end
+
+#endif

@@ -4,6 +4,7 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
+#if 0
 
 #import "NSURLProtectionSpaceInternal.h"
 #import <Foundation/NSString.h>
@@ -363,3 +364,5 @@ static CFURLProtectionSpaceAuthenticationSchemeType methodToCFAuthScheme(NSStrin
 }
 
 @end
+
+#endif

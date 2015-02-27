@@ -3,7 +3,7 @@
 #import <Foundation/NSDate.h>
 #import <Foundation/NSArray.h>
 #import <Foundation/NSCharacterSet.h>
-#import <Security/SecTrust.h>
+//#import <Security/SecTrust.h>
 
 @interface NSURLResponse (Internal)
 + (id)_responseWithCFURLResponse:(CFURLResponseRef)resp;
@@ -24,7 +24,7 @@ CF_PRIVATE
 CF_PRIVATE
 @interface NSHTTPURLResponseInternal : NSObject <NSCoding> {
 @package
-    SecTrustRef peerTrust;
+    //SecTrustRef peerTrust;
     BOOL isMixedReplace;
 }
 

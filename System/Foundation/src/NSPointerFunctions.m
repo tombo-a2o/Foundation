@@ -7,7 +7,7 @@
 
 #import "NSPointerFunctionsInternal.h"
 #import "ForFoundationOnly.h"
-#import <mach/mach.h>
+//#import <mach/mach.h>
 
 extern id objc_loadWeakRetained(id *location);
 extern void objc_destroyWeak(id *addr);
@@ -300,6 +300,7 @@ static void NSPointerRelinquish(const void *item, NSUInteger (*size)(const void 
 
 static void *NSMachAcquire(const void *src, NSUInteger (*size)(const void *item), BOOL shouldCopy)
 {
+	/*
     if (!shouldCopy)
     {
         return (void *)src;
@@ -323,11 +324,13 @@ static void *NSMachAcquire(const void *src, NSUInteger (*size)(const void *item)
     }
 
     return (void *)copy;
+	*/
+	return NULL;
 }
 
 static void NSMachRelinquish(const void *item, NSUInteger (*size)(const void *item))
 {
-    vm_deallocate(mach_task_self(), (vm_address_t)item, size(item));
+    //vm_deallocate(mach_task_self(), (vm_address_t)item, size(item));
 }
 
 static BOOL NSMemoryEquality(const void *item1, const void *item2, NSUInteger (*size)(const void *item))
@@ -376,9 +379,14 @@ static void *NSARCSentinelSliceAlloc(size_t count)
 {
     size_t size = count * sizeof(id);
     void *buffer = malloc(size);
+	uint32_t *p;
+	int i;
     if (buffer != NULL)
     {
-        memset_pattern4(buffer, &_NSPointerFunctionsSentinel, size);
+		p = buffer;
+		for(i = 0; i < size; i++) {
+			p[i] = &_NSPointerFunctionsSentinel;
+		}
     }
 
     return buffer;

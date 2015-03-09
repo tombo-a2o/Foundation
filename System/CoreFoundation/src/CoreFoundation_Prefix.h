@@ -27,7 +27,7 @@
 
 
 #define _DARWIN_UNLIMITED_SELECT 1
-#define HALT DEBUG_BREAK()
+//#define HALT DEBUG_BREAK()
 #include <CoreFoundation/CFBase.h>
 
 

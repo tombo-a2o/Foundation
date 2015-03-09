@@ -141,7 +141,7 @@ CF_PRIVATE CFIndex __CFActiveProcessorCount();
 #endif
 
 #if DEPLOYMENT_TARGET_EMSCRIPTEN
-    #define HALT do {exit(1); } while (0)
+    #define HALT do {EM_ASM(throw new Error("HALT"));} while (0)
 #endif
 
 #if defined(__i386__) || defined(__x86_64__)

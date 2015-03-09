@@ -9,6 +9,8 @@
 #include "CFRuntime.h"
 #include "CFInternal.h"
 
+#define DEBUG_LOG(...)
+
 typedef struct
 {
     CFRange         _range;

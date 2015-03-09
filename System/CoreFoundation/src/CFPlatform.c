@@ -168,7 +168,7 @@ const char *_CFProcessPath(void) {
 }
 #endif
 
-#if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
+#if DEPLOYMENT_TARGET_LINUX
 #include <unistd.h>
 
 const char *_CFProcessPath(void) {
@@ -188,6 +188,17 @@ const char *_CFProcessPath(void) {
     }
     return __CFProcessPath;
 }
+#endif
+
+#if DEPLOYMENT_TARGET_EMSCRIPTEN
+static const char *dummy = "/path_to_executable";
+const char *_CFProcessPath(void) {
+	if (__CFProcessPath) return __CFProcessPath;
+
+	__CFProcessPath = dummy;
+	return __CFProcessPath;
+}
+
 #endif
 
 CF_PRIVATE CFStringRef _CFProcessNameString(void) {

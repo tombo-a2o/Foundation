@@ -971,8 +971,7 @@ pthread_t _CF_pthread_main_thread_np(void) {
 #endif
 
 #if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD || DEPLOYMENT_TARGET_EMSCRIPTEN
-static void __CFInitialize(void) __attribute__ ((constructor));
-static
+void __CFInitialize(void) __attribute__ ((constructor));
 #endif
 #if DEPLOYMENT_TARGET_WINDOWS
 CF_EXPORT
@@ -1142,7 +1141,7 @@ void __CFInitialize(void) {
         _CFRuntimeBridgeClasses(CFAttributedStringGetTypeID(), "__NSCFAttributedString");
         _CFRuntimeBridgeClasses(CFLocaleGetTypeID(), "__NSCFLocale");
         
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_EMSCRIPTEN
         __CFBundleInitialize();
         __CFPFactoryInitialize();
 #endif

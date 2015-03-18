@@ -4,7 +4,7 @@ OBJS=$(OBJC4)/libobjc4.bc $(OBJC4)/lib/libclosure-65/libclosure.bc ../NS-Objects
 
 INCLUDE=-I$(OBJC4)/include -I../../include -I../../../CoreFoundation/include -I../../../CFNetwork/include -I$(OBJC4)/lib/libclosure-65 -I../../../../../../libdispatch-442.1.4
 CLANG_OPTS=-fblocks -fobjc-runtime=macosx
-EM_OPTS=-s TOTAL_MEMORY=100000000 -s ASSERTIONS=0 -s DEMANGLE_SUPPORT=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS='["_main", "__class_lookupMethodAndLoadCache3"]' --js-library $(OBJC4)/runtime/lib.js
+EM_OPTS=-s TOTAL_MEMORY=100000000 -s ASSERTIONS=0 -s DEMANGLE_SUPPORT=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 --js-library $(OBJC4)/runtime/lib.js --embed-file res@/
 CFLAGS=$(INCLUDE) $(CLANG_OPTS) $(EM_OPTS)
 
 CC=emcc

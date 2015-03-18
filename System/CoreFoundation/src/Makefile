@@ -54,6 +54,9 @@ $(OBJBASE)/%.o: %.c $(INTERMEDIATE_HFILES)
 $(OBJBASE)/%.o: %.m $(INTERMEDIATE_HFILES)
 	$(CC) $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
+%.ll: %.m $(INTERMEDIATE_HFILES)
+	$(CC) -emit-llvm -S $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
+
 $(OBJBASE)/CoreFoundation_$(STYLE).bc: $(addprefix $(OBJBASE)/,$(OBJECTS))
 	#$(CC) $(STYLE_LFLAGS) -install_name $(INSTALLNAME) $(ARCHFLAGS) $(LFLAGS) $^ -licucore.A -o $(OBJBASE)/CoreFoundation_$(STYLE)
 	llvm-link $(STYLE_LFLAGS) $^ -o $(OBJBASE)/CoreFoundation_$(STYLE).bc

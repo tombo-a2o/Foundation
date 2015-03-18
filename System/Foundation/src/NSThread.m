@@ -47,7 +47,8 @@ static void NSThreadInitialize() __attribute__((constructor));
 static void NSThreadInitialize()
 {
     pthread_key_create(&NSThreadKey, (void (*)(void *))&NSThreadEnd);
-    NSMainThread = [NSThread currentThread];
+#warning FIXME implement thread
+    //NSMainThread = [NSThread currentThread];
 }
 
 extern void __do_backtrace(int, int, int, int(*)(int, void *, char *, int, void *), void *);

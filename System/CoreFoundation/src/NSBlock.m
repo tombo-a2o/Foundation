@@ -69,7 +69,7 @@ static void NSBlockInitialize()
     }
 }
 
-@implementation NSBlock (Extensions)
+@implementation NSBlock
 
 - (void)performAfterDelay:(NSTimeInterval)delay
 {

@@ -1739,7 +1739,7 @@ static CFURLRef _CFBundleCopyExecutableURLInDirectory2(CFBundleRef bundle, CFURL
         if (executablePath) CFRetain(executablePath);
         __CFSpinUnlock(&bundle->_lock);
         if (executablePath) {
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_EMSCRIPTEN
             executableURL = CFURLCreateWithFileSystemPath(kCFAllocatorSystemDefault, executablePath, kCFURLPOSIXPathStyle, false);
 #elif DEPLOYMENT_TARGET_WINDOWS
             executableURL = CFURLCreateWithFileSystemPath(kCFAllocatorSystemDefault, executablePath, kCFURLWindowsPathStyle, false);
@@ -1777,7 +1777,7 @@ static CFURLRef _CFBundleCopyExecutableURLInDirectory2(CFBundleRef bundle, CFURL
                     } else {
                         exeDirURL = (CFURLRef)CFRetain(url);
                     }
-#elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+#elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_EMSCRIPTEN
                     exeDirURL = (CFURLRef)CFRetain(url);
 #endif
                 }
@@ -1825,7 +1825,7 @@ static CFURLRef _CFBundleCopyExecutableURLInDirectory2(CFBundleRef bundle, CFURL
                 CFURLRef absURL = CFURLCopyAbsoluteURL(executableURL);
 #if DEPLOYMENT_TARGET_WINDOWS
                 executablePath = CFURLCopyFileSystemPath(absURL, kCFURLWindowsPathStyle);
-#elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+#elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_EMSCRIPTEN
                 executablePath = CFURLCopyFileSystemPath(absURL, kCFURLPOSIXPathStyle);
 #endif
                 CFRelease(absURL);

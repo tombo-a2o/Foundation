@@ -34,7 +34,7 @@ LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespac
 .PHONY: all install clean
 .PRECIOUS: $(OBJBASE)/Foundation/%.h
 
-all: $(OBJBASE)/Foundation_$(STYLE).bc
+all: $(OBJBASE)/Foundation_$(STYLE)
 
 clean:
 	-/bin/rm -rf $(OBJBASE_ROOT)
@@ -51,9 +51,9 @@ $(OBJBASE)/%.o: %.c $(INTERMEDIATE_HFILES)
 $(OBJBASE)/%.o: %.m $(INTERMEDIATE_HFILES)
 	$(CC) $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJBASE)/Foundation_$(STYLE).bc: $(addprefix $(OBJBASE)/,$(OBJECTS))
+$(OBJBASE)/Foundation_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
 	#$(CC) $(STYLE_LFLAGS) -install_name $(INSTALLNAME) $(ARCHFLAGS) $(LFLAGS) $^ -licucore.A -o $(OBJBASE)/Foundation_$(STYLE)
-	llvm-link $(STYLE_LFLAGS) $^ -o $(OBJBASE)/Foundation_$(STYLE).bc
+	llvm-ar rcs $(OBJBASE)/Foundation_$(STYLE) $^
 
 install: $(OBJBASE)/Foundation_$(STYLE)
 	/bin/rm -rf $(DSTBASE)/Foundation.framework
@@ -65,12 +65,12 @@ install: $(OBJBASE)/Foundation_$(STYLE)
 	/bin/ln -sf Versions/Current/Headers $(DSTBASE)/Foundation.framework/Headers
 	/bin/ln -sf Versions/Current/PrivateHeaders $(DSTBASE)/Foundation.framework/PrivateHeaders
 	/bin/ln -sf Versions/Current/Foundation $(DSTBASE)/Foundation.framework/Foundation
-	/bin/cp Info.plist $(DSTBASE)/Foundation.framework/Versions/A/Resources
+	#/bin/cp Info.plist $(DSTBASE)/Foundation.framework/Versions/A/Resources
 	/bin/mkdir -p $(DSTBASE)/Foundation.framework/Versions/A/Resources/en.lproj
-	/bin/cp $(PUBLIC_HEADERS) $(DSTBASE)/Foundation.framework/Versions/A/Headers
-	/bin/cp $(PRIVATE_HEADERS) $(DSTBASE)/Foundation.framework/Versions/A/PrivateHeaders
+	#/bin/cp $(PUBLIC_HEADERS) $(DSTBASE)/Foundation.framework/Versions/A/Headers
+	#/bin/cp $(PRIVATE_HEADERS) $(DSTBASE)/Foundation.framework/Versions/A/PrivateHeaders
+	/bin/cp -R ../include/Foundation/* $(DSTBASE)/Foundation.framework/Versions/A/Headers
 	#/usr/bin/strip -S -o $(DSTBASE)/Foundation.framework/Versions/A/Foundation $(OBJBASE)/Foundation_$(STYLE)
-	/bin/cp $(OBJBASE)/Foundation_$(STYLE) $(DSTBASE)/Foundation.framework/Versions/A/Foundation.bc
 	/bin/cp $(OBJBASE)/Foundation_$(STYLE) $(DSTBASE)/Foundation.framework/Versions/A/Foundation
 	#/usr/bin/dsymutil $(DSTBASE)/Foundation.framework/Versions/A/Foundation -o $(DSTBASE)/Foundation.framework.dSYM
 	/usr/sbin/chown -RH -f root:wheel $(DSTBASE)/Foundation.framework

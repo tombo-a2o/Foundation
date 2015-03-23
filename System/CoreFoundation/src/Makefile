@@ -12,7 +12,7 @@ INTERMEDIATE_HFILES = $(addprefix $(OBJBASE)/CoreFoundation/,$(HFILES))
 
 PUBLIC_HEADERS=CFArray.h CFBag.h CFBase.h CFBinaryHeap.h CFBitVector.h CFBundle.h CFByteOrder.h CFCalendar.h CFCharacterSet.h CFData.h CFDate.h CFDateFormatter.h CFDictionary.h CFError.h CFLocale.h CFMessagePort.h CFNumber.h CFNumberFormatter.h CFPlugIn.h CFPlugInCOM.h CFPreferences.h CFPropertyList.h CFRunLoop.h CFSet.h CFSocket.h CFStream.h CFString.h CFStringEncodingExt.h CFTimeZone.h CFTree.h CFURL.h CFURLAccess.h CFUUID.h CFUserNotification.h CFXMLNode.h CFXMLParser.h CFAvailability.h CFUtilities.h CoreFoundation.h
 
-PRIVATE_HEADERS=CFBundlePriv.h CFCharacterSetPriv.h CFError_Private.h CFLogUtilities.h CFPriv.h CFRuntime.h CFStorage.h CFStreamAbstract.h CFStreamPriv.h CFStreamInternal.h CFStringDefaultEncoding.h CFStringEncodingConverter.h CFStringEncodingConverterExt.h CFUniChar.h CFUnicodeDecomposition.h CFUnicodePrecomposition.h ForFoundationOnly.h CFBurstTrie.h CFICULogging.h
+PRIVATE_HEADERS=CFBundlePriv.h CFCharacterSetPriv.h CFError_Private.h CFLogUtilities.h CFPriv.h CFRuntime.h CFStorage.h CFStreamAbstract.h CFStreamPriv.h CFStreamInternal.h CFStringDefaultEncoding.h CFStringEncodingConverter.h CFStringEncodingConverterExt.h CFUniChar.h CFUnicodeDecomposition.h CFUnicodePrecomposition.h ForFoundationOnly.h CFBurstTrie.h CFICULogging.h CFAttributedString.h CFNotificationCenter.h CFURLEnumerator.h
 
 MACHINE_TYPE := $(shell uname -p)
 unicode_data_file_name = $(if $(or $(findstring i386,$(1)),$(findstring i686,$(1)),$(findstring x86_64,$(1))),CFUnicodeData-L.mapping,CFUnicodeData-B.mapping)
@@ -37,7 +37,7 @@ LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespac
 .PHONY: all install clean
 .PRECIOUS: $(OBJBASE)/CoreFoundation/%.h
 
-all: $(OBJBASE)/CoreFoundation_$(STYLE).bc
+all: $(OBJBASE)/CoreFoundation_$(STYLE)
 
 clean:
 	-/bin/rm -rf $(OBJBASE_ROOT)
@@ -57,9 +57,9 @@ $(OBJBASE)/%.o: %.m $(INTERMEDIATE_HFILES)
 %.ll: %.m $(INTERMEDIATE_HFILES)
 	$(CC) -emit-llvm -S $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJBASE)/CoreFoundation_$(STYLE).bc: $(addprefix $(OBJBASE)/,$(OBJECTS))
+$(OBJBASE)/CoreFoundation_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
 	#$(CC) $(STYLE_LFLAGS) -install_name $(INSTALLNAME) $(ARCHFLAGS) $(LFLAGS) $^ -licucore.A -o $(OBJBASE)/CoreFoundation_$(STYLE)
-	llvm-link $(STYLE_LFLAGS) $^ -o $(OBJBASE)/CoreFoundation_$(STYLE).bc
+	llvm-ar rcs $(OBJBASE)/CoreFoundation_$(STYLE) $^
 
 install: $(OBJBASE)/CoreFoundation_$(STYLE)
 	/bin/rm -rf $(DSTBASE)/CoreFoundation.framework
@@ -76,7 +76,6 @@ install: $(OBJBASE)/CoreFoundation_$(STYLE)
 	/bin/cp $(PUBLIC_HEADERS) $(DSTBASE)/CoreFoundation.framework/Versions/A/Headers
 	/bin/cp $(PRIVATE_HEADERS) $(DSTBASE)/CoreFoundation.framework/Versions/A/PrivateHeaders
 	#/usr/bin/strip -S -o $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation $(OBJBASE)/CoreFoundation_$(STYLE)
-	/bin/cp $(OBJBASE)/CoreFoundation_$(STYLE) $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation.bc
 	/bin/cp $(OBJBASE)/CoreFoundation_$(STYLE) $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation
 	#/usr/bin/dsymutil $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation -o $(DSTBASE)/CoreFoundation.framework.dSYM
 	/usr/sbin/chown -RH -f root:wheel $(DSTBASE)/CoreFoundation.framework

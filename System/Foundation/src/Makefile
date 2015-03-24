@@ -16,7 +16,7 @@ unicode_data_file_name = $(if $(or $(findstring i386,$(1)),$(findstring i686,$(1
 
 OBJBASE_ROOT = NS-Objects
 OBJBASE = $(OBJBASE_ROOT)/$(STYLE)
-DSTBASE = $(if $(DSTROOT),$(DSTROOT)/System/Library/Frameworks,../NS-Root)
+DSTBASE = $(if $(DSTROOT),$(DSTROOT),../NS-Root)
 
 STYLE=normal
 STYLE_CFLAGS=-O2
@@ -26,9 +26,9 @@ INSTALLNAME=/System/Library/Frameworks/Foundation.framework/Versions/A/Foundatio
 
 CC = emcc
 
-CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../../../../objc4/include -I../../../../../objc4/lib/libclosure-65 -I../../../../../icu/source/buildEmscripten/out/include -I../../../../../libdispatch-442.1.4 -I../../CoreFoundation/include -I../../CoreFoundation/src -I../include -I../../CFNetwork/include -I../../CFNetwork/private_include -I./ -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h -include ../../debug.pch
+CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../CoreFoundation/include -I../../CoreFoundation/src -I../include -I../../CFNetwork/include -I../../CFNetwork/private_include -I./ -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h -include ../../debug.pch
 
-LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespace -fexceptions -compatibility_version 150 -current_version $(VERSION) -Wl,-alias_list,SymbolAliases 
+#LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespace -fexceptions -compatibility_version 150 -current_version $(VERSION) -Wl,-alias_list,SymbolAliases 
 
 
 .PHONY: all install clean

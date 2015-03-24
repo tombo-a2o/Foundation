@@ -19,7 +19,7 @@ unicode_data_file_name = $(if $(or $(findstring i386,$(1)),$(findstring i686,$(1
 
 OBJBASE_ROOT = CF-Objects
 OBJBASE = $(OBJBASE_ROOT)/$(STYLE)
-DSTBASE = $(if $(DSTROOT),$(DSTROOT)/System/Library/Frameworks,../CF-Root)
+DSTBASE = $(if $(DSTROOT),$(DSTROOT),../CF-Root)
 
 STYLE=normal
 STYLE_CFLAGS=-O2
@@ -29,7 +29,7 @@ INSTALLNAME=/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreF
 
 CC = emcc
 
-CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../../../../objc4/include -I../../../../../objc4/lib/libclosure-65 -I../../../../../icu/source/buildEmscripten/out/include -I../../../../../libdispatch-442.1.4 -I../../Foundation/include -I../../Foundation/src -I../../CFNetwork/include -I./ -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h
+CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../Foundation/include -I../../Foundation/src -I../../CFNetwork/include -I./ -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h
 
 LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespace -fexceptions -compatibility_version 150 -current_version $(VERSION) -Wl,-alias_list,SymbolAliases 
 

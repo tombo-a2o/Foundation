@@ -32,8 +32,6 @@ static inline BOOL createBlockClass(const char *sup, const char *name, void *des
     return YES;
 }
 
-#define DEBUG_LOG(...)
-
 static void NSBlockInitialize() __attribute__((constructor));
 static void NSBlockInitialize()
 {

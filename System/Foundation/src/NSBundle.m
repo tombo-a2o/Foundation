@@ -474,6 +474,9 @@ static void __NSBundleMainBundleDealloc()
         *error = nil;
     }
     NSString *identifier = [self bundleIdentifier];
+
+    if(!identifier) return false;
+
     Boolean loaded = false;
     @synchronized(loadedBundles)
     {

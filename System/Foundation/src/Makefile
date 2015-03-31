@@ -54,7 +54,9 @@ $(OBJBASE)/%.o: %.m $(INTERMEDIATE_HFILES)
 
 $(OBJBASE)/Foundation_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
 	#$(CC) $(STYLE_LFLAGS) -install_name $(INSTALLNAME) $(ARCHFLAGS) $(LFLAGS) $^ -licucore.A -o $(OBJBASE)/Foundation_$(STYLE)
-	llvm-ar rcs $(OBJBASE)/Foundation_$(STYLE) $^
+	llvm-link -o $(OBJBASE)/Foundation_$(STYLE).bc $^
+	rm -f $(OBJBASE)/Foundation_$(STYLE)
+	llvm-ar rcs $(OBJBASE)/Foundation_$(STYLE) $(OBJBASE)/Foundation_$(STYLE).bc
 
 install: $(OBJBASE)/Foundation_$(STYLE)
 	/bin/rm -rf $(DSTBASE)/Foundation.framework

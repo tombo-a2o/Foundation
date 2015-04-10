@@ -11,7 +11,7 @@ make install
 cd ../../../
 cd System/Foundation/src
 make
-make install
+DSTROOT=${EMSCRIPTEN}/system/frameworks make install
 
 cd ../../../
 cd System/test

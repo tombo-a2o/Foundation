@@ -2,7 +2,7 @@ How to build
 ============
 
 cd {somewhere}
-git clone git@github.com:tomboinc/Foundation.git
+git clone git@github.com:tomboinc/Foundation.git --branch feature/emscripten
 cd Foundation
 
 cd System/CoreFoundation/src

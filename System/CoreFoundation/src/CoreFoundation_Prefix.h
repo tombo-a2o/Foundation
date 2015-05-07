@@ -109,9 +109,7 @@ typedef int		boolean_t;
 #define __strong
 #define __weak
 #include <compat/malloc.h>
-CF_INLINE size_t malloc_size(void *memblock) {
-    return malloc_usable_size(memblock);
-}
+#include <malloc/malloc.h>
 #include <fcntl.h>
 
 #define strtod_l(a,b,locale) strtod(a,b)

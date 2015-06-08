@@ -43,14 +43,6 @@
 
 #include <emscripten.h>
 
-#undef dispatch_once
-void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) {
-	if(*predicate != ~0l) {
-		*predicate = ~0l;
-		block();
-	}
-}
-
 static void logIt(CFStringRef format, ...) {
     va_list args;
     va_start(args, format); 

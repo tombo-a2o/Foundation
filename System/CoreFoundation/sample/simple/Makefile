@@ -1,4 +1,5 @@
 all:	test.js
 
 test.js:	test.c
-	emcc -v -fblocks -F../.. -framework CoreFoundation -I../../objc4/lib/libclosure-65 -I../../libdispatch-442.1.4 ../../objc4/lib/libclosure-65/libclosure.bc -o test.js test.c
+	#emcc -O0 -s ASSERTIONS=0 -fblocks -framework Foundation -framework CoreFoundation -lobjc4 -lBlocksRuntime -ldispatch -o test.js test.c
+	a2o -O0 -s ASSERTIONS=0 -o test.js test.c

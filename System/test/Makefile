@@ -1,19 +1,14 @@
-INCLUDE=-I$(OBJC4)/include -I../CFNetwork/include
-CLANG_OPTS=-fblocks -fobjc-runtime=macosx
-EM_OPTS=-v -s TOTAL_MEMORY=100000000 -s ASSERTIONS=0 -s DEMANGLE_SUPPORT=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -framework Foundation -framework CoreFoundation
-CFLAGS=$(INCLUDE) $(CLANG_OPTS) $(EM_OPTS)
-LFLAGS=-lobjc4 -lclosure -ldispatch
+EM_OPTS=-O0 -v -s TOTAL_MEMORY=100000000 -s ASSERTIONS=0
 
-CC=emcc
+CC=a2o
 
 all:	str.js
 
 str.js:	str.m
-	#EMCC_DEBUG=1 EMCC_DEBUG_SAVE=1 $(CC) $(CFLAGS) $< -o $@
-	EMCC_DEBUG=1 EMCC_DEBUG_SAVE=1 $(CC) $(CFLAGS) $(LFLAGS) -o $@ $<
+	EMCC_DEBUG=1 EMCC_DEBUG_SAVE=1 $(CC) $(EM_OPTS) -o $@ $<
 
 str.ll:	str.m
-	$(CC) -emit-llvm -S -o $@ $(CLANG_OPTS) $(INCLUDE) $<
+	$(CC) -emit-llvm -S -o $@ $<
 
 str:	str.m
 	clang -framework Foundation -o $@ $<

@@ -22,7 +22,7 @@
 //#import <mach/mach_time.h>
 #import <stdio.h>
 
-extern char ***_NSGetEnviron();
+extern char ***_NSGetEnviron(void);
 
 /*
  TODO: this probably should be more thread safe since some of the underpinnings may not necessarily be

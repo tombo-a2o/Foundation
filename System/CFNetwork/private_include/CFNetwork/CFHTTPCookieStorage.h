@@ -12,7 +12,7 @@ __BEGIN_DECLS
 typedef struct __CFHTTPCookieStorage *CFHTTPCookieStorageRef;
 
 
-CFHTTPCookieStorageRef CFHTTPCookieStorageGetDefault();
+CFHTTPCookieStorageRef CFHTTPCookieStorageGetDefault(void);
 void CFHTTPCookieStorageDeleteCookie(CFHTTPCookieStorageRef storage, CFHTTPCookieRef cookie);
 void CFHTTPCookieStorageSetCookie(CFHTTPCookieStorageRef storage, CFHTTPCookieRef cookie);
 void CFHTTPCookieStorageSetCookies(CFHTTPCookieStorageRef storage, CFArrayRef cookies);

@@ -127,8 +127,11 @@ typedef struct {
 #if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
     mach_port_t	(*getPort)(void *info);
     void *	(*perform)(void *msg, CFIndex size, CFAllocatorRef allocator, void *info);
-#else
+#elif TARGET_OS_WINDOWS
     void *	(*getPort)(void *info);
+    void	(*perform)(void *info);
+#else
+    int	(*getPort)(void *info);
     void	(*perform)(void *info);
 #endif
 } CFRunLoopSourceContext1;

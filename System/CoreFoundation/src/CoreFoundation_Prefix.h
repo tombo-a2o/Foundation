@@ -418,6 +418,17 @@ CF_PRIVATE int asprintf(char **ret, const char *format, ...);
 
 #endif
 
+#if DEPLOYMENT_TARGET_EMSCRIPTEN
+
+CF_INLINE uint64_t mach_absolute_time() {
+  struct timespec tp;
+  clock_gettime(CLOCK_MONOTONIC, &tp);
+  uint64_t rv = (tp.tv_sec << 32) + tp.tv_nsec;
+  return rv;
+}
+
+#endif
+
 #ifdef LIBAUTO_STUB
 
 #include <stddef.h>

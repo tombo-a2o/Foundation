@@ -19,7 +19,7 @@ unicode_data_file_name = $(if $(or $(findstring i386,$(1)),$(findstring i686,$(1
 
 OBJBASE_ROOT = CF-Objects
 OBJBASE = $(OBJBASE_ROOT)/$(STYLE)
-DSTBASE = $(if $(DSTROOT),$(DSTROOT),../CF-Root)
+DSTBASE = $(if $(DSTROOT),$(DSTROOT),$(EMSCRIPTEN)/system/frameworks)
 
 STYLE=normal
 STYLE_CFLAGS=-O2

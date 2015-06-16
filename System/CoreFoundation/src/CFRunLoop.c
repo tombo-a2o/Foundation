@@ -138,7 +138,11 @@ typedef	int kern_return_t;
 #define KERN_SUCCESS 0
 
 static inline int pthread_main_np(void) {
+#if defined(USE_PTHREADS)
   return emscripten_is_main_runtime_thread();
+#else
+  return 1;
+#endif
 }
 
 #else

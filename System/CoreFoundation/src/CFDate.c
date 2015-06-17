@@ -62,7 +62,6 @@ CF_PRIVATE CFTimeInterval __CFTSRToTimeInterval(uint64_t tsr) {
     return (CFTimeInterval)((double)tsr * __CF1_TSRRate);
 }
 
-/*
 CF_PRIVATE CFTimeInterval __CFTimeIntervalUntilTSR(uint64_t tsr) {
     CFDateGetTypeID();
     uint64_t now = mach_absolute_time();
@@ -72,7 +71,6 @@ CF_PRIVATE CFTimeInterval __CFTimeIntervalUntilTSR(uint64_t tsr) {
         return -__CFTSRToTimeInterval(now - tsr);
     }
 }
-*/
 
 // Technically this is 'TSR units' not a strict 'TSR' absolute time
 CF_PRIVATE uint64_t __CFTSRToNanoseconds(uint64_t tsr) {
@@ -118,7 +116,7 @@ CF_PRIVATE void __CFDateInitialize(void) {
     if (clock_getres(CLOCK_MONOTONIC, &res) != 0) {
         HALT;
     }
-    __CFTSRRate = res.tv_sec + (1000000000 * res.tv_nsec);
+    __CFTSRRate = 1.0E9 / (res.tv_sec * 1000000000.0L + res.tv_nsec);
     __CF1_TSRRate = 1.0 / __CFTSRRate;
 #else
 #error Unable to initialize date

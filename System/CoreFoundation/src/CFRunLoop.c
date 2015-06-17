@@ -92,6 +92,8 @@ enum {
   DISPATCH_QUEUE_OVERCOMMIT = 0x2ull,
 };
 
+typedef struct timespec AbsoluteTime;
+
 #endif
 
 #if DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_IPHONESIMULATOR
@@ -467,6 +469,9 @@ static void __CFPortSetFree(__CFPortSet portSet) {
 }
 
 static kern_return_t __CFPortSetInsert(__CFPort port, __CFPortSet portSet) {
+    if(port == 0) {
+      return -1;
+    }
     struct epoll_event event;
     event.events = EPOLLIN;
     event.data.fd = port;
@@ -478,6 +483,8 @@ static kern_return_t __CFPortSetRemove(__CFPort port, __CFPortSet portSet) {
 }
 
 #endif
+
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
 
 #if !defined(__MACTYPES__) && !defined(_OS_OSTYPES_H)
 #if defined(__BIG_ENDIAN__)
@@ -494,7 +501,6 @@ typedef	struct UnsignedWide {
 typedef UnsignedWide		AbsoluteTime;
 #endif
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
 
 #if USE_DISPATCH_SOURCE_FOR_TIMERS
 #endif
@@ -576,11 +582,20 @@ CF_INLINE LARGE_INTEGER __CFUInt64ToAbsoluteTime(uint64_t desiredFireTime) {
 
 #elif DEPLOYMENT_TARGET_EMSCRIPTEN
 
-CF_INLINE AbsoluteTime __CFUInt64ToAbsoluteTime(uint64_t x) {
-    AbsoluteTime a;
-    a.hi = x >> 32;
-    a.lo = x & (uint64_t)0xFFFFFFFF;
-    return a;
+AbsoluteTime __CFUInt64ToAbsoluteTime(uint64_t x) {
+  static uint64_t res;
+  if(res == 0) {
+    struct timespec spec;
+    clock_getres(CLOCK_MONOTONIC, &spec);
+    res = spec.tv_sec * 1000000000L + spec.tv_nsec;
+  }
+  
+  x *= res;
+
+  AbsoluteTime time;
+  time.tv_sec = x / 1000000000L;
+  time.tv_nsec = x % 1000000000L;
+  return time;
 }
 
 static int mk_timer_create(void) {
@@ -592,10 +607,11 @@ static int mk_timer_destroy(int name) {
 }
 
 static int mk_timer_arm(int name, AbsoluteTime expire_time) {
-  struct itimerspec spec = {
-    {expire_time.hi, expire_time.lo},
-    {0, 0}
-  };
+  struct itimerspec spec;
+
+  spec.it_value = expire_time;
+  spec.it_interval.tv_sec = 0;
+  spec.it_interval.tv_nsec = 0;
 
   return timerfd_settime(name, TFD_TIMER_ABSTIME, &spec, NULL);
 }

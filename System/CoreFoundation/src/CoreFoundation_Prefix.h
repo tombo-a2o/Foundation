@@ -423,7 +423,14 @@ CF_PRIVATE int asprintf(char **ret, const char *format, ...);
 CF_INLINE uint64_t mach_absolute_time() {
   struct timespec tp;
   clock_gettime(CLOCK_MONOTONIC, &tp);
-  uint64_t rv = (tp.tv_sec << 32) + tp.tv_nsec;
+
+  static uint64_t res;
+  if(res == 0) {
+    struct timespec spec;
+    clock_getres(CLOCK_MONOTONIC, &spec);
+    res = spec.tv_sec * 1000000000L + spec.tv_nsec;
+  }
+  uint64_t rv = (uint64_t)tp.tv_sec * 1000000000L / res + tp.tv_nsec / res;
   return rv;
 }
 

@@ -31,7 +31,7 @@ typedef struct {
 static const void *NSDelayedPerformerRetain(const void *info)
 {
     NSDelayedPerformer *performer = (NSDelayedPerformer *)info;
-    performer->retainCount = OSAtomicIncrement32(&performer->retainCount);
+    OSAtomicIncrement32(&performer->retainCount);
     return performer;
 }
 

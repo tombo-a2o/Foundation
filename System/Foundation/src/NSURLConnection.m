@@ -546,7 +546,6 @@ static CFCachedURLResponseRef cache(const void *info, CFCachedURLResponseRef cac
 - (id)initWithRequest:(NSURLRequest *)request delegate:(id<NSURLConnectionDelegate>)delegate startImmediately:(BOOL)startImmediately
 {
     self = [super init];
-    fprintf(stderr, "initWithRequest %d\n", self);
     if (self)
     {
         struct InternalInit info = {

@@ -2,6 +2,7 @@
 #define __CFURLCREDENTIAL__
 
 #include <CoreFoundation/CFBase.h>
+#include <sys/cdefs.h>
 
 #if PRAGMA_ONCE
 #pragma once

@@ -2,9 +2,10 @@
 MIN_MACOSX_VERSION=10.9
 MAX_MACOSX_VERSION=MAC_OS_X_VERSION_10_9
 
-SOURCES = CFDummy.c
+SOURCES = CFProxySupport.c HTTP/CFHTTPMessage.c HTTP/CFHTTPStream.c URL/CFURLRequest.c URL/CFURLCache.c URL/CFURLConnection.c Utils/CFRuntimeUtils.c Utils/CFFSUtils.c Utils/CFHTTPUtils.c
 MSOURCES = 
 OBJECTS = $(patsubst %.c,%.o,$(SOURCES)) $(patsubst %.m,%.o,$(MSOURCES))
+#HFILES = $(wildcard *.h) $(wildcard Headers/*.h) $(wildcard SharedCode/*.h) $(wildcard Proxies/*.h)
 HFILES = $(wildcard *.h)
 INTERMEDIATE_HFILES = $(addprefix $(OBJBASE)/CFNetwork/,$(HFILES))
 
@@ -24,7 +25,7 @@ ARCHFLAGS=
 
 CC = emcc
 
-CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../Foundation/include -I../../Foundation/src -I../../CFNetwork/include -I./ -DVERSION=$(VERSION) -include ../../global.pch -include ../../debug.pch -include ../../Fixme.pch
+CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../../Foundation/include -I../../Foundation/src -I../include -I../private_include -I../private_include/CFNetwork -I../../CoreFoundation/src -I./ -I./Headers -I./Utils -I./SharedCode -I./Proxies -DVERSION=$(VERSION) -include ../../global.pch -include ../../debug.pch -include ../../Fixme.pch -include ../../CoreFoundation/src/CoreFoundation_Prefix.h -s USE_ZLIB=1
 
 LFLAGS=-dynamiclib -mmacosx-version-min=$(MIN_MACOSX_VERSION) -twolevel_namespace -fexceptions -compatibility_version 150 -current_version $(VERSION) -Wl,-alias_list,SymbolAliases 
 
@@ -44,6 +45,7 @@ $(OBJBASE)/CFNetwork/%.h: %.h $(OBJBASE)/CFNetwork
 	/bin/cp $< $@
 
 $(OBJBASE)/%.o: %.c $(INTERMEDIATE_HFILES)
+	mkdir -p $(dir $@)
 	$(CC) $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJBASE)/%.o: %.m $(INTERMEDIATE_HFILES)

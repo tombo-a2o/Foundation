@@ -51,7 +51,7 @@ typedef struct {
 static pthread_mutex_t managerLock = PTHREAD_MUTEX_INITIALIZER;
 static CFRunLoopSourceRef managerSource = NULL;
 static pthread_cond_t managerCondition = PTHREAD_COND_INITIALIZER;
-static OSSpinLock queue_lock = OS_SPINLOCK_INIT;
+static CFSpinLock_t queue_lock = CFSpinLockInit;
 static CFURLConnectionRef activeConnections[NUM_QUEUES] = { NULL };
 static cfurlconnection_runloop_info s_runLoopInfo;
 static CFMutableArrayRef enqueuedConnections = NULL;
@@ -153,7 +153,7 @@ struct _CFURLConnection {
     CachingState cachingState;
     CFMutableArrayRef cachedDataArray;
 
-    OSSpinLock eventsLock;
+    CFSpinLock eventsLock;
     CFMutableArrayRef events;
 
     pthread_mutex_t modeLock;
@@ -338,12 +338,12 @@ static void openConnection(struct _CFURLConnection * connection) {
 }
 
 static void broadcastConnectionState(struct _CFURLConnection *connection, Boolean invalidateConnection) {
-    OSSpinLockLock(&queue_lock);
+    __CFSpinLock(&queue_lock);
     connection->streamValid = false;
     if (invalidateConnection) {
         connection->valid = false;
     }
-    OSSpinLockUnlock(&queue_lock);
+    __CFSpinUnlock(&queue_lock);
     CFRunLoopSourceSignal(managerSource);
     CFRunLoopWakeUp(managerLoop);
 }
@@ -352,14 +352,14 @@ static void queueConnectionEvent(struct _CFURLConnection *connection,
                                  ConnectionEventType type, CFTypeRef payload) {
     assert(!connection->finished);
 
-    OSSpinLockLock(&connection->eventsLock);
+    __CFSpinLock(&connection->eventsLock);
     if (!connection->events) {
         connection->events = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
     }
     ConnectionEvent *event = connectionEventAllocate(type, payload);
     CFArrayAppendValue(connection->events, event);
     CFRelease(event);
-    OSSpinLockUnlock(&connection->eventsLock);
+    __CFSpinUnlock(&connection->eventsLock);
 
     CFRunLoopSourceSignal(connection->source);
     CFRunLoopWakeUp(connection->runLoop);
@@ -391,12 +391,12 @@ static void queueConnectionEvent(struct _CFURLConnection *connection,
 
 static ConnectionEvent *dequeueConnectionEvent(struct _CFURLConnection *connection) {
     ConnectionEvent *event = NULL;
-    OSSpinLockLock(&connection->eventsLock);
+    __CFSpinLock(&connection->eventsLock);
     if (CFArrayGetCount(connection->events)) {
         event = (ConnectionEvent *)CFRetain(CFArrayGetValueAtIndex(connection->events, 0));
         CFArrayRemoveValueAtIndex(connection->events, 0);
     }
-    OSSpinLockUnlock(&connection->eventsLock);
+    __CFSpinUnlock(&connection->eventsLock);
     return event;
 }
 
@@ -468,7 +468,7 @@ static void connectionDecodeData(struct _CFURLConnection *connection, CFDataRef 
 
 static void checkTimeoutForActiveConnections() {
     struct _CFURLConnection *connection = NULL;
-    OSSpinLockLock(&queue_lock);
+    __CFSpinLock(&queue_lock);
     for (int i = 0; i < NUM_QUEUES; i++) {
         if (activeConnections[i] != NULL) {
             if (CFAbsoluteTimeGetCurrent() - activeConnections[i]->lastScheduleTime > SCHEDULE_EVENT_TIMEOUT) {
@@ -478,7 +478,7 @@ static void checkTimeoutForActiveConnections() {
             }
         }
     }
-    OSSpinLockUnlock(&queue_lock);
+    __CFSpinUnlock(&queue_lock);
     if (connection && !connection->finished) {
         CFErrorRef timeoutError = CFErrorCreate(kCFAllocatorDefault, ErrorDomain, kCFURLErrorTimedOut, nil);
         connectionFailed(connection, timeoutError);
@@ -981,7 +981,7 @@ static void checkTimeoutForConnectionsInQueue() {
 static void updateQueue(void *ctx) {
     checkTimeoutForConnectionsInQueue();
     CFRunLoopRef runLoop = CFRunLoopGetCurrent();
-    OSSpinLockLock(&queue_lock);
+    __CFSpinLock(&queue_lock);
     for (int i = 0; i < NUM_QUEUES; i++) {
         struct _CFURLConnection *connection = (struct _CFURLConnection *)activeConnections[i];
         if (connection != NULL && !connection->streamValid) {
@@ -999,12 +999,12 @@ static void updateQueue(void *ctx) {
             activeConnections[i] = NULL;
         }
     }
-    OSSpinLockUnlock(&queue_lock);
+    __CFSpinUnlock(&queue_lock);
     while (true) {
         struct _CFURLConnection *connection = (struct _CFURLConnection *)dequeueConnection();
         if (connection != NULL) {
             int found = -1;
-            OSSpinLockLock(&queue_lock);
+            __CFSpinLock(&queue_lock);
             for (int i = 0; i < NUM_QUEUES; i++) {
                 if (activeConnections[i] == NULL) {
                     // dequeueConnection returns retained, so we don't retain here
@@ -1013,7 +1013,7 @@ static void updateQueue(void *ctx) {
                     break;
                 }
             }
-            OSSpinLockUnlock(&queue_lock);
+            __CFSpinUnlock(&queue_lock);
             if (found >= 0) {
                 openConnection(connection);
             } else {

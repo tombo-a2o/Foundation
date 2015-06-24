@@ -74,9 +74,9 @@ install: $(OBJBASE)/CFNetwork_$(STYLE)
 	#/usr/bin/strip -S -o $(DSTBASE)/CFNetwork.framework/Versions/A/CFNetwork $(OBJBASE)/CFNetwork_$(STYLE)
 	/bin/cp $(OBJBASE)/CFNetwork_$(STYLE) $(DSTBASE)/CFNetwork.framework/Versions/A/CFNetwork
 	#/usr/bin/dsymutil $(DSTBASE)/CFNetwork.framework/Versions/A/CFNetwork -o $(DSTBASE)/CFNetwork.framework.dSYM
-	/usr/sbin/chown -RH -f root:wheel $(DSTBASE)/CFNetwork.framework
-	/bin/chmod -RH a-w,a+rX $(DSTBASE)/CFNetwork.framework
-	/bin/chmod -RH u+w $(DSTBASE)
+	#/usr/sbin/chown -RH -f root:wheel $(DSTBASE)/CFNetwork.framework
+	#/bin/chmod -RH a-w,a+rX $(DSTBASE)/CFNetwork.framework
+	#/bin/chmod -RH u+w $(DSTBASE)
 	#install_name_tool -id /System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork $(DSTBASE)/CFNetwork.framework/Versions/A/CFNetwork
 	@echo "Installing done.  The framework is in $(DSTBASE)"
 

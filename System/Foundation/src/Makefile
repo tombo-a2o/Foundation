@@ -76,9 +76,9 @@ install: $(OBJBASE)/Foundation_$(STYLE)
 	#/usr/bin/strip -S -o $(DSTBASE)/Foundation.framework/Versions/A/Foundation $(OBJBASE)/Foundation_$(STYLE)
 	/bin/cp $(OBJBASE)/Foundation_$(STYLE) $(DSTBASE)/Foundation.framework/Versions/A/Foundation
 	#/usr/bin/dsymutil $(DSTBASE)/Foundation.framework/Versions/A/Foundation -o $(DSTBASE)/Foundation.framework.dSYM
-	/usr/sbin/chown -RH -f root:wheel $(DSTBASE)/Foundation.framework
-	/bin/chmod -RH a-w,a+rX $(DSTBASE)/Foundation.framework
-	/bin/chmod -RH u+w $(DSTBASE)
+	#/usr/sbin/chown -RH -f root:wheel $(DSTBASE)/Foundation.framework
+	#/bin/chmod -RH a-w,a+rX $(DSTBASE)/Foundation.framework
+	#/bin/chmod -RH u+w $(DSTBASE)
 	#install_name_tool -id /System/Library/Frameworks/Foundation.framework/Versions/A/Foundation $(DSTBASE)/Foundation.framework/Versions/A/Foundation
 	@echo "Installing done.  The framework is in $(DSTBASE)"
 

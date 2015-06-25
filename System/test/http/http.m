@@ -38,7 +38,7 @@ int main(void)
   conn = [conn initWithRequest:req delegate:del];
   assert(conn);
 
-  [[NSRunLoop currentRunLoop] run];
+//  [[NSRunLoop currentRunLoop] run];
 
 	return 0;
 }

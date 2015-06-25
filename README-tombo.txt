@@ -7,11 +7,11 @@ cd Foundation
 
 cd System/CoreFoundation/src
 make
-DSTROOT=${EMSCRIPTEN}/system/frameworks make install
+make install
 cd ../../../
 cd System/Foundation/src
 make
-DSTROOT=${EMSCRIPTEN}/system/frameworks make install
+make install
 
 cd ../../../
 cd System/test

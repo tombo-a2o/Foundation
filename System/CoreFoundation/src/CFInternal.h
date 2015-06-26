@@ -465,24 +465,23 @@ CF_INLINE Boolean __CFSpinLockTry(volatile CFSpinLock_t *lock) {
 
 #elif DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_LINUX
 
-typedef int32_t CFSpinLock_t;
-#define CFSpinLockInit 0
+typedef OSSpinLock CFSpinLock_t;
+
+#define CFSpinLockInit OS_SPINLOCK_INIT
 #define CF_SPINLOCK_INIT_FOR_STRUCTS(X) (X = CFSpinLockInit)
 
-CF_INLINE void __CFSpinLock(volatile CFSpinLock_t *lock) {
-    while (__sync_val_compare_and_swap(lock, 0, ~0) != 0) {
-	sleep(0);
-    }
-}
+#define __CFSpinLock(LP) ({ \
+    OSSpinLock *__lockp__ = (LP); \
+    OSSpinLockLock(__lockp__); })
 
-CF_INLINE void __CFSpinUnlock(volatile CFSpinLock_t *lock) {
-    __sync_synchronize();
-    *lock = 0;
-}
+#define __CFSpinUnlock(LP) ({ \
+    OSSpinLock *__lockp__ = (LP); \
+    OSSpinLockUnlock(__lockp__); })
 
-CF_INLINE Boolean __CFSpinLockTry(volatile CFSpinLock_t *lock) {
-    return (__sync_val_compare_and_swap(lock, 0, ~0) == 0);
-}
+#define __CFSpinLockTry(LP) ({ \
+    OSSpinLock *__lockp__ = (LP); \
+    OSSpinLockTry(__lockp__); })
+
 
 #else
 

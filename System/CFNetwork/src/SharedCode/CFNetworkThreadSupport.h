@@ -38,7 +38,7 @@
 extern "C" {
 #endif
 	
-#if defined(__MACH__) || defined(APPORTABLE)
+#if defined(__MACH__) || defined(APPORTABLE) || defined(EMSCRIPTEN)
 
 #include <libkern/OSAtomic.h>
 #include <pthread.h>					// For spin_lock stuff below
@@ -79,27 +79,6 @@ CF_INLINE void __CFSpinLock(CFSpinLock_t *slock) {
 
 CF_INLINE void __CFSpinUnlock(CFSpinLock_t *lock) {
     *lock = 0;
-}
-
-#elif DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_LINUX
-
-typedef int32_t CFSpinLock_t;
-#define CFSpinLockInit 0
-#define CF_SPINLOCK_INIT_FOR_STRUCTS(X) (X = CFSpinLockInit)
-
-CF_INLINE void __CFSpinLock(volatile CFSpinLock_t *lock) {
-    while (__sync_val_compare_and_swap(lock, 0, ~0) != 0) {
-	sleep(0);
-    }
-}
-
-CF_INLINE void __CFSpinUnlock(volatile CFSpinLock_t *lock) {
-    __sync_synchronize();
-    *lock = 0;
-}
-
-CF_INLINE Boolean __CFSpinLockTry(volatile CFSpinLock_t *lock) {
-    return (__sync_val_compare_and_swap(lock, 0, ~0) == 0);
 }
 
 #else

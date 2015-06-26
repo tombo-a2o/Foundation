@@ -5,8 +5,8 @@ MAX_MACOSX_VERSION=MAC_OS_X_VERSION_10_9
 SOURCES = CFProxySupport.c HTTP/CFHTTPMessage.c HTTP/CFHTTPStream.c URL/CFURLRequest.c URL/CFURLCache.c URL/CFURLConnection.c Utils/CFRuntimeUtils.c Utils/CFFSUtils.c Utils/CFHTTPUtils.c
 MSOURCES = 
 OBJECTS = $(patsubst %.c,%.o,$(SOURCES)) $(patsubst %.m,%.o,$(MSOURCES))
-#HFILES = $(wildcard *.h) $(wildcard Headers/*.h) $(wildcard SharedCode/*.h) $(wildcard Proxies/*.h)
-HFILES = $(wildcard *.h)
+HFILES = $(wildcard *.h) $(wildcard Headers/*.h) $(wildcard SharedCode/*.h) $(wildcard Proxies/*.h)
+#HFILES = $(wildcard *.h)
 INTERMEDIATE_HFILES = $(addprefix $(OBJBASE)/CFNetwork/,$(HFILES))
 
 PUBLIC_HEADERS_=CFFTPStream.h CFHTTPAuthentication.h CFHTTPMessage.h CFHTTPStream.h CFHost.h CFNetDiagnostics.h CFNetServices.h CFNetwork.h CFNetworkDefs.h CFNetworkErrors.h CFProxySupport.h CFSocketStream.h
@@ -42,6 +42,7 @@ $(OBJBASE)/CFNetwork:
 	/bin/mkdir -p $(OBJBASE)/CFNetwork
 
 $(OBJBASE)/CFNetwork/%.h: %.h $(OBJBASE)/CFNetwork
+	mkdir -p $(dir $@)
 	/bin/cp $< $@
 
 $(OBJBASE)/%.o: %.c $(INTERMEDIATE_HFILES)

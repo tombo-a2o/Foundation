@@ -4,8 +4,6 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
-#if 0
-
 #import "NSURLResponseInternal.h"
 #import <Foundation/NSString.h>
 #import <Foundation/NSDictionary.h>
@@ -151,10 +149,12 @@ static inline NSString *NSURLLocalizedString(NSString *key)
 
 - (void)dealloc
 {
+/*
     if (peerTrust != NULL)
     {
         CFRelease(peerTrust);
     }
+*/
     [super dealloc];
 }
 
@@ -229,6 +229,7 @@ static inline NSString *NSURLLocalizedString(NSString *key)
     return self;
 }
 
+/*
 - (SecTrustRef)_peerTrust
 {
     return _httpInternal->peerTrust;
@@ -249,6 +250,7 @@ static inline NSString *NSURLLocalizedString(NSString *key)
         }
     }
 }
+*/
 
 - (id)_clientCertificateState
 {
@@ -464,5 +466,3 @@ static inline NSString *NSURLLocalizedString(NSString *key)
 }
 
 @end
-
-#endif

@@ -82,8 +82,8 @@
 
 #include <math.h>										/* for fabs */
 #include <sys/socket.h>
-#include <netdb_async.h>
-#include <SystemConfiguration/SystemConfiguration.h>	/* for SCNetworkReachability and flags */
+//#include <netdb_async.h>
+//#include <SystemConfiguration/SystemConfiguration.h>	/* for SCNetworkReachability and flags */
 
 
 #if 0

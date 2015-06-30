@@ -109,6 +109,10 @@ extern Boolean _CFCanTryKerberos(void);
 
 #endif
 
+#if defined(EMSCRIPTEN)
+extern Boolean _CFMD5(const UInt8* d, UInt32 n, UInt8* md, UInt32 md_length);
+#endif
+
 #if defined(__cplusplus)
 }
 #endif

@@ -105,7 +105,6 @@ typedef int		boolean_t;
 #endif
 
 #if DEPLOYMENT_TARGET_EMSCRIPTEN
-#define CF_PRIVATE
 #define __strong
 #define __weak
 #include <compat/malloc.h>
@@ -392,7 +391,7 @@ CF_EXPORT int64_t OSAtomicAdd64Barrier( int64_t __theAmount, volatile int64_t *_
 #endif
 
 #if !defined(CF_PRIVATE)
-#define CF_PRIVATE __attribute__((__visibility__("hidden")))
+#define CF_PRIVATE extern __attribute__((__visibility__("hidden")))
 #endif
 
 #if DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_WINDOWS

@@ -16,7 +16,7 @@
 #define CGCONTEXTDELEGATEPRIV_H_
 
 #include <CoreFoundation/CFRuntime.h>
-#include <Coregraphics/CGError.h>
+#include <CoreGraphics/CGError.h>
 #include "CGTypesPriv.h"
 #include "CGPathPriv.h"
 #include "CGGStatePriv.h"

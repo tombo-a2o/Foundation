@@ -35,15 +35,16 @@
  */
 
 
-#if GNUSTEP
 #import <CoreGraphics/CoreGraphics.h>
-#endif
+#import <Foundation/NSObject.h>
+
 #if (__APPLE__)
 #define GL_GLEXT_PROTOTYPES 1
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
 #import <OpenGL/glu.h>
 #else
+#define GL_GLEXT_PROTOTYPES 1
 #import <GL/gl.h>
 #import <GL/glu.h>
 #endif

@@ -30,7 +30,7 @@
 #import "QuartzCore/CABase.h"
 #import "QuartzCore/CAMediaTiming.h"
 #import "QuartzCore/CATransform3D.h"
-#if GNUSTEP
+#if GNUSTEP || DEPLOYMENT_TARGET_EMSCRIPTEN
 #import <CoreGraphics/CoreGraphics.h>
 #endif
 

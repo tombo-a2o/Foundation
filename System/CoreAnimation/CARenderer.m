@@ -43,7 +43,7 @@
 #import <OpenGL/gl.h>
 #import <OpenGL/glu.h>
 #endif
-#import <AppKit/NSOpenGL.h>
+//#import <AppKit/NSOpenGL.h>
 
 #import "GLHelpers/CAGLTexture.h"
 #import "GLHelpers/CAGLSimpleFramebuffer.h"

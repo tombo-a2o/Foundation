@@ -25,6 +25,7 @@
 */
 
 #import <CoreGraphics/CGBase.h>
+#import <Foundation/NSValue.h>
 
 typedef struct CATransform3D
 {

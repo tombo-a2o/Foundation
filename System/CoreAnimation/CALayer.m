@@ -40,7 +40,7 @@
 #import "CABackingStore.h"
 #import "CARenderer+FrameworkPrivate.h"
 
-#if GNUSTEP
+#if GNUSTEP || DEPLOYMENT_TARGET_EMSCRIPTEN
 #import <CoreGraphics/CoreGraphics.h>
 #endif
 #import <stdlib.h>

@@ -103,6 +103,10 @@
 
 #endif
 
+#if TARGET_OS_EMSCRIPTEN
+#import <Foundation/NSGeometry.h>
+#endif
+
 #if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || TARGET_OS_WIN32
 
 #import <Foundation/NSArchiver.h>

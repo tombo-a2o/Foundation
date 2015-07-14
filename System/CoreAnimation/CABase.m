@@ -27,7 +27,7 @@
 
 #import "QuartzCore/CABase.h"
 
-#if GNUSTEP
+#if GNUSTEP || EMSCRIPTEN
 #import <sys/time.h>
 
 CFTimeInterval CACurrentMediaTime(void)

@@ -36,7 +36,7 @@ ARCHFLAGS=
 CC = emcc
 
 MAX_MACOSX_VERSION=MAC_OS_X_VERSION_10_9
-CFLAGS=-v -c -x objective-c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DCF_BUILDING_CF=1 -I./include -I./ -I../CoreFoundation/src -include ../CoreFoundation/src/CoreFoundation_Prefix.h
+CFLAGS=-v -c -x objective-c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DCF_BUILDING_CF=1 -I./include -I./ -I../CoreFoundation/src -I../Foundation/src -include ../CoreFoundation/src/CoreFoundation_Prefix.h
 
 .PHONY: all install clean
 
@@ -71,7 +71,7 @@ install: $(OBJBASE)/CoreAnimation_$(STYLE)
 	/bin/ln -sf Versions/Current/CoreAnimation $(DSTBASE)/CoreAnimation.framework/CoreAnimation
 	#/bin/cp Info.plist $(DSTBASE)/CoreAnimation.framework/Versions/A/Resources
 	/bin/mkdir -p $(DSTBASE)/CoreAnimation.framework/Versions/A/Resources/en.lproj
-	/bin/cp include/CoreAnimation/* $(DSTBASE)/CoreAnimation.framework/Versions/A/Headers
+	/bin/cp include/QuartzCore/* $(DSTBASE)/CoreAnimation.framework/Versions/A/Headers
 	/bin/cp $(OBJBASE)/CoreAnimation_$(STYLE) $(DSTBASE)/CoreAnimation.framework/Versions/A/CoreAnimation
 	@echo "Installing done.  The framework is in $(DSTBASE)"
 

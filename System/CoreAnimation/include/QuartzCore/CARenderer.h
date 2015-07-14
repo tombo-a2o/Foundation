@@ -26,7 +26,7 @@
 */
 
 #import "CABase.h"
-#if GNUSTEP
+#if GNUSTEP || EMSCRIPTEN
 #import <CoreGraphics/CoreGraphics.h>
 #endif
 

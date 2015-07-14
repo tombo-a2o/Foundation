@@ -38,6 +38,15 @@
 
 NSString *const kCAAnimationDiscrete = @"CAAnimationDiscrete";
 
+@interface NSValue (Internal)
++ (NSValue *)valueWithPoint:(CGPoint)point;
++ (NSValue *)valueWithRect:(CGRect)rect;
++ (NSValue *)valueWithSize:(CGSize)size;
+- (CGRect)rectValue;
+- (CGSize)sizeValue;
+- (CGPoint)pointValue;
+@end
+
 @interface CAAnimation ()
 @property (retain) NSPointerArray *layers;
 - (id) init;

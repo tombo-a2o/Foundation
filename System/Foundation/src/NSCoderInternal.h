@@ -1,4 +1,5 @@
 #import <Foundation/NSCoder.h>
+#import <CoreGraphics/CGGeometry.h>
 #import "NSExternals.h"
 
 enum {

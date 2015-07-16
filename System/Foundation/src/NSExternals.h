@@ -6,6 +6,7 @@
  read/write for both 64 and 32 bit, else @encode is preferred
  */
 #import <Foundation/NSString.h>
+#import <CoreGraphics/CGGeometry.h>
 
 #define NSRANGE_32 "{_NSRange=II}"
 #define NSRANGE_64 "{_NSRange=QQ}"
@@ -53,33 +54,6 @@ typedef float CGFloat;
 #endif
 #define CGFLOAT_DEFINED
 #endif
-
-struct CGPoint {
-    CGFloat x;
-    CGFloat y;
-};
-typedef struct CGPoint CGPoint;
-
-struct CGSize {
-    CGFloat width;
-    CGFloat height;
-};
-typedef struct CGSize CGSize;
-
-struct CGRect {
-    CGPoint origin;
-    CGSize size;
-};
-typedef struct CGRect CGRect;
-
-typedef struct {
-   CGFloat a;
-   CGFloat b;
-   CGFloat c;
-   CGFloat d;
-   CGFloat tx;
-   CGFloat ty;
-} CGAffineTransform;
 
 typedef struct UIEdgeInsets {
     CGFloat top;

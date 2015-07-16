@@ -15,6 +15,7 @@
 #include <libkern/OSAtomic.h>
 #include <objc/runtime.h>
 #import "ForFoundationOnly.h"
+#import <CoreGraphics/CGAffineTransform.h>
 
 static NSValue *_NSNewValue(void *value, const char *type);
 

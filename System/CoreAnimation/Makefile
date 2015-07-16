@@ -40,38 +40,38 @@ CFLAGS=-v -c -x objective-c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant
 
 .PHONY: all install clean
 
-all: $(OBJBASE)/CoreAnimation_$(STYLE)
+all: $(OBJBASE)/QuartzCore_$(STYLE)
 
 clean:
 	-/bin/rm -rf $(OBJBASE)
 
-$(OBJBASE)/CoreAnimation:
-	/bin/mkdir -p $(OBJBASE)/CoreAnimation
+$(OBJBASE)/QuartzCore:
+	/bin/mkdir -p $(OBJBASE)/QuartzCore
 
-$(OBJBASE)/%.o: %.m $(HFILES) $(OBJBASE)/CoreAnimation
+$(OBJBASE)/%.o: %.m $(HFILES) $(OBJBASE)/QuartzCore
 	$(CC) $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
 %.ll: %.m $(HFILES)
 	$(CC) -emit-llvm -S $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJBASE)/CoreAnimation_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
-	llvm-link -o $(OBJBASE)/CoreAnimation_$(STYLE).bc $^
-	rm -f $(OBJBASE)/CoreAnimation_$(STYLE)
-	llvm-ar rcs $(OBJBASE)/CoreAnimation_$(STYLE) $(OBJBASE)/CoreAnimation_$(STYLE).bc
+$(OBJBASE)/QuartzCore_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
+	llvm-link -o $(OBJBASE)/QuartzCore_$(STYLE).bc $^
+	rm -f $(OBJBASE)/QuartzCore_$(STYLE)
+	llvm-ar rcs $(OBJBASE)/QuartzCore_$(STYLE) $(OBJBASE)/QuartzCore_$(STYLE).bc
 
-install: $(OBJBASE)/CoreAnimation_$(STYLE)
-	/bin/rm -rf $(DSTBASE)/CoreAnimation.framework
-	/bin/mkdir -p $(DSTBASE)/CoreAnimation.framework/Versions/A/Resources
-	/bin/mkdir -p $(DSTBASE)/CoreAnimation.framework/Versions/A/Headers
-	/bin/mkdir -p $(DSTBASE)/CoreAnimation.framework/Versions/A/PrivateHeaders
-	/bin/ln -sf A $(DSTBASE)/CoreAnimation.framework/Versions/Current
-	/bin/ln -sf Versions/Current/Resources $(DSTBASE)/CoreAnimation.framework/Resources
-	/bin/ln -sf Versions/Current/Headers $(DSTBASE)/CoreAnimation.framework/Headers
-	/bin/ln -sf Versions/Current/PrivateHeaders $(DSTBASE)/CoreAnimation.framework/PrivateHeaders
-	/bin/ln -sf Versions/Current/CoreAnimation $(DSTBASE)/CoreAnimation.framework/CoreAnimation
-	#/bin/cp Info.plist $(DSTBASE)/CoreAnimation.framework/Versions/A/Resources
-	/bin/mkdir -p $(DSTBASE)/CoreAnimation.framework/Versions/A/Resources/en.lproj
-	/bin/cp include/QuartzCore/* $(DSTBASE)/CoreAnimation.framework/Versions/A/Headers
-	/bin/cp $(OBJBASE)/CoreAnimation_$(STYLE) $(DSTBASE)/CoreAnimation.framework/Versions/A/CoreAnimation
+install: $(OBJBASE)/QuartzCore_$(STYLE)
+	/bin/rm -rf $(DSTBASE)/QuartzCore.framework
+	/bin/mkdir -p $(DSTBASE)/QuartzCore.framework/Versions/A/Resources
+	/bin/mkdir -p $(DSTBASE)/QuartzCore.framework/Versions/A/Headers
+	/bin/mkdir -p $(DSTBASE)/QuartzCore.framework/Versions/A/PrivateHeaders
+	/bin/ln -sf A $(DSTBASE)/QuartzCore.framework/Versions/Current
+	/bin/ln -sf Versions/Current/Resources $(DSTBASE)/QuartzCore.framework/Resources
+	/bin/ln -sf Versions/Current/Headers $(DSTBASE)/QuartzCore.framework/Headers
+	/bin/ln -sf Versions/Current/PrivateHeaders $(DSTBASE)/QuartzCore.framework/PrivateHeaders
+	/bin/ln -sf Versions/Current/QuartzCore $(DSTBASE)/QuartzCore.framework/QuartzCore
+	#/bin/cp Info.plist $(DSTBASE)/QuartzCore.framework/Versions/A/Resources
+	/bin/mkdir -p $(DSTBASE)/QuartzCore.framework/Versions/A/Resources/en.lproj
+	/bin/cp include/QuartzCore/* $(DSTBASE)/QuartzCore.framework/Versions/A/Headers
+	/bin/cp $(OBJBASE)/QuartzCore_$(STYLE) $(DSTBASE)/QuartzCore.framework/Versions/A/QuartzCore
 	@echo "Installing done.  The framework is in $(DSTBASE)"
 

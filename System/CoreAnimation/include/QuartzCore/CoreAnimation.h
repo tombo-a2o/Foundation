@@ -28,10 +28,13 @@
    Boston, MA 02110-1301, USA.
 */
 
+#import <Foundation/Foundation.h>
 #import "QuartzCore/CABase.h"
 #import "QuartzCore/CAAction.h"
 #import "QuartzCore/CALayer.h"
 #import "QuartzCore/CAAnimation.h"
+#import "QuartzCore/CADisplayLink.h"
+#import "QuartzCore/CAEAGLLayer.h"
 #import "QuartzCore/CAMediaTiming.h"
 #import "QuartzCore/CAMediaTimingFunction.h"
 #import "QuartzCore/CARenderer.h"

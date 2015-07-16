@@ -26,6 +26,7 @@
 #define __NSGeometry_h_GNUSTEP_BASE_INCLUDE
 //#import	<GNUstepBase/GSVersionMacros.h>
 #import <CoreGraphics/CGBase.h>
+#import <CoreGraphics/CGGeometry.h>
 
 #import <objc/objc.h>
 

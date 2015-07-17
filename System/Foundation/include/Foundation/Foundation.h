@@ -98,13 +98,14 @@
 #import <Foundation/NSPredicate.h>
 #import <Foundation/NSUbiquitousKeyValueStore.h>
 #import <Foundation/NSUndoManager.h>
-//#import <Foundation/NSURLSession.h>
+#import <Foundation/NSURLSession.h>
 #import <Foundation/NSUUID.h>
 
 #endif
 
 #if TARGET_OS_EMSCRIPTEN
 #import <Foundation/NSGeometry.h>
+#import <Foundation/NSProgress.h>
 #endif
 
 #if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || TARGET_OS_WIN32

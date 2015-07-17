@@ -31,8 +31,6 @@
 #include "CFRuntime.h"
 #include "CFInternal.h"
 #include "CFBasicHash.h"
-#include "CFUUID.h"
-#include "CFAttributedString.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

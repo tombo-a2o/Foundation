@@ -592,7 +592,12 @@ CF_INLINE UInt64 __CFReadTSR(void) {
 CF_EXTERN_C_END
 
 #ifdef __OBJC__
-#import <Foundation/Foundation.h>
+//#import <Foundation/Foundation.h>
+#import <Foundation/NSException.h>
+#import <Foundation/NSCalendar.h>
+#import <Foundation/NSStream.h>
+#import <Foundation/NSTimer.h>
+#import <Foundation/NSTimeZone.h>
 
 extern id _objc_rootAutorelease(id obj);
 

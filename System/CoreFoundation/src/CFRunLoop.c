@@ -32,6 +32,7 @@
 #include <CoreFoundation/CFNumber.h>
 #include <CoreFoundation/CFPreferences.h>
 #include "CFInternal.h"
+#include <assert.h>
 #include <math.h>
 #include <stdio.h>
 #include <limits.h>

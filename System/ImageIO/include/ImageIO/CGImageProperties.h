@@ -1,0 +1,25 @@
+#ifndef IMAGEIO_CGIMAGEPROPS
+#define IMAGEIO_CGIMAGEPROPS
+
+// https://developer.apple.com/library/mac/documentation/GraphicsImaging/Reference/CGImageProperties_Reference/
+
+extern const CFStringRef kCGImagePropertyTIFFDictionary;
+extern const CFStringRef kCGImagePropertyGIFDictionary;
+extern const CFStringRef kCGImagePropertyJFIFDictionary;
+extern const CFStringRef kCGImagePropertyExifDictionary;
+extern const CFStringRef kCGImagePropertyPNGDictionary;
+extern const CFStringRef kCGImagePropertyIPTCDictionary;
+extern const CFStringRef kCGImagePropertyGPSDictionary;
+extern const CFStringRef kCGImagePropertyRawDictionary;
+extern const CFStringRef kCGImagePropertyCIFFDictionary;
+extern const CFStringRef kCGImageProperty8BIMDictionary;
+extern const CFStringRef kCGImagePropertyDNGDictionary;
+extern const CFStringRef kCGImagePropertyExifAuxDictionary;
+
+extern const CFStringRef kCGImagePropertyGIFLoopCount;
+extern const CFStringRef kCGImagePropertyGIFDelayTime;
+extern const CFStringRef kCGImagePropertyGIFImageColorMap;
+extern const CFStringRef kCGImagePropertyGIFHasGlobalColorMap;
+extern const CFStringRef kCGImagePropertyGIFUnclampedDelayTime;
+
+#endif

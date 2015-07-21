@@ -65,10 +65,10 @@
 #import <Foundation/NSURLAuthenticationChallenge.h>
 #import <Foundation/NSURLCache.h>
 #import <Foundation/NSURLConnection.h>
-//#import <Foundation/NSURLCredential.h>
+#import <Foundation/NSURLCredential.h>
 #import <Foundation/NSURLCredentialStorage.h>
 #import <Foundation/NSURLError.h>
-//#import <Foundation/NSURLProtectionSpace.h>
+#import <Foundation/NSURLProtectionSpace.h>
 #import <Foundation/NSURLProtocol.h>
 #import <Foundation/NSURLRequest.h>
 #import <Foundation/NSURLResponse.h>

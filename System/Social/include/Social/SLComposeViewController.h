@@ -1,6 +1,3 @@
-#ifndef SOCIAL_SLComposeViewController
-#define SOCIAL_SLComposeViewController
-
 // https://developer.apple.com/library/ios/documentation/NetworkingInternet/Reference/SLComposeViewController_Class/index.html
 
 #import <UIKit/UIViewController.h>
@@ -27,5 +24,3 @@ typedef void (^SLComposeViewControllerCompletionHandler) (SLComposeViewControlle
 @property(nonatomic, copy) SLComposeViewControllerCompletionHandler completionHandler;
 
 @end
-
-#endif

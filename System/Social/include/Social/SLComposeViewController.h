@@ -3,6 +3,11 @@
 #import <UIKit/UIViewController.h>
 #import <UIKit/UIImage.h>
 
+extern NSString *const SLServiceTypeFacebook;
+extern NSString *const SLServiceTypeTwitter;
+extern NSString *const SLServiceTypeSinaWeibo;
+extern NSString *const SLServiceTypeTencentWeibo;
+
 typedef NS_ENUM (NSInteger, SLComposeViewControllerResult ) {
     SLComposeViewControllerResultCancelled,
     SLComposeViewControllerResultDone 

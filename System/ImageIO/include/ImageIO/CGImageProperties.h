@@ -22,4 +22,16 @@ extern const CFStringRef kCGImagePropertyGIFImageColorMap;
 extern const CFStringRef kCGImagePropertyGIFHasGlobalColorMap;
 extern const CFStringRef kCGImagePropertyGIFUnclampedDelayTime;
 
+extern const CFStringRef kCGImagePropertyDPIHeight;
+extern const CFStringRef kCGImagePropertyDPIWidth;
+extern const CFStringRef kCGImagePropertyPixelWidth;
+extern const CFStringRef kCGImagePropertyPixelHeight;
+extern const CFStringRef kCGImagePropertyDepth;
+extern const CFStringRef kCGImagePropertyOrientation;
+extern const CFStringRef kCGImagePropertyIsFloat;
+extern const CFStringRef kCGImagePropertyIsIndexed;
+extern const CFStringRef kCGImagePropertyHasAlpha;
+extern const CFStringRef kCGImagePropertyColorModel;
+extern const CFStringRef kCGImagePropertyProfileName;
+
 #endif

@@ -223,7 +223,7 @@
 
 FOUNDATION_EXPORT double NSFoundationVersionNumber;
 
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE || TARGET_OS_EMSCRIPTEN
 #define NSFoundationVersionNumber_iPhoneOS_2_0  678.24
 #define NSFoundationVersionNumber_iPhoneOS_2_1  678.26
 #define NSFoundationVersionNumber_iPhoneOS_2_2  678.29

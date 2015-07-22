@@ -22,6 +22,9 @@
    Free Software Foundation, 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+#import <QuartzCore/CALayer.h>
+#import <OpenGLES/EAGLDrawable.h>
 
-@interface CAEAGLLayer : NSObject
+@interface CAEAGLLayer : CALayer<EAGLDrawable>
+@property(copy) NSDictionary *drawableProperties;
 @end

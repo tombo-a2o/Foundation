@@ -22,6 +22,16 @@
    Free Software Foundation, 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+#import <Foundation/Foundation.h>
+#import <CoreFoundation/CFDate.h>
 
 @interface CADisplayLink : NSObject
++ (CADisplayLink *)displayLinkWithTarget:(id)target selector:(SEL)sel;
+- (void)addToRunLoop:(NSRunLoop *)runloop forMode:(NSString *)mode;
+- (void)removeFromRunLoop:(NSRunLoop *)runloop forMode:(NSString *)mode;
+- (void)invalidate;
+@property(readonly, nonatomic) CFTimeInterval duration;
+@property(nonatomic) NSInteger frameInterval;
+@property(getter=isPaused, nonatomic) BOOL paused;
+@property(readonly, nonatomic) CFTimeInterval timestamp;
 @end

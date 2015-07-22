@@ -167,6 +167,8 @@ NSString *const kCATransition;
 #warning GCC workaround: CALayer.animationKeys publicly defined as NSMutableArray although it should not be.
 @property (retain, readonly)         NSMutableArray *animationKeys;
 #endif
+@property (assign)                   CGFloat cornerRadius;
+
 
 - (id) init;
 - (id) initWithLayer: (CALayer *)layer;
@@ -176,6 +178,8 @@ NSString *const kCATransition;
 - (void) addAnimation: (CAAnimation *)anim forKey: (NSString *)key;
 - (void) removeAnimationForKey: (NSString *)key;
 - (CAAnimation *) animationForKey:( NSString *)key;
+- (void) removeAllAnimations;
+- (NSArray *)animationKeys;
 
 - (void) addSublayer: (CALayer *)layer;
 - (void) removeFromSuperlayer;

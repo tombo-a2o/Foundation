@@ -21,6 +21,6 @@ cat <<EOF > $fullpath
 @end
 EOF
 
-if ! grep $name include/$framework/$framework.h; then
+if ! grep $name.h include/$framework/$framework.h; then
     echo "#import <$framework/$name.h>" >> include/$framework/$framework.h
 fi

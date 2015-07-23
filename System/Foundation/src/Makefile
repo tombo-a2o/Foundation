@@ -58,6 +58,8 @@ $(OBJBASE)/Foundation_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
 	rm -f $(OBJBASE)/Foundation_$(STYLE)
 	llvm-ar rcs $(OBJBASE)/Foundation_$(STYLE) $(OBJBASE)/Foundation_$(STYLE).bc
 
+NSPredicateLexer.m: NSPredicateLexer.lm
+
 install: $(OBJBASE)/Foundation_$(STYLE)
 	/bin/rm -rf $(DSTBASE)/Foundation.framework
 	/bin/mkdir -p $(DSTBASE)/Foundation.framework/Versions/A/Resources

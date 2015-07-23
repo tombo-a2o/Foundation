@@ -4,4 +4,5 @@
 @end
 
 @interface AVAudioSession : NSObject
+@property(assign) id< AVAudioSessionDelegate > delegate;
 @end

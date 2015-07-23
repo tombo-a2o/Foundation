@@ -15,10 +15,6 @@
 
 #define st_ctime_nsec st_ctim.tv_nsec
 #define st_mtime_nsec st_mtim.tv_nsec
-enum {
-	  kUnknownType                  = 0x3F3F3F3F /* "????" QuickTime 3.0: default unknown ResType or OSType */
-};
-
 
 @implementation NSDictionary (NSFileAttributes)
 

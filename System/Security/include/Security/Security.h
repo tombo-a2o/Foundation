@@ -53,7 +53,7 @@
 //#include <Security/SecAccess.h>
 //#include <Security/SecAccessControl.h>
 //#include <Security/SecACL.h>
-//#include <Security/SecCertificate.h>
+#include <Security/SecCertificate.h>
 //#include <Security/SecCertificateOIDs.h>
 //#include <Security/SecIdentity.h>
 //#include <Security/SecIdentitySearch.h>
@@ -62,7 +62,7 @@
 //#include <Security/SecKeychain.h>
 //#include <Security/SecKeychainItem.h>
 //#include <Security/SecKeychainSearch.h>
-//#include <Security/SecPolicy.h>
+#include <Security/SecPolicy.h>
 //#include <Security/SecPolicySearch.h>
 #include <Security/SecTrust.h>
 //#include <Security/SecTrustedApplication.h>

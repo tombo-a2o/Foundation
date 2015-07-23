@@ -198,6 +198,8 @@ OSStatus SecTrustCreateWithCertificates(CFTypeRef certificates,
     CFTypeRef policies, SecTrustRef *trust)
     __OSX_AVAILABLE_STARTING(__MAC_10_3, __IPHONE_2_0);
 
+SecCertificateRef SecCertificateCreateWithData ( CFAllocatorRef allocator, CFDataRef data );
+
 /*!
     @function SecTrustSetPolicies
     @abstract Set the policies for which trust should be verified.

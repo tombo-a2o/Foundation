@@ -92,7 +92,7 @@ enum {
   DISPATCH_QUEUE_OVERCOMMIT = 0x2ull,
 };
 
-typedef struct timespec AbsoluteTime;
+typedef struct timespec AbsoluteTime_;
 
 #endif
 
@@ -582,7 +582,7 @@ CF_INLINE LARGE_INTEGER __CFUInt64ToAbsoluteTime(uint64_t desiredFireTime) {
 
 #elif DEPLOYMENT_TARGET_EMSCRIPTEN
 
-AbsoluteTime __CFUInt64ToAbsoluteTime(uint64_t x) {
+AbsoluteTime_ __CFUInt64ToAbsoluteTime(uint64_t x) {
   static uint64_t res;
   if(res == 0) {
     struct timespec spec;
@@ -592,7 +592,7 @@ AbsoluteTime __CFUInt64ToAbsoluteTime(uint64_t x) {
   
   x *= res;
 
-  AbsoluteTime time;
+  AbsoluteTime_ time;
   time.tv_sec = x / 1000000000L;
   time.tv_nsec = x % 1000000000L;
   return time;
@@ -606,7 +606,7 @@ static int mk_timer_destroy(int name) {
   return close(name);
 }
 
-static int mk_timer_arm(int name, AbsoluteTime expire_time) {
+static int mk_timer_arm(int name, AbsoluteTime_ expire_time) {
   struct itimerspec spec;
 
   spec.it_value = expire_time;
@@ -616,7 +616,7 @@ static int mk_timer_arm(int name, AbsoluteTime expire_time) {
   return timerfd_settime(name, TFD_TIMER_ABSTIME, &spec, NULL);
 }
 
-static int mk_timer_cancel(int name, AbsoluteTime *result_time) {
+static int mk_timer_cancel(int name, AbsoluteTime_ *result_time) {
   struct itimerspec spec = {
     {0, 0},
     {0, 0}

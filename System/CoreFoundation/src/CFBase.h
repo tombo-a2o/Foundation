@@ -96,6 +96,10 @@
   #endif
 #endif
 
+#ifdef EMSCRIPTEN
+    #include <MacTypes.h>
+#endif
+
 #if !defined(__MACTYPES__)
 #if !defined(_OS_OSTYPES_H)
     typedef unsigned char           Boolean;

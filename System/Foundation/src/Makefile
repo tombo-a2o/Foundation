@@ -59,6 +59,7 @@ $(OBJBASE)/Foundation_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
 	llvm-ar rcs $(OBJBASE)/Foundation_$(STYLE) $(OBJBASE)/Foundation_$(STYLE).bc
 
 NSPredicateLexer.m: NSPredicateLexer.lm
+	lex -t NSPredicateLexer.lm > NSPredicateLexer.m
 
 install: $(OBJBASE)/Foundation_$(STYLE)
 	/bin/rm -rf $(DSTBASE)/Foundation.framework

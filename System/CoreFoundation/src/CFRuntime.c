@@ -1159,7 +1159,7 @@ void __CFInitialize(void) {
         __CFMachPortInitialize();
         _CFRuntimeBridgeClasses(CFMachPortGetTypeID(), "NSMachPort");
 #endif
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_EMSCRIPTEN
         __CFStreamInitialize();
         _CFRuntimeBridgeClasses(CFReadStreamGetTypeID(), "__NSCFInputStream");
         _CFRuntimeBridgeClasses(CFWriteStreamGetTypeID(), "__NSCFOutputStream");

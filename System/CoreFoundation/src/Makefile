@@ -22,7 +22,7 @@ OBJBASE = $(OBJBASE_ROOT)/$(STYLE)
 DSTBASE = $(if $(DSTROOT),$(DSTROOT),$(EMSCRIPTEN)/system/frameworks)
 
 STYLE=normal
-STYLE_CFLAGS=-O2
+STYLE_CFLAGS=-O0
 STYLE_LFLAGS=
 ARCHFLAGS=
 INSTALLNAME=/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation_$(STYLE)

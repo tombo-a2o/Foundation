@@ -1,2 +1,2 @@
 #import <AudioToolbox/AudioSession.h>
-#import <AudioToolbox/ExtendedAudioFile.h>
+#import <AudioToolbox/AudioFile.h>

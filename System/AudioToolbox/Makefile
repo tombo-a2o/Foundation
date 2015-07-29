@@ -1,5 +1,6 @@
-SOURCES= Dummy.m
-OBJECTS = $(patsubst %.m,%.o,$(SOURCES))
+SOURCES= Dummy.c \
+	AudioFile.c
+OBJECTS = $(patsubst %.c,%.o,$(SOURCES))
 HFILES = $(wildcard include/**/*.h)
 
 
@@ -27,10 +28,10 @@ clean:
 $(OBJBASE)/AudioToolbox:
 	/bin/mkdir -p $(OBJBASE)/AudioToolbox
 
-$(OBJBASE)/%.o: src/%.m $(HFILES) $(OBJBASE)/AudioToolbox
+$(OBJBASE)/%.o: src/%.c $(HFILES) $(OBJBASE)/AudioToolbox
 	$(CC) $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
-%.ll: %.m $(HFILES)
+%.ll: %.c $(HFILES)
 	$(CC) -emit-llvm -S $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJBASE)/AudioToolbox_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))

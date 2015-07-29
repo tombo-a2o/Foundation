@@ -1,4 +1,7 @@
-#import <Foundation/Foundation.h>
+#ifndef __AudioSession__
+#define __AudioSession__
+
+#include <Foundation/NSString.h>
 
 extern NSString *const AVAudioSessionCategoryAmbient;
 extern NSString *const AVAudioSessionCategorySoloAmbient;
@@ -45,3 +48,5 @@ enum {
 typedef UInt32 AudioSessionPropertyID;
 
 OSStatus AudioSessionGetProperty ( AudioSessionPropertyID inID, UInt32 *ioDataSize, void *outData );
+
+#endif

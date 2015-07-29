@@ -1,5 +1,8 @@
-#import <CoreFoundation/CoreFoundation.h>
-#import <CoreAudio/CoreAudio.h>
+#ifndef __AudioFile__
+#define __AudioFile__
+
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreAudio/CoreAudio.h>
 
 typedef struct OpaqueAudioFileID *AudioFileID;
 
@@ -91,3 +94,5 @@ OSStatus ExtAudioFileGetProperty ( ExtAudioFileRef inExtAudioFile, ExtAudioFileP
 OSStatus ExtAudioFileSetProperty ( ExtAudioFileRef inExtAudioFile, ExtAudioFilePropertyID inPropertyID, UInt32 inPropertyDataSize, const void * inPropertyData );
 OSStatus ExtAudioFileRead ( ExtAudioFileRef inExtAudioFile, UInt32 * ioNumberFrames, AudioBufferList * ioData );
 OSStatus ExtAudioFileDispose ( ExtAudioFileRef inExtAudioFile );
+
+#endif

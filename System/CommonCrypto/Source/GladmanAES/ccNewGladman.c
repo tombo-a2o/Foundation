@@ -88,6 +88,10 @@ int aes_cc_set_key(
 	return 0;
 }
 
+#ifndef	NULL
+#define NULL ((void *)0)
+#endif
+
 void aes_cc_set_iv(aes_cc_ctx *cx, int forEncrypt, const void *iv)
 {
 	if(forEncrypt) {
@@ -109,10 +113,6 @@ void aes_cc_set_iv(aes_cc_ctx *cx, int forEncrypt, const void *iv)
 		}
 	}
 }
-
-#ifndef	NULL
-#define NULL ((void *)0)
-#endif
 
 #if CC_AES_USE_HARDWARE
 #define CC_AES_USE_HARDWARE_THRESHOLD	(1024 / AES_BLOCK_SIZE) //In Blocks.

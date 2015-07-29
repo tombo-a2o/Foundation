@@ -221,7 +221,8 @@ CCKeyDerivationPBKDF( CCPBKDFAlgorithm algorithm, const char *password, size_t p
 	return 0;
 }
 
-#ifndef KERNEL
+//#ifndef KERNEL
+#if 0
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 #define ROUNDMEASURE 100000

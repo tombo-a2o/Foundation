@@ -24,8 +24,11 @@
 #include "CommonSymmetricKeywrap.h"
 #include <AssertMacros.h>
 #include <stdint.h>
-#include <libkern/OSByteOrder.h>
-
+//#include <libkern/OSByteOrder.h>
+inline uint64_t _OSSwapInt64(uint64_t _data)
+{
+    return __builtin_bswap64(_data);
+}
 
 static const uint8_t rfc3394_iv_data[] = { 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6 };
 

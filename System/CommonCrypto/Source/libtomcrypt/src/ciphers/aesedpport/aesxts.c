@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include "aesedpPriv.h"
 
+#define __unused __attribute__ ((__unused__))
 
 /** Start XTS mode
  @param cipher      The index of the cipher to use

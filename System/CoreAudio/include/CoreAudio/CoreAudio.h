@@ -1,3 +1,6 @@
+#ifndef __CoreAudio__
+#define __CoreAudio__
+
 struct AudioStreamBasicDescription {
     Float64 mSampleRate;
     UInt32 mFormatID;
@@ -109,3 +112,4 @@ enum {
 
 #define TestAudioFormatNativeEndian(f) ( (f.mFormatID == kAudioFormatLinearPCM) && ((f.mFormatFlags & kAudioFormatFlagIsBigEndian) == kAudioFormatFlagsNativeEndian) )
 
+#endif

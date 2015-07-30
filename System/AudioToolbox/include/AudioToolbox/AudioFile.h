@@ -65,34 +65,9 @@ enum {
 };
 typedef UInt32 AudioFilePropertyID;
 
-enum {
-    kExtAudioFileProperty_FileDataFormat       = 'ffmt',
-    kExtAudioFileProperty_FileChannelLayout    = 'fclo',
-    kExtAudioFileProperty_ClientDataFormat     = 'cfmt',
-    kExtAudioFileProperty_ClientChannelLayout  = 'cclo',
-    kExtAudioFileProperty_CodecManufacturer    = 'cman',
-    kExtAudioFileProperty_AudioConverter       = 'acnv',
-    kExtAudioFileProperty_AudioFile            = 'afil',
-    kExtAudioFileProperty_FileMaxPacketSize    = 'fmps',
-    kExtAudioFileProperty_ClientMaxPacketSize  = 'cmps',
-    kExtAudioFileProperty_FileLengthFrames     = '#frm',
-    kExtAudioFileProperty_ConverterConfig      = 'accf',
-    kExtAudioFileProperty_IOBufferSizeBytes    = 'iobs',
-    kExtAudioFileProperty_IOBuffer             = 'iobf',
-    kExtAudioFileProperty_PacketTable          = 'xpti'
-};
-typedef UInt32 ExtAudioFilePropertyID;
-
-typedef struct OpaqueExtAudioFile *ExtAudioFileRef;
-
 OSStatus AudioFileOpenURL ( CFURLRef inFileRef, AudioFilePermissions inPermissions, AudioFileTypeID inFileTypeHint, AudioFileID *outAudioFile );
 OSStatus AudioFileGetProperty ( AudioFileID inAudioFile, AudioFilePropertyID inPropertyID, UInt32 *ioDataSize, void *outPropertyData );
 OSStatus AudioFileReadBytes ( AudioFileID inAudioFile, Boolean inUseCache, SInt64 inStartingByte, UInt32 * ioNumBytes, void *outBuffer );
 OSStatus AudioFileClose ( AudioFileID inAudioFile );
-OSStatus ExtAudioFileOpenURL ( CFURLRef inURL, ExtAudioFileRef *outExtAudioFile );
-OSStatus ExtAudioFileGetProperty ( ExtAudioFileRef inExtAudioFile, ExtAudioFilePropertyID inPropertyID, UInt32 * ioPropertyDataSize, void * outPropertyData );
-OSStatus ExtAudioFileSetProperty ( ExtAudioFileRef inExtAudioFile, ExtAudioFilePropertyID inPropertyID, UInt32 inPropertyDataSize, const void * inPropertyData );
-OSStatus ExtAudioFileRead ( ExtAudioFileRef inExtAudioFile, UInt32 * ioNumberFrames, AudioBufferList * ioData );
-OSStatus ExtAudioFileDispose ( ExtAudioFileRef inExtAudioFile );
 
 #endif

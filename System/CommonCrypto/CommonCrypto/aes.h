@@ -44,7 +44,7 @@
 #include <CommonCrypto/CommonCryptoPriv.h>
 
 /*  This include is used to find 8 & 32 bit unsigned integer types  */
-#include <machine/limits.h>
+#include <limits.h>
 
 #include <TargetConditionals.h>
 #if TARGET_OS_EMBEDDED && __arm__

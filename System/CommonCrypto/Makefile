@@ -161,7 +161,7 @@ ARCHFLAGS=
 CC = emcc
 
 MAX_MACOSX_VERSION=MAC_OS_X_VERSION_10_9
-CFLAGS=-v -c -x objective-c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -I./Source -I./CommonCrypto -I./Source/Digest -I./Source/CommonCryptoSPI -I./Source/ccOpenssl -I./Source/CAST -I./Source/libtomcrypt/src/ciphers/RC4 -I./Source/libtomcrypt/src/headers -I./Source/libtomcrypt/src/padding/ansix923 -I./Source/libtomcrypt/src/padding/iso10126 -I./Source/libtomcrypt/src/padding/nopadding -I./Source/libtomcrypt/src/padding/pkcs7 -I./Source/ccUtilities -I./Source/API -I./Source/GladmanAES -I./Source/AESedp -I./Source/libtomcrypt/src/ciphers/aesedpport -I./Source/libtomcrypt/src/hashes -I./Source/libtomcrypt/src/hashes/skein/Optimized_64bit
+CFLAGS=-v -c -x objective-c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -I./ -I./Source -I./CommonCrypto -I./Source/Digest -I./Source/CommonCryptoSPI -I./Source/ccOpenssl -I./Source/CAST -I./Source/libtomcrypt/src/ciphers/RC4 -I./Source/libtomcrypt/src/headers -I./Source/libtomcrypt/src/padding/ansix923 -I./Source/libtomcrypt/src/padding/iso10126 -I./Source/libtomcrypt/src/padding/nopadding -I./Source/libtomcrypt/src/padding/pkcs7 -I./Source/ccUtilities -I./Source/API -I./Source/GladmanAES -I./Source/AESedp -I./Source/libtomcrypt/src/ciphers/aesedpport -I./Source/libtomcrypt/src/hashes -I./Source/libtomcrypt/src/hashes/skein/Optimized_64bit
 
 .PHONY: all install clean
 

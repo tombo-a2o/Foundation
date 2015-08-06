@@ -52,7 +52,7 @@
 //#include <IOKit/pwr_mgt/IOPMLibPrivate.h>
 #endif	// !TARGET_OS_IPHONE
 
-#include <notify.h>
+//#include <notify.h>
 //#include <dnsinfo.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

@@ -1,4 +1,4 @@
-SOURCES= Dummy.c
+SOURCES= $(notdir $(wildcard src/*.c))
 OBJECTS = $(patsubst %.c,%.o,$(SOURCES))
 HFILES = $(wildcard include/**/*.h)
 
@@ -8,7 +8,7 @@ OBJBASE = $(OBJBASE_ROOT)/$(STYLE)
 DSTBASE = $(EMSCRIPTEN)/system/frameworks
 
 STYLE=normal
-STYLE_CFLAGS=-O2
+STYLE_CFLAGS=-O0
 STYLE_LFLAGS=
 ARCHFLAGS=
 

@@ -116,9 +116,9 @@ enum {
 
 
 /* SCDynamicStore APIs */
-//#include <SystemConfiguration/SCDynamicStore.h>
-//#include <SystemConfiguration/SCDynamicStoreKey.h>
-//#include <SystemConfiguration/SCDynamicStoreCopySpecific.h>
+#include <SystemConfiguration/SCDynamicStore.h>
+#include <SystemConfiguration/SCDynamicStoreKey.h>
+#include <SystemConfiguration/SCDynamicStoreCopySpecific.h>
 
 /* SCPreferences APIs */
 //#include <SystemConfiguration/SCPreferences.h>
@@ -126,7 +126,7 @@ enum {
 //#include <SystemConfiguration/SCPreferencesSetSpecific.h>
 
 /* Schema Definitions (for SCDynamicStore and SCPreferences) */
-//#include <SystemConfiguration/SCSchemaDefinitions.h>
+#include <SystemConfiguration/SCSchemaDefinitions.h>
 
 /* SCNetworkConfiguration APIs */
 //#include <SystemConfiguration/SCNetworkConfiguration.h>

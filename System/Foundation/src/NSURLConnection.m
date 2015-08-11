@@ -30,6 +30,7 @@
 #import <CFNetwork/CFURLConnection.h>
 #import <CoreFoundation/CFData.h>
 #import <Foundation/NSURLError.h>
+#import <emscripten.h>
 
 @implementation NSURLConnectionInternal
 
@@ -612,6 +613,15 @@ static CFCachedURLResponseRef cache(const void *info, CFCachedURLResponseRef cac
 
 @implementation NSURLConnection (NSURLConnectionSynchronousLoading)
 
+int _xhr_create(void);
+void _xhr_open(int xhr, const char *method, const char *url, int async, const char *user, const char *password);
+void _xhr_set_request_header(int xhr, const char *key, const char *value);
+void _xhr_send(int xhr, const char *data);
+int _xhr_get_status(int xhr);
+int _xhr_get_status_text(int xhr, void **text); // return length, text needs to be freed by caller 
+int _xhr_get_response_text(int xhr, void **data); // return length, data needs to be freed by caller
+int _xhr_get_all_response_headers(int xhr, void **data); // return length, data needs to be freed by caller
+
 + (NSData *)sendSynchronousRequest:(NSURLRequest *)request returningResponse:(NSURLResponse **)response error:(NSError **)error
 {
     if ([request URL] == nil)
@@ -623,37 +633,57 @@ static CFCachedURLResponseRef cache(const void *info, CFCachedURLResponseRef cac
 
         return nil;
     }
+    NSString *method = request.HTTPMethod;
+    NSURL *url = request.URL;
+    NSDictionary *headers = request.allHTTPHeaderFields;
 
-    CFDataRef data = NULL;
-    CFErrorRef err = NULL;
-    CFMutableURLRequestRef req = CFURLRequestCreateMutableCopy(kCFAllocatorDefault, [request _CFURLRequest]);
-    CFURLResponseRef resp = NULL;
-    if (!CFURLConnectionSendSynchronousRequest(req, &data, &resp, &err))
-    {
-        if (error)
-        {
-            *error = [[(NSError *)err retain] autorelease];
+    int xhr = _xhr_create();
+
+    _xhr_open(xhr, [method UTF8String], [url.absoluteString UTF8String], 0, [url.user UTF8String], [url.password UTF8String]);
+    for(NSString *key in [headers allKeys]) {
+        NSString *value = [headers objectForKey:key];
+        _xhr_set_request_header(xhr, [key UTF8String], [value UTF8String]);
+    }
+    _xhr_send(xhr, NULL); // block
+    
+    int status, length;
+    void *data;
+
+    status = _xhr_get_status(xhr);
+
+    if(status == 0) {
+        // connection, dns, timeout, etc...
+        *error = [[[NSError alloc] init] autorelease];
+        return NULL;
+    }
+
+    //length = _xhr_get_status_text(xhr, &data);
+    //NSString *statusText = [[NSString alloc] initWithBytesNoCopy:data length:length encoding:NSASCIIStringEncoding freeWhenDone:YES];
+
+    if(response) {
+        length = _xhr_get_all_response_headers(xhr, &data);
+        NSString *headerText = [[NSString alloc] initWithBytesNoCopy:data length:length-1 encoding:NSASCIIStringEncoding freeWhenDone:YES];
+
+        NSMutableDictionary *respHeaders = [[NSMutableDictionary alloc] init];
+        NSArray *responseHeaders = [headerText componentsSeparatedByString:@"\r\n"];
+        for(NSString *line in responseHeaders) {
+            if(line.length == 0) continue;
+
+            NSRange range = [line rangeOfString:@":"];
+            assert(range.location != NSNotFound);
+            NSString *key = [line substringToIndex:range.location];
+            NSString *value = [line substringFromIndex:range.location+2]; // ":" + space
+            [respHeaders setObject:value forKey:key];
         }
-        if (data != NULL)
-        {
-            CFRelease(data);
-        }
-        data = NULL;
+
+
+        *response = [[NSHTTPURLResponse alloc] initWithURL:url statusCode:status HTTPVersion:@"HTTP/1.1" headerFields:respHeaders];
     }
-    if (response)
-    {
-        *response = resp ? [NSHTTPURLResponse _responseWithCFURLResponse:resp] : NULL;
-    }
-    if (resp != NULL)
-    {
-        CFRelease(resp);
-    }
-    if (err != NULL)
-    {
-        CFRelease(err);
-    }
-    CFRelease(req);
-    return [(NSData *)data autorelease];
+
+    length = _xhr_get_response_text(xhr, &data);
+    NSData *body = [NSData dataWithBytesNoCopy:data length:length freeWhenDone:YES]; 
+
+    return [body autorelease];
 }
 
 @end

@@ -387,6 +387,14 @@ static void runTests(struct testClassEntry *testSuite)
     [tests release];
 }
 
+static int compareClassName(const void *c1, const void *c2) {
+    return strcmp(class_getName(((struct testClassEntry *)c1)->cls), class_getName(((struct testClassEntry *)c2)->cls));
+}
+
+static int compareTestNameLine(const void *c1, const void *c2) {
+    return ((struct testName *)c1)->line - ((struct testName *)c2)->line;
+}
+
 void runFoundationTests(void)
 {
     if (testClassCount == 0)
@@ -395,9 +403,12 @@ void runFoundationTests(void)
         return;
     }
 
+    /*
     qsort_b(testClasses, testClassCount, sizeof(struct testClassEntry), ^(const void *c1, const void *c2) {
         return strcmp(class_getName(((struct testClassEntry *)c1)->cls), class_getName(((struct testClassEntry *)c2)->cls));
     });
+    */
+    qsort(testClasses, testClassCount, sizeof(struct testClassEntry), compareClassName);
 
     for (unsigned testClassIdx = 0; testClassIdx < testClassCount; testClassIdx++)
     {
@@ -421,9 +432,12 @@ void runFoundationTests(void)
             ptr = ptr->next;
         }
 
+        /*
         qsort_b(tc->methods, tc->count, sizeof(struct testName), ^int(const void *c1, const void *c2) {
             return ((struct testName *)c1)->line - ((struct testName *)c2)->line;
         });
+        */
+        qsort(tc->methods, tc->count, sizeof(struct testName), compareTestNameLine);
 
         runTests(tc);
 

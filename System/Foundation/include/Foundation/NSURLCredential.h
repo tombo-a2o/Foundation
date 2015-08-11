@@ -1,5 +1,5 @@
 #import <Foundation/NSObject.h>
-//#import <Security/Security.h>
+#import <Security/Security.h>
 
 @class NSString, NSArray;
 
@@ -24,11 +24,6 @@ typedef NS_ENUM(NSUInteger, NSURLCredentialPersistence) {
 - (BOOL)hasPassword;
 
 @end
-
-@class SecIdentity;
-@class SecTrust;
-typedef SecIdentity *SecIdentityRef;
-typedef SecTrust *SecTrustRef;
 
 @interface NSURLCredential (NSClientCertificate)
 

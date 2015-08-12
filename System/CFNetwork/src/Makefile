@@ -24,6 +24,7 @@ SOURCES = \
     CFProxySupport.c \
     Cookies/CFHTTPCookie.c \
     Cookies/CFHTTPCookieStorage.c \
+	Stream/CFSocketStream.c \
     Utils/CFFSUtils.c \
     Utils/CFRuntimeUtils.c \
     Utils/CFHTTPUtils.c

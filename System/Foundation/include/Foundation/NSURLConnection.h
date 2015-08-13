@@ -12,14 +12,14 @@
 + (BOOL)canHandleRequest:(NSURLRequest *)request;
 - (id)initWithRequest:(NSURLRequest *)request delegate:(id<NSURLConnectionDelegate>)delegate startImmediately:(BOOL)startImmediately;
 - (id)initWithRequest:(NSURLRequest *)request delegate:(id<NSURLConnectionDelegate>)delegate;
-- (NSURLRequest *)originalRequest;
-- (NSURLRequest *)currentRequest;
 - (void)start;
 - (void)cancel;
 - (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode;
 - (void)unscheduleFromRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode;
 - (void)setDelegateQueue:(NSOperationQueue*)queue;
 
+@property(readonly, copy) NSURLRequest *originalRequest;
+@property(readonly, copy) NSURLRequest *currentRequest;
 @end
 
 @protocol NSURLConnectionDelegate <NSObject>

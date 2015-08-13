@@ -31,502 +31,68 @@
 #import <Foundation/NSURLError.h>
 #import <emscripten.h>
 
-@implementation NSURLConnectionInternal
+int _xhr_create(void);
+void _xhr_open(int xhr, const char *method, const char *url, int async, const char *user, const char *password);
+void _xhr_set_onload(int xhr, void *ctx, void func(int, int, void*));
+void _xhr_set_onerror(int xhr, void *ctx, void func(int, void*));
+void _xhr_set_request_header(int xhr, const char *key, const char *value);
+void _xhr_send(int xhr, const char *data);
+int _xhr_get_status(int xhr);
+int _xhr_get_status_text(int xhr, void **text); // return length, text needs to be freed by caller 
+int _xhr_get_response_text(int xhr, void **data); // return length, data needs to be freed by caller
+int _xhr_get_all_response_headers(int xhr, void **data); // return length, data needs to be freed by caller
 
-- (void)_callBlock:(void(^)(void))block async:(BOOL)async
-{
-    if (_delegateQueue == nil) {
-        block();
-    } else {
-        NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:block];
-        [_delegateQueue addOperation:operation];
-        if (!async) {
-            [operation waitUntilFinished];
-        }
+static int xhrCreateAndOpen(NSURLRequest *request, BOOL async) {
+    NSString *method = request.HTTPMethod;
+    NSURL *url = request.URL;
+    NSDictionary *headers = request.allHTTPHeaderFields;
+
+    int xhr = _xhr_create();
+    _xhr_open(xhr, [method UTF8String], [url.absoluteString UTF8String], async ? 1 : 0, [url.user UTF8String], [url.password UTF8String]);
+    for(NSString *key in [headers allKeys]) {
+        NSString *value = [headers objectForKey:key];
+        _xhr_set_request_header(xhr, [key UTF8String], [value UTF8String]);
     }
+    return xhr;
 }
 
-static Boolean canAuth(const void *info, CFURLProtectionSpaceRef cfspace)
-{
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return false;
+static NSHTTPURLResponse *createResponseFromXhr(int xhr, NSURLRequest *request) {
+    void *data;
+    int length = _xhr_get_all_response_headers(xhr, &data);
+    NSString *headerText = [[NSString alloc] initWithBytesNoCopy:data length:length-1 encoding:NSASCIIStringEncoding freeWhenDone:YES];
+
+    NSMutableDictionary *respHeaders = [[NSMutableDictionary alloc] init];
+    NSArray *responseHeaders = [headerText componentsSeparatedByString:@"\r\n"];
+    for(NSString *line in responseHeaders) {
+        if(line.length == 0) continue;
+
+        NSRange range = [line rangeOfString:@":"];
+        assert(range.location != NSNotFound);
+        NSString *key = [line substringToIndex:range.location];
+        NSString *value = [line substringFromIndex:range.location+2]; // ":" + space
+        [respHeaders setObject:value forKey:key];
     }
 
-    NSURLProtectionSpace *space = [[NSURLProtectionSpace alloc] _initWithCFURLProtectionSpace:cfspace];
-    __block Boolean canAuth = false;
-    void (^canAuthBlock)(void) = ^{
-        BOOL auth = [connectionInternal->_delegate connection:connectionInternal->_connection canAuthenticateAgainstProtectionSpace:space];
-        canAuth = auth ? true : false;
-        [space release];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        canAuthBlock();
-    } else {
-        NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:canAuthBlock];
-        [connectionInternal->_delegateQueue addOperation:op];
-        [op waitUntilFinished];
-    }
-    return canAuth;
+    int status = _xhr_get_status(xhr);
+    return [[NSHTTPURLResponse alloc] initWithURL:request.URL statusCode:status HTTPVersion:@"HTTP/1.1" headerFields:respHeaders];
 }
 
-static void cancelledAuthChallenge(const void *info, CFURLAuthChallengeRef cfchallenge)
-{
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return;
-    }
-
-    NSURLAuthenticationChallenge *challenge = [[NSURLAuthenticationChallenge alloc] _initWithCFAuthChallenge:cfchallenge sender:connectionInternal];
-    void (^cancelBlock)(void) = ^{
-        [connectionInternal->_delegate connection:connectionInternal->_connection didCancelAuthenticationChallenge:challenge];
-        [challenge release];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        cancelBlock();
-    } else {
-        [connectionInternal->_delegateQueue addOperationWithBlock:cancelBlock];
-    }
+static NSData *createDataFromXhr(int xhr) {
+    void *data;
+    int length = _xhr_get_response_text(xhr, &data);
+    return [NSData dataWithBytesNoCopy:data length:length freeWhenDone:YES]; 
 }
 
-static void failed(const void *info, CFErrorRef cferror)
-{
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return;
-    }
-
-    NSError *error = (NSError *)cferror;
-    void (^failBlock)(void) = ^{
-        [connectionInternal->_delegate connection:connectionInternal->_connection didFailWithError:error];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        failBlock();
-    } else {
-        [connectionInternal->_delegateQueue addOperationWithBlock:failBlock];
-    }
-
-    // invalidating here should be okay even for the block operation
-    // because the delegate and _connection are retained by the block.
-    [connectionInternal _invalidate];
-
-}
-
-static void receivedAuthChallenge(const void *info, CFURLAuthChallengeRef cfchallenge)
-{
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return;
-    }
-
-    NSURLAuthenticationChallenge *challenge = [[NSURLAuthenticationChallenge alloc] _initWithCFAuthChallenge:cfchallenge sender:connectionInternal];
-    void (^receiveBlock)(void) = ^{
-        [connectionInternal->_delegate connection:connectionInternal->_connection didReceiveAuthenticationChallenge:challenge];
-        [challenge release];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        receiveBlock();
-    } else {
-        [connectionInternal->_delegateQueue addOperationWithBlock:receiveBlock];
-    }
-}
-
-static void sendRequestForAuthChallenge(const void *info, CFURLAuthChallengeRef cfchallenge)
-{
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return;
-    }
-
-    NSURLAuthenticationChallenge *challenge = [[NSURLAuthenticationChallenge alloc] _initWithCFAuthChallenge:cfchallenge sender:connectionInternal];
-    void (^sendBlock)(void) = ^{
-        [connectionInternal->_delegate connection:connectionInternal->_connection willSendRequestForAuthenticationChallenge:challenge];
-        [challenge release];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        sendBlock();
-    } else {
-        [connectionInternal->_delegateQueue addOperationWithBlock:sendBlock];
-    }
-}
-
-static Boolean useCredentialStorage(const void *info)
-{
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return false;
-    }
-
-    __block Boolean useStorage = false;
-    void (^storeBlock)(void) = ^{
-        BOOL store = [connectionInternal->_delegate connectionShouldUseCredentialStorage:connectionInternal->_connection];
-        useStorage = store ? true : false;
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        storeBlock();
-    } else {
-        NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:storeBlock];
-        [connectionInternal->_delegateQueue addOperation:op];
-        [op waitUntilFinished];
-    }
-    return useStorage;
-}
-
-static CFURLRequestRef redirect(const void *info, CFURLRequestRef request, CFURLResponseRef response) {
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return NULL;
-    }
-
-    __block NSURLRequest *redirection = nil;
-    void (^redirectBlock)(void) = ^{
-        @autoreleasepool {
-            NSURLRequest *urlRequest = [[NSURLRequest alloc] _initWithCFURLRequest:request];
-            NSHTTPURLResponse *urlResponse = [NSHTTPURLResponse _responseWithCFURLResponse:response];
-            redirection = [[connectionInternal->_delegate connection:connectionInternal->_connection willSendRequest:urlRequest redirectResponse:urlResponse] retain];
-            [urlRequest release];
-        }
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        redirectBlock();
-    } else {
-        NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:redirectBlock];
-        [connectionInternal->_delegateQueue addOperation:op];
-        [op waitUntilFinished];
-    }
-    CFURLRequestRef result = [[redirection autorelease] _CFURLRequest];
-    
-    if (result != NULL)
-    {
-        return CFRetain(result);
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-static void response(const void *info, CFURLResponseRef response) {
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return;
-    }
-
-    void (^responseBlock)(void) = ^{
-        @autoreleasepool {
-            NSHTTPURLResponse *urlResponse = [NSHTTPURLResponse _responseWithCFURLResponse:response];
-            [connectionInternal->_delegate connection:connectionInternal->_connection didReceiveResponse:urlResponse];
-        }
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        responseBlock();
-    } else {
-        [connectionInternal->_delegateQueue addOperationWithBlock:responseBlock];
-    }
-}
-
-static void data(const void *info, CFDataRef cfdata) {
-    NSData *data = (NSData *)cfdata;
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return;
-    }
-
-    void (^dataBlock)(void) = ^{
-        [connectionInternal->_delegate connection:connectionInternal->_connection didReceiveData:(NSData *)data];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        dataBlock();
-    } else {
-        [connectionInternal->_delegateQueue addOperationWithBlock:dataBlock];
-    }
-}
-
-static CFReadStreamRef newBodyStream(const void *info, CFURLRequestRef request) {
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return NULL;
-    }
-
-    __block CFReadStreamRef stream = nil;
-    NSURLRequest *urlRequest = [[NSURLRequest alloc] _initWithCFURLRequest:request];
-    void (^newBodyStreamBlock)(void) = ^{
-        stream = (CFReadStreamRef)[connectionInternal->_delegate connection:connectionInternal->_connection needNewBodyStream:urlRequest];
-        [urlRequest release];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        newBodyStreamBlock();
-    } else {
-        NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:newBodyStreamBlock];
-        [connectionInternal->_delegateQueue addOperation:op];
-        [op waitUntilFinished];
-    }
-    return stream;
-}
-
-static Boolean handledByProtocol(const void *info)
-{
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || !connectionInternal->_protocol) {
-        return false;
-    }
-
-    [connectionInternal->_protocol startLoading];
-    [connectionInternal->_protocol stopLoading];
-    return true;
-}
-
-static void sent(const void *info, CFIndex bytesWritten, CFIndex totalBytesWritten, CFIndex totalBytesExpectedToWrite) {
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return;
-    }
-
-    void (^sentBlock)(void) = ^{
-        [connectionInternal->_delegate connection:connectionInternal->_connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        sentBlock();
-    } else {
-        [connectionInternal->_delegateQueue addOperationWithBlock:sentBlock];
-    }
-}
-
-static void finished(const void *info) {
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return;
-    }
-
-    void (^finishedBlock)(void) = ^{
-        [connectionInternal->_delegate connectionDidFinishLoading:connectionInternal->_connection];
-    };
-    if (connectionInternal->_delegateQueue == nil) {
-        finishedBlock();
-    } else {
-        [connectionInternal->_delegateQueue addOperationWithBlock:finishedBlock];
-    }
-
-    [connectionInternal _invalidate];
-}
-
-static CFCachedURLResponseRef cache(const void *info, CFCachedURLResponseRef cachedResponse) {
-    NSURLConnectionInternal *connectionInternal = [(_NSWeakRef *)info object];
-    if (!connectionInternal || ![connectionInternal isConnectionActive]) {
-        return NULL;
-    }
-
-    __block NSCachedURLResponse* response = nil;
-    [connectionInternal _callBlock:^{
-        response = [[[NSCachedURLResponse alloc] _initWithCFCachedURLResponse:cachedResponse] autorelease];
-        response = [connectionInternal->_delegate connection:connectionInternal->_connection
-                                           willCacheResponse:response];
-    } async:NO];
-    return response._CFCachedURLResponse;
-}
-
-- (id)initWithInfo:(const struct InternalInit *)info
-{
-    // Initialize NSURLCache
-    [NSURLCache sharedURLCache];
-
-    self = [super init];
-    if (self)
-    {
-        _connection = info->connection;
-        _originalRequest = [info->request copy]; // this should be a deep copy?
-        _delegate = info->delegate;
-        _delegateQueue = info->queue;
-        _scheduledInRunLoop = NO;
-        _connectionProperties = [[NSMutableDictionary alloc] init];
-
-        CFURLConnectionContext ctx = {
-            .version = 0,
-            .info = self,
-            .retain = NULL,
-            .release = NULL,
-            .copyDescription = &CFCopyDescription,
-            .equal = &CFEqual,
-            .hash = &CFHash,
-        };
-        ctx.handledByProtocol = &handledByProtocol;
-        if ([_delegate respondsToSelector:@selector(connection:canAuthenticateAgainstProtectionSpace:)])
-        {
-            ctx.canAuth = &canAuth;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:didCancelAuthenticationChallenge:)])
-        {
-            ctx.cancelledAuthChallenge = &cancelledAuthChallenge;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:didFailWithError:)])
-        {
-            ctx.failed = &failed;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:didReceiveAuthenticationChallenge:)])
-        {
-            ctx.receivedAuthChallenge = &receivedAuthChallenge;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:willSendRequestForAuthenticationChallenge:)])
-        {
-            ctx.sendRequestForAuthChallenge = &sendRequestForAuthChallenge;
-        }
-        if ([_delegate respondsToSelector:@selector(connectionShouldUseCredentialStorage:)])
-        {
-            ctx.useCredentialStorage = &useCredentialStorage;
-        }
-
-        _cfurlconnection = CFURLConnectionCreate(kCFAllocatorDefault, [_originalRequest _CFURLRequest], &ctx);
-        CFURLConnectionHandlerContext handler = {
-            .info = [[[_NSWeakRef alloc] initWithObject:self] autorelease],
-            .retain = &CFRetain,
-            .release = &CFRelease
-        };
-        if ([_delegate respondsToSelector:@selector(connection:willSendRequest:redirectResponse:)])
-        {
-            handler.redirect = &redirect;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:didReceiveResponse:)])
-        {
-            handler.response = &response;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:didReceiveData:)])
-        {
-            handler.data = &data;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:needNewBodyStream:)])
-        {
-            handler.newBodyStream = &newBodyStream;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:)])
-        {
-            handler.sent = &sent;
-        }
-        if ([_delegate respondsToSelector:@selector(connectionDidFinishLoading:)])
-        {
-            handler.finished = &finished;
-        }
-        if ([_delegate respondsToSelector:@selector(connection:willCacheResponse:)])
-        {
-            handler.cache = &cache;
-        }
-
-        NSArray *registeredProtocols = [NSURLProtocol _registeredClasses];
-        for (Class protocolClass in registeredProtocols) {
-            if ([protocolClass canInitWithRequest:_originalRequest]) {
-                NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:_originalRequest];
-                NSURLRequest *requestForProtocol = [protocolClass canonicalRequestForRequest:_originalRequest];
-                NSURLProtocolDefaultClient *client = [[NSURLProtocolDefaultClient alloc] init];
-                client.connection = _connection;
-                client.delegate = _delegate;
-                NSURLProtocol *protocol = [[protocolClass alloc] initWithRequest:requestForProtocol cachedResponse:cachedResponse client:client];
-                _protocol = [protocol retain];
-                [client release];
-                [protocol release];
-                break;
-            }
-        }
-
-
-        CFURLConnectionSetHandler(_cfurlconnection, &handler);
-        if (info->startImmediately)
-        {
-            [self scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-            [self start];
-        }
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    [_originalRequest release];
-    [_protocol release];
-    CFRelease(_cfurlconnection);
-    [super dealloc];
-}
-
-- (void)_invalidate
-{
-    @synchronized (self) {
-        if (_connectionActive) {
-            _connectionActive = NO;
-            [_delegate autorelease];
-            [_connection release];
-            _connection = nil;
-            [self autorelease];
-        }
-    }
-}
-
-- (BOOL)isConnectionActive
-{
-    return _connectionActive;
-}
-
-- (void)setConnectionActive:(BOOL)active
-{
-    _connectionActive = active;
-}
-
-- (void)_setDelegateQueue:(NSOperationQueue *)queue
-{
-    _delegateQueue = queue;
-}
-
-- (NSURLRequest *)currentRequest
-{
-    return _currentRequest;
-}
-
-- (NSURLRequest *)originalRequest
-{
-    return _originalRequest;
-}
-
-- (NSDictionary *)_connectionProperties
-{
-    return _connectionProperties;
-}
-
-- (void)start
-{
-    if (!_connectionActive && _connection) {
-        _connectionActive = YES;
-        _delegate = [_delegate retain];
-        _connection = [_connection retain];
-        [self retain];
-        if(!_scheduledInRunLoop)
-        {
-            [self scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        }
-        
-        CFURLConnectionStart(_cfurlconnection);
-    }
-}
-
-- (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode
-{
-    CFURLConnectionScheduleWithRunLoop(_cfurlconnection, [aRunLoop getCFRunLoop], (CFStringRef)mode);
-    _scheduledInRunLoop = YES;
-}
-
-- (void)unscheduleFromRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode
-{
-    CFURLConnectionUnscheduleFromRunLoop(_cfurlconnection, [aRunLoop getCFRunLoop], (CFStringRef)mode);
-    _scheduledInRunLoop = NO;
-}
-
-- (void)cancel
-{
-    [self _invalidate];
-
-    CFURLConnectionCancel(_cfurlconnection);
-}
-
+@interface NSURLConnection ()
+@property(readwrite, copy) NSURLRequest *originalRequest;
+@property(readwrite, copy) NSURLRequest *currentRequest;
+@property(nonatomic, assign) id<NSURLConnectionDelegate> delegate;
+@property(nonatomic, assign) NSRunLoop *runLoop;
+@property(nonatomic, assign) NSString *mode;
 @end
 
 @implementation NSURLConnection {
-    NSURLConnectionInternal *_internal;
+    int xhr;
 }
 
 + (NSURLConnection*)connectionWithRequest:(NSURLRequest *)request delegate:(id<NSURLConnectionDelegate>)delegate
@@ -536,29 +102,25 @@ static CFCachedURLResponseRef cache(const void *info, CFCachedURLResponseRef cac
 
 + (BOOL)canHandleRequest:(NSURLRequest *)request
 {
-    if ([[NSURLProtocol _registeredClasses] count] == 0) {
-        return YES;
-    }
-    else {
-        return [NSURLProtocol _protocolClassForRequest:request] != Nil;
-    }
+    NSString *scheme = request.URL.scheme;
+    return [scheme isEqualToString:@"http"] || [scheme isEqualToString:@"https"];
 }
 
 - (id)initWithRequest:(NSURLRequest *)request delegate:(id<NSURLConnectionDelegate>)delegate startImmediately:(BOOL)startImmediately
 {
+    if(![NSURLConnection canHandleRequest:request]) return nil;
+
     self = [super init];
-    if (self)
-    {
-        struct InternalInit info = {
-            self,
-            request,
-            (id<NSURLConnectionDataDelegate>)delegate,
-            nil,
-            startImmediately,
-            0
-        };
-        _internal = [[NSURLConnectionInternal alloc] initWithInfo:&info];
-    }
+    if(!self) return nil;
+
+    self.delegate = delegate;
+    self.originalRequest = request;
+    self.currentRequest = request;
+    self.runLoop = [NSRunLoop currentRunLoop];
+    self.mode = NSDefaultRunLoopMode;
+
+    if(startImmediately) [self start];
+
     return self;
 }
 
@@ -569,57 +131,75 @@ static CFCachedURLResponseRef cache(const void *info, CFCachedURLResponseRef cac
 
 - (void)dealloc
 {
-    [_internal release];
+    [self.originalRequest release];
+    [self.currentRequest release];
     [super dealloc];
 }
 
-- (NSURLRequest *)originalRequest
-{
-    return [_internal originalRequest];
+- (void)didReceiveResponse:(NSHTTPURLResponse*)response {
+    if([self.delegate respondsToSelector:@selector(connection:didReceiveResponse:)]) {
+        [self.delegate connection:self didReceiveResponse:response];
+    } 
 }
 
-- (NSURLRequest *)currentRequest
-{
-    return [_internal currentRequest];
+- (void)didReceiveData:(NSData*)data {
+    if([self.delegate respondsToSelector:@selector(connection:didReceiveData:)]) {
+        [self.delegate connection:self didReceiveData:data];
+    } 
+}
+
+- (void)didFinishLoading:(id)dummy {
+    if([self.delegate respondsToSelector:@selector(connectionDidFinishLoading:)]) {
+        [self.delegate connectionDidFinishLoading:self];
+    } 
+}
+
+static void onloadCallback(int xhr, int state, void *ctx) {
+    NSURLConnection *connection= (NSURLConnection*)ctx;
+    id<NSURLConnectionDelegate> delegate = connection.delegate;
+
+    if(state == 2) {
+        NSHTTPURLResponse *response= createResponseFromXhr(xhr, connection.currentRequest);
+        [connection.runLoop performSelector:@selector(didReceiveResponse:) target:connection argument:response order:0 modes:@[connection.mode]];
+    } else if(state == 3) {
+        // Return all data at once
+    } else if(state == 4) {
+        NSData *data = createDataFromXhr(xhr);
+        [connection.runLoop performSelector:@selector(didReceiveData:) target:connection argument:data order:0 modes:@[connection.mode]];
+        [connection.runLoop performSelector:@selector(didFinishLoading:) target:connection argument:nil order:0 modes:@[connection.mode]];
+    }
 }
 
 - (void)start
 {
-    [_internal start];
+    xhr = xhrCreateAndOpen(self.currentRequest, YES);
+    _xhr_set_onload(xhr, self, onloadCallback); 
+    _xhr_send(xhr, NULL);
 }
 
 - (void)cancel
 {
-    [_internal cancel];
+    assert(0);
 }
 
 - (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode
 {
-    [_internal scheduleInRunLoop:aRunLoop forMode:mode];
+    _runLoop = aRunLoop;
 }
 
 - (void)unscheduleFromRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode
 {
-    [_internal unscheduleFromRunLoop:aRunLoop forMode:mode];
+    assert(0);
 }
 
 - (void)setDelegateQueue:(NSOperationQueue*)queue
 {
-    [_internal _setDelegateQueue:queue];
+    assert(0);
 }
 
 @end
 
 @implementation NSURLConnection (NSURLConnectionSynchronousLoading)
-
-int _xhr_create(void);
-void _xhr_open(int xhr, const char *method, const char *url, int async, const char *user, const char *password);
-void _xhr_set_request_header(int xhr, const char *key, const char *value);
-void _xhr_send(int xhr, const char *data);
-int _xhr_get_status(int xhr);
-int _xhr_get_status_text(int xhr, void **text); // return length, text needs to be freed by caller 
-int _xhr_get_response_text(int xhr, void **data); // return length, data needs to be freed by caller
-int _xhr_get_all_response_headers(int xhr, void **data); // return length, data needs to be freed by caller
 
 + (NSData *)sendSynchronousRequest:(NSURLRequest *)request returningResponse:(NSURLResponse **)response error:(NSError **)error
 {
@@ -632,23 +212,11 @@ int _xhr_get_all_response_headers(int xhr, void **data); // return length, data 
 
         return nil;
     }
-    NSString *method = request.HTTPMethod;
-    NSURL *url = request.URL;
-    NSDictionary *headers = request.allHTTPHeaderFields;
 
-    int xhr = _xhr_create();
-
-    _xhr_open(xhr, [method UTF8String], [url.absoluteString UTF8String], 0, [url.user UTF8String], [url.password UTF8String]);
-    for(NSString *key in [headers allKeys]) {
-        NSString *value = [headers objectForKey:key];
-        _xhr_set_request_header(xhr, [key UTF8String], [value UTF8String]);
-    }
+    int xhr = xhrCreateAndOpen(request, NO);
     _xhr_send(xhr, NULL); // block
     
-    int status, length;
-    void *data;
-
-    status = _xhr_get_status(xhr);
+    int status = _xhr_get_status(xhr);
 
     if(status == 0) {
         // connection, dns, timeout, etc...
@@ -660,29 +228,12 @@ int _xhr_get_all_response_headers(int xhr, void **data); // return length, data 
     //NSString *statusText = [[NSString alloc] initWithBytesNoCopy:data length:length encoding:NSASCIIStringEncoding freeWhenDone:YES];
 
     if(response) {
-        length = _xhr_get_all_response_headers(xhr, &data);
-        NSString *headerText = [[NSString alloc] initWithBytesNoCopy:data length:length-1 encoding:NSASCIIStringEncoding freeWhenDone:YES];
-
-        NSMutableDictionary *respHeaders = [[NSMutableDictionary alloc] init];
-        NSArray *responseHeaders = [headerText componentsSeparatedByString:@"\r\n"];
-        for(NSString *line in responseHeaders) {
-            if(line.length == 0) continue;
-
-            NSRange range = [line rangeOfString:@":"];
-            assert(range.location != NSNotFound);
-            NSString *key = [line substringToIndex:range.location];
-            NSString *value = [line substringFromIndex:range.location+2]; // ":" + space
-            [respHeaders setObject:value forKey:key];
-        }
-
-
-        *response = [[NSHTTPURLResponse alloc] initWithURL:url statusCode:status HTTPVersion:@"HTTP/1.1" headerFields:respHeaders];
+        *response= createResponseFromXhr(xhr, request);
     }
 
-    length = _xhr_get_response_text(xhr, &data);
-    NSData *body = [NSData dataWithBytesNoCopy:data length:length freeWhenDone:YES]; 
+    NSData *data = createDataFromXhr(xhr);
 
-    return [body autorelease];
+    return [data autorelease];
 }
 
 @end

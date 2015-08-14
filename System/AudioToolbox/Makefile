@@ -1,4 +1,5 @@
 SOURCES= Dummy.c \
+	AudioToolBoxBase.c \
 	AudioFile.c \
 	ExtendedAudioFile.c
 OBJECTS = $(patsubst %.c,%.o,$(SOURCES))

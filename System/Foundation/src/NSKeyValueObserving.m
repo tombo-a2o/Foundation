@@ -472,7 +472,7 @@ id __NSKeyValueRetainedObservationInfoForObject(NSObject *object, NSKeyValueCont
     OSSpinLockLock(&_NSKeyValueObservationInfoSpinLock);
     if (containerClass != nil)
     {
-        IMP cachedIMP = containerClass.cachedObservationInfoImplementation;
+        void *(*cachedIMP)(id, SEL)  = containerClass.cachedObservationInfoImplementation;
         observationInfo = cachedIMP(object, @selector(observationInfo));
     }
     else
@@ -1472,7 +1472,8 @@ static BOOL __NSKeyValueCheckObservationInfoForPendingNotification(NSObject *ori
     NSKeyValueContainerClass *kvcon = observance.property.containerClass;
     if (kvcon != nil)
     {
-        observationInfo = kvcon.cachedObservationInfoImplementation(originalObservable, @selector(observationInfo));
+        void *(*cachedIMP)(id, SEL)  = kvcon.cachedObservationInfoImplementation;
+        observationInfo = cachedIMP(originalObservable, @selector(observationInfo));
     }
     else
     {

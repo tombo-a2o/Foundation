@@ -50,9 +50,9 @@
 
 #include "CFStreamPriv.h"
 #include "CFSocketStreamPriv.h"
-#include <SystemConfiguration/SystemConfiguration.h>
-#include <Security/Security.h>
-#include "SecureTransportPriv.h"
+//#include <SystemConfiguration/SystemConfiguration.h>
+//#include <Security/Security.h>
+//#include "SecureTransportPriv.h"
 
 #if 0
 #pragma mark -
@@ -339,6 +339,7 @@ typedef struct {
 typedef void (*_CFSocketStreamSocketCreatedCallBack)(CFSocketNativeHandle s, void* info);
 typedef void (*_CFSocketStreamPerformHandshakeCallBack)(_CFSocketStreamContext* ctxt);
 
+#if !defined(EMSCRIPTEN)
 
 #if 0
 #pragma mark -
@@ -6988,3 +6989,5 @@ CF_EXPORT void CFStreamCreateBoundPair(CFAllocatorRef alloc, CFReadStreamRef *re
 }
 
 #pragma clang diagnostic pop
+
+#endif // !defined(EMSCRIPTEN)

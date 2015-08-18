@@ -38,7 +38,7 @@
 extern "C" {
 #endif
 	
-#if defined(__MACH__) || defined(APPORTABLE)
+#if defined(__MACH__) || defined(APPORTABLE) || defined(EMSCRIPTEN)
 
 #include <libkern/OSAtomic.h>
 #include <pthread.h>					// For spin_lock stuff below

@@ -38,11 +38,7 @@
 #include "CFNetworkInternal.h"
 #include "CFHTTPInternal.h"
 #include <CFNetwork/CFHTTPStream.h>
-#ifdef APPORTABLE
 #include "cuEnc64.h"
-#else
-#include <security_cdsa_utils/cuEnc64.h>
-#endif
 
 #if defined(__MACH__) || defined(APPORTABLE)
 #include <pthread.h>

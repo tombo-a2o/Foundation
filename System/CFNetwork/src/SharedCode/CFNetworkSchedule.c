@@ -32,7 +32,7 @@
 #include "CFNetworkSchedule.h"
 #include <CFNetwork/CFNetwork.h>
 
-#include <SystemConfiguration/SystemConfiguration.h>
+//#include <SystemConfiguration/SystemConfiguration.h>
 
 
 /* extern */ void
@@ -51,10 +51,11 @@ _CFTypeScheduleOnRunLoop(CFTypeRef obj, CFRunLoopRef runLoop, CFStringRef runLoo
 		src = CFRetain(obj);
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == CFMachPortGetTypeID()) {
 		src = CFMachPortCreateRunLoopSource(CFGetAllocator(obj), (CFMachPortRef)obj, 0);
 	}
-	
+#endif	
 	else if (t == CFSocketGetTypeID()) {
 		src = CFSocketCreateRunLoopSource(CFGetAllocator(obj), (CFSocketRef)obj, 0);
 	}
@@ -71,9 +72,11 @@ _CFTypeScheduleOnRunLoop(CFTypeRef obj, CFRunLoopRef runLoop, CFStringRef runLoo
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))CFHostScheduleWithRunLoop;
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkReachabilityGetTypeID()) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))SCNetworkReachabilityScheduleWithRunLoop;
 	}
+#endif
 	
 	else if (t == CFRunLoopTimerGetTypeID()) {
 		src = CFRetain(obj);
@@ -92,9 +95,11 @@ _CFTypeScheduleOnRunLoop(CFTypeRef obj, CFRunLoopRef runLoop, CFStringRef runLoo
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))CFNetServiceMonitorScheduleWithRunLoop;
 	}
 #endif
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkConnectionGetTypeID()) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))SCNetworkConnectionScheduleWithRunLoop;
 	}
+#endif
 	
 	
 	/* If a source was retrieved, need to add the source */
@@ -126,10 +131,12 @@ _CFTypeUnscheduleFromRunLoop(CFTypeRef obj, CFRunLoopRef runLoop, CFStringRef ru
 		src = CFRetain(obj);
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == CFMachPortGetTypeID()) {
 		src = CFMachPortCreateRunLoopSource(CFGetAllocator(obj), (CFMachPortRef)obj, 0);
 	}
-	
+#endif
+
 	else if (t == CFSocketGetTypeID()) {
 		src = CFSocketCreateRunLoopSource(CFGetAllocator(obj), (CFSocketRef)obj, 0);
 	}
@@ -146,9 +153,11 @@ _CFTypeUnscheduleFromRunLoop(CFTypeRef obj, CFRunLoopRef runLoop, CFStringRef ru
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))CFHostUnscheduleFromRunLoop;
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkReachabilityGetTypeID()) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))SCNetworkReachabilityUnscheduleFromRunLoop;
 	}
+#endif
 	
 	else if (t == CFRunLoopTimerGetTypeID()) {
 		src = CFRetain(obj);
@@ -167,9 +176,11 @@ _CFTypeUnscheduleFromRunLoop(CFTypeRef obj, CFRunLoopRef runLoop, CFStringRef ru
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))CFNetServiceMonitorUnscheduleFromRunLoop;
 	}
 #endif
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkConnectionGetTypeID()) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))SCNetworkConnectionUnscheduleFromRunLoop;
 	}
+#endif
 	
 	/* If a source was retrieved, need to remove it */
 	if (src) {
@@ -205,9 +216,11 @@ _CFTypeScheduleOnMultipleRunLoops(CFTypeRef obj, CFArrayRef schedules) {
 		fn2 = (void(*)(CFRunLoopRef, CFTypeRef, CFStringRef))CFRunLoopAddTimer;
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == CFMachPortGetTypeID()) {
 		src = CFMachPortCreateRunLoopSource(CFGetAllocator(obj), (CFMachPortRef)obj, 0);
 	}
+#endif
 	
 	else if (t == CFSocketGetTypeID()) {
 		src = CFSocketCreateRunLoopSource(CFGetAllocator(obj), (CFSocketRef)obj, 0);
@@ -237,6 +250,7 @@ _CFTypeScheduleOnMultipleRunLoops(CFTypeRef obj, CFArrayRef schedules) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))CFNetServiceMonitorScheduleWithRunLoop;
 	}
 #endif
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkReachabilityGetTypeID()) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))SCNetworkReachabilityScheduleWithRunLoop;
 	}
@@ -244,6 +258,7 @@ _CFTypeScheduleOnMultipleRunLoops(CFTypeRef obj, CFArrayRef schedules) {
 	else if (t == SCNetworkConnectionGetTypeID()) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))SCNetworkConnectionScheduleWithRunLoop;
 	}
+#endif
 	
 	/* If a source was retrieved, need to add the source to the list of run loops */
 	if (src) {
@@ -289,9 +304,11 @@ _CFTypeUnscheduleFromMultipleRunLoops(CFTypeRef obj, CFArrayRef schedules) {
 		src = CFRetain(obj);
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == CFMachPortGetTypeID()) {
 		src = CFMachPortCreateRunLoopSource(CFGetAllocator(obj), (CFMachPortRef)obj, 0);
 	}
+#endif
 	
 	else if (t == CFSocketGetTypeID()) {
 		src = CFSocketCreateRunLoopSource(CFGetAllocator(obj), (CFSocketRef)obj, 0);
@@ -309,9 +326,11 @@ _CFTypeUnscheduleFromMultipleRunLoops(CFTypeRef obj, CFArrayRef schedules) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))CFHostUnscheduleFromRunLoop;
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkReachabilityGetTypeID()) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))SCNetworkReachabilityUnscheduleFromRunLoop;
 	}
+#endif
 	
 	else if (t == CFRunLoopTimerGetTypeID()) {
 		src = CFRetain(obj);
@@ -330,9 +349,11 @@ _CFTypeUnscheduleFromMultipleRunLoops(CFTypeRef obj, CFArrayRef schedules) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))CFNetServiceMonitorUnscheduleFromRunLoop;
 	}
 #endif
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkConnectionGetTypeID()) {
 		fn = (void(*)(CFTypeRef, CFRunLoopRef, CFStringRef))SCNetworkConnectionUnscheduleFromRunLoop;
 	}
+#endif
 	
 	/* If a source was retrieved, need to remove it from the list of run loops*/
 	if (src) {
@@ -372,9 +393,11 @@ _CFTypeInvalidate(CFTypeRef obj) {
 		CFRunLoopSourceInvalidate((CFRunLoopSourceRef)obj);
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == CFMachPortGetTypeID()) {
 		CFMachPortInvalidate((CFMachPortRef)obj);
 	}
+#endif
 	
 	else if (t == CFSocketGetTypeID()) {
 		CFSocketInvalidate((CFSocketRef)obj);
@@ -393,9 +416,11 @@ _CFTypeInvalidate(CFTypeRef obj) {
 		CFHostSetClient((CFHostRef)obj, NULL, NULL);
 	}
 	
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkReachabilityGetTypeID()) {
 		SCNetworkReachabilitySetCallback((SCNetworkReachabilityRef)obj, NULL, NULL);
 	}
+#endif
 	
 	else if (t == CFRunLoopTimerGetTypeID()) {
 		CFRunLoopTimerInvalidate((CFRunLoopTimerRef)obj);
@@ -413,9 +438,11 @@ _CFTypeInvalidate(CFTypeRef obj) {
 		CFNetServiceMonitorInvalidate((CFNetServiceMonitorRef)obj);
 	}
 #endif
+#if !defined(EMSCRIPTEN)
 	else if (t == SCNetworkReachabilityGetTypeID()) {
 		SCNetworkConnectionStop((SCNetworkConnectionRef)obj, FALSE);
 	}
+#endif
 }
 
 

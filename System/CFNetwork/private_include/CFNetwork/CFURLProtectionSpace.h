@@ -3,7 +3,8 @@
 
 #include <CoreFoundation/CFArray.h>
 #include <CoreFoundation/CFString.h>
-#include <Security/Security.h>
+//#include <Security/Security.h>
+#include <sys/cdefs.h>
 
 #if PRAGMA_ONCE
 #pragma once
@@ -40,7 +41,7 @@ CFArrayRef CFURLProtectionSpaceGetDistinguishedNames(CFURLProtectionSpaceRef spa
 CFStringRef CFURLProtectionSpaceGetHost(CFURLProtectionSpaceRef space);
 CFIndex CFURLProtectionSpaceGetPort(CFURLProtectionSpaceRef space);
 CFStringRef CFURLProtectionSpaceGetRealm(CFURLProtectionSpaceRef space);
-SecTrustRef CFURLProtectionSpaceGetServerTrust(CFURLProtectionSpaceRef space);
+//SecTrustRef CFURLProtectionSpaceGetServerTrust(CFURLProtectionSpaceRef space);
 CFURLProtectionSpaceServerType CFURLProtectionSpaceGetServerType(CFURLProtectionSpaceRef space);
 Boolean CFURLProtectionSpaceIsProxy(CFURLProtectionSpaceRef space);
 Boolean CFURLProtectionSpaceReceivesCredentialSecurely(CFURLProtectionSpaceRef space);

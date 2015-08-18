@@ -366,7 +366,7 @@ typedef struct __CFNetConnectionCacheKey*	_CFNetConnectionCacheKey;
 //
 // Net connection cache
 //
-CFNetConnectionCacheRef createConnectionCache();
+CFNetConnectionCacheRef createConnectionCache(void);
 #if defined(__WIN32__)
 void releaseConnectionCache(CFNetConnectionCacheRef cache);
 #endif	/* defined(__WIN32__) */

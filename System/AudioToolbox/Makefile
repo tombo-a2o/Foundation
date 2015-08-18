@@ -1,5 +1,7 @@
 SOURCES= Dummy.c \
-	AudioFile.c
+	AudioToolBoxBase.c \
+	AudioFile.c \
+	ExtendedAudioFile.c
 OBJECTS = $(patsubst %.c,%.o,$(SOURCES))
 HFILES = $(wildcard include/**/*.h)
 

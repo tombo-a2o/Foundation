@@ -88,7 +88,9 @@
 #include <winsock2.h>
 #define SOCK_MAXADDRLEN 255
 #endif
-
+#if defined(EMSCRIPTEN)
+#define SOCK_MAXADDRLEN 255
+#endif
 
 #if 0
 #pragma mark -

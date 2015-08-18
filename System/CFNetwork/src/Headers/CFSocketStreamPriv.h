@@ -176,7 +176,7 @@ extern const CFStringRef kCFStreamPropertyCONNECTResponse            AVAILABLE_M
  */
 extern const CFStringRef kCFStreamPropertyPreviousCONNECTResponse    AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER;
 
-#if defined(__MACH__) || defined(APPORTABLE)
+#if defined(__MACH__) || defined(APPORTABLE) || defined(EMSCRIPTEN)
 /*
  *  kCFStreamPropertySocketSSLContext
  *  

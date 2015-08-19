@@ -396,7 +396,6 @@ CF_INLINE void __CFRunLoopLockInit(pthread_mutex_t *lock) {
 
 /* call with rl locked, returns mode locked */
 static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeName, Boolean create) {
-    CHECK_FOR_FORK();
     CFRunLoopModeRef rlm;
     struct __CFRunLoopMode srlm;
     memset(&srlm, 0, sizeof(srlm));
@@ -462,7 +461,6 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
 
 // expects rl and rlm locked
 static Boolean __CFRunLoopModeIsEmpty(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRunLoopModeRef previousMode) {
-    CHECK_FOR_FORK();
     if (NULL == rlm) return true;
     Boolean libdispatchQSafe = pthread_main_np() && ((HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY && NULL == previousMode) || (!HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY && 0 == _CFGetTSD(__CFTSDKeyIsInGCDMainQ)));
     if (libdispatchQSafe && (CFRunLoopGetMain() == rl) && CFSetContainsValue(rl->_commonModes, rlm->_name)) return false; // represents the libdispatch main queue
@@ -675,7 +673,6 @@ CONST_STRING_DECL(kCFRunLoopCommonModes, "kCFRunLoopCommonModes")
 
 // call with rl and rlm locked
 static CFRunLoopSourceRef __CFRunLoopModeFindSourceForMachPort(CFRunLoopRef rl, CFRunLoopModeRef rlm, __CFPort port) {	/* DOES CALLOUT */
-    CHECK_FOR_FORK();
     CFRunLoopSourceRef found = rlm->_portToV1SourceMap ? (CFRunLoopSourceRef)CFDictionaryGetValue(rlm->_portToV1SourceMap, (const void *)(uintptr_t)port) : NULL;
     return found;
 }
@@ -1046,21 +1043,18 @@ void _CFRunLoopSetCurrent(CFRunLoopRef rl) {
 }
 
 CFRunLoopRef CFRunLoopGetMain(void) {
-    CHECK_FOR_FORK();
     static CFRunLoopRef __main = NULL; // no retain needed
     if (!__main) __main = _CFRunLoopGet0(pthread_main_thread_np()); // no CAS needed
     return __main;
 }
 
 CFRunLoopRef CFRunLoopGetCurrent(void) {
-    CHECK_FOR_FORK();
     CFRunLoopRef rl = (CFRunLoopRef)_CFGetTSD(__CFTSDKeyRunLoop);
     if (rl) return rl;
     return _CFRunLoopGet0(pthread_self());
 }
 
 CFStringRef CFRunLoopCopyCurrentMode(CFRunLoopRef rl) {
-    CHECK_FOR_FORK();
     CFStringRef result = NULL;
     __CFRunLoopLock(rl);
     if (NULL != rl->_currentMode) {
@@ -1077,7 +1071,6 @@ static void __CFRunLoopGetModeName(const void *value, void *context) {
 }
 
 CFArrayRef CFRunLoopCopyAllModes(CFRunLoopRef rl) {
-    CHECK_FOR_FORK();
     CFMutableArrayRef array;
     __CFRunLoopLock(rl);
     array = CFArrayCreateMutable(kCFAllocatorSystemDefault, CFSetGetCount(rl->_modes), &kCFTypeArrayCallBacks);
@@ -1133,7 +1126,6 @@ CF_EXPORT Boolean _CFRunLoop01(CFRunLoopRef rl, CFStringRef modeName) {
 }
 
 void CFRunLoopAddCommonMode(CFRunLoopRef rl, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     if (__CFRunLoopIsDeallocating(rl)) return;
     __CFRunLoopLock(rl);
     if (!CFSetContainsValue(rl->_commonModes, modeName)) {
@@ -1232,8 +1224,6 @@ static Boolean __CFRunLoopDoBlocks(CFRunLoopRef rl, CFRunLoopModeRef rlm) { // C
 /* rl is locked, rlm is locked on entrance and exit */
 static void __CFRunLoopDoObservers() __attribute__((noinline));
 static void __CFRunLoopDoObservers(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRunLoopActivity activity) {	/* DOES CALLOUT */
-    CHECK_FOR_FORK();
-
     CFIndex cnt = rlm->_observers ? CFArrayGetCount(rlm->_observers) : 0;
     if (cnt < 1) return;
 
@@ -1320,7 +1310,6 @@ static void __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__(
 /* rl is locked, rlm is locked on entrance and exit */
 static Boolean __CFRunLoopDoSources0(CFRunLoopRef rl, CFRunLoopModeRef rlm, Boolean stopAfterHandle) __attribute__((noinline));
 static Boolean __CFRunLoopDoSources0(CFRunLoopRef rl, CFRunLoopModeRef rlm, Boolean stopAfterHandle) {	/* DOES CALLOUT */
-    CHECK_FOR_FORK();
     CFTypeRef sources = NULL;
     Boolean sourceHandled = false;
 
@@ -1340,7 +1329,6 @@ static Boolean __CFRunLoopDoSources0(CFRunLoopRef rl, CFRunLoopModeRef rlm, Bool
 	        if (__CFIsValid(rls)) {
 	            __CFRunLoopSourceUnlock(rls);
                     __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__(rls->_context.version0.perform, rls->_context.version0.info);
-	            CHECK_FOR_FORK();
 	            sourceHandled = true;
 	        } else {
 	            __CFRunLoopSourceUnlock(rls);
@@ -1359,7 +1347,6 @@ static Boolean __CFRunLoopDoSources0(CFRunLoopRef rl, CFRunLoopModeRef rlm, Bool
 		    if (__CFIsValid(rls)) {
 		        __CFRunLoopSourceUnlock(rls);
                         __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__(rls->_context.version0.perform, rls->_context.version0.info);
-		        CHECK_FOR_FORK();
 		        sourceHandled = true;
 		    } else {
 		        __CFRunLoopSourceUnlock(rls);
@@ -1387,7 +1374,6 @@ static Boolean __CFRunLoopDoSource1() __attribute__((noinline));
 static Boolean __CFRunLoopDoSource1(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRunLoopSourceRef rls
                                     , mach_msg_header_t *msg, CFIndex size, mach_msg_header_t **reply
                                     ) {	/* DOES CALLOUT */
-    CHECK_FOR_FORK();
     Boolean sourceHandled = false;
 
     /* Fire a version 1 source */
@@ -1402,7 +1388,6 @@ static Boolean __CFRunLoopDoSource1(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRun
         __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__(rls->_context.version1.perform,
             msg, size, reply,
             rls->_context.version1.info);
-	CHECK_FOR_FORK();
 	sourceHandled = true;
     } else {
         if (_LogCFRunLoop) { CFLog(kCFLogLevelDebug, CFSTR("%p (%s) __CFRunLoopDoSource1 rls %p is invalid"), CFRunLoopGetCurrent(), *_CFGetProgname(), rls); }
@@ -1592,7 +1577,6 @@ static Boolean __CFRunLoopDoTimer(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRunLo
 	__CFRunLoopModeUnlock(rlm);
 	__CFRunLoopUnlock(rl);
 	__CFRUNLOOP_IS_CALLING_OUT_TO_A_TIMER_CALLBACK_FUNCTION__(rlt->_callout, rlt, context_info);
-	CHECK_FOR_FORK();
         if (doInvalidate) {
             CFRunLoopTimerInvalidate(rlt);      /* DOES CALLOUT */
         }
@@ -1713,7 +1697,6 @@ static Boolean __CFRunLoopDoTimers(CFRunLoopRef rl, CFRunLoopModeRef rlm, uint64
 
 
 CF_EXPORT Boolean _CFRunLoopFinished(CFRunLoopRef rl, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     CFRunLoopModeRef rlm;
     Boolean result = false;
     __CFRunLoopLock(rl);
@@ -1987,7 +1970,6 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
 }
 
 SInt32 CFRunLoopRunSpecific(CFRunLoopRef rl, CFStringRef modeName, CFTimeInterval seconds, Boolean returnAfterSourceHandled) {     /* DOES CALLOUT */
-    CHECK_FOR_FORK();
     if (__CFRunLoopIsDeallocating(rl)) return kCFRunLoopRunFinished;
     __CFRunLoopLock(rl);
     CFRunLoopModeRef currentMode = __CFRunLoopFindMode(rl, modeName, false);
@@ -2017,17 +1999,14 @@ void CFRunLoopRun(void) {	/* DOES CALLOUT */
     int32_t result;
     do {
         result = CFRunLoopRunSpecific(CFRunLoopGetCurrent(), kCFRunLoopDefaultMode, 1.0e10, false);
-        CHECK_FOR_FORK();
     } while (kCFRunLoopRunStopped != result && kCFRunLoopRunFinished != result);
 }
 
 SInt32 CFRunLoopRunInMode(CFStringRef modeName, CFTimeInterval seconds, Boolean returnAfterSourceHandled) {     /* DOES CALLOUT */
-    CHECK_FOR_FORK();
     return CFRunLoopRunSpecific(CFRunLoopGetCurrent(), modeName, seconds, returnAfterSourceHandled);
 }
 
 CFAbsoluteTime CFRunLoopGetNextTimerFireDate(CFRunLoopRef rl, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     __CFRunLoopLock(rl);
     CFRunLoopModeRef rlm = __CFRunLoopFindMode(rl, modeName, false);
     CFAbsoluteTime at = 0.0;
@@ -2041,12 +2020,10 @@ CFAbsoluteTime CFRunLoopGetNextTimerFireDate(CFRunLoopRef rl, CFStringRef modeNa
 }
 
 Boolean CFRunLoopIsWaiting(CFRunLoopRef rl) {
-    CHECK_FOR_FORK();
     return __CFRunLoopIsSleeping(rl);
 }
 
 void CFRunLoopWakeUp(CFRunLoopRef rl) {
-    CHECK_FOR_FORK();
     // This lock is crucial to ignorable wakeups, do not remove it.
     __CFRunLoopLock(rl);
     if (__CFRunLoopIsIgnoringWakeUps(rl)) {
@@ -2064,7 +2041,6 @@ void CFRunLoopWakeUp(CFRunLoopRef rl) {
 
 void CFRunLoopStop(CFRunLoopRef rl) {
     Boolean doWake = false;
-    CHECK_FOR_FORK();
     __CFRunLoopLock(rl);
     if (rl->_currentMode) {
         __CFRunLoopSetStopped(rl);
@@ -2077,7 +2053,6 @@ void CFRunLoopStop(CFRunLoopRef rl) {
 }
 
 CF_EXPORT void _CFRunLoopStopMode(CFRunLoopRef rl, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     CFRunLoopModeRef rlm;
     __CFRunLoopLock(rl);
     rlm = __CFRunLoopFindMode(rl, modeName, true);
@@ -2090,12 +2065,10 @@ CF_EXPORT void _CFRunLoopStopMode(CFRunLoopRef rl, CFStringRef modeName) {
 }
 
 CF_EXPORT Boolean _CFRunLoopModeContainsMode(CFRunLoopRef rl, CFStringRef modeName, CFStringRef candidateContainedName) {
-    CHECK_FOR_FORK();
     return false;
 }
 
 void CFRunLoopPerformBlock(CFRunLoopRef rl, CFTypeRef mode, void (^block)(void)) {
-    CHECK_FOR_FORK();
     if (CFStringGetTypeID() == CFGetTypeID(mode)) {
 	mode = CFStringCreateCopy(kCFAllocatorSystemDefault, (CFStringRef)mode);
         __CFRunLoopLock(rl);
@@ -2153,7 +2126,6 @@ void CFRunLoopPerformBlock(CFRunLoopRef rl, CFTypeRef mode, void (^block)(void))
 }
 
 Boolean CFRunLoopContainsSource(CFRunLoopRef rl, CFRunLoopSourceRef rls, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     CFRunLoopModeRef rlm;
     Boolean hasValue = false;
     __CFRunLoopLock(rl);
@@ -2173,7 +2145,6 @@ Boolean CFRunLoopContainsSource(CFRunLoopRef rl, CFRunLoopSourceRef rls, CFStrin
 }
 
 void CFRunLoopAddSource(CFRunLoopRef rl, CFRunLoopSourceRef rls, CFStringRef modeName) {	/* DOES CALLOUT */
-    CHECK_FOR_FORK();
     if (__CFRunLoopIsDeallocating(rl)) return;
     if (!__CFIsValid(rls)) return;
     Boolean doVer0Callout = false;
@@ -2235,7 +2206,6 @@ void CFRunLoopAddSource(CFRunLoopRef rl, CFRunLoopSourceRef rls, CFStringRef mod
 }
 
 void CFRunLoopRemoveSource(CFRunLoopRef rl, CFRunLoopSourceRef rls, CFStringRef modeName) {	/* DOES CALLOUT */
-    CHECK_FOR_FORK();
     Boolean doVer0Callout = false, doRLSRelease = false;
     __CFRunLoopLock(rl);
     if (modeName == kCFRunLoopCommonModes) {
@@ -2304,7 +2274,6 @@ static void __CFRunLoopRemoveSourceFromMode(const void *value, void *ctx) {
 }
 
 static void __CFRunLoopRemoveAllSources(CFRunLoopRef rl, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     CFRunLoopModeRef rlm;
     __CFRunLoopLock(rl);
     if (modeName == kCFRunLoopCommonModes) {
@@ -2338,7 +2307,6 @@ static void __CFRunLoopRemoveAllSources(CFRunLoopRef rl, CFStringRef modeName) {
 }
 
 Boolean CFRunLoopContainsObserver(CFRunLoopRef rl, CFRunLoopObserverRef rlo, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     CFRunLoopModeRef rlm;
     Boolean hasValue = false;
     __CFRunLoopLock(rl);
@@ -2360,7 +2328,6 @@ Boolean CFRunLoopContainsObserver(CFRunLoopRef rl, CFRunLoopObserverRef rlo, CFS
 }
 
 void CFRunLoopAddObserver(CFRunLoopRef rl, CFRunLoopObserverRef rlo, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     CFRunLoopModeRef rlm;
     if (__CFRunLoopIsDeallocating(rl)) return;
     if (!__CFIsValid(rlo) || (NULL != rlo->_runLoop && rlo->_runLoop != rl)) return;
@@ -2406,7 +2373,6 @@ void CFRunLoopAddObserver(CFRunLoopRef rl, CFRunLoopObserverRef rlo, CFStringRef
 }
 
 void CFRunLoopRemoveObserver(CFRunLoopRef rl, CFRunLoopObserverRef rlo, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     CFRunLoopModeRef rlm;
     __CFRunLoopLock(rl);
     if (modeName == kCFRunLoopCommonModes) {
@@ -2440,7 +2406,6 @@ void CFRunLoopRemoveObserver(CFRunLoopRef rl, CFRunLoopObserverRef rlo, CFString
 }
 
 Boolean CFRunLoopContainsTimer(CFRunLoopRef rl, CFRunLoopTimerRef rlt, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     if (NULL == rlt->_runLoop || rl != rlt->_runLoop) return false;
     Boolean hasValue = false;
     __CFRunLoopLock(rl);
@@ -2463,7 +2428,6 @@ Boolean CFRunLoopContainsTimer(CFRunLoopRef rl, CFRunLoopTimerRef rlt, CFStringR
 }
 
 void CFRunLoopAddTimer(CFRunLoopRef rl, CFRunLoopTimerRef rlt, CFStringRef modeName) {    
-    CHECK_FOR_FORK();
     if (__CFRunLoopIsDeallocating(rl)) return;
     if (!__CFIsValid(rlt) || (NULL != rlt->_runLoop && rlt->_runLoop != rl)) return;
     __CFRunLoopLock(rl);
@@ -2517,7 +2481,6 @@ void CFRunLoopAddTimer(CFRunLoopRef rl, CFRunLoopTimerRef rlt, CFStringRef modeN
 }
 
 void CFRunLoopRemoveTimer(CFRunLoopRef rl, CFRunLoopTimerRef rlt, CFStringRef modeName) {
-    CHECK_FOR_FORK();
     __CFRunLoopLock(rl);
     if (modeName == kCFRunLoopCommonModes) {
 	if (NULL != rl->_commonModeItems && CFSetContainsValue(rl->_commonModeItems, rlt)) {
@@ -2632,7 +2595,6 @@ CFTypeID CFRunLoopSourceGetTypeID(void) {
 }
 
 CFRunLoopSourceRef CFRunLoopSourceCreate(CFAllocatorRef allocator, CFIndex order, CFRunLoopSourceContext *context) {
-    CHECK_FOR_FORK();
     CFRunLoopSourceRef memory;
     uint32_t size;
     if (NULL == context) CRASH("*** NULL context value passed to CFRunLoopSourceCreate(). (%d) ***", -1);
@@ -2665,7 +2627,6 @@ CFRunLoopSourceRef CFRunLoopSourceCreate(CFAllocatorRef allocator, CFIndex order
 }
 
 CFIndex CFRunLoopSourceGetOrder(CFRunLoopSourceRef rls) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rls, __kCFRunLoopSourceTypeID);
     return rls->_order;
 }
@@ -2697,7 +2658,6 @@ static void __CFRunLoopSourceRemoveFromRunLoop(const void *value, void *context)
 }
 
 void CFRunLoopSourceInvalidate(CFRunLoopSourceRef rls) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rls, __kCFRunLoopSourceTypeID);
     __CFRunLoopSourceLock(rls);
     CFRetain(rls);
@@ -2724,13 +2684,11 @@ void CFRunLoopSourceInvalidate(CFRunLoopSourceRef rls) {
 }
 
 Boolean CFRunLoopSourceIsValid(CFRunLoopSourceRef rls) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rls, __kCFRunLoopSourceTypeID);
     return __CFIsValid(rls);
 }
 
 void CFRunLoopSourceGetContext(CFRunLoopSourceRef rls, CFRunLoopSourceContext *context) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rls, __kCFRunLoopSourceTypeID);
     CFAssert1(0 == context->version || 1 == context->version, __kCFLogAssertion, "%s(): context version not initialized to 0 or 1", __PRETTY_FUNCTION__);
     CFIndex size = 0;
@@ -2746,7 +2704,6 @@ void CFRunLoopSourceGetContext(CFRunLoopSourceRef rls, CFRunLoopSourceContext *c
 }
 
 void CFRunLoopSourceSignal(CFRunLoopSourceRef rls) {
-    CHECK_FOR_FORK();
     __CFRunLoopSourceLock(rls);
     if (__CFIsValid(rls)) {
 	__CFRunLoopSourceSetSignaled(rls);
@@ -2755,7 +2712,6 @@ void CFRunLoopSourceSignal(CFRunLoopSourceRef rls) {
 }
 
 Boolean CFRunLoopSourceIsSignalled(CFRunLoopSourceRef rls) {
-    CHECK_FOR_FORK();
     __CFRunLoopSourceLock(rls);
     Boolean ret = __CFRunLoopSourceIsSignaled(rls) ? true : false;
     __CFRunLoopSourceUnlock(rls);
@@ -2822,7 +2778,6 @@ CFTypeID CFRunLoopObserverGetTypeID(void) {
 }
 
 CFRunLoopObserverRef CFRunLoopObserverCreate(CFAllocatorRef allocator, CFOptionFlags activities, Boolean repeats, CFIndex order, CFRunLoopObserverCallBack callout, CFRunLoopObserverContext *context) {
-    CHECK_FOR_FORK();
     CFRunLoopObserverRef memory;
     UInt32 size;
     size = sizeof(struct __CFRunLoopObserver) - sizeof(CFRuntimeBase);
@@ -2879,25 +2834,21 @@ CFRunLoopObserverRef CFRunLoopObserverCreateWithHandler(CFAllocatorRef allocator
 }
 
 CFOptionFlags CFRunLoopObserverGetActivities(CFRunLoopObserverRef rlo) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rlo, __kCFRunLoopObserverTypeID);
     return rlo->_activities;
 }
 
 CFIndex CFRunLoopObserverGetOrder(CFRunLoopObserverRef rlo) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rlo, __kCFRunLoopObserverTypeID);
     return rlo->_order;
 }
 
 Boolean CFRunLoopObserverDoesRepeat(CFRunLoopObserverRef rlo) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rlo, __kCFRunLoopObserverTypeID);
     return __CFRunLoopObserverRepeats(rlo);
 }
 
 void CFRunLoopObserverInvalidate(CFRunLoopObserverRef rlo) {    /* DOES CALLOUT */
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rlo, __kCFRunLoopObserverTypeID);
     __CFRunLoopObserverLock(rlo);
     CFRetain(rlo);
@@ -2937,12 +2888,10 @@ void CFRunLoopObserverInvalidate(CFRunLoopObserverRef rlo) {    /* DOES CALLOUT 
 }
 
 Boolean CFRunLoopObserverIsValid(CFRunLoopObserverRef rlo) {
-    CHECK_FOR_FORK();
     return __CFIsValid(rlo);
 }
 
 void CFRunLoopObserverGetContext(CFRunLoopObserverRef rlo, CFRunLoopObserverContext *context) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rlo, __kCFRunLoopObserverTypeID);
     CFAssert1(0 == context->version, __kCFLogAssertion, "%s(): context version not initialized to 0", __PRETTY_FUNCTION__);
     *context = rlo->_context;
@@ -3017,7 +2966,6 @@ CFTypeID CFRunLoopTimerGetTypeID(void) {
 }
 
 CFRunLoopTimerRef CFRunLoopTimerCreate(CFAllocatorRef allocator, CFAbsoluteTime fireDate, CFTimeInterval interval, CFOptionFlags flags, CFIndex order, CFRunLoopTimerCallBack callout, CFRunLoopTimerContext *context) {
-    CHECK_FOR_FORK();    
     CFRunLoopTimerRef memory;
     UInt32 size;
     size = sizeof(struct __CFRunLoopTimer) - sizeof(CFRuntimeBase);
@@ -3084,7 +3032,6 @@ CFRunLoopTimerRef CFRunLoopTimerCreateWithHandler(CFAllocatorRef allocator, CFAb
 }
 
 CFAbsoluteTime CFRunLoopTimerGetNextFireDate(CFRunLoopTimerRef rlt) {
-    CHECK_FOR_FORK();
     CF_OBJC_FUNCDISPATCHV(__kCFRunLoopTimerTypeID, CFAbsoluteTime, (NSTimer *)rlt, _cffireTime);
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     CFAbsoluteTime at = 0.0;
@@ -3099,7 +3046,6 @@ CFAbsoluteTime CFRunLoopTimerGetNextFireDate(CFRunLoopTimerRef rlt) {
 }
 
 void CFRunLoopTimerSetNextFireDate(CFRunLoopTimerRef rlt, CFAbsoluteTime fireDate) {
-    CHECK_FOR_FORK();
     if (!__CFIsValid(rlt)) return;
     if (TIMER_DATE_LIMIT < fireDate) fireDate = TIMER_DATE_LIMIT;
     uint64_t nextFireTSR = 0ULL;
@@ -3163,26 +3109,22 @@ void CFRunLoopTimerSetNextFireDate(CFRunLoopTimerRef rlt, CFAbsoluteTime fireDat
 }
 
 CFTimeInterval CFRunLoopTimerGetInterval(CFRunLoopTimerRef rlt) {
-    CHECK_FOR_FORK();
     CF_OBJC_FUNCDISPATCHV(__kCFRunLoopTimerTypeID, CFTimeInterval, (NSTimer *)rlt, timeInterval);
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     return rlt->_interval;
 }
 
 Boolean CFRunLoopTimerDoesRepeat(CFRunLoopTimerRef rlt) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     return (0.0 < rlt->_interval);
 }
 
 CFIndex CFRunLoopTimerGetOrder(CFRunLoopTimerRef rlt) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     return rlt->_order;
 }
 
 void CFRunLoopTimerInvalidate(CFRunLoopTimerRef rlt) {	/* DOES CALLOUT */
-    CHECK_FOR_FORK();
     CF_OBJC_FUNCDISPATCHV(__kCFRunLoopTimerTypeID, void, (NSTimer *)rlt, invalidate);
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     __CFRunLoopTimerLock(rlt);
@@ -3233,28 +3175,24 @@ void CFRunLoopTimerInvalidate(CFRunLoopTimerRef rlt) {	/* DOES CALLOUT */
 }
 
 Boolean CFRunLoopTimerIsValid(CFRunLoopTimerRef rlt) {
-    CHECK_FOR_FORK();
     CF_OBJC_FUNCDISPATCHV(__kCFRunLoopTimerTypeID, Boolean, (NSTimer *)rlt, isValid);
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     return __CFIsValid(rlt);
 }
 
 void CFRunLoopTimerGetContext(CFRunLoopTimerRef rlt, CFRunLoopTimerContext *context) {
-    CHECK_FOR_FORK();
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     CFAssert1(0 == context->version, __kCFLogAssertion, "%s(): context version not initialized to 0", __PRETTY_FUNCTION__);
     *context = rlt->_context;
 }
 
 CFTimeInterval CFRunLoopTimerGetTolerance(CFRunLoopTimerRef rlt) {
-    CHECK_FOR_FORK();
     CF_OBJC_FUNCDISPATCHV(__kCFRunLoopTimerTypeID, CFTimeInterval, (NSTimer *)rlt, tolerance);
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     return rlt->_tolerance;
 }
 
 void CFRunLoopTimerSetTolerance(CFRunLoopTimerRef rlt, CFTimeInterval tolerance) {
-    CHECK_FOR_FORK();
     CF_OBJC_FUNCDISPATCHV(__kCFRunLoopTimerTypeID, void, (NSTimer *)rlt, setTolerance:tolerance);
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
     /*

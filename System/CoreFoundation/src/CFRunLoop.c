@@ -399,8 +399,8 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
 
     __block Boolean *timerFiredPointer = &(rlm->_timerFired);
     dispatch_source_set_event_handler(rlm->_timerSource, ^{
-            *timerFiredPointer = true;
-            });
+        *timerFiredPointer = true;
+    });
 
     // Set timer to far out there. The unique leeway makes this timer easy to spot in debug output.
     _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, DISPATCH_TIME_FOREVER, DISPATCH_TIME_FOREVER, 321);
@@ -1292,10 +1292,8 @@ static void __CFArmNextTimerInMode(CFRunLoopModeRef rlm, CFRunLoopRef rl) {
             // discount timers currently firing
             if (__CFRunLoopTimerIsFiring(t)) continue;
 
-            int32_t err = CHECKINT_NO_ERROR;
             uint64_t oneTimerSoftDeadline = t->_fireTSR;
-            uint64_t oneTimerHardDeadline = check_uint64_add(t->_fireTSR, __CFTimeIntervalToTSR(t->_tolerance), &err);
-            if (err != CHECKINT_NO_ERROR) oneTimerHardDeadline = UINT64_MAX;
+            uint64_t oneTimerHardDeadline = t->_fireTSR;
 
             // We can stop searching if the soft deadline for this timer exceeds the current hard deadline. Otherwise, later timers with lower tolerance could still have earlier hard deadlines.
             if (oneTimerSoftDeadline > nextHardDeadline) {
@@ -1724,8 +1722,6 @@ handle_msg:;
                }
            }
            else if (rlm->_timerPort != MACH_PORT_NULL && livePort == rlm->_timerPort) {
-               // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be 'too early' for the next timer, and no timers are handled.
-               // In this case, the timer port has been automatically reset (since it was returned from MsgWaitForMultipleObjectsEx), and if we do not re-arm it, then no timers will ever be serviced again unless something adjusts the timer list (e.g. adding or removing timers). The fix for the issue is to reset the timer here if CFRunLoopDoTimers did not handle a timer itself. 9308754
                if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
                    // Re-arm the next timer
                    __CFArmNextTimerInMode(rlm, rl);
@@ -2873,19 +2869,6 @@ CFTimeInterval CFRunLoopTimerGetTolerance(CFRunLoopTimerRef rlt) {
 void CFRunLoopTimerSetTolerance(CFRunLoopTimerRef rlt, CFTimeInterval tolerance) {
     CF_OBJC_FUNCDISPATCHV(__kCFRunLoopTimerTypeID, void, (NSTimer *)rlt, setTolerance:tolerance);
     __CFGenericValidateType(rlt, __kCFRunLoopTimerTypeID);
-    /*
-     * dispatch rules:
-     *
-     * For the initial timer fire at 'start', the upper limit to the allowable
-     * delay is set to 'leeway' nanoseconds. For the subsequent timer fires at
-     * 'start' + N * 'interval', the upper limit is MIN('leeway','interval'/2).
-     */
-    if (rlt->_interval > 0) {
-        rlt->_tolerance = MIN(tolerance, rlt->_interval / 2);
-    } else {
-        // Tolerance must be a positive value or zero
-        if (tolerance < 0) tolerance = 0.0;
-        rlt->_tolerance = tolerance;
-    }
+    rlt->_tolerance = 0.0;
 }
 

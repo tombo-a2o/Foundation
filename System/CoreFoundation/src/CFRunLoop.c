@@ -145,11 +145,6 @@ CF_INLINE void __CFPortSetFree(__CFPortSet portSet) {
     mach_port_destroy(mach_task_self(), portSet);
 }
 
-extern mach_port_name_t mk_timer_create(void);
-extern kern_return_t mk_timer_destroy(mach_port_name_t name);
-extern kern_return_t mk_timer_arm(mach_port_name_t name, AbsoluteTime expire_time);
-extern kern_return_t mk_timer_cancel(mach_port_name_t name, AbsoluteTime *result_time);
-
 CF_INLINE AbsoluteTime __CFUInt64ToAbsoluteTime(uint64_t x) {
     AbsoluteTime a;
     a.hi = x >> 32;
@@ -202,7 +197,6 @@ struct __CFRunLoopMode {
     dispatch_queue_t _queue;
     Boolean _timerFired; // set to true by the source when a timer has fired
     Boolean _dispatchTimerArmed;
-    mach_port_t _timerPort;
     Boolean _mkTimerArmed;
     uint64_t _timerSoftDeadline; /* TSR */
     uint64_t _timerHardDeadline; /* TSR */
@@ -227,7 +221,6 @@ static CFStringRef __CFRunLoopModeCopyDescription(CFTypeRef cf) {
     CFStringAppendFormat(result, NULL, CFSTR("port set = 0x%x, "), rlm->_portSet);
     CFStringAppendFormat(result, NULL, CFSTR("queue = %p, "), rlm->_queue);
     CFStringAppendFormat(result, NULL, CFSTR("source = %p (%s), "), rlm->_timerSource, rlm->_timerFired ? "fired" : "not fired");
-    CFStringAppendFormat(result, NULL, CFSTR("timer port = 0x%x, "), rlm->_timerPort);
     CFStringAppendFormat(result, NULL, CFSTR("\n\tsources0 = %@,\n\tsources1 = %@,\n\tobservers = %@,\n\ttimers = %@,\n\tcurrently %0.09g (%lld) / soft deadline in: %0.09g sec (@ %lld) / hard deadline in: %0.09g sec (@ %lld)\n},\n"), rlm->_sources0, rlm->_sources1, rlm->_observers, rlm->_timers, CFAbsoluteTimeGetCurrent(), mach_absolute_time(), __CFTSRToTimeInterval(rlm->_timerSoftDeadline - mach_absolute_time()), rlm->_timerSoftDeadline, __CFTSRToTimeInterval(rlm->_timerHardDeadline - mach_absolute_time()), rlm->_timerHardDeadline);
     return result;
 }
@@ -248,7 +241,6 @@ static void __CFRunLoopModeDeallocate(CFTypeRef cf) {
     if (rlm->_queue) {
         dispatch_release(rlm->_queue);
     }
-    if (MACH_PORT_NULL != rlm->_timerPort) mk_timer_destroy(rlm->_timerPort);
     memset((char *)cf + sizeof(CFRuntimeBase), 0x7C, sizeof(struct __CFRunLoopMode) - sizeof(CFRuntimeBase));
 }
 
@@ -407,10 +399,6 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
     dispatch_resume(rlm->_timerSource);
 
     ret = __CFPortSetInsert(queuePort, rlm->_portSet);
-    if (KERN_SUCCESS != ret) CRASH("*** Unable to insert timer port into port set. (%d) ***", ret);
-
-    rlm->_timerPort = mk_timer_create();
-    ret = __CFPortSetInsert(rlm->_timerPort, rlm->_portSet);
     if (KERN_SUCCESS != ret) CRASH("*** Unable to insert timer port into port set. (%d) ***", ret);
 
     ret = __CFPortSetInsert(rl->_wakeUpPort, rlm->_portSet);
@@ -1311,45 +1299,11 @@ static void __CFArmNextTimerInMode(CFRunLoopModeRef rlm, CFRunLoopRef rl) {
 
         if (nextSoftDeadline < UINT64_MAX && (nextHardDeadline != rlm->_timerHardDeadline || nextSoftDeadline != rlm->_timerSoftDeadline)) {
             // We're going to hand off the range of allowable timer fire date to dispatch and let it fire when appropriate for the system.
-            uint64_t leeway = __CFTSRToNanoseconds(nextHardDeadline - nextSoftDeadline);
             dispatch_time_t deadline = __CFTSRToDispatchTime(nextSoftDeadline);
-            if (leeway > 0) {
-                // Only use the dispatch timer if we have any leeway
-                // <rdar://problem/14447675>
-
-                // Cancel the mk timer
-                if (rlm->_mkTimerArmed && rlm->_timerPort) {
-                    AbsoluteTime dummy;
-                    mk_timer_cancel(rlm->_timerPort, &dummy);
-                    rlm->_mkTimerArmed = false;
-                }
-
-                // Arm the dispatch timer
-                _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, deadline, DISPATCH_TIME_FOREVER, leeway);
-                rlm->_dispatchTimerArmed = true;
-            } else {
-                // Cancel the dispatch timer
-                if (rlm->_dispatchTimerArmed) {
-                    // Cancel the dispatch timer
-                    _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, DISPATCH_TIME_FOREVER, DISPATCH_TIME_FOREVER, 888);
-                    rlm->_dispatchTimerArmed = false;
-                }
-
-                // Arm the mk timer
-                if (rlm->_timerPort) {
-                    mk_timer_arm(rlm->_timerPort, __CFUInt64ToAbsoluteTime(nextSoftDeadline));
-                    rlm->_mkTimerArmed = true;
-                }
-            }
+            // Arm the dispatch timer
+            _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, deadline, DISPATCH_TIME_FOREVER, 0);
+            rlm->_dispatchTimerArmed = true;
         } else if (nextSoftDeadline == UINT64_MAX) {
-            // Disarm the timers - there is no timer scheduled
-
-            if (rlm->_mkTimerArmed && rlm->_timerPort) {
-                AbsoluteTime dummy;
-                mk_timer_cancel(rlm->_timerPort, &dummy);
-                rlm->_mkTimerArmed = false;
-            }
-
             if (rlm->_dispatchTimerArmed) {
                 _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, DISPATCH_TIME_FOREVER, DISPATCH_TIME_FOREVER, 333);
                 rlm->_dispatchTimerArmed = false;
@@ -1718,12 +1672,6 @@ handle_msg:;
            else if (modeQueuePort != MACH_PORT_NULL && livePort == modeQueuePort) {
                if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
                    // Re-arm the next timer, because we apparently fired early
-                   __CFArmNextTimerInMode(rlm, rl);
-               }
-           }
-           else if (rlm->_timerPort != MACH_PORT_NULL && livePort == rlm->_timerPort) {
-               if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
-                   // Re-arm the next timer
                    __CFArmNextTimerInMode(rlm, rl);
                }
            }

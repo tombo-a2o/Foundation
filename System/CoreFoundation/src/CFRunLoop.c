@@ -198,8 +198,7 @@ struct __CFRunLoopMode {
     Boolean _timerFired; // set to true by the source when a timer has fired
     Boolean _dispatchTimerArmed;
     Boolean _mkTimerArmed;
-    uint64_t _timerSoftDeadline; /* TSR */
-    uint64_t _timerHardDeadline; /* TSR */
+    uint64_t _timerDeadline; /* TSR */
 };
 
 static Boolean __CFRunLoopModeEqual(CFTypeRef cf1, CFTypeRef cf2) {
@@ -221,7 +220,7 @@ static CFStringRef __CFRunLoopModeCopyDescription(CFTypeRef cf) {
     CFStringAppendFormat(result, NULL, CFSTR("port set = 0x%x, "), rlm->_portSet);
     CFStringAppendFormat(result, NULL, CFSTR("queue = %p, "), rlm->_queue);
     CFStringAppendFormat(result, NULL, CFSTR("source = %p (%s), "), rlm->_timerSource, rlm->_timerFired ? "fired" : "not fired");
-    CFStringAppendFormat(result, NULL, CFSTR("\n\tsources0 = %@,\n\tsources1 = %@,\n\tobservers = %@,\n\ttimers = %@,\n\tcurrently %0.09g (%lld) / soft deadline in: %0.09g sec (@ %lld) / hard deadline in: %0.09g sec (@ %lld)\n},\n"), rlm->_sources0, rlm->_sources1, rlm->_observers, rlm->_timers, CFAbsoluteTimeGetCurrent(), mach_absolute_time(), __CFTSRToTimeInterval(rlm->_timerSoftDeadline - mach_absolute_time()), rlm->_timerSoftDeadline, __CFTSRToTimeInterval(rlm->_timerHardDeadline - mach_absolute_time()), rlm->_timerHardDeadline);
+    CFStringAppendFormat(result, NULL, CFSTR("\n\tsources0 = %@,\n\tsources1 = %@,\n\tobservers = %@,\n\ttimers = %@,\n\tcurrently %0.09g (%lld) / soft deadline in: %0.09g sec (@ %lld)\n},\n"), rlm->_sources0, rlm->_sources1, rlm->_observers, rlm->_timers, CFAbsoluteTimeGetCurrent(), mach_absolute_time(), __CFTSRToTimeInterval(rlm->_timerDeadline - mach_absolute_time()), rlm->_timerDeadline );
     return result;
 }
 
@@ -379,8 +378,7 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
     rlm->_timers = NULL;
     rlm->_observerMask = 0;
     rlm->_portSet = __CFPortSetAllocate();
-    rlm->_timerSoftDeadline = UINT64_MAX;
-    rlm->_timerHardDeadline = UINT64_MAX;
+    rlm->_timerDeadline = UINT64_MAX;
 
     kern_return_t ret = KERN_SUCCESS;
     rlm->_timerFired = false;
@@ -1268,8 +1266,7 @@ static CFIndex __CFRunLoopInsertionIndexInTimerArray(CFArrayRef array, CFRunLoop
 }
 
 static void __CFArmNextTimerInMode(CFRunLoopModeRef rlm, CFRunLoopRef rl) {    
-    uint64_t nextHardDeadline = UINT64_MAX;
-    uint64_t nextSoftDeadline = UINT64_MAX;
+    uint64_t nextDeadline = UINT64_MAX;
 
     if (rlm->_timers) {
         // Look at the list of timers. We will calculate two TSR values; the next soft and next hard deadline.
@@ -1280,38 +1277,27 @@ static void __CFArmNextTimerInMode(CFRunLoopModeRef rlm, CFRunLoopRef rl) {
             // discount timers currently firing
             if (__CFRunLoopTimerIsFiring(t)) continue;
 
-            uint64_t oneTimerSoftDeadline = t->_fireTSR;
-            uint64_t oneTimerHardDeadline = t->_fireTSR;
+            uint64_t oneTimerDeadline = t->_fireTSR;
 
-            // We can stop searching if the soft deadline for this timer exceeds the current hard deadline. Otherwise, later timers with lower tolerance could still have earlier hard deadlines.
-            if (oneTimerSoftDeadline > nextHardDeadline) {
-                break;
-            }
-
-            if (oneTimerSoftDeadline < nextSoftDeadline) {
-                nextSoftDeadline = oneTimerSoftDeadline;
-            }
-
-            if (oneTimerHardDeadline < nextHardDeadline) {
-                nextHardDeadline = oneTimerHardDeadline;
+            if (oneTimerDeadline < nextDeadline) {
+                nextDeadline = oneTimerDeadline;
             }
         }
 
-        if (nextSoftDeadline < UINT64_MAX && (nextHardDeadline != rlm->_timerHardDeadline || nextSoftDeadline != rlm->_timerSoftDeadline)) {
+        if (nextDeadline < UINT64_MAX && nextDeadline != rlm->_timerDeadline) {
             // We're going to hand off the range of allowable timer fire date to dispatch and let it fire when appropriate for the system.
-            dispatch_time_t deadline = __CFTSRToDispatchTime(nextSoftDeadline);
+            dispatch_time_t deadline = __CFTSRToDispatchTime(nextDeadline);
             // Arm the dispatch timer
             _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, deadline, DISPATCH_TIME_FOREVER, 0);
             rlm->_dispatchTimerArmed = true;
-        } else if (nextSoftDeadline == UINT64_MAX) {
+        } else if (nextDeadline == UINT64_MAX) {
             if (rlm->_dispatchTimerArmed) {
                 _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, DISPATCH_TIME_FOREVER, DISPATCH_TIME_FOREVER, 333);
                 rlm->_dispatchTimerArmed = false;
             }
         }
     }
-    rlm->_timerHardDeadline = nextHardDeadline;
-    rlm->_timerSoftDeadline = nextSoftDeadline;
+    rlm->_timerDeadline = nextDeadline;
 }
 
 // call with rlm and its run loop locked, and the TSRLock locked; rlt not locked; returns with same state
@@ -1360,8 +1346,7 @@ static Boolean __CFRunLoopDoTimer(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRunLo
         Boolean doInvalidate = (0.0 == rlt->_interval);
         __CFRunLoopTimerSetFiring(rlt);
         // Just in case the next timer has exactly the same deadlines as this one, we reset these values so that the arm next timer code can correctly find the next timer in the list and arm the underlying timer.
-        rlm->_timerSoftDeadline = UINT64_MAX;
-        rlm->_timerHardDeadline = UINT64_MAX;
+        rlm->_timerDeadline = UINT64_MAX;
         oldFireTSR = rlt->_fireTSR;
 
         __CFArmNextTimerInMode(rlm, rl);

@@ -124,10 +124,8 @@ struct __CFRunLoopMode {
     Boolean _stopped;
     char _padding[3];
     CFMutableSetRef _sources0;
-    CFMutableSetRef _sources1;
     CFMutableArrayRef _observers;
     CFMutableArrayRef _timers;
-    CFMutableDictionaryRef _portToV1SourceMap;
     __CFPortSet _portSet;
     CFIndex _observerMask;
     dispatch_source_t _timerSource;
@@ -157,17 +155,15 @@ static CFStringRef __CFRunLoopModeCopyDescription(CFTypeRef cf) {
     CFStringAppendFormat(result, NULL, CFSTR("port set = 0x%x, "), rlm->_portSet);
     CFStringAppendFormat(result, NULL, CFSTR("queue = %p, "), rlm->_queue);
     CFStringAppendFormat(result, NULL, CFSTR("source = %p (%s), "), rlm->_timerSource, rlm->_timerFired ? "fired" : "not fired");
-    CFStringAppendFormat(result, NULL, CFSTR("\n\tsources0 = %@,\n\tsources1 = %@,\n\tobservers = %@,\n\ttimers = %@,\n\tcurrently %0.09g (%lld) / soft deadline in: %0.09g sec (@ %lld)\n},\n"), rlm->_sources0, rlm->_sources1, rlm->_observers, rlm->_timers, CFAbsoluteTimeGetCurrent(), mach_absolute_time(), __CFTSRToTimeInterval(rlm->_timerDeadline - mach_absolute_time()), rlm->_timerDeadline );
+    CFStringAppendFormat(result, NULL, CFSTR("\n\tsources0 = %@,\n\tobservers = %@,\n\ttimers = %@,\n\tcurrently %0.09g (%lld) / soft deadline in: %0.09g sec (@ %lld)\n},\n"), rlm->_sources0, rlm->_observers, rlm->_timers, CFAbsoluteTimeGetCurrent(), mach_absolute_time(), __CFTSRToTimeInterval(rlm->_timerDeadline - mach_absolute_time()), rlm->_timerDeadline );
     return result;
 }
 
 static void __CFRunLoopModeDeallocate(CFTypeRef cf) {
     CFRunLoopModeRef rlm = (CFRunLoopModeRef)cf;
     if (NULL != rlm->_sources0) CFRelease(rlm->_sources0);
-    if (NULL != rlm->_sources1) CFRelease(rlm->_sources1);
     if (NULL != rlm->_observers) CFRelease(rlm->_observers);
     if (NULL != rlm->_timers) CFRelease(rlm->_timers);
-    if (NULL != rlm->_portToV1SourceMap) CFRelease(rlm->_portToV1SourceMap);
     CFRelease(rlm->_name);
     __CFPortSetFree(rlm->_portSet);
     if (rlm->_timerSource) {
@@ -308,9 +304,7 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
     }
     rlm->_name = CFStringCreateCopy(kCFAllocatorSystemDefault, modeName);
     rlm->_stopped = false;
-    rlm->_portToV1SourceMap = NULL;
     rlm->_sources0 = NULL;
-    rlm->_sources1 = NULL;
     rlm->_observers = NULL;
     rlm->_timers = NULL;
     rlm->_observerMask = 0;
@@ -351,7 +345,6 @@ static Boolean __CFRunLoopModeIsEmpty(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFR
     Boolean libdispatchQSafe = pthread_main_np() && ((HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY && NULL == previousMode) || (!HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY && 0 == _CFGetTSD(__CFTSDKeyIsInGCDMainQ)));
     if (libdispatchQSafe && (CFRunLoopGetMain() == rl) && CFSetContainsValue(rl->_commonModes, rlm->_name)) return false; // represents the libdispatch main queue
     if (NULL != rlm->_sources0 && 0 < CFSetGetCount(rlm->_sources0)) return false;
-    if (NULL != rlm->_sources1 && 0 < CFSetGetCount(rlm->_sources1)) return false;
     if (NULL != rlm->_timers && 0 < CFArrayGetCount(rlm->_timers)) return false;
     struct _block_item *item = rl->_blocks_head;
     while (item) {
@@ -392,7 +385,6 @@ struct __CFRunLoopSource {
     CFMutableBagRef _runLoops;
     union {
         CFRunLoopSourceContext version0;	/* immutable, except invalidation */
-        CFRunLoopSourceContext1 version1;	/* immutable, except invalidation */
     } _context;
 };
 
@@ -510,12 +502,6 @@ CF_INLINE void __CFRunLoopTimerSetDeallocating(CFRunLoopTimerRef rlt) {
 CONST_STRING_DECL(kCFRunLoopDefaultMode, "kCFRunLoopDefaultMode")
 CONST_STRING_DECL(kCFRunLoopCommonModes, "kCFRunLoopCommonModes")
 
-// call with rl and rlm locked
-static CFRunLoopSourceRef __CFRunLoopModeFindSourceForMachPort(CFRunLoopRef rl, CFRunLoopModeRef rlm, __CFPort port) {	/* DOES CALLOUT */
-    CFRunLoopSourceRef found = rlm->_portToV1SourceMap ? (CFRunLoopSourceRef)CFDictionaryGetValue(rlm->_portToV1SourceMap, (const void *)(uintptr_t)port) : NULL;
-    return found;
-}
-
 // Remove backreferences the mode's sources have to the rl (context);
 // the primary purpose of rls->_runLoops is so that Invalidation can remove
 // the source from the run loops it is in, but during deallocation of a
@@ -527,12 +513,11 @@ static void __CFRunLoopCleanseSources(const void *value, void *context) {
     CFRunLoopRef rl = (CFRunLoopRef)context;
     CFIndex idx, cnt;
     const void **list, *buffer[256];
-    if (NULL == rlm->_sources0 && NULL == rlm->_sources1) return;
+    if (NULL == rlm->_sources0) return;
 
-    cnt = (rlm->_sources0 ? CFSetGetCount(rlm->_sources0) : 0) + (rlm->_sources1 ? CFSetGetCount(rlm->_sources1) : 0);
+    cnt = (rlm->_sources0 ? CFSetGetCount(rlm->_sources0) : 0);
     list = (const void **)((cnt <= 256) ? buffer : CFAllocatorAllocate(kCFAllocatorSystemDefault, cnt * sizeof(void *), 0));
     if (rlm->_sources0) CFSetGetValues(rlm->_sources0, list);
-    if (rlm->_sources1) CFSetGetValues(rlm->_sources1, list + (rlm->_sources0 ? CFSetGetCount(rlm->_sources0) : 0));
     for (idx = 0; idx < cnt; idx++) {
         CFRunLoopSourceRef rls = (CFRunLoopSourceRef)list[idx];
         if (NULL != rls->_runLoops) {
@@ -547,31 +532,23 @@ static void __CFRunLoopDeallocateSources(const void *value, void *context) {
     CFRunLoopRef rl = (CFRunLoopRef)context;
     CFIndex idx, cnt;
     const void **list, *buffer[256];
-    if (NULL == rlm->_sources0 && NULL == rlm->_sources1) return;
+    if (NULL == rlm->_sources0) return;
 
-    cnt = (rlm->_sources0 ? CFSetGetCount(rlm->_sources0) : 0) + (rlm->_sources1 ? CFSetGetCount(rlm->_sources1) : 0);
+    cnt = (rlm->_sources0 ? CFSetGetCount(rlm->_sources0) : 0);
     list = (const void **)((cnt <= 256) ? buffer : CFAllocatorAllocate(kCFAllocatorSystemDefault, cnt * sizeof(void *), 0));
     if (rlm->_sources0) CFSetGetValues(rlm->_sources0, list);
-    if (rlm->_sources1) CFSetGetValues(rlm->_sources1, list + (rlm->_sources0 ? CFSetGetCount(rlm->_sources0) : 0));
     for (idx = 0; idx < cnt; idx++) {
         CFRetain(list[idx]);
     }
     if (rlm->_sources0) CFSetRemoveAllValues(rlm->_sources0);
-    if (rlm->_sources1) CFSetRemoveAllValues(rlm->_sources1);
     for (idx = 0; idx < cnt; idx++) {
         CFRunLoopSourceRef rls = (CFRunLoopSourceRef)list[idx];
         if (NULL != rls->_runLoops) {
             CFBagRemoveValue(rls->_runLoops, rl);
         }
-        if (0 == rls->_context.version0.version) {
-            if (NULL != rls->_context.version0.cancel) {
-                rls->_context.version0.cancel(rls->_context.version0.info, rl, rlm->_name);	/* CALLOUT */
-            }
-        } else if (1 == rls->_context.version0.version) {
-            __CFPort port = rls->_context.version1.getPort(rls->_context.version1.info);	/* CALLOUT */
-            if (CFPORT_NULL != port) {
-                __CFPortSetRemove(port, rlm->_portSet);
-            }
+        assert(0 == rls->_context.version0.version);
+        if (NULL != rls->_context.version0.cancel) {
+            rls->_context.version0.cancel(rls->_context.version0.info, rl, rlm->_name);	/* CALLOUT */
         }
         CFRelease(rls);
     }
@@ -1142,29 +1119,6 @@ static Boolean __CFRunLoopDoSources0(CFRunLoopRef rl, CFRunLoopModeRef rlm, Bool
 CF_INLINE void __CFRunLoopDebugInfoForRunLoopSource(CFRunLoopSourceRef rls) {
 }
 
-// msg, size and reply are unused on Windows
-static Boolean __CFRunLoopDoSource1() __attribute__((noinline));
-static Boolean __CFRunLoopDoSource1(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRunLoopSourceRef rls
-        , mach_msg_header_t *msg, CFIndex size, mach_msg_header_t **reply
-        ) {	/* DOES CALLOUT */
-    Boolean sourceHandled = false;
-
-    /* Fire a version 1 source */
-    CFRetain(rls);
-    if (__CFIsValid(rls)) {
-        __CFRunLoopSourceUnsetSignaled(rls);
-        __CFRunLoopDebugInfoForRunLoopSource(rls);
-        __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__(rls->_context.version1.perform,
-                msg, size, reply,
-                rls->_context.version1.info);
-        sourceHandled = true;
-    } else {
-        if (_LogCFRunLoop) { CFLog(kCFLogLevelDebug, CFSTR("%p (%s) __CFRunLoopDoSource1 rls %p is invalid"), CFRunLoopGetCurrent(), *_CFGetProgname(), rls); }
-    }
-    CFRelease(rls);
-    return sourceHandled;
-}
-
 static CFIndex __CFRunLoopInsertionIndexInTimerArray(CFArrayRef array, CFRunLoopTimerRef rlt) __attribute__((noinline));
 static CFIndex __CFRunLoopInsertionIndexInTimerArray(CFArrayRef array, CFRunLoopTimerRef rlt) {
     CFIndex cnt = CFArrayGetCount(array);
@@ -1599,17 +1553,6 @@ handle_msg:;
                _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL);
                sourceHandledThisLoop = true;
                didDispatchPortLastTime = true;
-           } else {
-               // Despite the name, this works for windows handles as well
-               CFRunLoopSourceRef rls = __CFRunLoopModeFindSourceForMachPort(rl, rlm, livePort);
-               if (rls) {
-                   mach_msg_header_t *reply = NULL;
-                   sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls, msg, msg->msgh_size, &reply) || sourceHandledThisLoop;
-                   if (NULL != reply) {
-                       (void)mach_msg(reply, MACH_SEND_MSG, reply->msgh_size, 0, MACH_PORT_NULL, 0, MACH_PORT_NULL);
-                       CFAllocatorDeallocate(kCFAllocatorSystemDefault, reply);
-                   }
-               }
            }
            if (msg && msg != (mach_msg_header_t *)msg_buffer) free(msg);
 
@@ -1776,7 +1719,7 @@ Boolean CFRunLoopContainsSource(CFRunLoopRef rl, CFRunLoopSourceRef rls, CFStrin
     } else {
         rlm = __CFRunLoopFindMode(rl, modeName, false);
         if (NULL != rlm) {
-            hasValue = (rlm->_sources0 ? CFSetContainsValue(rlm->_sources0, rls) : false) || (rlm->_sources1 ? CFSetContainsValue(rlm->_sources1, rls) : false);
+            hasValue = (rlm->_sources0 ? CFSetContainsValue(rlm->_sources0, rls) : false);
         }
     }
     return hasValue;
@@ -1802,20 +1745,10 @@ void CFRunLoopAddSource(CFRunLoopRef rl, CFRunLoopSourceRef rls, CFStringRef mod
         CFRunLoopModeRef rlm = __CFRunLoopFindMode(rl, modeName, true);
         if (NULL != rlm && NULL == rlm->_sources0) {
             rlm->_sources0 = CFSetCreateMutable(kCFAllocatorSystemDefault, 0, &kCFTypeSetCallBacks);
-            rlm->_sources1 = CFSetCreateMutable(kCFAllocatorSystemDefault, 0, &kCFTypeSetCallBacks);
-            rlm->_portToV1SourceMap = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 0, NULL, NULL);
         }
-        if (NULL != rlm && !CFSetContainsValue(rlm->_sources0, rls) && !CFSetContainsValue(rlm->_sources1, rls)) {
-            if (0 == rls->_context.version0.version) {
-                CFSetAddValue(rlm->_sources0, rls);
-            } else if (1 == rls->_context.version0.version) {
-                CFSetAddValue(rlm->_sources1, rls);
-                __CFPort src_port = rls->_context.version1.getPort(rls->_context.version1.info);
-                if (CFPORT_NULL != src_port) {
-                    CFDictionarySetValue(rlm->_portToV1SourceMap, (const void *)(uintptr_t)src_port, rls);
-                    __CFPortSetInsert(src_port, rlm->_portSet);
-                }
-            }
+        if (NULL != rlm && !CFSetContainsValue(rlm->_sources0, rls)) {
+            assert(0 == rls->_context.version0.version);
+            CFSetAddValue(rlm->_sources0, rls);
             if (NULL == rls->_runLoops) {
                 rls->_runLoops = CFBagCreateMutable(kCFAllocatorSystemDefault, 0, &kCFTypeBagCallBacks); // sources retain run loops!
             }
@@ -1852,17 +1785,9 @@ void CFRunLoopRemoveSource(CFRunLoopRef rl, CFRunLoopSourceRef rls, CFStringRef 
         }
     } else {
         CFRunLoopModeRef rlm = __CFRunLoopFindMode(rl, modeName, false);
-        if (NULL != rlm && ((NULL != rlm->_sources0 && CFSetContainsValue(rlm->_sources0, rls)) || (NULL != rlm->_sources1 && CFSetContainsValue(rlm->_sources1, rls)))) {
+        if (NULL != rlm && NULL != rlm->_sources0 && CFSetContainsValue(rlm->_sources0, rls)) {
             CFRetain(rls);
-            if (1 == rls->_context.version0.version) {
-                __CFPort src_port = rls->_context.version1.getPort(rls->_context.version1.info);
-                if (CFPORT_NULL != src_port) {
-                    CFDictionaryRemoveValue(rlm->_portToV1SourceMap, (const void *)(uintptr_t)src_port);
-                    __CFPortSetRemove(src_port, rlm->_portSet);
-                }
-            }
             CFSetRemoveValue(rlm->_sources0, rls);
-            CFSetRemoveValue(rlm->_sources1, rls);
             if (NULL != rls->_runLoops) {
                 CFBagRemoveValue(rls->_runLoops, rl);
             }
@@ -1912,12 +1837,6 @@ static void __CFRunLoopRemoveAllSources(CFRunLoopRef rl, CFStringRef modeName) {
         rlm = __CFRunLoopFindMode(rl, modeName, false);
         if (NULL != rlm && NULL != rlm->_sources0) {
             CFSetRef set = CFSetCreateCopy(kCFAllocatorSystemDefault, rlm->_sources0);
-            CFTypeRef context[2] = {rl, modeName};
-            CFSetApplyFunction(set, (__CFRunLoopRemoveSourceFromMode), (void *)context);
-            CFRelease(set);
-        }
-        if (NULL != rlm && NULL != rlm->_sources1) {
-            CFSetRef set = CFSetCreateCopy(kCFAllocatorSystemDefault, rlm->_sources1);
             CFTypeRef context[2] = {rl, modeName};
             CFSetApplyFunction(set, (__CFRunLoopRemoveSourceFromMode), (void *)context);
             CFRelease(set);
@@ -2115,7 +2034,6 @@ static Boolean __CFRunLoopSourceEqual(CFTypeRef cf1, CFTypeRef cf2) {	/* DOES CA
     if (rls1->_context.version0.hash != rls2->_context.version0.hash) return false;
     if (rls1->_context.version0.equal != rls2->_context.version0.equal) return false;
     if (0 == rls1->_context.version0.version && rls1->_context.version0.perform != rls2->_context.version0.perform) return false;
-    if (1 == rls1->_context.version0.version && rls1->_context.version1.perform != rls2->_context.version1.perform) return false;
     if (rls1->_context.version0.equal)
         return rls1->_context.version0.equal(rls1->_context.version0.info, rls2->_context.version0.info);
     return (rls1->_context.version0.info == rls2->_context.version0.info);
@@ -2136,7 +2054,7 @@ static CFStringRef __CFRunLoopSourceCopyDescription(CFTypeRef cf) {	/* DOES CALL
         contextDesc = rls->_context.version0.copyDescription(rls->_context.version0.info);
     }
     if (NULL == contextDesc) {
-        void *addr = rls->_context.version0.version == 0 ? (void *)rls->_context.version0.perform : (rls->_context.version0.version == 1 ? (void *)rls->_context.version1.perform : NULL);
+        void *addr = rls->_context.version0.version == 0 ? (void *)rls->_context.version0.perform : NULL;
         Dl_info info;
         const char *name = (dladdr(addr, &info) && info.dli_saddr == addr && info.dli_sname) ? info.dli_sname : "???";
         contextDesc = CFStringCreateWithFormat(kCFAllocatorSystemDefault, NULL, CFSTR("<CFRunLoopSource context>{version = %ld, info = %p, callout = %s (%p)}"), rls->_context.version0.version, rls->_context.version0.info, name, addr);

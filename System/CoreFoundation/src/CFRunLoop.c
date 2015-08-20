@@ -69,8 +69,6 @@ static void _runLoopTimerWithBlockContext(CFRunLoopTimerRef timer, void *opaqueB
 #define TIMER_DATE_LIMIT	4039289856.0
 #define TIMER_INTERVAL_LIMIT	504911232.0
 
-#define HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY 0
-
 #define CRASH(string, errcode) do { char msg[256]; snprintf(msg, 256, string, errcode); CRSetCrashLogMessage(msg); HALT; } while (0)
 
 static pthread_t kNilPthreadT = (pthread_t)0;
@@ -342,7 +340,7 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
 // expects rl and rlm locked
 static Boolean __CFRunLoopModeIsEmpty(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRunLoopModeRef previousMode) {
     if (NULL == rlm) return true;
-    Boolean libdispatchQSafe = pthread_main_np() && ((HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY && NULL == previousMode) || (!HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY && 0 == _CFGetTSD(__CFTSDKeyIsInGCDMainQ)));
+    Boolean libdispatchQSafe = pthread_main_np() && 0 == _CFGetTSD(__CFTSDKeyIsInGCDMainQ);
     if (libdispatchQSafe && (CFRunLoopGetMain() == rl) && CFSetContainsValue(rl->_commonModes, rlm->_name)) return false; // represents the libdispatch main queue
     if (NULL != rlm->_sources0 && 0 < CFSetGetCount(rlm->_sources0)) return false;
     if (NULL != rlm->_timers && 0 < CFArrayGetCount(rlm->_timers)) return false;
@@ -1423,7 +1421,7 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
     }
 
     mach_port_name_t dispatchPort = MACH_PORT_NULL;
-    Boolean libdispatchQSafe = pthread_main_np() && ((HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY && NULL == previousMode) || (!HANDLE_DISPATCH_ON_BASE_INVOCATION_ONLY && 0 == _CFGetTSD(__CFTSDKeyIsInGCDMainQ)));
+    Boolean libdispatchQSafe = pthread_main_np() && 0 == _CFGetTSD(__CFTSDKeyIsInGCDMainQ);
     if (libdispatchQSafe && (CFRunLoopGetMain() == rl) && CFSetContainsValue(rl->_commonModes, rlm->_name)) dispatchPort = _dispatch_get_main_queue_port_4CF();
 
     mach_port_name_t modeQueuePort = MACH_PORT_NULL;

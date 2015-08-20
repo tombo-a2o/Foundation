@@ -42,14 +42,20 @@ Responsibility: Tony Parker
 #include <checkint.h>
 
 #include <sys/param.h>
-#include <dispatch/private.h>
+//#include <dispatch/private.h>
 #include <CoreFoundation/CFUserNotification.h>
-#include <mach/mach.h>
-#include <mach/clock_types.h>
-#include <mach/clock.h>
+//#include <mach/mach.h>
+//#include <mach/clock_types.h>
+//#include <mach/clock.h>
 #include <unistd.h>
 #include <dlfcn.h>
 #include <pthread/private.h>
+
+typedef int mach_port_t;
+#define MACH_PORT_NULL 0;
+typedef struct hoge mach_msg_header_t;
+typedef int kern_return_t;
+
 extern mach_port_t _dispatch_get_main_queue_port_4CF(void);
 extern void _dispatch_main_queue_callback_4CF(mach_msg_header_t *msg);
 
@@ -76,81 +82,12 @@ typedef mach_port_t __CFPort;
 #define CFPORT_NULL MACH_PORT_NULL
 typedef mach_port_t __CFPortSet;
 
-static void __THE_SYSTEM_HAS_NO_PORTS_AVAILABLE__(kern_return_t ret) __attribute__((noinline));
-static void __THE_SYSTEM_HAS_NO_PORTS_AVAILABLE__(kern_return_t ret) { HALT; };
-
-static __CFPort __CFPortAllocate(void) {
-    __CFPort result = CFPORT_NULL;
-    kern_return_t ret = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &result);
-    if (KERN_SUCCESS != ret) {
-        char msg[256];
-        snprintf(msg, 256, "*** The system has no mach ports available. You may be able to diagnose which application(s) are using ports by using 'top' or Activity Monitor. (%d) ***", ret);
-        CRSetCrashLogMessage(msg); 
-        __THE_SYSTEM_HAS_NO_PORTS_AVAILABLE__(ret); 
-        return CFPORT_NULL;
-    }
-
-    ret = mach_port_insert_right(mach_task_self(), result, result, MACH_MSG_TYPE_MAKE_SEND);
-    if (KERN_SUCCESS != ret) CRASH("*** Unable to set send right on mach port. (%d) ***", ret);
-
-
-    mach_port_limits_t limits;
-    limits.mpl_qlimit = 1;
-    ret = mach_port_set_attributes(mach_task_self(), result, MACH_PORT_LIMITS_INFO, (mach_port_info_t)&limits, MACH_PORT_LIMITS_INFO_COUNT);
-    if (KERN_SUCCESS != ret) CRASH("*** Unable to set attributes on mach port. (%d) ***", ret);
-
-    return result;
-}
-
-CF_INLINE void __CFPortFree(__CFPort port) {
-    mach_port_destroy(mach_task_self(), port);
-}
-
-static void __THE_SYSTEM_HAS_NO_PORT_SETS_AVAILABLE__(kern_return_t ret) __attribute__((noinline));
-static void __THE_SYSTEM_HAS_NO_PORT_SETS_AVAILABLE__(kern_return_t ret) { HALT; };
-
-CF_INLINE __CFPortSet __CFPortSetAllocate(void) {
-    __CFPortSet result;
-    kern_return_t ret = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_PORT_SET, &result);
-    if (KERN_SUCCESS != ret) { __THE_SYSTEM_HAS_NO_PORT_SETS_AVAILABLE__(ret); }
-    return (KERN_SUCCESS == ret) ? result : CFPORT_NULL;
-}
-
-CF_INLINE kern_return_t __CFPortSetInsert(__CFPort port, __CFPortSet portSet) {
-    if (MACH_PORT_NULL == port) {
-        return -1;
-    }
-    return mach_port_insert_member(mach_task_self(), port, portSet);
-}
-
-CF_INLINE kern_return_t __CFPortSetRemove(__CFPort port, __CFPortSet portSet) {
-    if (MACH_PORT_NULL == port) {
-        return -1;
-    }
-    return mach_port_extract_member(mach_task_self(), port, portSet);
-}
-
-CF_INLINE void __CFPortSetFree(__CFPortSet portSet) {
-    kern_return_t ret;
-    mach_port_name_array_t array;
-    mach_msg_type_number_t idx, number;
-
-    ret = mach_port_get_set_status(mach_task_self(), portSet, &array, &number);
-    if (KERN_SUCCESS == ret) {
-        for (idx = 0; idx < number; idx++) {
-            mach_port_extract_member(mach_task_self(), array[idx], portSet);
-        }
-        vm_deallocate(mach_task_self(), (vm_address_t)array, number * sizeof(mach_port_name_t));
-    }
-    mach_port_destroy(mach_task_self(), portSet);
-}
-
-CF_INLINE AbsoluteTime __CFUInt64ToAbsoluteTime(uint64_t x) {
-    AbsoluteTime a;
-    a.hi = x >> 32;
-    a.lo = x & (uint64_t)0xFFFFFFFF;
-    return a;
-}
+static __CFPort __CFPortAllocate(void);
+void __CFPortFree(__CFPort port);
+__CFPortSet __CFPortSetAllocate(void);
+kern_return_t __CFPortSetInsert(__CFPort port, __CFPortSet portSet);
+kern_return_t __CFPortSetRemove(__CFPort port, __CFPortSet portSet);
+void __CFPortSetFree(__CFPortSet portSet);
 
 static uint32_t __CFSendTrivialMachMessage(mach_port_t port, uint32_t msg_id, CFOptionFlags options, uint32_t timeout) {
     kern_return_t result;
@@ -820,7 +757,6 @@ CF_EXPORT CFRunLoopRef _CFRunLoopGet0(pthread_t t) {
             CFDictionarySetValue(__CFRunLoops, pthreadPointer(t), newLoop);
             loop = newLoop;
         }
-        // don't release run loops inside the loopsLock, because CFRunLoopDeallocate may end up taking it
         CFRelease(newLoop);
     }
     if (pthread_equal(t, pthread_self())) {
@@ -1300,7 +1236,6 @@ static void __CFArmNextTimerInMode(CFRunLoopModeRef rlm, CFRunLoopRef rl) {
     rlm->_timerDeadline = nextDeadline;
 }
 
-// call with rlm and its run loop locked, and the TSRLock locked; rlt not locked; returns with same state
 static void __CFRepositionTimerInMode(CFRunLoopModeRef rlm, CFRunLoopTimerRef rlt, Boolean isInArray) __attribute__((noinline));
 static void __CFRepositionTimerInMode(CFRunLoopModeRef rlm, CFRunLoopTimerRef rlt, Boolean isInArray) {
     if (!rlt) return;
@@ -1653,14 +1588,12 @@ handle_msg:;
                // handle nothing
            } else if (livePort == rl->_wakeUpPort) {
                // do nothing on Mac OS
-           }
-           else if (modeQueuePort != MACH_PORT_NULL && livePort == modeQueuePort) {
+           } else if (modeQueuePort != MACH_PORT_NULL && livePort == modeQueuePort) {
                if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
                    // Re-arm the next timer, because we apparently fired early
                    __CFArmNextTimerInMode(rlm, rl);
                }
-           }
-           else if (livePort == dispatchPort) {
+           } else if (livePort == dispatchPort) {
                _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)6, NULL);
                __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg);
                _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL);
@@ -1677,7 +1610,7 @@ handle_msg:;
                        CFAllocatorDeallocate(kCFAllocatorSystemDefault, reply);
                    }
                }
-           } 
+           }
            if (msg && msg != (mach_msg_header_t *)msg_buffer) free(msg);
 
            __CFRunLoopDoBlocks(rl, rlm);
@@ -1785,10 +1718,6 @@ CF_EXPORT void _CFRunLoopStopMode(CFRunLoopRef rl, CFStringRef modeName) {
         rlm->_stopped = true;
     }
     CFRunLoopWakeUp(rl);
-}
-
-CF_EXPORT Boolean _CFRunLoopModeContainsMode(CFRunLoopRef rl, CFStringRef modeName, CFStringRef candidateContainedName) {
-    return false;
 }
 
 void CFRunLoopPerformBlock(CFRunLoopRef rl, CFTypeRef mode, void (^block)(void)) {

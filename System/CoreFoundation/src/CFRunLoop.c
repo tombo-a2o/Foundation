@@ -2092,10 +2092,6 @@ void CFRunLoopSourceInvalidate(CFRunLoopSourceRef rls) {
         __CFUnsetValid(rls);
         __CFRunLoopSourceUnsetSignaled(rls);
         if (NULL != rloops) {
-            // To avoid A->B, B->A lock ordering issues when coming up
-            // towards the run loop from a source, the source has to be
-            // unlocked, which means we have to protect from object
-            // invalidation.
             rls->_runLoops = NULL; // transfer ownership to local stack
             CFTypeRef params[2] = {rls, NULL};
             CFBagApplyFunction(rloops, (__CFRunLoopSourceRemoveFromRunLoop), params);
@@ -2272,14 +2268,7 @@ void CFRunLoopObserverInvalidate(CFRunLoopObserverRef rlo) {    /* DOES CALLOUT 
         rlo->_context.info = NULL;
         __CFUnsetValid(rlo);
         if (NULL != rl) {
-            // To avoid A->B, B->A lock ordering issues when coming up
-            // towards the run loop from an observer, it has to be
-            // unlocked, which means we have to protect from object
-            // invalidation.
             CFRetain(rl);
-            // CFRunLoopRemoveObserver will lock the run loop while it
-            // needs that, but we also lock it out here to keep
-            // changes from occurring for this whole sequence.
             CFArrayRef array = CFRunLoopCopyAllModes(rl);
             for (CFIndex idx = CFArrayGetCount(array); idx--;) {
                 CFStringRef modeName = (CFStringRef)CFArrayGetValueAtIndex(array, idx);
@@ -2465,10 +2454,6 @@ void CFRunLoopTimerSetNextFireDate(CFRunLoopTimerRef rlt, CFAbsoluteTime fireDat
         CFIndex cnt = CFSetGetCount(rlt->_rlModes);
         STACK_BUFFER_DECL(CFTypeRef, modes, cnt);
         CFSetGetValues(rlt->_rlModes, (const void **)modes);
-        // To avoid A->B, B->A lock ordering issues when coming up
-        // towards the run loop from a source, the timer has to be
-        // unlocked, which means we have to protect from object
-        // invalidation, although that's somewhat expensive.
         for (CFIndex idx = 0; idx < cnt; idx++) {
             CFRetain(modes[idx]);
         }
@@ -2530,17 +2515,10 @@ void CFRunLoopTimerInvalidate(CFRunLoopTimerRef rlt) {	/* DOES CALLOUT */
             CFIndex cnt = CFSetGetCount(rlt->_rlModes);
             STACK_BUFFER_DECL(CFStringRef, modes, cnt);
             CFSetGetValues(rlt->_rlModes, (const void **)modes);
-            // To avoid A->B, B->A lock ordering issues when coming up
-            // towards the run loop from a source, the timer has to be
-            // unlocked, which means we have to protect from object
-            // invalidation, although that's somewhat expensive.
             for (CFIndex idx = 0; idx < cnt; idx++) {
                 CFRetain(modes[idx]);
             }
             CFRetain(rl);
-            // CFRunLoopRemoveTimer will lock the run loop while it
-            // needs that, but we also lock it out here to keep
-            // changes from occurring for this whole sequence.
             for (CFIndex idx = 0; idx < cnt; idx++) {
                 CFRunLoopRemoveTimer(rl, rlt, modes[idx]);
             }

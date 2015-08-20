@@ -59,11 +59,12 @@ typedef int kern_return_t;
 
 extern mach_port_t _dispatch_get_main_queue_port_4CF(void);
 extern void _dispatch_main_queue_callback_4CF(mach_msg_header_t *msg);
-extern dispatch_queue_t _dispatch_runloop_root_queue_create_4CF(char *name, int flag);
 extern mach_port_t _dispatch_runloop_root_queue_get_port_4CF(dispatch_queue_t queue);
-extern void _dispatch_source_set_runloop_timer_4CF(dispatch_source_t source, uint64_t start, uint64_t interval, uint64_t leeway);
 extern bool _dispatch_runloop_root_queue_perform_4CF(dispatch_queue_t queue);
-extern int pthread_main_np(void);
+
+int is_main_thread(void) {
+    return dispatch_get_current_queue() == dispatch_get_main_queue();
+}
 
 #include <Block.h>
 #include <Block_private.h>
@@ -186,7 +187,6 @@ typedef struct _per_run_data {
 
 struct __CFRunLoop {
     CFRuntimeBase _base;
-    __CFPort _wakeUpPort;			// used for CFRunLoopWakeUp 
     Boolean _unused;
     volatile _per_run_data *_perRunData;              // reset for runs of the run loop
     pthread_t _pthread;
@@ -267,7 +267,7 @@ static CFStringRef __CFRunLoopCopyDescription(CFTypeRef cf) {
     CFRunLoopRef rl = (CFRunLoopRef)cf;
     CFMutableStringRef result;
     result = CFStringCreateMutable(kCFAllocatorSystemDefault, 0);
-    CFStringAppendFormat(result, NULL, CFSTR("<CFRunLoop %p [%p]>{wakeup port = 0x%x, stopped = %s, ignoreWakeUps = %s, \ncurrent mode = %@,\n"), cf, CFGetAllocator(cf), rl->_wakeUpPort, __CFRunLoopIsStopped(rl) ? "true" : "false", __CFRunLoopIsIgnoringWakeUps(rl) ? "true" : "false", rl->_currentMode ? rl->_currentMode->_name : CFSTR("(none)"));
+    CFStringAppendFormat(result, NULL, CFSTR("<CFRunLoop %p [%p]>{stopped = %s, ignoreWakeUps = %s, \ncurrent mode = %@,\n"), cf, CFGetAllocator(cf), __CFRunLoopIsStopped(rl) ? "true" : "false", __CFRunLoopIsIgnoringWakeUps(rl) ? "true" : "false", rl->_currentMode ? rl->_currentMode->_name : CFSTR("(none)"));
     CFStringAppendFormat(result, NULL, CFSTR("common modes = %@,\ncommon mode items = %@,\nmodes = %@}\n"), rl->_commonModes, rl->_commonModeItems, rl->_modes);
     return result;
 }
@@ -305,7 +305,7 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
 
     kern_return_t ret = KERN_SUCCESS;
     rlm->_timerFired = false;
-    rlm->_queue = _dispatch_runloop_root_queue_create_4CF("Run Loop Mode Queue", 0);
+    rlm->_queue = dispatch_queue_create("Run Loop Mode Queue", 0);
     mach_port_t queuePort = _dispatch_runloop_root_queue_get_port_4CF(rlm->_queue);
     if (queuePort == MACH_PORT_NULL) CRASH("*** Unable to create run loop mode queue port. (%d) ***", -1);
     rlm->_timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, rlm->_queue);
@@ -316,14 +316,11 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
     });
 
     // Set timer to far out there. The unique leeway makes this timer easy to spot in debug output.
-    _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, DISPATCH_TIME_FOREVER, DISPATCH_TIME_FOREVER, 321);
+    dispatch_source_set_timer(rlm->_timerSource, DISPATCH_TIME_FOREVER, DISPATCH_TIME_FOREVER, 321);
     dispatch_resume(rlm->_timerSource);
 
     ret = __CFPortSetInsert(queuePort, rlm->_portSet);
     if (KERN_SUCCESS != ret) CRASH("*** Unable to insert timer port into port set. (%d) ***", ret);
-
-    ret = __CFPortSetInsert(rl->_wakeUpPort, rlm->_portSet);
-    if (KERN_SUCCESS != ret) CRASH("*** Unable to insert wake up port into port set. (%d) ***", ret);
 
     CFSetAddValue(rl->_modes, rlm);
     CFRelease(rlm);
@@ -334,7 +331,7 @@ static CFRunLoopModeRef __CFRunLoopFindMode(CFRunLoopRef rl, CFStringRef modeNam
 // expects rl and rlm locked
 static Boolean __CFRunLoopModeIsEmpty(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFRunLoopModeRef previousMode) {
     if (NULL == rlm) return true;
-    Boolean libdispatchQSafe = pthread_main_np() && 0 == _CFGetTSD(__CFTSDKeyIsInGCDMainQ);
+    Boolean libdispatchQSafe = is_main_thread();
     if (libdispatchQSafe && (CFRunLoopGetMain() == rl) && CFSetContainsValue(rl->_commonModes, rlm->_name)) return false; // represents the libdispatch main queue
     if (NULL != rlm->_sources0 && 0 < CFSetGetCount(rlm->_sources0)) return false;
     if (NULL != rlm->_timers && 0 < CFArrayGetCount(rlm->_timers)) return false;
@@ -634,8 +631,6 @@ static void __CFRunLoopDeallocate(CFTypeRef cf) {
     if (NULL != rl->_modes) {
         CFRelease(rl->_modes);
     }
-    __CFPortFree(rl->_wakeUpPort);
-    rl->_wakeUpPort = CFPORT_NULL;
     __CFRunLoopPopPerRunData(rl, NULL);
     memset((char *)cf + sizeof(CFRuntimeBase), 0x8C, sizeof(struct __CFRunLoop) - sizeof(CFRuntimeBase));
 }
@@ -684,8 +679,6 @@ static CFRunLoopRef __CFRunLoopCreate(pthread_t t) {
         return NULL;
     }
     (void)__CFRunLoopPushPerRunData(loop);
-    loop->_wakeUpPort = __CFPortAllocate();
-    if (CFPORT_NULL == loop->_wakeUpPort) HALT;
     __CFRunLoopSetIgnoreWakeUps(loop);
     loop->_commonModes = CFSetCreateMutable(kCFAllocatorSystemDefault, 0, &kCFTypeSetCallBacks);
     CFSetAddValue(loop->_commonModes, kCFRunLoopDefaultMode);
@@ -806,7 +799,7 @@ CF_EXPORT CFTypeRef _CFRunLoopSet2(CFRunLoopRef rl, CFTypeRef (*counterpartProvi
 }
 
 void _CFRunLoopSetCurrent(CFRunLoopRef rl) {
-    if (pthread_main_np()) return;
+    if (is_main_thread()) return;
     CFRunLoopRef currentLoop = CFRunLoopGetCurrent();
     if (rl != currentLoop) {
         CFRetain(currentLoop); // avoid a deallocation of the currentLoop inside the lock
@@ -1156,11 +1149,11 @@ static void __CFArmNextTimerInMode(CFRunLoopModeRef rlm, CFRunLoopRef rl) {
             // We're going to hand off the range of allowable timer fire date to dispatch and let it fire when appropriate for the system.
             dispatch_time_t deadline = __CFTSRToDispatchTime(nextDeadline);
             // Arm the dispatch timer
-            _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, deadline, DISPATCH_TIME_FOREVER, 0);
+            dispatch_source_set_timer(rlm->_timerSource, deadline, DISPATCH_TIME_FOREVER, 0);
             rlm->_dispatchTimerArmed = true;
         } else if (nextDeadline == UINT64_MAX) {
             if (rlm->_dispatchTimerArmed) {
-                _dispatch_source_set_runloop_timer_4CF(rlm->_timerSource, DISPATCH_TIME_FOREVER, DISPATCH_TIME_FOREVER, 333);
+                dispatch_source_set_timer(rlm->_timerSource, DISPATCH_TIME_FOREVER, DISPATCH_TIME_FOREVER, 333);
                 rlm->_dispatchTimerArmed = false;
             }
         }
@@ -1376,7 +1369,6 @@ struct __timeout_context {
     uint64_t termTSR;
 };
 
-/* rl, rlm are locked on entrance and exit */
 static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInterval seconds, Boolean stopAfterHandle, CFRunLoopModeRef previousMode) {
     if (__CFRunLoopIsStopped(rl)) {
         __CFRunLoopUnsetStopped(rl);
@@ -1387,7 +1379,7 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
     }
 
     mach_port_t dispatchPort = MACH_PORT_NULL;
-    Boolean libdispatchQSafe = pthread_main_np() && 0 == _CFGetTSD(__CFTSDKeyIsInGCDMainQ);
+    Boolean libdispatchQSafe = is_main_thread();
     if (libdispatchQSafe && (CFRunLoopGetMain() == rl) && CFSetContainsValue(rl->_commonModes, rlm->_name)) dispatchPort = _dispatch_get_main_queue_port_4CF();
 
     mach_port_t modeQueuePort = MACH_PORT_NULL;
@@ -1398,15 +1390,13 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
         }
     }
 
-    struct __timeout_context *timeout_context = (struct __timeout_context *)malloc(sizeof(*timeout_context));
+    Boolean infiniteLoop;
     if (seconds <= 0.0) { // instant timeout
-        seconds = 0.0;
-        timeout_context->termTSR = 0ULL;
+        infiniteLoop = false;
     } else { // infinite timeout
         assert(seconds > TIMER_INTERVAL_LIMIT);
 
-        seconds = 9999999999.0;
-        timeout_context->termTSR = UINT64_MAX;
+        infiniteLoop = true;
     }
 
     Boolean didDispatchPortLastTime = true;
@@ -1429,7 +1419,7 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
             __CFRunLoopDoBlocks(rl, rlm);
         }
 
-        Boolean poll = sourceHandledThisLoop || (0ULL == timeout_context->termTSR);
+        Boolean poll = sourceHandledThisLoop || !infiniteLoop;
 
         if (MACH_PORT_NULL != dispatchPort && !didDispatchPortLastTime) {
             msg = (mach_msg_header_t *)msg_buffer;
@@ -1492,17 +1482,13 @@ handle_msg:;
 
            if (MACH_PORT_NULL == livePort) {
                // handle nothing
-           } else if (livePort == rl->_wakeUpPort) {
-               // do nothing on Mac OS
            } else if (modeQueuePort != MACH_PORT_NULL && livePort == modeQueuePort) {
                if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
                    // Re-arm the next timer, because we apparently fired early
                    __CFArmNextTimerInMode(rlm, rl);
                }
            } else if (livePort == dispatchPort) {
-               _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)6, NULL);
                __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg);
-               _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL);
                sourceHandledThisLoop = true;
                didDispatchPortLastTime = true;
            }
@@ -1513,7 +1499,7 @@ handle_msg:;
 
            if (sourceHandledThisLoop && stopAfterHandle) {
                retVal = kCFRunLoopRunHandledSource;
-           } else if (timeout_context->termTSR < mach_absolute_time()) {
+           } else if (!infiniteLoop) {
                retVal = kCFRunLoopRunTimedOut;
            } else if (__CFRunLoopIsStopped(rl)) {
                __CFRunLoopUnsetStopped(rl);
@@ -1525,8 +1511,6 @@ handle_msg:;
                retVal = kCFRunLoopRunFinished;
            }
     } while (0 == retVal);
-
-    free(timeout_context);
 
     return retVal;
 }
@@ -1578,7 +1562,6 @@ Boolean CFRunLoopIsWaiting(CFRunLoopRef rl) {
 }
 
 void CFRunLoopWakeUp(CFRunLoopRef rl) {
-    // This lock is crucial to ignorable wakeups, do not remove it.
     if (__CFRunLoopIsIgnoringWakeUps(rl)) {
         return;
     }
@@ -1587,7 +1570,7 @@ void CFRunLoopWakeUp(CFRunLoopRef rl) {
      * to lose a wakeup, but the send may fail if there is already a
      * wakeup pending, since the queue length is 1. */
 #define MACH_SEND_TIMEOUT (~(uint32_t)0)
-    ret = __CFSendTrivialMachMessage(rl->_wakeUpPort, 0, MACH_SEND_TIMEOUT, 0);
+    ret = __CFSendTrivialMachMessage(NULL /*rl->_wakeUpPort*/, 0, MACH_SEND_TIMEOUT, 0);
 //    if (ret != MACH_MSG_SUCCESS && ret != MACH_SEND_TIMED_OUT) CRASH("*** Unable to send message to wake up port. (%d) ***", ret);
 }
 

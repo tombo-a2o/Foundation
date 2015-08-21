@@ -528,10 +528,7 @@ CF_EXPORT int _NS_pthread_main_np() {
 // If thread data has been torn down, these functions should crash on CF_TSD_BAD_PTR + slot address.
 #define CF_TSD_MAX_SLOTS 70
 
-#if (DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI)
-#include "pthread_machdep.h"
-static const unsigned long CF_TSD_KEY = __PTK_FRAMEWORK_COREFOUNDATION_KEY5;
-#endif
+static void *CF_TSD_KEY = (void*)"TSD_KEY";
 
 // Windows and Linux, not sure how many times the destructor could get called; CF_TSD_MAX_DESTRUCTOR_CALLS could be 1
 
@@ -557,11 +554,6 @@ CF_PRIVATE void __CFTSDWindowsInitialize() {
     __CFTSDIndexKey = TlsAlloc();
 }
 
-// Called from CFRuntime's cleanup code, on Windows only
-CF_PRIVATE void __CFTSDWindowsCleanup() {
-    TlsFree(__CFTSDIndexKey);
-}
-
 // Called for each thread as it exits, on Windows only
 CF_PRIVATE void __CFFinalizeWindowsThreadData() {
     // Normally, this should call the finalizer several times to emulate the behavior of pthreads on Windows. However, a few bugs keep us from doing this:
@@ -574,35 +566,12 @@ CF_PRIVATE void __CFFinalizeWindowsThreadData() {
 
 #endif
 
-#if DEPLOYMENT_TARGET_LINUX
-
-static pthread_key_t __CFTSDIndexKey;
-
-// Called from CFRuntime's startup code, on Linux only
-CF_PRIVATE void __CFTSDLinuxInitialize() {
-    (void)pthread_key_create(&__CFTSDIndexKey, __CFTSDFinalize);
-}
-
-#endif
-
 static void __CFTSDSetSpecific(void *arg) {
-#if (DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI)
-    _pthread_setspecific_direct(CF_TSD_KEY, arg);
-#elif DEPLOYMENT_TARGET_LINUX
-    pthread_setspecific(__CFTSDIndexKey, arg);
-#elif DEPLOYMENT_TARGET_WINDOWS
-    TlsSetValue(__CFTSDIndexKey, arg);
-#endif
+    dispatch_queue_set_specific(dispatch_get_current_queue(), CF_TSD_KEY, arg, NULL);
 }
 
 static void *__CFTSDGetSpecific() {
-#if (DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI)
-    return _pthread_getspecific_direct(CF_TSD_KEY);
-#elif DEPLOYMENT_TARGET_LINUX
-    return pthread_getspecific(__CFTSDIndexKey);
-#elif DEPLOYMENT_TARGET_WINDOWS
-    return TlsGetValue(__CFTSDIndexKey);
-#endif
+    return dispatch_get_specific(CF_TSD_KEY);
 }
 
 static void __CFTSDFinalize(void *arg) {
@@ -637,10 +606,6 @@ static void __CFTSDFinalize(void *arg) {
     }
 }
 
-#if (DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI)
-extern int pthread_key_init_np(int, void (*)(void *));
-#endif
-
 // Get or initialize a thread local storage. It is created on demand.
 static __CFTSDTable *__CFTSDGetTable() {
     __CFTSDTable *table = (__CFTSDTable *)__CFTSDGetSpecific();
@@ -652,10 +617,6 @@ static __CFTSDTable *__CFTSDGetTable() {
     if (!table) {
         // This memory is freed in the finalize function
         table = (__CFTSDTable *)calloc(1, sizeof(__CFTSDTable));
-        // Windows and Linux have created the table already, we need to initialize it here for other platforms. On Windows, the cleanup function is called by DllMain when a thread exits. On Linux the destructor is set at init time.
-#if (DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI)
-        pthread_key_init_np(CF_TSD_KEY, __CFTSDFinalize);
-#endif
         __CFTSDSetSpecific(table);
     }
     

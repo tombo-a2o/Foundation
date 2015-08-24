@@ -1017,7 +1017,7 @@ static NSComparisonResult compareOperationEffectivePriorities(id obj1, id obj2, 
         [_pendingOperations sortUsingFunction:&compareOperationEffectivePriorities context:_pendingOperations];
         return;
     }
-    [_pendingOperations _mutate];
+    //[_pendingOperations _mutate];
     NSRange range = NSMakeRange(0, count);
     id objs[kMaxCount];
     CFIndex indexes[kMaxCount];

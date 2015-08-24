@@ -23,11 +23,6 @@ FOUNDATION_EXPORT NSString * const NSThreadWillExitNotification;
 + (NSThread *)mainThread;
 - (id)init;
 - (id)initWithTarget:(id)target selector:(SEL)selector object:(id)argument;
-- (NSMutableDictionary *)threadDictionary;
-- (double)threadPriority;
-- (void)setThreadPriority:(double)p;
-- (void)setName:(NSString *)n;
-- (NSString *)name;
 - (NSUInteger)stackSize;
 - (void)setStackSize:(NSUInteger)s;
 - (BOOL)isMainThread;
@@ -38,6 +33,10 @@ FOUNDATION_EXPORT NSString * const NSThreadWillExitNotification;
 - (void)start;
 - (void)main;
 
+@property(readonly, retain) NSMutableDictionary *threadDictionary;
+@property(copy) NSString *name;
+@property double threadPriority;
+@property NSUInteger stackSize;
 @end
 
 @interface NSObject (NSThreadPerformAdditions)

@@ -8,7 +8,6 @@ FOUNDATION_EXPORT NSString * const NSDefaultRunLoopMode;
 FOUNDATION_EXPORT NSString * const NSRunLoopCommonModes;
 
 @interface NSRunLoop : NSObject{
-@package
     CFRunLoopRef _rl;
     id _dperf;
     id _perft;
@@ -17,10 +16,11 @@ FOUNDATION_EXPORT NSString * const NSRunLoopCommonModes;
     void *_reserved[6];
 }
 
+@property(readonly, copy) NSString *currentMode;
+
 + (NSRunLoop *)currentRunLoop;
 + (NSRunLoop *)mainRunLoop;
 
-- (NSString *)currentMode;
 - (CFRunLoopRef)getCFRunLoop;
 
 - (void)addTimer:(NSTimer *)timer forMode:(NSString *)mode;
@@ -46,8 +46,6 @@ FOUNDATION_EXPORT NSString * const NSRunLoopCommonModes;
 
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes;
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay;
-+ (void)cancelPreviousPerformRequestsWithTarget:(id)aTarget selector:(SEL)aSelector object:(id)anArgument;
-+ (void)cancelPreviousPerformRequestsWithTarget:(id)aTarget;
 
 @end
 

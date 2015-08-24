@@ -216,7 +216,7 @@ static void NSThreadEnd(NSThread *thread)
 {
     if (_target && _selector)
     {
-        objc_msgSend(_target, _selector, _argument);
+        [_target performSelector:_selector withObject:_argument];
     }
 }
 

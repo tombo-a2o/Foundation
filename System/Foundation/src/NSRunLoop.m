@@ -61,8 +61,8 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 
 - (void)addPort:(NSPort *)aPort forMode:(NSString *)mode
 {
-    // not implemented
-    assert(0);
+    // not implemented, just ignore
+    // assert(0);
 }
 
 - (void)removePort:(NSPort *)aPort forMode:(NSString *)mode
@@ -109,7 +109,7 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 
     // check limitDate is infinite
     
-    if(dispatch_get_current_queue() == dispatch_get_current_queue()) {
+    if(dispatch_get_current_queue() == dispatch_get_main_queue()) {
         dispatch_main();
     } else {
         // todo

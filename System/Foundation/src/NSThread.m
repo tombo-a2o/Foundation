@@ -248,7 +248,7 @@ static void NSThreadPerform(id self, SEL aSelector, NSThread *thr, id arg, BOOL 
 {
     if ([NSThread currentThread] == thr && waitUntilDone)
     {
-        objc_msgSend(self, aSelector, arg);
+        [self performSelector:aSelector withObject:arg];
         return;
     }
 
@@ -258,13 +258,13 @@ static void NSThreadPerform(id self, SEL aSelector, NSThread *thr, id arg, BOOL 
     // TODO: mode
     if (waitUntilDone) {
         dispatch_sync(thr->_queue, ^{
-            objc_msgSend(self, aSelector, arg);
+            [self performSelector:aSelector withObject:arg];
             [self release];
             [arg release];
         });
     } else {
         dispatch_async(thr->_queue, ^{
-            objc_msgSend(self, aSelector, arg);
+            [self performSelector:aSelector withObject:arg];
             [self release];
             [arg release];
         });

@@ -1172,7 +1172,7 @@ void __CFInitialize(void) {
         __CFDateInitialize();
         _CFRuntimeBridgeClasses(CFDateGetTypeID(), "__NSDate");
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_EMSCRIPTEN
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_WINDOWS
         __CFRunLoopInitialize();
         __CFRunLoopObserverInitialize();
         __CFRunLoopSourceInitialize();

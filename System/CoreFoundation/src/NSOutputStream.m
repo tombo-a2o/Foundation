@@ -151,7 +151,7 @@
         return;
     }
 
-    CFWriteStreamScheduleWithRunLoop((CFWriteStreamRef)self, [aRunLoop getCFRunLoop], (CFStringRef)mode);
+//    CFWriteStreamScheduleWithRunLoop((CFWriteStreamRef)self, [aRunLoop getCFRunLoop], (CFStringRef)mode);
 }
 
 - (void)removeFromRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode

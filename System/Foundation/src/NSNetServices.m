@@ -16,6 +16,38 @@
 NSString * const NSNetServicesErrorCode = @"NSNetServicesErrorCode";
 NSString * const NSNetServicesErrorDomain = @"NSNetServicesErrorDomain";
 
+#if 1
+#include <assert.h>
+@implementation NSNetService
++ (NSDictionary *)dictionaryFromTXTRecordData:(NSData *)txtData {assert(0);}
++ (NSData *)dataFromTXTRecordDictionary:(NSDictionary *)txtDictionary {assert(0);}
+- (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name port:(int)port {assert(0);}
+- (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name {assert(0);}
+- (id <NSNetServiceDelegate>)delegate {assert(0);}
+- (void)setDelegate:(id <NSNetServiceDelegate>)delegate {assert(0);}
+- (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode {assert(0);}
+- (void)removeFromRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode {assert(0);}
+- (NSString *)domain {assert(0);}
+- (NSString *)type {assert(0);}
+- (NSString *)name {assert(0);}
+- (NSArray *)addresses {assert(0);}
+- (NSInteger)port {assert(0);}
+- (void)publish {assert(0);}
+- (void)publishWithOptions:(NSNetServiceOptions)options {assert(0);}
+- (void)resolve {assert(0);}
+- (void)stop {assert(0);}
+- (NSString *)hostName {assert(0);}
+- (void)resolveWithTimeout:(NSTimeInterval)timeout {assert(0);}
+- (BOOL)getInputStream:(out __strong NSInputStream **)inputStream outputStream:(out __strong NSOutputStream **)outputStream {assert(0);}
+- (BOOL)setTXTRecordData:(NSData *)recordData {assert(0);}
+- (NSData *)TXTRecordData {assert(0);}
+- (void)startMonitoring {assert(0);}
+- (void)stopMonitoring {assert(0);}
+
+@end
+
+#else
+
 #warning TODO: Move this to CFSocketStream.h
 extern void CFStreamCreatePairWithSocketToNetService(CFAllocatorRef alloc, CFNetServiceRef service, CFReadStreamRef *readStream, CFWriteStreamRef *writeStream);
 
@@ -591,3 +623,5 @@ static void _netServiceBrowserDispatchCallBack(CFNetServiceBrowserRef browser, C
 }
 
 @end
+
+#endif

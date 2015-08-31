@@ -33,10 +33,11 @@
 
 int _xhr_create(void);
 void _xhr_open(int xhr, const char *method, const char *url, int async, const char *user, const char *password);
-void _xhr_set_onload(int xhr, void *ctx, void func(int, int, void*));
-void _xhr_set_onerror(int xhr, void *ctx, void func(int, void*));
+void _xhr_set_onload(int xhr, dispatch_queue_t queue, void *ctx, void func(void*));
+void _xhr_set_onerror(int xhr, dispatch_queue_t queue, void *ctx, void func(void*));
 void _xhr_set_request_header(int xhr, const char *key, const char *value);
 void _xhr_send(int xhr, const char *data);
+int _xhr_get_ready_state(int xhr);
 int _xhr_get_status(int xhr);
 int _xhr_get_status_text(int xhr, void **text); // return length, text needs to be freed by caller 
 int _xhr_get_response_text(int xhr, void **data); // return length, data needs to be freed by caller
@@ -89,11 +90,11 @@ static NSData *createDataFromXhr(int xhr) {
 @property(nonatomic, assign) id<NSURLConnectionDelegate> delegate;
 @property(nonatomic, assign) NSRunLoop *runLoop;
 @property(nonatomic, assign) NSString *mode;
+@property(nonatomic, assign) int xhr;
+@property(nonatomic, assign) int readyState;
 @end
 
-@implementation NSURLConnection {
-    int xhr;
-}
+@implementation NSURLConnection
 
 + (NSURLConnection*)connectionWithRequest:(NSURLRequest *)request delegate:(id<NSURLConnectionDelegate>)delegate
 {
@@ -138,42 +139,48 @@ static NSData *createDataFromXhr(int xhr) {
 
 - (void)didReceiveResponse:(NSHTTPURLResponse*)response {
     if([self.delegate respondsToSelector:@selector(connection:didReceiveResponse:)]) {
-        [self.delegate connection:self didReceiveResponse:response];
+        [(id<NSURLConnectionDataDelegate>)self.delegate connection:self didReceiveResponse:response];
     } 
 }
 
 - (void)didReceiveData:(NSData*)data {
     if([self.delegate respondsToSelector:@selector(connection:didReceiveData:)]) {
-        [self.delegate connection:self didReceiveData:data];
+        [(id<NSURLConnectionDataDelegate>)self.delegate connection:self didReceiveData:data];
     } 
 }
 
 - (void)didFinishLoading:(id)dummy {
     if([self.delegate respondsToSelector:@selector(connectionDidFinishLoading:)]) {
-        [self.delegate connectionDidFinishLoading:self];
+        [(id<NSURLConnectionDataDelegate>)self.delegate connectionDidFinishLoading:self];
     } 
 }
 
-static void onloadCallback(int xhr, int state, void *ctx) {
+static void onloadCallback(void *ctx) {
     NSURLConnection *connection= (NSURLConnection*)ctx;
-    id<NSURLConnectionDelegate> delegate = connection.delegate;
+    int xhr = connection.xhr;
+    int currentState = connection.readyState;
+    int newState = _xhr_get_ready_state(xhr);
+    connection.readyState = newState;
 
-    if(state == 2) {
+    if(currentState < 2 && newState >= 2) {
         NSHTTPURLResponse *response= createResponseFromXhr(xhr, connection.currentRequest);
-        [connection.runLoop performSelector:@selector(didReceiveResponse:) target:connection argument:response order:0 modes:@[connection.mode]];
-    } else if(state == 3) {
+        [connection performSelector:@selector(didReceiveResponse:) withObject:response];
+    }
+    if(currentState < 3 && newState >= 3) {
         // Return all data at once
-    } else if(state == 4) {
+    }
+    if(currentState < 4 && newState >= 4) {
         NSData *data = createDataFromXhr(xhr);
-        [connection.runLoop performSelector:@selector(didReceiveData:) target:connection argument:data order:0 modes:@[connection.mode]];
-        [connection.runLoop performSelector:@selector(didFinishLoading:) target:connection argument:nil order:0 modes:@[connection.mode]];
+        [connection performSelector:@selector(didReceiveData:) withObject:data];
+        [connection performSelector:@selector(didFinishLoading:) withObject:nil];
     }
 }
 
 - (void)start
 {
-    xhr = xhrCreateAndOpen(self.currentRequest, YES);
-    _xhr_set_onload(xhr, self, onloadCallback); 
+    int xhr = self.xhr = xhrCreateAndOpen(self.currentRequest, YES);
+    self.readyState = 0;
+    _xhr_set_onload(xhr, dispatch_get_current_queue(), self, onloadCallback); 
     _xhr_send(xhr, NULL);
 }
 

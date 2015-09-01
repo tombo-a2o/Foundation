@@ -22,6 +22,7 @@ const CGPoint	CGPointZero		= {0, 0};
 const CGRect	CGRectZero		= {0, 0, 0, 0};
 const CGRect	CGRectNull		= {FLT_MAX, FLT_MAX, 0, 0};
 const CGRect	CGRectInfinite	= {-FLT_MIN, -FLT_MIN, FLT_MAX, FLT_MAX};
+const CGSize    CGSizeZero      = {0, 0};
 
 CGFloat CGRectGetHeight(CGRect rect)
 {

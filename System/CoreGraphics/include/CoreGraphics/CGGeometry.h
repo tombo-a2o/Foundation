@@ -125,4 +125,11 @@ __CGSizeEqualToSize(CGSize size1, CGSize size2)
 }
 #define CGSizeEqualToSize __CGSizeEqualToSize
 
+CG_INLINE bool
+__CGRectEqualToRect(CGRect rect1, CGRect rect2)
+{
+    return CGPointEqualToPoint(rect1.origin, rect2.origin) && CGSizeEqualToSize(rect1.size, rect2.size);
+}
+#define CGRectEqualToRect __CGRectEqualToRect
+
 #endif /* CGGEOMETRY_H_ */

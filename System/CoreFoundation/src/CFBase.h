@@ -98,6 +98,7 @@
 
 #ifdef EMSCRIPTEN
     #include <MacTypes.h>
+    #include <sys/_types.h>
 #endif
 
 #if !defined(__MACTYPES__)

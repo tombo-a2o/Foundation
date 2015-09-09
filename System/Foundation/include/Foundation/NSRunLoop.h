@@ -56,3 +56,11 @@ FOUNDATION_EXPORT NSString * const NSRunLoopCommonModes;
 - (void)cancelPerformSelectorsWithTarget:(id)target;
 
 @end
+
+@class NSInputSource;
+@interface NSRunLoop (WinObjC)
+
+-(void)addInputSource:(NSInputSource *)source forMode:(NSString *)mode;
+-(void)removeInputSource:(NSInputSource *)source forMode:(NSString *)mode;
+
+@end

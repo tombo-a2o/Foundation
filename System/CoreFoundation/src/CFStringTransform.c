@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#include "CFString.h"
+#include <CoreFoundation/CFString.h>
 #include <unicode/utrans.h>
 
 #define BUFFER_SIZE 256

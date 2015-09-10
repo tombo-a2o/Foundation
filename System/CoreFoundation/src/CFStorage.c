@@ -48,7 +48,7 @@
 
 #define NO_SHIFTER ((uint32_t)(-1))
 
-#include "CFStorage.h"
+#include <CoreFoundation/CFStorage.h>
 #include "CFInternal.h"
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
 #include <dispatch/dispatch.h>

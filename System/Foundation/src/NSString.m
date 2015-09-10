@@ -21,13 +21,13 @@
 #import <Foundation/NSURL.h>
 #import "_NSFileIO.h"
 
-#import "CFPriv.h"
-#import "CFUnicodeDecomposition.h"
-#import "CFString.h"
-#import "CFStringTokenizer.h"
+#import <CoreFoundation/CFPriv.h>
+#import <CoreFoundation/CFUnicodeDecomposition.h>
+#import <CoreFoundation/CFString.h>
+#import <CoreFoundation/CFStringTokenizer.h>
 #import "NSBOMEncoding.h"
 #import "NSRangeCheck.h"
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 #import <dispatch/dispatch.h>
 #import <unicode/uchar.h>

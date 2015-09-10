@@ -32,8 +32,8 @@
 #include <CoreFoundation/CFBundle.h>
 #include <CoreFoundation/CFNumber.h>
 #include "CFBundle_Internal.h"
-#include "CFByteOrder.h"
-#include "CFURLAccess.h"
+#include <CoreFoundation/CFByteOrder.h>
+#include <CoreFoundation/CFURLAccess.h>
 
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMBEDDED_MINI
 #include <dirent.h>

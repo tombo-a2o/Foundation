@@ -36,7 +36,7 @@
 #include <CoreFoundation/CFBundle.h>
 #endif
 #include <CoreFoundation/CFNumber.h>
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFInternal.h"
 #include <sys/stat.h>
 #if DEPLOYMENT_TARGET_MACOSX

@@ -1,5 +1,5 @@
 #import <Foundation/NSEnumerator.h>
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 @interface __NSFastEnumerationEnumerator : NSEnumerator  {
 @package

@@ -28,7 +28,7 @@
 
 #include <CoreFoundation/CFNumber.h>
 #include "CFInternal.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include <math.h>
 #include <float.h>
 

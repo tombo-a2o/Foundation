@@ -28,9 +28,9 @@
 
 #include <CoreFoundation/CFByteOrder.h>
 #include "CFInternal.h"
-#include "CFUniChar.h" 
-#include "CFStringEncodingConverterExt.h"
-#include "CFUnicodeDecomposition.h"
+#include <CoreFoundation/CFUniChar.h> 
+#include <CoreFoundation/CFStringEncodingConverterExt.h>
+#include <CoreFoundation/CFUnicodeDecomposition.h>
 #include "CFUniCharPriv.h"
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <fcntl.h>

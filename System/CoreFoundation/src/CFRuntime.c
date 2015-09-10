@@ -28,7 +28,7 @@
 
 #define ENABLE_ZOMBIES 1
 
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 #include "CFInternal.h"
 #include "CFBasicHash.h"
 #include <string.h>
@@ -41,7 +41,7 @@
 #include <crt_externs.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include "CFStringDefaultEncoding.h"
+#include <CoreFoundation/CFStringDefaultEncoding.h>
 #endif
 #if DEPLOYMENT_TARGET_EMBEDDED
 // This isn't in the embedded runtime.h header

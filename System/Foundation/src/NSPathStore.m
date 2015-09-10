@@ -7,7 +7,7 @@
 
 #import "NSPathStore.h"
 
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 #import <Foundation/NSArray.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSURL.h>

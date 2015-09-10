@@ -26,10 +26,10 @@
 	Responsibility: John Iarocci
 */
 
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 #include <CoreFoundation/CFNumber.h>
 #include <string.h>
-#include "CFStreamInternal.h"
+#include <CoreFoundation/CFStreamInternal.h>
 #include "CFInternal.h"
 #include <stdio.h>
 

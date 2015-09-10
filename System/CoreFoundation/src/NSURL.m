@@ -12,7 +12,7 @@
 #import <CoreFoundation/CFURL.h>
 #import <CoreFoundation/CFDictionary.h>
 #import "CFInternal.h"
-#import "CFPriv.h"
+#import <CoreFoundation/CFPriv.h>
 #import "NSURLInternal.h"
 #import <objc/runtime.h>
 #import <sys/stat.h>

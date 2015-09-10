@@ -26,10 +26,10 @@
 	Responsibility: Tony Parker
 */
 
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFInternal.h"
 #include "CFLocaleInternal.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <CoreFoundation/CFBundle.h>
 #endif

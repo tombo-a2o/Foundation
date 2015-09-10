@@ -26,9 +26,9 @@
 	Responsibility: John Iarocci
 */
 
-#include "CFStreamInternal.h"
+#include <CoreFoundation/CFStreamInternal.h>
 #include "CFInternal.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include <CoreFoundation/CFNumber.h>
 #include <sys/types.h>
 #include <stdlib.h>

@@ -10,7 +10,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
 #import "NSObjectInternal.h"
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 CF_PRIVATE
 @interface __NSCFLocale : NSLocale

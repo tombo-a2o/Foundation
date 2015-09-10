@@ -1,5 +1,5 @@
 #import <Foundation/NSCalendar.h>
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 CF_PRIVATE
 @interface __NSCFCalendar : NSCalendar

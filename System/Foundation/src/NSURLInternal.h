@@ -1,5 +1,5 @@
 #import <Foundation/NSURL.h>
-#import "CFPriv.h"
+#import <CoreFoundation/CFPriv.h>
 #import <CoreFoundation/CFURL.h>
 
 CF_EXPORT CFURLRef _CFURLAlloc(CFAllocatorRef allocator);

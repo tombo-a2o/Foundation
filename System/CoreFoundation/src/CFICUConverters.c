@@ -30,7 +30,7 @@
 #include "CFStringEncodingConverterPriv.h"
 #include "CFICUConverters.h"
 #include <CoreFoundation/CFStringEncodingExt.h>
-#include "CFUniChar.h"
+#include <CoreFoundation/CFUniChar.h>
 #include <unicode/ucnv.h>
 #include <unicode/uversion.h>
 #include "CFInternal.h"

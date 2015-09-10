@@ -29,7 +29,7 @@
 #include <CoreFoundation/CFXMLParser.h>
 #include <CoreFoundation/CFNumber.h>
 #include "CFXMLInputStream.h"
-#include "CFUniChar.h" 
+#include <CoreFoundation/CFUniChar.h> 
 #include "CFInternal.h"
 
 #pragma GCC diagnostic push

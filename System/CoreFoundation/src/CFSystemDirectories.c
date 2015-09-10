@@ -33,7 +33,7 @@
         On Windows, it calls the enumeration functions defined here.
 */
 
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFInternal.h"
 
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED

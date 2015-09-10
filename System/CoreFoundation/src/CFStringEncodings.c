@@ -29,11 +29,11 @@
 #include "CFInternal.h"
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CFByteOrder.h>
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include <string.h>
-#include "CFStringEncodingConverterExt.h"
-#include "CFUniChar.h"
-#include "CFUnicodeDecomposition.h"
+#include <CoreFoundation/CFStringEncodingConverterExt.h>
+#include <CoreFoundation/CFUniChar.h>
+#include <CoreFoundation/CFUnicodeDecomposition.h>
 #if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
 #include <stdlib.h>
 #include <fcntl.h>
@@ -43,7 +43,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <xlocale.h>
-#include "CFStringDefaultEncoding.h"
+#include <CoreFoundation/CFStringDefaultEncoding.h>
 #endif
 
 static bool __CFWantsToUseASCIICompatibleConversion = false;

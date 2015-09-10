@@ -13,7 +13,7 @@
 #import "NSObjectInternal.h"
 #import <CoreFoundation/CFPreferences.h>
 #import <pthread.h>
-#include "ForFoundationOnly.h"
+#include <CoreFoundation/ForFoundationOnly.h>
 
 NSString * const NSGlobalDomain = @"NSGlobalDomain";
 NSString * const NSArgumentDomain = @"NSArgumentDomain";

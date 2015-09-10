@@ -12,7 +12,7 @@
 #import "NSURLInternal.h"
 #import <Foundation/NSCoder.h>
 #import <Foundation/NSData.h>
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 #import <CoreFoundation/CFNumber.h>
 #import <CoreFoundation/CFURL.h>
 #import <objc/runtime.h>

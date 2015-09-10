@@ -29,7 +29,7 @@
 #define __COREFOUNDATION_CFSTRINGENCODINGCONVERTERPRIV__ 1
 
 #include <CoreFoundation/CFBase.h>
-#include "CFStringEncodingConverterExt.h"
+#include <CoreFoundation/CFStringEncodingConverterExt.h>
 
 extern  const CFStringEncodingConverter __CFConverterASCII;
 extern  const CFStringEncodingConverter __CFConverterISOLatin1;

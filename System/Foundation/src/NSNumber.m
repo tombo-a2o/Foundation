@@ -9,7 +9,7 @@
 
 #import "NSValueInternal.h"
 #import "NSCoderInternal.h"
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 static NSString *NS_number = @"NS.number";
 static NSString *NS_boolval = @"NS.boolval";

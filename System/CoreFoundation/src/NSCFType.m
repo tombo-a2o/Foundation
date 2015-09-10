@@ -6,8 +6,8 @@
 //
 
 #import "NSCFType.h"
-#import "CFRuntime.h"
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/CFRuntime.h>
+#import <CoreFoundation/ForFoundationOnly.h>
 
 @implementation NSObject (NSCFType)
 

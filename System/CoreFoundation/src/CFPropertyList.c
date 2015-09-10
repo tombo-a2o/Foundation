@@ -31,11 +31,11 @@
 #include <CoreFoundation/CFNumber.h>
 #include <CoreFoundation/CFSet.h>
 #include <CoreFoundation/CFError.h>
-#include "CFError_Private.h"
-#include "CFPriv.h"
-#include "CFStringEncodingConverter.h"
+#include <CoreFoundation/CFError_Private.h>
+#include <CoreFoundation/CFPriv.h>
+#include <CoreFoundation/CFStringEncodingConverter.h>
 #include "CFInternal.h"
-#include "CFBurstTrie.h"
+#include <CoreFoundation/CFBurstTrie.h>
 #include <CoreFoundation/CFString.h>
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
 #include <CoreFoundation/CFStream.h>

@@ -28,7 +28,7 @@
 
 #include <CoreFoundation/CFTree.h>
 #include "CFInternal.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 
 struct __CFTreeCallBacks {
     CFTreeRetainCallBack		retain;

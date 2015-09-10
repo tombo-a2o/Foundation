@@ -27,9 +27,9 @@
 */
 
 #include <CoreFoundation/CFError.h>
-#include "CFError_Private.h"
+#include <CoreFoundation/CFError_Private.h>
 #include "CFInternal.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED
 #include <mach/mach_error.h>
 #endif

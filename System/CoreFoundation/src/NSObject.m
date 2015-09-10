@@ -10,7 +10,7 @@
 #import <Foundation/NSMethodSignature.h>
 #import <Foundation/NSInvocation.h>
 #import <Foundation/NSException.h>
-#import "CFString.h"
+#import <CoreFoundation/CFString.h>
 #import "NSZombie.h"
 #import <objc/runtime.h>
 #import <objc/message.h>

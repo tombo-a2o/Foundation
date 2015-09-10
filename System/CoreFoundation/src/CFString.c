@@ -31,11 +31,11 @@
 #include <CoreFoundation/CFBase.h>
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CFDictionary.h>
-#include "CFStringEncodingConverterExt.h"
-#include "CFUniChar.h"
-#include "CFUnicodeDecomposition.h"
-#include "CFUnicodePrecomposition.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFStringEncodingConverterExt.h>
+#include <CoreFoundation/CFUniChar.h>
+#include <CoreFoundation/CFUnicodeDecomposition.h>
+#include <CoreFoundation/CFUnicodePrecomposition.h>
+#include <CoreFoundation/CFPriv.h>
 #include <CoreFoundation/CFNumber.h>
 #include <CoreFoundation/CFNumberFormatter.h>
 #include "CFInternal.h"

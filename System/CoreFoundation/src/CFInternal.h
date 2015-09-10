@@ -85,8 +85,8 @@ CF_EXTERN_C_BEGIN
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CFDate.h>
 #include <CoreFoundation/CFArray.h>
-#include "CFLogUtilities.h"
-#include "CFRuntime.h"
+#include <CoreFoundation/CFLogUtilities.h>
+#include <CoreFoundation/CFRuntime.h>
 #include <limits.h>
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMSCRIPTEN || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX
 #include <xlocale.h>
@@ -109,7 +109,7 @@ CF_EXTERN_C_BEGIN
 #endif
 
 
-#include "ForFoundationOnly.h"
+#include <CoreFoundation/ForFoundationOnly.h>
 
 CF_EXPORT const char *_CFProcessName(void);
 CF_EXPORT CFStringRef _CFProcessNameString(void);

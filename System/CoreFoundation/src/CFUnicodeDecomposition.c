@@ -29,8 +29,8 @@
 #include <string.h>
 #include <CoreFoundation/CFBase.h>
 #include <CoreFoundation/CFCharacterSet.h>
-#include "CFUniChar.h"
-#include "CFUnicodeDecomposition.h"
+#include <CoreFoundation/CFUniChar.h>
+#include <CoreFoundation/CFUnicodeDecomposition.h>
 #include "CFInternal.h"
 #include "CFUniCharPriv.h"
 

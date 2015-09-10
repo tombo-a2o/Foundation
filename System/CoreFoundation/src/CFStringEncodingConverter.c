@@ -30,10 +30,10 @@
 #include <CoreFoundation/CFArray.h>
 #include <CoreFoundation/CFDictionary.h>
 #include "CFICUConverters.h"
-#include "CFUniChar.h"
-#include "CFPriv.h"
-#include "CFUnicodeDecomposition.h"
-#include "CFStringEncodingConverterExt.h"
+#include <CoreFoundation/CFUniChar.h>
+#include <CoreFoundation/CFPriv.h>
+#include <CoreFoundation/CFUnicodeDecomposition.h>
+#include <CoreFoundation/CFStringEncodingConverterExt.h>
 #include "CFStringEncodingConverterPriv.h"
 #include <stdlib.h>
 

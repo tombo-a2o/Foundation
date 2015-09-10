@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/NSString.h>
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 #import <objc/runtime.h>
 
 extern Class NSClassFromObject(id object);

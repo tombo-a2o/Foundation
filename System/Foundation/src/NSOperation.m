@@ -20,7 +20,7 @@
 #import <dispatch/dispatch.h>
 #import <libkern/OSAtomic.h>
 
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 enum __NSOperationState {
     NSOperationStateReady,

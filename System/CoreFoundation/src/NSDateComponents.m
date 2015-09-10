@@ -7,7 +7,7 @@
 
 #import "NSCalendarInternal.h"
 #import <Foundation/NSKeyValueObserving.h>
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 typedef struct {
     NSUInteger unitFlags;

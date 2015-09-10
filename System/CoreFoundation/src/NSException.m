@@ -9,8 +9,8 @@
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSArray.h>
-#import "CFString.h"
-#import "CFNumber.h"
+#import <CoreFoundation/CFString.h>
+#import <CoreFoundation/CFNumber.h>
 #import <dispatch/dispatch.h>
 #import <objc/runtime.h>
 //#import <execinfo.h>

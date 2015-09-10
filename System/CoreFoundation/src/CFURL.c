@@ -27,11 +27,11 @@
 */
 
 #include <CoreFoundation/CFURL.h>
-#include "CFPriv.h"
-#include "CFCharacterSetPriv.h"
+#include <CoreFoundation/CFPriv.h>
+#include <CoreFoundation/CFCharacterSetPriv.h>
 #include <CoreFoundation/CFNumber.h>
 #include "CFInternal.h"
-#include "CFStringEncodingConverter.h"
+#include <CoreFoundation/CFStringEncodingConverter.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>

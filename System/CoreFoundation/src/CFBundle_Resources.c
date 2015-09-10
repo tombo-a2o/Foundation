@@ -35,7 +35,7 @@
 #include <CoreFoundation/CFPreferences.h>
 #include <string.h>
 #include "CFInternal.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdio.h>

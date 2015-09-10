@@ -7,7 +7,7 @@
 
 #import <CoreFoundation/CFData.h>
 #import <Foundation/NSData.h>
-#import "CFPriv.h"
+#import <CoreFoundation/CFPriv.h>
 
 @implementation NSData
 @end

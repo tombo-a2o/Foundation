@@ -28,9 +28,9 @@
 
 
 #include <CoreFoundation/CFCalendar.h>
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 #include "CFInternal.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include <unicode/ucal.h>
 
 #define BUFFER_SIZE 512

@@ -29,7 +29,7 @@
 #define __COREFOUNDATION_CFUNICHARPRIV__ 1
 
 #include <CoreFoundation/CFBase.h>
-#include "CFUniChar.h"
+#include <CoreFoundation/CFUniChar.h>
 
 #define kCFUniCharRecursiveDecompositionFlag	(1UL << 30)
 #define kCFUniCharNonBmpFlag			(1UL << 31)

@@ -27,7 +27,7 @@
 */
 
 #import "CFBasicHash.h"
-#import "CFRuntime.h"
+#import <CoreFoundation/CFRuntime.h>
 #import <CoreFoundation/CFSet.h>
 #import <Block.h>
 #import <math.h>

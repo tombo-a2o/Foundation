@@ -27,11 +27,11 @@
 */
 
 #include <CoreFoundation/CFNumberFormatter.h>
-#include "ForFoundationOnly.h"
+#include <CoreFoundation/ForFoundationOnly.h>
 #include "CFBigNumber.h"
 #include "CFInternal.h"
 #include "CFLocaleInternal.h"
-#include "CFICULogging.h"
+#include <CoreFoundation/CFICULogging.h>
 #include <math.h>
 #include <float.h>
 

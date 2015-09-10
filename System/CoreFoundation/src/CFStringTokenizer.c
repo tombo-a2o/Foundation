@@ -5,9 +5,9 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#include "CFBase.h"
-#include "CFRuntime.h"
-#include "CFStringTokenizer.h"
+#include <CoreFoundation/CFBase.h>
+#include <CoreFoundation/CFRuntime.h>
+#include <CoreFoundation/CFStringTokenizer.h>
 #include <unicode/ubrk.h>
 
 #define TYPE_MASK 0x000000FF

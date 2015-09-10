@@ -27,7 +27,7 @@
 */
 
 #include <CoreFoundation/CFData.h>
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFInternal.h"
 #include <string.h>
 

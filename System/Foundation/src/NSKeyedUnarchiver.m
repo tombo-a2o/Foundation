@@ -18,7 +18,7 @@
 #import <CoreFoundation/CFDictionary.h>
 #import <CoreFoundation/CFNumber.h>
 #import <CoreFoundation/CFStream.h>
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 #import <dispatch/dispatch.h>
 #import <objc/runtime.h>
 #import <stdlib.h>

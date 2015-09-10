@@ -27,9 +27,9 @@
 */
 
 #include "CFInternal.h"
-#include "CFBurstTrie.h"
-#include "CFByteOrder.h"
-#include "CFNumber.h"
+#include <CoreFoundation/CFBurstTrie.h>
+#include <CoreFoundation/CFByteOrder.h>
+#include <CoreFoundation/CFNumber.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

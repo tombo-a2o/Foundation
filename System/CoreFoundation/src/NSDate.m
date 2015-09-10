@@ -8,7 +8,7 @@
 
 #import <Foundation/NSDate.h>
 #import "NSObjectInternal.h"
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 #import <sys/time.h>
 
 CF_PRIVATE

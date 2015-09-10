@@ -26,10 +26,10 @@
 	Responsibility: Aki Inoue
 */
 
-#include "CFStringEncodingConverterExt.h"
-#include "CFUniChar.h"
-#include "CFUnicodeDecomposition.h"
-#include "CFUnicodePrecomposition.h"
+#include <CoreFoundation/CFStringEncodingConverterExt.h>
+#include <CoreFoundation/CFUniChar.h>
+#include <CoreFoundation/CFUnicodeDecomposition.h>
+#include <CoreFoundation/CFUnicodePrecomposition.h>
 #include "CFStringEncodingConverterPriv.h"
 #include "CFInternal.h"
 

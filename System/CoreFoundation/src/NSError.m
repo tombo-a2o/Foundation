@@ -8,7 +8,7 @@
 #import <Foundation/NSError.h>
 
 #import <Foundation/NSDictionary.h>
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 #import "NSObjectInternal.h"
 
 CF_PRIVATE

@@ -8,7 +8,7 @@
 #import <Foundation/NSPropertyList.h>
 #import <Foundation/NSData.h>
 #import <Foundation/NSString.h>
-#import <CFPropertyList.h>
+#import <CoreFoundation/CFPropertyList.h>
 
 @implementation NSPropertyListSerialization
 

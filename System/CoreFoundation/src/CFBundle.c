@@ -33,7 +33,7 @@
 #include <CoreFoundation/CFURLAccess.h>
 #include <CoreFoundation/CFError.h>
 #include <string.h>
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFInternal.h"
 #include <CoreFoundation/CFByteOrder.h>
 #include "CFBundle_BinaryTypes.h"

@@ -6,7 +6,7 @@
 //
 
 #import "NSPointerFunctionsInternal.h"
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 //#import <mach/mach.h>
 
 extern id objc_loadWeakRetained(id *location);

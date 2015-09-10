@@ -7,7 +7,7 @@
 
 #import "NSFastEnumerationEnumerator.h"
 
-#import "CFString.h"
+#import <CoreFoundation/CFString.h>
 #import <Foundation/NSException.h>
 
 @implementation __NSFastEnumerationEnumerator

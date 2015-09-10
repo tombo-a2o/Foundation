@@ -30,7 +30,7 @@
 #include <CoreFoundation/CFTimeZone.h>
 #include <CoreFoundation/CFPropertyList.h>
 #include <CoreFoundation/CFDateFormatter.h>
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFInternal.h"
 #include <math.h>
 #include <limits.h>

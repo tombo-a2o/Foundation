@@ -6,7 +6,7 @@
 //
 
 #include <CoreFoundation/CFAttributedString.h>
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 #include "CFInternal.h"
 
 typedef struct

@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/NSAutoreleasePool.h>
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 @implementation NSAutoreleasePool {
     void *context;

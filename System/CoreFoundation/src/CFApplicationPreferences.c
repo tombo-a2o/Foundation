@@ -28,7 +28,7 @@
 
 #include <CoreFoundation/CFPreferences.h>
 #include "CFInternal.h"
-#include "CFUniChar.h"
+#include <CoreFoundation/CFUniChar.h>
 #include <CoreFoundation/CFNumber.h>
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CFLocale.h>

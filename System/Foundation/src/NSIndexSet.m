@@ -10,7 +10,7 @@
 #import <Foundation/NSIndexSet.h>
 #import <Foundation/NSException.h>
 #import <CoreFoundation/CFArray.h>
-#import <utlist.h>
+#import "utlist.h"
 
 typedef struct RangeList {
     NSRange range;

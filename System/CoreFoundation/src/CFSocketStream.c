@@ -29,8 +29,8 @@
 #include <CoreFoundation/CFStream.h>
 #include <CoreFoundation/CFNumber.h>
 #include "CFInternal.h"
-#include "CFStreamInternal.h"
-#include "CFStreamPriv.h"
+#include <CoreFoundation/CFStreamInternal.h>
+#include <CoreFoundation/CFStreamPriv.h>
 
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED
 // On Mach these live in CF for historical reasons, even though they are declared in CFNetwork

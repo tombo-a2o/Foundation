@@ -28,11 +28,11 @@
 
 #include <CoreFoundation/CFCharacterSet.h>
 #include <CoreFoundation/CFByteOrder.h>
-#include "CFCharacterSetPriv.h"
+#include <CoreFoundation/CFCharacterSetPriv.h>
 #include <CoreFoundation/CFData.h>
 #include <CoreFoundation/CFString.h>
 #include "CFInternal.h"
-#include "CFUniChar.h"
+#include <CoreFoundation/CFUniChar.h>
 #include "CFUniCharPriv.h"
 #include <stdlib.h>
 #include <string.h>

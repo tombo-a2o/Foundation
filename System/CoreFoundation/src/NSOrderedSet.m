@@ -14,7 +14,7 @@
 #import <Foundation/NSLocale.h>
 
 #import "CFBasicHash.h"
-#import "ForFoundationOnly.h"
+#import <CoreFoundation/ForFoundationOnly.h>
 
 #import "NSBasicHash.h"
 #import "NSFastEnumerationEnumerator.h"

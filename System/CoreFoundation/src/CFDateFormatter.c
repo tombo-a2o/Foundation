@@ -33,10 +33,10 @@
 #include <CoreFoundation/CFTimeZone.h>
 #include <CoreFoundation/CFCalendar.h>
 #include <CoreFoundation/CFNumber.h>
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFInternal.h"
 #include "CFLocaleInternal.h"
-#include "CFICULogging.h"
+#include <CoreFoundation/CFICULogging.h>
 #include <math.h>
 #include <float.h>
 

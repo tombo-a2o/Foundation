@@ -27,7 +27,7 @@
 */
 
 #include "CFInternal.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 
 #include <sys/stat.h>
 #include <errno.h>

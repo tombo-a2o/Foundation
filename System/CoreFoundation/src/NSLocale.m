@@ -9,7 +9,7 @@
 
 #import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <CoreFoundation/ForFoundationOnly.h>
 
 CF_PRIVATE

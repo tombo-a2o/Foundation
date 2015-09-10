@@ -6,7 +6,7 @@
 //
 
 #import "NSUbiquitousKeyValueStoreInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSThread.h>
 #import <Foundation/NSRunLoop.h>

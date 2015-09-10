@@ -8,8 +8,8 @@
 #import <Foundation/NSURL.h>
 #import <Foundation/NSFileManager.h>
 #import <Foundation/NSException.h>
-#import "NSObjectInternal.h"
-#import "NSURLInternal.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSURLInternal.h>
 #import <Foundation/NSCoder.h>
 #import <Foundation/NSData.h>
 #import <CoreFoundation/ForFoundationOnly.h>

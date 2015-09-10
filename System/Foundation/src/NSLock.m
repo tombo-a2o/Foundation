@@ -8,7 +8,7 @@
 #import <Foundation/NSLock.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSDate.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <pthread.h>
 #import <errno.h>
 

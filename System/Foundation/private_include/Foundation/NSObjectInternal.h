@@ -2,8 +2,8 @@
 #import <Foundation/NSException.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSArray.h>
-#import "CFInternal.h"
-#import "NSCFType.h"
+#import <Foundation/NSInternal.h>
+#import <Foundation/NSCFType.h>
 #import <objc/runtime.h>
 
 #define LIKELY(x)       __builtin_expect((x),1)

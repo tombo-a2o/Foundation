@@ -14,10 +14,10 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 
-#import "NSFastEnumerationEnumerator.h"
-#import "NSObjectInternal.h"
-#import "NSStringInternal.h"
-#import "CFInternal.h"
+#import <Foundation/NSFastEnumerationEnumerator.h>
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSStringInternal.h>
+#import <Foundation/NSInternal.h>
 
 CF_EXPORT Boolean _CFArrayIsMutable(CFArrayRef array);
 CF_EXPORT NSUInteger _CFArrayFastEnumeration(CFArrayRef array, NSFastEnumerationState *state, id __unsafe_unretained stackbuffer[], NSUInteger count);

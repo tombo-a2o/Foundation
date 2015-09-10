@@ -7,7 +7,7 @@
 
 #import <Foundation/NSTimeZone.h>
 
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSTimeZone (NSTimeZone)
 

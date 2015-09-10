@@ -1,5 +1,5 @@
 #import <Foundation/NSTimer.h>
-#import "CFInternal.h"
+#import <Foundation/NSInternal.h>
 
 @interface NSTimer (CoreFoundation)
 - (CFAbsoluteTime)_cffireTime;

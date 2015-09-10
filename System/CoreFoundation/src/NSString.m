@@ -8,10 +8,11 @@
 #import <Foundation/NSData.h>
 #import <unicode/uchar.h>
 #import <objc/runtime.h>
-#import "NSStringInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSStringInternal.h>
+#import <Foundation/NSObjectInternal.h>
 #import <CoreFoundation/CFPriv.h>
 #import <CoreFoundation/ForFoundationOnly.h>
+#import <Foundation/NSInternal.h>
 
 static inline CFStringRef __CFExceptionProem(id self, SEL _cmd) {
     const char *className = class_getName([self class]);

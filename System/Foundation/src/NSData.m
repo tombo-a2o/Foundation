@@ -12,10 +12,10 @@
 #import <Foundation/NSURL.h>
 #import <Foundation/NSURLConnection.h>
 #import <Foundation/NSURLRequest.h>
-#import "CFInternal.h"
+#import <Foundation/NSInternal.h>
 #import "NSCoderInternal.h"
 #import <Foundation/NSKeyedArchiver.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import "NSRangeCheck.h"
 #import "NSURLResponseInternal.h"
 #import "_NSFileIO.h"

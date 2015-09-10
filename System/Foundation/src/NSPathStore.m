@@ -11,8 +11,8 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSURL.h>
-#import "NSStringInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSStringInternal.h>
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSPathStore2
 

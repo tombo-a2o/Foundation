@@ -18,7 +18,7 @@ INSTALLNAME=/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreF
 
 CC = emcc
 
-CFLAGS=-c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I./src -I./include -I./private_include -I../Foundation/include -I../Foundation/src -I../CFNetwork/include -I../CoreGraphics/include -I../Security/include -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h -include ../global.pch -include ../debug.pch -include ../Fixme.pch
+CFLAGS=-c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I./src -I./include -I./private_include -I../CFNetwork/include -I../CoreGraphics/include -I../Security/include -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h -include ../global.pch -include ../debug.pch -include ../Fixme.pch
 
 .PHONY: all install clean
 .PRECIOUS: $(OBJBASE)/CoreFoundation/%.h
@@ -65,10 +65,10 @@ install: $(OBJBASE)/CoreFoundation_$(STYLE)
 	/bin/ln -sf Versions/Current/Headers $(DSTBASE)/CoreFoundation.framework/Headers
 	/bin/ln -sf Versions/Current/PrivateHeaders $(DSTBASE)/CoreFoundation.framework/PrivateHeaders
 	/bin/ln -sf Versions/Current/CoreFoundation $(DSTBASE)/CoreFoundation.framework/CoreFoundation
-	/bin/cp Info.plist $(DSTBASE)/CoreFoundation.framework/Versions/A/Resources
+	/bin/cp resource/Info.plist $(DSTBASE)/CoreFoundation.framework/Versions/A/Resources
 	/bin/mkdir -p $(DSTBASE)/CoreFoundation.framework/Versions/A/Resources/en.lproj
 	/bin/cp include/CoreFoundation/*.h $(DSTBASE)/CoreFoundation.framework/Versions/A/Headers
-	/bin/cp private_include/*.h $(DSTBASE)/CoreFoundation.framework/Versions/A/PrivateHeaders
+	/bin/cp private_include/CoreFoundation/*.h $(DSTBASE)/CoreFoundation.framework/Versions/A/PrivateHeaders
 	/bin/cp $(OBJBASE)/CoreFoundation_$(STYLE) $(DSTBASE)/CoreFoundation.framework/Versions/A/CoreFoundation
 	@echo "Installing done.  The framework is in $(DSTBASE)"
 

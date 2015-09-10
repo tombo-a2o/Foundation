@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSStreamInternal.h"
+#import <Foundation/NSStreamInternal.h>
 
 NSString *const NSStreamSocketSecurityLevelKey = @"kCFStreamPropertySocketSecurityLevel";
 NSString *const NSStreamSocketSecurityLevelNone = @"kCFStreamSocketSecurityLevelNone";

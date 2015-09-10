@@ -1,7 +1,7 @@
 #import <Foundation/NSDictionary.h>
-#import "NSObjectInternal.h"
-#import "NSFastEnumerationEnumerator.h"
-#import "CFInternal.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSFastEnumerationEnumerator.h>
+#import <Foundation/NSInternal.h>
 #import <CoreFoundation/CFPropertyList.h>
 #import <CoreFoundation/CFData.h>
 

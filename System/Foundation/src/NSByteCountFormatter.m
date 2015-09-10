@@ -7,7 +7,7 @@
 
 #import <Foundation/NSByteCountFormatter.h>
 #import <Foundation/NSNumberFormatter.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSLocale.h>
 
 @implementation NSByteCountFormatter {

@@ -1,5 +1,5 @@
 #import <Foundation/NSPointerFunctions.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 #define NSPointerFunctionsMemoryTypeMask 0xff
 #define NSPointerFunctionsPersonalityMask 0xff00

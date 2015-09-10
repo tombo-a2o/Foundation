@@ -7,7 +7,7 @@
 
 
 #import <Foundation/NSDate.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <CoreFoundation/ForFoundationOnly.h>
 #import <sys/time.h>
 

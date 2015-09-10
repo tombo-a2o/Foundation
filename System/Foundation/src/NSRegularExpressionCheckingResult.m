@@ -9,7 +9,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSValue.h>
 #import <Foundation/NSRegularExpression.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 typedef NS_ENUM(NSUInteger, NSRegularExpressionCheckingResultLimits) {
     NSRegularExpressionCheckingResultSimpleLimit = 3,

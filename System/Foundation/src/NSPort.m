@@ -10,7 +10,7 @@
 #import <Foundation/NSException.h>
 #import <Foundation/NSRunLoop.h>
 #import <Foundation/NSNotification.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <CoreFoundation/CFRunLoop.h>
 #import <CoreFoundation/CFMachPort.h>
 #import <mach/mach_port.h>

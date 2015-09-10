@@ -1,5 +1,5 @@
 #import <Foundation/NSUUID.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 __attribute__((visibility("hidden")))
 @interface __NSConcreteUUID : NSUUID

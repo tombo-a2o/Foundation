@@ -13,11 +13,11 @@
 #import <Foundation/NSSet.h>
 #import <Foundation/NSURL.h>
 
-#import "CFInternal.h"
-#import "NSFastEnumerationEnumerator.h"
-#import "Foundation/NSKeyValueObserving.h"
-#import "NSObjectInternal.h"
-#import "NSStringInternal.h"
+#import <Foundation/NSInternal.h>
+#import <Foundation/NSFastEnumerationEnumerator.h>
+#import <Foundation/NSKeyValueObserving.h>
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSStringInternal.h>
 
 CF_EXPORT Boolean _CFDictionaryIsMutable(CFDictionaryRef ref);
 CF_EXPORT void _CFDictionarySetKVOBit(CFDictionaryRef hc, CFIndex bit);

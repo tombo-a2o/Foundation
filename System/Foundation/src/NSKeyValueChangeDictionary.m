@@ -9,7 +9,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSValue.h>
 #import <Foundation/NSIndexSet.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <CoreFoundation/CFNumber.h>
 #include <string.h>
 

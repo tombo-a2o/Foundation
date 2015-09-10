@@ -17,7 +17,7 @@
 #import <Foundation/NSSet.h>
 #import <Foundation/NSURL.h>
 #import "NSTemporaryDirectory.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <CoreFoundation/CFDictionary.h>
 #import <CoreFoundation/CFNumber.h>
 #import <CoreFoundation/ForFoundationOnly.h>

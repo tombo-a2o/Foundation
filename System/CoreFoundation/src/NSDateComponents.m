@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSCalendarInternal.h"
+#import <Foundation/NSCalendarInternal.h>
 #import <Foundation/NSKeyValueObserving.h>
 #import <CoreFoundation/ForFoundationOnly.h>
 

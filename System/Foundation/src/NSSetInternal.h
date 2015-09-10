@@ -1,7 +1,7 @@
 #import <Foundation/NSSet.h>
-#import "NSObjectInternal.h"
-#import "NSFastEnumerationEnumerator.h"
-#import "CFInternal.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSFastEnumerationEnumerator.h>
+#import <Foundation/NSInternal.h>
 
 CF_EXPORT Boolean _CFSetIsMutable(CFSetRef hc);
 CF_EXPORT NSUInteger _CFSetFastEnumeration(CFSetRef set, NSFastEnumerationState *state, id __unsafe_unretained stackbuffer[], NSUInteger count);

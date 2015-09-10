@@ -5,8 +5,8 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSTimeZoneInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSTimeZoneInternal.h>
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSCache.h>
 #import "CFInternal.h"
 

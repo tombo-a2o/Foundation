@@ -10,7 +10,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSComparisonPredicate.h>
 #import <Foundation/NSDictionary.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSString.h>
 #import "_NSPredicateUtilities.h"
 

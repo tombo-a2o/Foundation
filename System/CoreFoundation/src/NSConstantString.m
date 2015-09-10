@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSStringInternal.h"
+#import <Foundation/NSStringInternal.h>
 
 #import <objc/runtime.h>
 

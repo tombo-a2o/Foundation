@@ -8,8 +8,8 @@
 #import <Foundation/NSSet.h>
 
 #import <Foundation/NSArray.h>
-#import "NSObjectInternal.h"
-#import "NSFastEnumerationEnumerator.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSFastEnumerationEnumerator.h>
 
 CF_PRIVATE
 @interface __NSPlaceholderSet : NSMutableSet

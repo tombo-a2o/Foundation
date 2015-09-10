@@ -13,7 +13,7 @@
 #import <Foundation/NSNull.h>
 #import <Foundation/NSOrderedSet.h>
 
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import "_NSPredicateUtilities.h"
 
 @implementation NSAggregateExpression

@@ -5,8 +5,8 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSAttributedStringInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSAttributedStringInternal.h>
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSAttributedString
 

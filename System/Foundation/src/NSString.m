@@ -17,7 +17,7 @@
 #import <Foundation/NSKeyedArchiver.h>
 #import <Foundation/NSLocale.h>
 #import <Foundation/NSRegularExpression.h>
-#import "NSStringInternal.h"
+#import <Foundation/NSStringInternal.h>
 #import <Foundation/NSURL.h>
 #import "_NSFileIO.h"
 

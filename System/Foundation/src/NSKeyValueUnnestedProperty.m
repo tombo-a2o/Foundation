@@ -16,7 +16,7 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSDictionary.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 @interface NSKeyValueUnnestedProperty ()
 @property (nonatomic, retain) NSArray *affectingProperties;

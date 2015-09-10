@@ -7,7 +7,7 @@
 
 #import <Foundation/NSURLProtocol.h>
 #import "NSURLProtocolInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSURLRequest.h>
 #import <objc/runtime.h>
 #import <Foundation/NSURL.h>

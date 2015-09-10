@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSSharedKeyDictionary.h"
+#import <CoreFoundation/NSSharedKeyDictionary.h>
 #import <Foundation/NSKeyValueObserving.h>
 
 @implementation NSSharedKeyDictionary

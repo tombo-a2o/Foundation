@@ -8,7 +8,7 @@
 #import <Foundation/NSScanner.h>
 #import "NSConcreteScanner.h"
 #import <Foundation/NSLocale.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSCharacterSet.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSDecimal.h>

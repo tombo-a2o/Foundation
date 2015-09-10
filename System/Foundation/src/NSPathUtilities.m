@@ -11,7 +11,7 @@
 #import <Foundation/NSException.h>
 #import "NSFileManagerInternal.h"
 #import <Foundation/NSData.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <stdlib.h>
 
 @implementation NSString (NSStringPathExtensions)

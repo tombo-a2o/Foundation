@@ -1,4 +1,4 @@
-#import "NSCFType.h"
+#import <Foundation/NSCFType.h>
 #import <Foundation/NSAttributedString.h>
 
 @interface __NSPlaceholderAttributedString : NSAttributedString

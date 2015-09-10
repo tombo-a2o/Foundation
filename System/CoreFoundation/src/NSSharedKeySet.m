@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSSharedKeySet.h"
+#import <CoreFoundation/NSSharedKeySet.h>
 
 
 @implementation NSSharedKeySet

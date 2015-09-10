@@ -1,6 +1,6 @@
 #import <Foundation/NSString.h>
-#import "NSObjectInternal.h"
-#import "NSCFType.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSCFType.h>
 
 CF_EXPORT CFStringRef _CFStringCreateWithFormatAndArgumentsAux(CFAllocatorRef alloc, CFStringRef (*copyDescFunc)(void *, const void *), CFDictionaryRef formatOptions, CFStringRef format, va_list arguments);
 CF_EXPORT void _CFStringAppendFormatAndArgumentsAux(CFMutableStringRef outputString, CFStringRef (*copyDescFunc)(void *, const void *), CFDictionaryRef formatOptions, CFStringRef formatString, va_list args);

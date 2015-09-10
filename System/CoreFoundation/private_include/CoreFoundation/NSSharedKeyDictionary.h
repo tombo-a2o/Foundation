@@ -1,5 +1,5 @@
 #import <Foundation/NSDictionary.h>
-#import "NSSharedKeySet.h"
+#import <CoreFoundation/NSSharedKeySet.h>
 
 @interface NSSharedKeyDictionary : NSMutableDictionary {
     NSSharedKeySet *_keyMap;

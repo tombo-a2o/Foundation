@@ -8,7 +8,7 @@
 #import "NSKeyValueCollectionProxies.h"
 
 #import "NSKeyValueCodingInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 #import <Foundation/NSException.h>
 #import <Foundation/NSHashTable.h>

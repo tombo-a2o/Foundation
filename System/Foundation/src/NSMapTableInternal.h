@@ -1,6 +1,6 @@
 #import <Foundation/NSMapTable.h>
 #import "NSPointerFunctionsInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 __attribute__((visibility("hidden")))
 @interface NSConcreteMapTable : NSMapTable

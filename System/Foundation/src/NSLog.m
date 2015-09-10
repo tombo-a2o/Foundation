@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/NSObjCRuntime.h>
-#import "CFInternal.h"
+#import <Foundation/NSInternal.h>
 #import <Foundation/NSException.h>
 #include <sys/time.h>
 

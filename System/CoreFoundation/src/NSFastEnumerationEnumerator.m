@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSFastEnumerationEnumerator.h"
+#import <Foundation/NSFastEnumerationEnumerator.h>
 
 #import <CoreFoundation/CFString.h>
 #import <Foundation/NSException.h>

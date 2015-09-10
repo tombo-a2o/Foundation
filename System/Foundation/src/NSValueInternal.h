@@ -1,5 +1,5 @@
-#import "NSObjectInternal.h"
-#import "CFInternal.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSInternal.h>
 #import "NSExternals.h"
 #import <CoreFoundation/CFNumber.h>
 

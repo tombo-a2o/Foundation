@@ -12,7 +12,7 @@
 #import <Foundation/NSMethodSignature.h>
 
 #import "Block_private.h"
-#import "NSInvocationInternal.h"
+#import <CoreFoundation/NSInvocationInternal.h>
 #import "NSMethodSignatureInternal.h"
 #import "NSObjCRuntimeInternal.h"
 #import "NSZombie.h"

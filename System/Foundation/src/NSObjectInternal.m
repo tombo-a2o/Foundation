@@ -1,4 +1,4 @@
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <objc/runtime.h>
 
 @implementation _NSWeakRef {

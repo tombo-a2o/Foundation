@@ -11,7 +11,7 @@
 #import <Foundation/NSException.h>
 #import <Foundation/NSData.h>
 #import "NSKeyValueCodingInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <stdlib.h>
 #import <Foundation/NSKeyedArchiver.h>
 

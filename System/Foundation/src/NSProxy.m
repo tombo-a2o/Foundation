@@ -11,7 +11,7 @@
 #import <Foundation/NSMethodSignature.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSZone.h>
-#import "NSMessageBuilder.h"
+#import <CoreFoundation/NSMessageBuilder.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
 

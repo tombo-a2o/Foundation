@@ -1,6 +1,6 @@
 #import <Foundation/NSArray.h>
-#import "NSObjectInternal.h"
-#import "NSFastEnumerationEnumerator.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSFastEnumerationEnumerator.h>
 #import <CoreFoundation/CFPropertyList.h>
 #import <CoreFoundation/CFData.h>
 

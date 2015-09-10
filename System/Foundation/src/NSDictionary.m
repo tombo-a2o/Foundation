@@ -10,11 +10,11 @@
 #import <Foundation/NSArray.h>
 #import "NSCoderInternal.h"
 #import <Foundation/NSData.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSString.h>
-#import "NSStringInternal.h"
-#import "NSSharedKeySet.h"
-#import "NSSharedKeyDictionary.h"
+#import <Foundation/NSStringInternal.h>
+#import <CoreFoundation/NSSharedKeySet.h>
+#import <CoreFoundation/NSSharedKeyDictionary.h>
 #import <Foundation/NSKeyedArchiver.h>
 
 #import <CoreFoundation/CFData.h>

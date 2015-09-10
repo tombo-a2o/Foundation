@@ -8,7 +8,7 @@
 #import <Foundation/NSTimer.h>
 #import <Foundation/NSInvocation.h>
 #import <Foundation/NSRunLoop.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <dispatch/dispatch.h>
 #import <objc/runtime.h>
 

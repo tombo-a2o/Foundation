@@ -11,7 +11,7 @@
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSPathUtilities.h>
 #import <Foundation/NSUUID.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <dispatch/dispatch.h>
 //#import <crt_externs.h>
 #import <sys/param.h>

@@ -8,7 +8,7 @@
 #import <Foundation/NSValue.h>
 #import <CoreFoundation/CFNumber.h>
 
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import "CFInternal.h"
 
 CF_EXPORT Boolean _CFNumberGetValue(CFNumberRef number, CFNumberType type, void *valuePtr);

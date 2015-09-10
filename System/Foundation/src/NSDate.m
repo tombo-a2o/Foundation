@@ -8,7 +8,7 @@
 #import <Foundation/NSDate.h>
 
 #import "NSExternals.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 #import <Foundation/NSCoder.h>
 

@@ -1,5 +1,5 @@
 #import <Foundation/NSTimeZone.h>
-#import "CFInternal.h"
+#import <Foundation/NSInternal.h>
 
 CF_PRIVATE
 @interface __NSPlaceholderTimeZone : NSTimeZone

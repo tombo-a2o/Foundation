@@ -7,7 +7,7 @@
 
 #import <Foundation/NSFormatter.h>
 #import <Foundation/NSException.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSFormatter
 

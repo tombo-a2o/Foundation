@@ -7,7 +7,7 @@ OBJECTS = $(patsubst %.m,%.o,$(SOURCES)) NSPredicateParser.tab.o
 HFILES = $(wildcard *.h)
 INTERMEDIATE_HFILES = $(addprefix $(OBJBASE)/Foundation/,$(HFILES))
 
-OBJBASE_ROOT = NS-Objects
+OBJBASE_ROOT = build
 OBJBASE = $(OBJBASE_ROOT)/$(STYLE)
 DSTBASE = $(if $(DSTROOT),$(DSTROOT),$(EMSCRIPTEN)/system/frameworks)
 
@@ -18,7 +18,7 @@ INSTALLNAME=/System/Library/Frameworks/Foundation.framework/Versions/A/Foundatio
 
 CC = emcc
 
-CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -D__IPHONE_OS_VERSION_MIN_REQUIRED=70000 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I$(OBJBASE) -I../CoreFoundation/include -I../CoreFoundation/src -I./include -I../CFNetwork/include -I../CFNetwork/private_include -I../Security/include -I./ -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h -include ../../global.pch -include ../../debug.pch -include ../../Fixme.pch
+CFLAGS=-v -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -D__IPHONE_OS_VERSION_MIN_REQUIRED=70000 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I./src -I./include -I../CFNetwork/include -I../CFNetwork/private_include -I../Security/include -I./ -DVERSION=$(VERSION) -include ../CoreFoundation/src/CoreFoundation_Prefix.h -include ../../global.pch -include ../../debug.pch -include ../../Fixme.pch
 
 .PHONY: all install clean
 .PRECIOUS: $(OBJBASE)/Foundation/%.h
@@ -59,6 +59,7 @@ install-header:
 	/bin/ln -sf Versions/Current/PrivateHeaders $(DSTBASE)/Foundation.framework/PrivateHeaders
 	/bin/ln -sf Versions/Current/Foundation $(DSTBASE)/Foundation.framework/Foundation
 	/bin/cp -R include/Foundation/* $(DSTBASE)/Foundation.framework/Versions/A/Headers
+	/bin/cp -R private_include/Foundation/* $(DSTBASE)/Foundation.framework/Versions/A/PrivateHeaders
 
 install: $(OBJBASE)/Foundation_$(STYLE)
 	/bin/rm -rf $(DSTBASE)/Foundation.framework
@@ -71,7 +72,8 @@ install: $(OBJBASE)/Foundation_$(STYLE)
 	/bin/ln -sf Versions/Current/PrivateHeaders $(DSTBASE)/Foundation.framework/PrivateHeaders
 	/bin/ln -sf Versions/Current/Foundation $(DSTBASE)/Foundation.framework/Foundation
 	/bin/mkdir -p $(DSTBASE)/Foundation.framework/Versions/A/Resources/en.lproj
-	/bin/cp -R ../include/Foundation/* $(DSTBASE)/Foundation.framework/Versions/A/Headers
+	/bin/cp -R include/Foundation/* $(DSTBASE)/Foundation.framework/Versions/A/Headers
+	/bin/cp -R private_include/Foundation/* $(DSTBASE)/Foundation.framework/Versions/A/PrivateHeaders
 	/bin/cp $(OBJBASE)/Foundation_$(STYLE) $(DSTBASE)/Foundation.framework/Versions/A/Foundation
 	@echo "Installing done.  The framework is in $(DSTBASE)"
 

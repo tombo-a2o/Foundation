@@ -7,8 +7,8 @@
 
 #import <Foundation/NSError.h>
 #import <Foundation/NSRunLoop.h>
-#import "NSStreamInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSStreamInternal.h>
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSOutputStream
 

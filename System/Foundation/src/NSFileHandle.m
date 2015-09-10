@@ -15,7 +15,7 @@
 #import <Foundation/NSPathUtilities.h>
 #import <Foundation/NSNotification.h>
 #import "NSCoderInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSURL.h>
 #import <Foundation/NSData.h>
 #import <Foundation/NSError.h>

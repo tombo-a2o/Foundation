@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/NSException.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 #import <Foundation/NSString.h>
 

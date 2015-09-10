@@ -7,7 +7,7 @@
 
 #import <Foundation/NSEnumerator.h>
 #import <Foundation/NSArray.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSEnumerator
 

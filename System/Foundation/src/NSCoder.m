@@ -14,7 +14,7 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSException.h>
 #import "NSExternals.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSCoder
 

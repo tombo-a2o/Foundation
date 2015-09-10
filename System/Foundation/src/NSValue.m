@@ -7,7 +7,7 @@
 
 #import "NSValueInternal.h"
 #import <Foundation/NSObjCRuntime.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import "NSExternals.h"
 #import <Foundation/NSCoder.h>
 #import "NSCoderInternal.h"

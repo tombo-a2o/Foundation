@@ -15,9 +15,9 @@
 #import <CoreFoundation/CFBag.h>
 
 #import "NSCoderInternal.h"
-#import "NSFastEnumerationEnumerator.h"
+#import <Foundation/NSFastEnumerationEnumerator.h>
 #import "NSKeyValueCodingInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 @interface NSSet ()
 - (NSUInteger)countForObject:(id)obj;

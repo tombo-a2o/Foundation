@@ -6,8 +6,8 @@
 //
 
 #import <Foundation/NSAttributedString.h>
-#import "NSAttributedStringInternal.h"
-#import "NSStringInternal.h"
+#import <Foundation/NSAttributedStringInternal.h>
+#import <Foundation/NSStringInternal.h>
 #import <dispatch/dispatch.h>
 
 CF_PRIVATE

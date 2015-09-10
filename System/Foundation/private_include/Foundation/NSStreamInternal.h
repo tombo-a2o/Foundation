@@ -1,7 +1,7 @@
 #import <Foundation/NSStream.h>
 #import <Foundation/NSURL.h>
-#import "NSObjectInternal.h"
-#import "CFInternal.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSInternal.h>
 
 extern CFErrorRef _CFErrorFromStreamError(CFAllocatorRef alloc, CFStreamError *streamError);
 CF_EXPORT void *_CFReadStreamGetClient(CFReadStreamRef readStream);

@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSMessageBuilder.h"
+#import <CoreFoundation/NSMessageBuilder.h>
 #import <Foundation/NSInvocation.h>
 #import <Foundation/NSMethodSignature.h>
 #import <objc/runtime.h>

@@ -16,8 +16,8 @@
 #import "NSInPredicateOperator.h"
 #import "NSLikePredicateOperator.h"
 #import "NSMatchingPredicateOperator.h"
-#import "NSObjectInternal.h"
-#import "NSStringInternal.h"
+#import <Foundation/NSObjectInternal.h>
+#import <Foundation/NSStringInternal.h>
 #import "NSStringPredicateOperator.h"
 #import "NSSubstringPredicateOperator.h"
 #import "_NSPredicateOperatorUtilities.h"

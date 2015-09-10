@@ -24,7 +24,7 @@
 #import "NSKeyValueObservationInfo.h"
 #import "NSKeyValueChangeDictionary.h"
 #import <Foundation/NSInvocation.h>
-#import "NSInvocationInternal.h"
+#import <CoreFoundation/NSInvocationInternal.h>
 #import <Foundation/NSNull.h>
 #import <Foundation/NSString.h>
 #import "NSExternals.h"

@@ -25,7 +25,7 @@
 #import "NSURLRequestInternal.h"
 #import "NSURLResponseInternal.h"
 #import "NSURLCacheInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <CFNetwork/CFURLConnection.h>
 #import <CoreFoundation/CFData.h>
 #import <Foundation/NSURLError.h>

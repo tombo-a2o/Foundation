@@ -14,7 +14,7 @@
 
 #import <objc/message.h>
 
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSTimer
 

@@ -8,8 +8,8 @@
 #import <Foundation/NSHashTable.h>
 
 #import <Foundation/NSException.h>
-#import "NSFastEnumerationEnumerator.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSFastEnumerationEnumerator.h>
+#import <Foundation/NSObjectInternal.h>
 #import "NSPointerFunctionsInternal.h"
 #import <Foundation/NSSet.h>
 

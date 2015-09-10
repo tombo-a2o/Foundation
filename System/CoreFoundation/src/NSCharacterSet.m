@@ -6,9 +6,9 @@
 //
 
 #import <Foundation/NSCharacterSet.h>
-#import "NSCFType.h"
+#import <Foundation/NSCFType.h>
 #import "CFInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 extern Boolean __CFCharacterSetIsMutable(CFCharacterSetRef cset);
 extern void CFCharacterSetFast(CFMutableCharacterSetRef theSet);

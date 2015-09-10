@@ -9,7 +9,7 @@
 #import "NSNotificationInternal.h"
 #import <Foundation/NSCoder.h>
 #import <Foundation/NSDictionary.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSSet.h>
 #import <libkern/OSAtomic.h>
 

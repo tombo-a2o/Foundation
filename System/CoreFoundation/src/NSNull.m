@@ -6,8 +6,8 @@
 //
 
 #import <Foundation/NSNull.h>
-#import "NSCFType.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSCFType.h>
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSNull
 

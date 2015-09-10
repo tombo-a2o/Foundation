@@ -1,5 +1,5 @@
 #import <Foundation/NSDate.h>
-#import "CFInternal.h"
+#import <Foundation/NSInternal.h>
 
 __attribute__((visibility("hidden")))
 @interface __NSDate : NSDate

@@ -9,7 +9,7 @@
 
 #import <Foundation/NSDictionary.h>
 #import <CoreFoundation/ForFoundationOnly.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 CF_PRIVATE
 @interface __NSCFError : __NSCFType

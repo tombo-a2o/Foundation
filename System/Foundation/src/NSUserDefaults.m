@@ -10,7 +10,7 @@
 #import <Foundation/NSNotification.h>
 #import <Foundation/NSURL.h>
 #import <Foundation/NSKeyedArchiver.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <CoreFoundation/CFPreferences.h>
 #import <pthread.h>
 #include <CoreFoundation/ForFoundationOnly.h>

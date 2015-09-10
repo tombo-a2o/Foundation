@@ -9,7 +9,7 @@
 
 #import <Foundation/NSCoder.h>
 #import <dispatch/dispatch.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 static NSString * const NSUUIDBytesKey = @"NS.uuidbytes";
 

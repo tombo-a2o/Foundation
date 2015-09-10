@@ -1,5 +1,5 @@
 #import <Foundation/NSPredicate.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSCoder.h>
 
 @class NSExpression;

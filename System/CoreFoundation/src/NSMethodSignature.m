@@ -8,7 +8,7 @@
 #import <Foundation/NSMethodSignature.h>
 #import "NSMethodSignatureInternal.h"
 #import "NSObjCRuntimeInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 #define ALIGN_TO(value, alignment) \
 (((value) % (alignment)) ? \

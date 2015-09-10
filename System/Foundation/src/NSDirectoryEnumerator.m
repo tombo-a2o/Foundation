@@ -6,7 +6,7 @@
 //
 
 #import "NSDirectoryEnumerator.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 
 @implementation NSDirectoryEnumerator
 

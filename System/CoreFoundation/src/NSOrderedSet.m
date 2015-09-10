@@ -17,8 +17,8 @@
 #import <CoreFoundation/ForFoundationOnly.h>
 
 #import "NSBasicHash.h"
-#import "NSFastEnumerationEnumerator.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSFastEnumerationEnumerator.h>
+#import <Foundation/NSObjectInternal.h>
 
 @interface __NSPlaceholderOrderedSet : NSMutableOrderedSet
 + (id)mutablePlaceholder;

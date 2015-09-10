@@ -1,5 +1,5 @@
 #import <Foundation/NSCharacterSet.h>
-#import "NSCFType.h"
+#import <Foundation/NSCFType.h>
 
 __attribute__((visibility("hidden")))
 @interface __NSCFCharacterSet : __NSCFType

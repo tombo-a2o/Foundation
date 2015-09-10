@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSCFType.h"
+#import <Foundation/NSCFType.h>
 #import <CoreFoundation/CFRuntime.h>
 #import <CoreFoundation/ForFoundationOnly.h>
 

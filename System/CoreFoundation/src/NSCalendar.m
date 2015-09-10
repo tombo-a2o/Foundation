@@ -7,8 +7,8 @@
 
 #import <Foundation/NSTimeZone.h>
 #import <Foundation/NSLocale.h>
-#import "NSCalendarInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSCalendarInternal.h>
+#import <Foundation/NSObjectInternal.h>
 
 #import "CFInternal.h"
 

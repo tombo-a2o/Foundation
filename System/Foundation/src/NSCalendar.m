@@ -5,8 +5,8 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSCalendarInternal.h"
-#import "NSObjectInternal.h"
+#import <Foundation/NSCalendarInternal.h>
+#import <Foundation/NSObjectInternal.h>
 #import <Foundation/NSNotification.h>
 
 @implementation NSCalendar (NSCalendar)

@@ -14,7 +14,7 @@
 #import <Foundation/NSNull.h>
 #import <Foundation/NSStream.h>
 #import <Foundation/NSString.h>
-#import "NSObjectInternal.h"
+#import <Foundation/NSObjectInternal.h>
 #import "NSBOMEncoding.h"
 
 @interface _NSJSONReader : NSObject

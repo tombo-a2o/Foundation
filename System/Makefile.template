@@ -1,0 +1,74 @@
+# 1: framework name
+# 2: build root
+# 3: install directory
+# 4: source files
+# 5: header files
+
+ifeq ($(EMSCRIPTEN),)
+$(error EMSCRIPTEN not defined)
+endif
+
+define framework_build
+
+__FRAMEWORK_NAME__=$(1)
+__BUILD_DIR__ = $(2)
+__INSTALL_DIR__ = $(3)
+__SOURCES__ = $(4)
+__HEADERS__ = $(5)
+
+__OBJECTS__ = $$(patsubst %.m,%.o, \
+          $$(patsubst %.c,%.o, \
+          $$(patsubst %.mm,%.o, \
+          $$(patsubst %.cpp,%.o, \
+		  $$(__SOURCES__)))))
+
+.SUFFIX:
+.PHONY: default clean framework_dir header_only_framework full_framework install_header install
+
+default: full_framework
+
+clean:
+	-/bin/rm -rf $$(__BUILD_DIR__)
+
+$$(__BUILD_DIR__)/%.o: %.c $$(__HEADERS__)
+	mkdir -p $$(dir $$@)
+	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
+
+$$(__BUILD_DIR__)/%.o: %.m $$(__HEADERS__)
+	mkdir -p $$(dir $$@)
+	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
+
+$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__): $$(addprefix $$(__BUILD_DIR__)/,$$(__OBJECTS__))
+	llvm-link -o $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc $$^
+	rm -f $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__)
+	llvm-ar rcs $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+
+framework_dir:
+	rm -rf $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework
+	mkdir -p $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources
+	mkdir -p $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Headers
+	mkdir -p $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/PrivateHeaders
+	ln -sf A $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/Current
+	ln -sf Versions/Current/Resources $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Resources
+	ln -sf Versions/Current/Headers $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Headers
+	ln -sf Versions/Current/PrivateHeaders $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/PrivateHeaders
+	ln -sf Versions/Current/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__FRAMEWORK_NAME__)
+
+header_only_framework: framework_dir $$(__HEADERS__)
+	cp include/$$(__FRAMEWORK_NAME__)/*.h $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Headers
+	cp private_include/$$(__FRAMEWORK_NAME__)/*.h $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/PrivateHeaders
+
+full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__)
+	cp -R resource/* $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources
+	mkdir -p $$(__INSTALL_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources/en.lproj
+	cp $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__FRAMEWORK_NAME__)
+
+install_header_only: header_only_framework
+	rm -rf $$(__INSTALL_DIR__)/$$(__FRAMEWORK_NAME__).framework
+	cp -R $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework $$(__INSTALL_DIR__)
+
+install: full_framework
+	rm -rf $$(__INSTALL_DIR__)/$$(__FRAMEWORK_NAME__).framework
+	cp -R $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework $$(__INSTALL_DIR__)
+
+endef

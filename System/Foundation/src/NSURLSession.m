@@ -5,6 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
+#if 0
 #import "NSURLSession.h"
 #import 
 const int64_t NSURLSessionTransferSizeUnknown = -1LL;
@@ -22,3 +23,4 @@ const int64_t NSURLSessionTransferSizeUnknown = -1LL;
 }
 
 @end
+#endif

@@ -16,4 +16,4 @@ INSTALL_DIR = $(EMSCRIPTEN)/system/frameworks
 
 include ../Makefile.template
 
-$(eval $(call framework_build, CoreFoundation, build/debug, $(INSTALL_DIR), $(SOURCES), $(HEADERS)))
+$(eval $(call framework_build, CoreFoundation, $(BUILD_DIR), $(INSTALL_DIR), $(SOURCES), $(HEADERS)))

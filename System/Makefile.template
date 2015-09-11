@@ -75,7 +75,7 @@ header_only_framework: framework_dir
 	done
 
 full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__)
-	[ "$$(__RESOURCE_DIR__)" == "" ] || for file in `find $$(__RESOURCE_DIR__) -type f -not -name ".*"` ; do \
+	[ "$$(__RESOURCE_DIR__)" = "" ] || for file in `find $$(__RESOURCE_DIR__) -type f -not -name ".*"` ; do \
 		dest=$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources/`dirname $$$${file#*/}` ;\
 		mkdir -p $$$$dest ;\
 		cp $$$$file $$$$dest ;\

@@ -10,7 +10,7 @@ CSOURCES		= $(addprefix src/, CFApplicationPreferences.c CFArray.c CFAttributedS
 MSOURCES		= $(addprefix src/, CFStubs.m NSArray.m NSAttributedString.m NSBlock.m NSCFType.m NSCache.m NSCalendar.m NSCharacterSet.m NSConstantString.m NSData.m NSDate.m NSDateComponents.m NSDictionary.m NSEnumerator.m NSError.m NSException.m NSFastEnumerationEnumerator.m NSGenericDeallocHandler.m NSInputStream.m NSInvocation.m NSLocale.m NSMessageBuilder.m NSMethodSignature.m NSNull.m NSNumber.m NSObjCRuntime.m NSObject.m NSOrderedSet.m NSOutputStream.m NSPropertyList.m NSSet.m NSSharedKeyDictionary.m NSSharedKeySet.m NSStream.m NSString.m NSTimeZone.m NSTimer.m NSURL.m NSZombie.m)
 
 SOURCES			= $(CSOURCES) $(MSOURCES)
-PULBIC_HEADERS	= $(wildcard include/**/*.h)
+PUBLIC_HEADERS	= $(wildcard include/**/*.h)
 PRIVATE_HEADERS	= $(wildcard private_include/**/*.h)
 RESOURCE_DIR	= resource
 

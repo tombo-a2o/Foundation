@@ -1,18 +1,14 @@
-EXCLUDED = \
-    Source/Digest/sha1edpBigEndian.s \
-    Source/Digest/sha1edpLittleEndian.s \
-    Source/AESedp/Intel/AES.s \
-    Source/AESedp/Intel/DecryptCBC.s \
-    Source/AESedp/Intel/EncryptCBC.s \
-    Source/libtomcrypt/src/ciphers/aesedpport/AES.s \
-    Source/libtomcrypt/src/ciphers/aesedpport/aes_crypt_hw.s \
-    Source/libtomcrypt/src/ciphers/aesedpport/aes_key_hw.s \
-    Source/libtomcrypt/src/ciphers/aesedpport/aes_modes_asm.s \
-    Source/libtomcrypt/src/ciphers/aesedpport/aes_modes_hw.s \
-    Source/libtomcrypt/src/ciphers/aesedpport/aesxts_asm.s \
-    Source/Digest/sha256_nossse3.s \
-    Source/Digest/sha256.s \
-    Source/Digest/md5_dgst.c \
+include ../Makefile.template
+
+CC				= emcc
+CFLAGS			= -v -c -x objective-c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_9 -I./ -I./Source -I./CommonCrypto -I./Source/Digest -I./Source/CommonCryptoSPI -I./Source/ccOpenssl -I./Source/CAST -I./Source/libtomcrypt/src/ciphers/RC4 -I./Source/libtomcrypt/src/headers -I./Source/libtomcrypt/src/padding/ansix923 -I./Source/libtomcrypt/src/padding/iso10126 -I./Source/libtomcrypt/src/padding/nopadding -I./Source/libtomcrypt/src/padding/pkcs7 -I./Source/ccUtilities -I./Source/API -I./Source/GladmanAES -I./Source/AESedp -I./Source/libtomcrypt/src/ciphers/aesedpport -I./Source/libtomcrypt/src/hashes -I./Source/libtomcrypt/src/hashes/skein/Optimized_64bit
+
+BUILD_DIR		= build/debug
+INSTALL_DIR		= $(EMSCRIPTEN)/system/frameworks
+
+PUBLIC_HEADERS	= $(wildcard CommonCrypto/*.h)
+PRIVATE_HEADERS	= $(wildcard private_include/**/*.h)
+RESOURCE_DIR	= resource
 
 SOURCES= \
     Source/API/CommonCMAC.c \
@@ -145,59 +141,21 @@ SOURCES= \
     Source/libtomcrypt/src/modes/cfb8/cfb8_getiv.c \
     Source/libtomcrypt/src/modes/cfb8/cfb8_setiv.c \
     Source/libtomcrypt/src/modes/cfb8/cfb8_start.c
-OBJECTS = $(patsubst %.c,%.o,$(SOURCES))
-HFILES = $(wildcard **/*.h)
-PUBLIC_HEADERS = $(wildcard CommonCrypto/*.h)
 
-OBJBASE_ROOT = build
-OBJBASE = $(OBJBASE_ROOT)/$(STYLE)
-DSTBASE = $(EMSCRIPTEN)/system/frameworks
+$(eval $(call framework_build, CommonCrypto, $(BUILD_DIR), $(INSTALL_DIR), $(SOURCES), $(PUBLIC_HEADERS), $(PRIVATE_HEADERS), $(RESOURCE_DIR)))
 
-STYLE=normal
-STYLE_CFLAGS=-O0
-STYLE_LFLAGS=
-ARCHFLAGS=
-
-CC = emcc
-
-MAX_MACOSX_VERSION=MAC_OS_X_VERSION_10_9
-CFLAGS=-v -c -x objective-c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -I./ -I./Source -I./CommonCrypto -I./Source/Digest -I./Source/CommonCryptoSPI -I./Source/ccOpenssl -I./Source/CAST -I./Source/libtomcrypt/src/ciphers/RC4 -I./Source/libtomcrypt/src/headers -I./Source/libtomcrypt/src/padding/ansix923 -I./Source/libtomcrypt/src/padding/iso10126 -I./Source/libtomcrypt/src/padding/nopadding -I./Source/libtomcrypt/src/padding/pkcs7 -I./Source/ccUtilities -I./Source/API -I./Source/GladmanAES -I./Source/AESedp -I./Source/libtomcrypt/src/ciphers/aesedpport -I./Source/libtomcrypt/src/hashes -I./Source/libtomcrypt/src/hashes/skein/Optimized_64bit
-
-.PHONY: all install clean
-
-all: $(OBJBASE)/CommonCrypto_$(STYLE)
-
-clean:
-	-/bin/rm -rf $(OBJBASE)
-
-$(OBJBASE)/CommonCrypto:
-	/bin/mkdir -p $(OBJBASE)/CommonCrypto
-
-$(OBJBASE)/%.o: %.c $(HFILES) $(OBJBASE)/CommonCrypto
-	mkdir -p $(dir $@)
-	$(CC) $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
-
-%.ll: %.m $(HFILES)
-	$(CC) -emit-llvm -S $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
-
-$(OBJBASE)/CommonCrypto_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
-	llvm-link -o $(OBJBASE)/CommonCrypto_$(STYLE).bc $^
-	rm -f $(OBJBASE)/CommonCrypto_$(STYLE)
-	llvm-ar rcs $(OBJBASE)/CommonCrypto_$(STYLE) $(OBJBASE)/CommonCrypto_$(STYLE).bc
-
-install: $(OBJBASE)/CommonCrypto_$(STYLE)
-	/bin/rm -rf $(DSTBASE)/CommonCrypto.framework
-	/bin/mkdir -p $(DSTBASE)/CommonCrypto.framework/Versions/A/Resources
-	/bin/mkdir -p $(DSTBASE)/CommonCrypto.framework/Versions/A/Headers
-	/bin/mkdir -p $(DSTBASE)/CommonCrypto.framework/Versions/A/PrivateHeaders
-	/bin/ln -sf A $(DSTBASE)/CommonCrypto.framework/Versions/Current
-	/bin/ln -sf Versions/Current/Resources $(DSTBASE)/CommonCrypto.framework/Resources
-	/bin/ln -sf Versions/Current/Headers $(DSTBASE)/CommonCrypto.framework/Headers
-	/bin/ln -sf Versions/Current/PrivateHeaders $(DSTBASE)/CommonCrypto.framework/PrivateHeaders
-	/bin/ln -sf Versions/Current/CommonCrypto $(DSTBASE)/CommonCrypto.framework/CommonCrypto
-	#/bin/cp Info.plist $(DSTBASE)/CommonCrypto.framework/Versions/A/Resources
-	/bin/mkdir -p $(DSTBASE)/CommonCrypto.framework/Versions/A/Resources/en.lproj
-	/bin/cp CommonCrypto/* $(DSTBASE)/CommonCrypto.framework/Versions/A/Headers
-	/bin/cp $(OBJBASE)/CommonCrypto_$(STYLE) $(DSTBASE)/CommonCrypto.framework/Versions/A/CommonCrypto
-	@echo "Installing done.  The framework is in $(DSTBASE)"
-
+EXCLUDED = \
+    Source/Digest/sha1edpBigEndian.s \
+    Source/Digest/sha1edpLittleEndian.s \
+    Source/AESedp/Intel/AES.s \
+    Source/AESedp/Intel/DecryptCBC.s \
+    Source/AESedp/Intel/EncryptCBC.s \
+    Source/libtomcrypt/src/ciphers/aesedpport/AES.s \
+    Source/libtomcrypt/src/ciphers/aesedpport/aes_crypt_hw.s \
+    Source/libtomcrypt/src/ciphers/aesedpport/aes_key_hw.s \
+    Source/libtomcrypt/src/ciphers/aesedpport/aes_modes_asm.s \
+    Source/libtomcrypt/src/ciphers/aesedpport/aes_modes_hw.s \
+    Source/libtomcrypt/src/ciphers/aesedpport/aesxts_asm.s \
+    Source/Digest/sha256_nossse3.s \
+    Source/Digest/sha256.s \
+    Source/Digest/md5_dgst.c \

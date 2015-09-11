@@ -2,7 +2,9 @@
 # 2: build root
 # 3: install directory
 # 4: source files
-# 5: header files
+# 5: public header files
+# 6: private header files
+# 7: resources
 
 ifeq ($(EMSCRIPTEN),)
 $(error EMSCRIPTEN not defined)
@@ -14,7 +16,9 @@ __FRAMEWORK_NAME__=$(1)
 __BUILD_DIR__ = $(2)
 __INSTALL_DIR__ = $(3)
 __SOURCES__ = $(4)
-__HEADERS__ = $(5)
+__PUBLIC_HEADERS__ = $(5)
+__PRIVATE_HEADERS__ = $(6)
+__RESOURCE_DIR__ = $(7)
 
 __OBJECTS__ = $$(patsubst %.m,%.o, \
           $$(patsubst %.c,%.o, \
@@ -30,11 +34,19 @@ default: full_framework
 clean:
 	-/bin/rm -rf $$(__BUILD_DIR__)
 
-$$(__BUILD_DIR__)/%.o: %.c $$(__HEADERS__)
+$$(__BUILD_DIR__)/%.o: %.cpp $$(__HEADERS__)
 	mkdir -p $$(dir $$@)
 	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
 
 $$(__BUILD_DIR__)/%.o: %.m $$(__HEADERS__)
+	mkdir -p $$(dir $$@)
+	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
+
+$$(__BUILD_DIR__)/%.o: %.c $$(__HEADERS__)
+	mkdir -p $$(dir $$@)
+	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
+
+$$(__BUILD_DIR__)/%.o: %.mm $$(__HEADERS__)
 	mkdir -p $$(dir $$@)
 	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
 
@@ -54,13 +66,20 @@ framework_dir:
 	ln -sf Versions/Current/PrivateHeaders $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/PrivateHeaders
 	ln -sf Versions/Current/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__FRAMEWORK_NAME__)
 
-header_only_framework: framework_dir $$(__HEADERS__)
-	cp include/$$(__FRAMEWORK_NAME__)/*.h $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Headers
-	cp private_include/$$(__FRAMEWORK_NAME__)/*.h $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/PrivateHeaders
+header_only_framework: framework_dir
+	for file in $$(__PUBLIC_HEADERS__); do \
+		cp $$$$file $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Headers ;\
+	done
+	for file in $$(__PRIVATE_HEADERS__); do \
+		cp $$$$file $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/PrivateHeaders ;\
+	done
 
 full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__)
-	cp -R resource/* $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources
-	mkdir -p $$(__INSTALL_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources/en.lproj
+	[ "$$(__RESOURCE_DIR__)" == "" ] || for file in `find $$(__RESOURCE_DIR__) -type f -not -name ".*"` ; do \
+		dest=$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources/`dirname $$$${file#*/}` ;\
+		mkdir -p $$$$dest ;\
+		cp $$$$file $$$$dest ;\
+	done
 	cp $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__FRAMEWORK_NAME__)
 
 install_header_only: header_only_framework

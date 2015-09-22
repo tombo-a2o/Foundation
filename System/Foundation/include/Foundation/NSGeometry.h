@@ -58,12 +58,7 @@ extern "C" {
   CGFloat y;
 }</example>
  <p>Represents a 2-d cartesian position.</p> */
-typedef struct _NSPoint NSPoint;
-struct _NSPoint
-{
-  CGFloat x;
-  CGFloat y;
-};
+typedef CGPoint NSPoint;
 
 //#if OS_API_VERSION(GS_API_MACOSX, GS_API_LATEST)
 /** Array of NSPoint structs. */
@@ -78,12 +73,7 @@ typedef NSPoint *NSPointPointer;
   CGFloat height;
 }</example>
  <p>Floating point rectangle size.</p> */
-typedef struct _NSSize NSSize;
-struct _NSSize
-{
-  CGFloat width;
-  CGFloat height;
-};
+typedef CGSize NSSize;
 
 //#if OS_API_VERSION(GS_API_MACOSX, GS_API_LATEST)
 /** Array of NSSize structs. */
@@ -99,12 +89,7 @@ typedef NSSize *NSSizePointer;
 }</example>
 
  <p>Rectangle.</p> */
-typedef struct _NSRect NSRect;
-struct _NSRect
-{
-  NSPoint origin;
-  NSSize size;
-};
+typedef CGRect NSRect;
 
 //#if OS_API_VERSION(GS_API_MACOSX, GS_API_LATEST)
 /** Array of NSRect structs. */
@@ -513,7 +498,6 @@ NSIntersectsRect(NSRect aRect, NSRect bRect)
 
 /** Get a String Representation... **/
 
-#if 0
 #ifdef __OBJC__
 /** Returns an NSString of the form "{x=X; y=Y}", where
  * X and Y are the x- and y-coordinates of aPoint, respectively. */
@@ -546,7 +530,6 @@ GS_EXPORT NSSize	NSSizeFromString(NSString* string);
 GS_EXPORT NSRect	NSRectFromString(NSString* string);
 
 #endif /* __OBJC__ */
-#endif
 
 #ifdef	GS_DEFINED_MAX
 #undef	GS_DEFINED_MAX

@@ -1,6 +1,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 #import <Foundation/NSObjCRuntime.h>
+#import <Foundation/NSAffineTransform.h>
 #import <Foundation/NSArray.h>
 #import <Foundation/NSAutoreleasePool.h>
 #import <Foundation/NSBundle.h>
@@ -134,7 +135,6 @@
 
 #if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE))
 
-#import <Foundation/NSAffineTransform.h>
 #import <Foundation/NSAppleEventDescriptor.h>
 #import <Foundation/NSAppleEventManager.h>
 #import <Foundation/NSAppleScript.h>

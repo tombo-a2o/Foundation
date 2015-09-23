@@ -17,7 +17,7 @@
 #import <dispatch/dispatch.h>
 #import <libkern/OSAtomic.h>
 
-#import "NSArchiver.h"
+#import <Foundation/NSArchiver.h>
 
 @interface _NSSharedValueTransformer : NSValueTransformer
 @end

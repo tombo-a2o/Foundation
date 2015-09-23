@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/NSKeyedArchiver.h>
-#import "NSArchiver.h"
+#import <Foundation/NSArchiver.h>
 #import <Foundation/NSArray.h>
 #import "NSCoderInternal.h"
 #import <Foundation/NSDictionary.h>

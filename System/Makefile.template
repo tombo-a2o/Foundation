@@ -19,38 +19,43 @@ __SOURCES__ = $(4)
 __PUBLIC_HEADERS__ = $(5)
 __PRIVATE_HEADERS__ = $(6)
 __RESOURCE_DIR__ = $(7)
+__HEADERS__ = $$(__PUBLIC_HEADERS__) $$(__PRIVATE_HEADERS__)
 
 __OBJECTS__ = $$(patsubst %.m,%.o, \
           $$(patsubst %.c,%.o, \
           $$(patsubst %.mm,%.o, \
           $$(patsubst %.cpp,%.o, \
-		  $$(__SOURCES__)))))
+		  $$(addprefix $$(__BUILD_DIR__)/, $$(__SOURCES__))))))
+
+__DEPS__ = $$(patsubst %.o,%.d, $$(__OBJECTS__))
 
 .SUFFIX:
 .PHONY: default clean framework_dir header_only_framework full_framework install_header install
 
 default: full_framework
 
+-include $$(__DEPS__)
+
 clean:
 	-/bin/rm -rf $$(__BUILD_DIR__)
 
-$$(__BUILD_DIR__)/%.o: %.cpp $$(__HEADERS__)
+$$(__BUILD_DIR__)/%.o: %.cpp
 	mkdir -p $$(dir $$@)
-	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
+	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
-$$(__BUILD_DIR__)/%.o: %.m $$(__HEADERS__)
+$$(__BUILD_DIR__)/%.o: %.m
 	mkdir -p $$(dir $$@)
-	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
+	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
-$$(__BUILD_DIR__)/%.o: %.c $$(__HEADERS__)
+$$(__BUILD_DIR__)/%.o: %.c
 	mkdir -p $$(dir $$@)
-	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
+	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
-$$(__BUILD_DIR__)/%.o: %.mm $$(__HEADERS__)
+$$(__BUILD_DIR__)/%.o: %.mm
 	mkdir -p $$(dir $$@)
-	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) $$< -o $$@
+	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
-$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__): $$(addprefix $$(__BUILD_DIR__)/,$$(__OBJECTS__))
+$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__): $$(__OBJECTS__)
 	llvm-link -o $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc $$^
 	rm -f $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__)
 	llvm-ar rcs $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc

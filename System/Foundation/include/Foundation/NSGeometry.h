@@ -529,6 +529,20 @@ GS_EXPORT NSSize	NSSizeFromString(NSString* string);
 */
 GS_EXPORT NSRect	NSRectFromString(NSString* string);
 
+GS_GEOM_SCOPE CGPoint NSPointToCGPoint (NSPoint nspoint) GS_GEOM_ATTR;
+GS_GEOM_SCOPE CGPoint NSPointToCGPoint (NSPoint nspoint) { return nspoint; }
+GS_GEOM_SCOPE NSPoint NSPointFromCGPoint (CGPoint cgpoint) GS_GEOM_ATTR;
+GS_GEOM_SCOPE NSPoint NSPointFromCGPoint (CGPoint cgpoint) { return cgpoint; }
+GS_GEOM_SCOPE CGRect NSRectToCGRect (NSRect nsrect) GS_GEOM_ATTR;
+GS_GEOM_SCOPE CGRect NSRectToCGRect (NSRect nsrect) { return nsrect; }
+GS_GEOM_SCOPE NSRect NSRectFromCGRect (CGRect cgrect) GS_GEOM_ATTR;
+GS_GEOM_SCOPE NSRect NSRectFromCGRect (CGRect cgrect) { return cgrect; }
+GS_GEOM_SCOPE CGSize NSSizeToCGSize (NSSize nssize) GS_GEOM_ATTR;
+GS_GEOM_SCOPE CGSize NSSizeToCGSize (NSSize nssize) { return nssize; }
+GS_GEOM_SCOPE NSSize NSSizeFromCGSize (CGSize cgsize) GS_GEOM_ATTR;
+GS_GEOM_SCOPE NSSize NSSizeFromCGSize (CGSize cgsize) { return cgsize; }
+
+
 #endif /* __OBJC__ */
 
 #ifdef	GS_DEFINED_MAX

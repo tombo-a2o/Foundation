@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#import "NSArchiver.h"
+#import <Foundation/NSArchiver.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSString.h>
 #import <CoreFoundation/CFDictionary.h>

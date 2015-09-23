@@ -34,15 +34,6 @@ enum {
 - (void)encodePoint:(CGPoint)pt;
 @end
 
-@interface NSCoder (NSKeyedGeometryCoding)
-- (CGRect)decodeRectForKey:(NSString *)key;
-- (CGSize)decodeSizeForKey:(NSString *)key;
-- (CGPoint)decodePointForKey:(NSString *)key;
-- (void)encodeRect:(CGRect)r forKey:(NSString *)key;
-- (void)encodeSize:(CGSize)sz forKey:(NSString *)key;
-- (void)encodePoint:(CGPoint)pt forKey:(NSString *)key;
-@end
-
 @interface NSCoder (Internal)
 - (id)_decodePropertyListForKey:(NSString *)key;
 - (void)_encodePropertyList:(id)plist forKey:(NSString *)key;

@@ -55,14 +55,3 @@ typedef NS_ENUM(NSUInteger, NSConcreteValueSpecialType) {
 - (void)getValue:(void *)value;
 
 @end
-
-@interface NSValue (Internal)
-
-+ (NSValue *)valueWithPoint:(CGPoint)point;
-+ (NSValue *)valueWithRect:(CGRect)rect;
-+ (NSValue *)valueWithSize:(CGSize)size;
-- (CGRect)rectValue;
-- (CGSize)sizeValue;
-- (CGPoint)pointValue;
-
-@end

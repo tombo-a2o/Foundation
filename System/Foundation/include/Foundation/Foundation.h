@@ -2,6 +2,7 @@
 
 #import <Foundation/NSObjCRuntime.h>
 #import <Foundation/NSAffineTransform.h>
+#import <Foundation/NSArchiver.h>
 #import <Foundation/NSArray.h>
 #import <Foundation/NSAutoreleasePool.h>
 #import <Foundation/NSBundle.h>
@@ -111,7 +112,6 @@
 
 #if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || TARGET_OS_WIN32
 
-#import <Foundation/NSArchiver.h>
 #import <Foundation/NSCalendarDate.h>
 #import <Foundation/NSConnection.h>
 #import <Foundation/NSDistantObject.h>

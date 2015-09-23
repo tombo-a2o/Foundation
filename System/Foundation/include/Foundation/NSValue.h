@@ -1,4 +1,5 @@
 #import <Foundation/NSObject.h>
+#import <CoreGraphics/CGGeometry.h>
 
 @class NSString, NSDictionary;
 
@@ -83,5 +84,16 @@
 - (id)initWithBool:(BOOL)value;
 - (id)initWithInteger:(NSInteger)value;
 - (id)initWithUnsignedInteger:(NSUInteger)value;
+
+@end
+
+@interface NSValue (Internal)
+
++ (NSValue *)valueWithPoint:(CGPoint)point;
++ (NSValue *)valueWithRect:(CGRect)rect;
++ (NSValue *)valueWithSize:(CGSize)size;
+- (CGRect)rectValue;
+- (CGSize)sizeValue;
+- (CGPoint)pointValue;
 
 @end

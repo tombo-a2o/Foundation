@@ -94,6 +94,6 @@ install_header_only: header_only_framework
 install: full_framework
 	rm -rf $$(__INSTALL_DIR__)/$$(__FRAMEWORK_NAME__).framework
 	cp -R $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework $$(__INSTALL_DIR__)
-	@echo "==== Installing done. The framework is in $$(__INSTALL_DIR__) ===="
+	@echo "\033[1;43m==== Installing done. The framework is in $$(__INSTALL_DIR__) ====\033[m"
 
 endef

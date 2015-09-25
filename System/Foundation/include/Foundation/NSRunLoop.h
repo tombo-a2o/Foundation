@@ -46,6 +46,8 @@ FOUNDATION_EXPORT NSString * const NSRunLoopCommonModes;
 
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes;
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay;
++ (void)cancelPreviousPerformRequestsWithTarget:(id)aTarget;
++ (void)cancelPreviousPerformRequestsWithTarget:(id)aTarget selector:(SEL)aSelector object:(id)anArgument;
 
 @end
 

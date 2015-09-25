@@ -33,7 +33,7 @@
 
 #include "CFNetworkPriv.h"
 #include "CFNetworkInternal.h"
-#include "CFStreamPriv.h"
+#include <CoreFoundation/CFStreamPriv.h>
 
 #ifndef __WIN32__
 #include <sys/socket.h>

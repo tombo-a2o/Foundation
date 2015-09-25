@@ -25,8 +25,8 @@
 	Responsibility: Becky Willrich
 */
 #include <CoreFoundation/CoreFoundation.h>
-#include "CFRuntime.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFRuntime.h>
+#include <CoreFoundation/CFPriv.h>
 #include <CFNetwork/CFHTTPMessage.h>
 #include "CFHTTPMessagePriv.h"
 #include "CFHTTPStreamPriv.h"

@@ -30,15 +30,15 @@
  */
 
 #include <CoreFoundation/CoreFoundation.h>
-#include "CFRuntime.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFRuntime.h>
+#include <CoreFoundation/CFPriv.h>
 #include <CFNetwork/CFHTTPMessage.h>
 #include "CFHTTPMessagePriv.h"
 #include "CFHTTPStreamPriv.h"
 #include "CFNetworkInternal.h"
 #include "CFHTTPInternal.h"
 #include <CFNetwork/CFHTTPStream.h>
-#include "cuEnc64.h"
+#include <Security/cuEnc64.h>
 
 #if defined(__MACH__) || defined(APPORTABLE)
 #include <pthread.h>

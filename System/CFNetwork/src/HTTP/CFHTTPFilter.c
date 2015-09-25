@@ -25,7 +25,7 @@
 #include <CFNetwork/CFHTTPStream.h>
 #include "CFHTTPStreamPriv.h"
 #include <CFNetwork/CFSocketStream.h>
-#include "CFStreamPriv.h"
+#include <CoreFoundation/CFStreamPriv.h>
 #include "CFSocketStreamPriv.h"
 #include "CFHTTPInternal.h"
 #include "CFNetworkInternal.h"

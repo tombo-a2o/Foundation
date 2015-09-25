@@ -30,13 +30,13 @@
 #include <CFNetwork/CFNetwork.h>
 #include "CFNetworkInternal.h"			// for _CFNetConnectionCacheKey and friends
 
-#include "CFStreamPriv.h"
+#include <CoreFoundation/CFStreamPriv.h>
 #include "CFNetConnection.h"
 #include <CFNetwork/CFFTPStream.h>
 #include "CFFTPStreamPriv.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFSocketStreamPriv.h"
-#include "CFPriv.h"
+#include <CoreFoundation/CFPriv.h>
 #include "CFHTTPConnectionPriv.h"  // for the asynchronous proxy lookup
 #include "CFNetworkSchedule.h"
 #include <SystemConfiguration/SystemConfiguration.h>
@@ -2334,7 +2334,7 @@ _StartHTTPRequest(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt, CFStreamError
 
 
     // **FIXME** Create new URL to use.  This should use the new range API's instead.
-    // Remove #include "CFPriv.h" when switched.
+    // Remove #include <CoreFoundation/CFPriv.h> when switched.
     memset(&comps, 0, sizeof(comps));
     _CFURLCopyComponents(ctxt->_url, kCFURLComponentDecompositionRFC1808, &comps);
 

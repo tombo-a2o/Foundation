@@ -5,8 +5,8 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 
-#include "CFBase.h"
-#include "CFRuntime.h"
+#include <CoreFoundation/CFBase.h>
+#include <CoreFoundation/CFRuntime.h>
 #include "CFNetServices.h"
 #include "dns_sd.h"
 #include <libkern/OSAtomic.h>

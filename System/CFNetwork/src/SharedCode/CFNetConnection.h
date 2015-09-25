@@ -25,9 +25,9 @@
 
 #include <CFNetwork/CFNetwork.h>
 #include "CFNetworkInternal.h"
-#include "CFStreamAbstract.h"
+#include <CoreFoundation/CFStreamAbstract.h>
 #include <CFNetwork/CFSocketStream.h>
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 #include <sys/types.h>
 #include <AvailabilityMacros.h>
 

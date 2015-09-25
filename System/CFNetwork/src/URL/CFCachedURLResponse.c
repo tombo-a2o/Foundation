@@ -6,7 +6,7 @@
 //
 
 #include "CFCachedURLResponse.h"
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 #include "CFFSUtils.h"
 #include "CFRuntimeUtils.h"
 #include <libkern/OSAtomic.h>

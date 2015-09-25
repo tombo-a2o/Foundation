@@ -23,8 +23,8 @@
 /* Repository for initialization routine and any useful utilities that need to be added */
 
 #include <CoreFoundation/CoreFoundation.h>
-#include "CFPriv.h"
-#include "CFStreamPriv.h"
+#include <CoreFoundation/CFPriv.h>
+#include <CoreFoundation/CFStreamPriv.h>
 #include "CFNetworkPriv.h"
 #include "CFNetworkInternal.h"
 #include "CFHTTPInternal.h"

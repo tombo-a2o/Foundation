@@ -31,7 +31,7 @@
 #ifndef __CFNETWORKINTERNAL__
 #define __CFNETWORKINTERNAL__
 
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 #include <CFNetwork/CFNetwork.h>
 #if DNS_SD_SUPPORT
 #include <dns_sd.h>

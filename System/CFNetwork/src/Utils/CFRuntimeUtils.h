@@ -1,7 +1,7 @@
 #ifndef __CFRUNTIMEUTILS__
 #define __CFRUNTIMEUTILS__
 
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 
 CF_EXTERN_C_BEGIN
 

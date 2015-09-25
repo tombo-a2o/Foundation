@@ -74,7 +74,7 @@
 #include "CFHTTPServerPriv.h"
 #include "CFNetworkInternal.h"
 
-#include "CFRuntime.h"
+#include <CoreFoundation/CFRuntime.h>
 #if !defined(__WIN32__)
 #include <sys/types.h>
 #ifdef APPORTABLE

@@ -6,12 +6,12 @@
 //
 
 #include <CoreFoundation/CFError.h>
-#include "CFHost.h"
-#include "CFHTTPStream.h"
-#include "CFFTPStream.h"
-#include "CFHTTPAuthentication.h"
-#include "CFNetServices.h"
-#include "CFSocketStream.h"
+#include <CFNetwork/CFHost.h>
+#include <CFNetwork/CFHTTPStream.h>
+#include <CFNetwork/CFFTPStream.h>
+#include <CFNetwork/CFHTTPAuthentication.h>
+#include <CFNetwork/CFNetServices.h>
+#include <CFNetwork/CFSocketStream.h>
 #include "CFNetworkInternal.h"
 
 static const CFStringRef CFStreamErrorDomainPOSIX = CFSTR("POSIX");

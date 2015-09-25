@@ -48,7 +48,7 @@
 #include <sys/ioctl.h>
 #include <sys/fcntl.h>
 
-#include "CFStreamPriv.h"
+#include <CoreFoundation/CFStreamPriv.h>
 #include "CFSocketStreamPriv.h"
 //#include <SystemConfiguration/SystemConfiguration.h>
 //#include <Security/Security.h>

@@ -30,8 +30,8 @@
 #include "CFNetworkInternal.h"
 #include "CFHTTPInternal.h"
 #include "CFHTTPConnectionPriv.h"
-#include "CFStreamPriv.h"
-#include "CFBundlePriv.h"
+#include <CoreFoundation/CFStreamPriv.h>
+#include <CoreFoundation/CFBundlePriv.h>
 #include "CFSocketStreamPriv.h"
 #if defined(__MACH__)
 #include <SystemConfiguration/SCSchemaDefinitions.h> /* For the HTTP proxy keys */

@@ -4,38 +4,34 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
-#if 0
-
 #import <Foundation/NSZone.h>
 #import <Foundation/NSString.h>
 #import <malloc/malloc.h>
 #import <limits.h>
-#import <mach/mach.h>
+//#import <mach/mach.h>
 #import <strings.h>
 
 NSZone *NSDefaultMallocZone(void)
 {
-    return (NSZone *)malloc_default_zone();
+    return nil;
 }
 
 NSZone *NSCreateZone(NSUInteger startSize, NSUInteger granularity, BOOL canFree)
 {
-    return (NSZone *)malloc_create_zone(startSize, 0);
+    return nil;
 }
 
 void NSRecycleZone(NSZone *zone)
 {
-    malloc_destroy_zone((malloc_zone_t *)zone);
 }
 
 void NSSetZoneName(NSZone *zone, NSString *name)
 {
-    malloc_set_zone_name((malloc_zone_t *)zone, [name UTF8String]);
 }
 
 NSString *NSZoneName(NSZone *zone)
 {
-    return [NSString stringWithUTF8String:malloc_get_zone_name((malloc_zone_t *)zone)];
+    return nil;
 }
 
 NSZone *NSZoneFromPointer(void *ptr)
@@ -92,6 +88,7 @@ NSUInteger NSRoundDownToMultipleOfPageSize(NSUInteger bytes)
      return (bytes / size) * size;
 }
 
+#if 0
 void *NSAllocateMemoryPages(NSUInteger bytes)
 {
     vm_size_t sz = NSRoundUpToMultipleOfPageSize(bytes);

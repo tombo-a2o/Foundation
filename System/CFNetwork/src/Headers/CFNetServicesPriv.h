@@ -25,7 +25,7 @@
  
      Contains:   CoreFoundation Network CFNetServices header (private)
  
-     Copyright:  © 2004-2005 by Apple Computer, Inc., all rights reserved
+     Copyright:  2004-2005 by Apple Computer, Inc., all rights reserved
  
      Warning:    *** APPLE INTERNAL USE ONLY ***
                  This file contains unreleased SPI's

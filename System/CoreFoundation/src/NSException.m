@@ -94,6 +94,7 @@ NSString *const NSFileHandleOperationException = @"NSFileHandleOperationExceptio
 
 - (void)raise
 {
+    NSLog(@"name=%@, reason=%@", self.name, self.reason);
     @throw self;
 }
 

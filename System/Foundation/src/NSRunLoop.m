@@ -152,8 +152,9 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 
 - (void)performSelector:(SEL)aSelector target:(id)target argument:(id)arg order:(NSUInteger)order modes:(NSArray *)modes
 {
-    // not implemented
-    assert(0);
+    dispatch_async(dispatch_get_current_queue(), ^{
+        [target performSelector:aSelector withObject:arg];
+    });
 }
 
 - (void)cancelPerformSelector:(SEL)aSelector target:(id)target argument:(id)arg

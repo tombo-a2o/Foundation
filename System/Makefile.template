@@ -73,10 +73,14 @@ framework_dir:
 
 header_only_framework: framework_dir
 	for file in $$(__PUBLIC_HEADERS__); do \
-		cp $$$$file $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Headers ;\
+		dest=$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Headers/`dirname $$$${file#*$$(__FRAMEWORK_NAME__)/}` ;\
+		mkdir -p $$$$dest ;\
+		cp $$$$file $$$$dest ;\
 	done
 	for file in $$(__PRIVATE_HEADERS__); do \
-		cp $$$$file $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/PrivateHeaders ;\
+		dest=$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/PrivateHeaders/`dirname $$$${file#*$$(__FRAMEWORK_NAME__)/}` ;\
+		mkdir -p $$$$dest ;\
+		cp $$$$file $$$$dest ;\
 	done
 
 full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__)

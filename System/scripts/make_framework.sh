@@ -14,9 +14,9 @@ fi
 mkdir $name 
 cd $name
 sed -e s/Social/$1/g ../Social/Makefile > Makefile
-mkdir build
-echo normal > build/.gitignore
+echo build > .gitignore
 mkdir -p include/$name
+mkdir -p private_include/$name
 touch include/$name/$name.h
 mkdir src
 echo "#import <$name/$name.h>" > src/Dummy.m

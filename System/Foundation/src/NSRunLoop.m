@@ -124,14 +124,18 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes
 {
-    // not implemented
-    assert(0);
+    dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,  (int64_t)(delay * NSEC_PER_SEC));
+    dispatch_after(t, dispatch_get_current_queue(), ^{
+        [self performSelector:aSelector withObject:anArgument];
+    });
 }
 
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay
 {
-    // not implemented
-    assert(0);
+    dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,  (int64_t)(delay * NSEC_PER_SEC));
+    dispatch_after(t, dispatch_get_current_queue(), ^{
+        [self performSelector:aSelector withObject:anArgument];
+    });
 }
 
 + (void)cancelPreviousPerformRequestsWithTarget:(id)aTarget selector:(SEL)aSelector object:(id)anArgument

@@ -53,8 +53,13 @@ typedef char * Class;
 #define nil NULL
 #endif
 
+#if DEBUG
+#define CRSetCrashLogMessage(A) CFLog(kCFLogLevelError, A)
+#define CRSetCrashLogMessage2(A) CFLog(kCFLogLevelError, A)
+#else
 #define CRSetCrashLogMessage(A) do {} while (0)
 #define CRSetCrashLogMessage2(A) do {} while (0)
+#endif
 
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || APPORTABLE || DEPLOYMENT_TARGET_EMSCRIPTEN
 #import <libkern/OSAtomic.h>

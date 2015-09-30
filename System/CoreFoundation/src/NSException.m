@@ -94,7 +94,9 @@ NSString *const NSFileHandleOperationException = @"NSFileHandleOperationExceptio
 
 - (void)raise
 {
-    NSLog(@"name=%@, reason=%@", self.name, self.reason);
+#ifdef DEBUG
+    fprintf(stderr, "Exception thrown: name=%s, reason=%s\n", [name UTF8String], [reason UTF8String]);
+#endif
     @throw self;
 }
 

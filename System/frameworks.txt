@@ -10,6 +10,7 @@ CoreLocation
 Foundation
 GameKit
 ImageIO
+OpenGLES
 MapKit
 MobileCoreServices
 MultipeerConnectivity

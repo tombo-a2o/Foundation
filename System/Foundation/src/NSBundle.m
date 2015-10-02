@@ -224,7 +224,10 @@ static void __NSBundleMainBundleDealloc()
 
 - (NSString *)resourcePath
 {
-    return [self bundlePath];
+    NSURL *url = (NSURL *)CFBundleCopyResourcesDirectoryURL(_cfBundle);
+    NSString *path = [url path];
+    CFRelease(url);
+    return path;
 }
 
 - (NSString *)executablePath

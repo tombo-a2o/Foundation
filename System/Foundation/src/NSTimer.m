@@ -11,11 +11,12 @@
 #import <Foundation/NSObjectInternal.h>
 #import <dispatch/dispatch.h>
 #import <objc/runtime.h>
+#import "NSTimerInternal.h"
 
 @implementation NSTimer {
     id _target;
     SEL _sel;
-    dispatch_source_t _timerSource;
+    dispatch_source_t _source;
 }
 
 + (NSTimer *)timerWithTimeInterval:(NSTimeInterval)ti invocation:(NSInvocation *)invocation repeats:(BOOL)yesOrNo
@@ -28,6 +29,7 @@
 {
     [invocation retainArguments];
     NSTimer *timer = [[self alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:ti] interval:ti target:invocation selector:@selector(invoke) userInfo:nil repeats:yesOrNo];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
     return [timer autorelease];
 }
 
@@ -39,6 +41,7 @@
 + (NSTimer *)scheduledTimerWithTimeInterval:(NSTimeInterval)ti target:(id)aTarget selector:(SEL)sel userInfo:(id)userInfo repeats:(BOOL)yesOrNo
 {
     NSTimer *timer = [[self alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:ti] interval:ti target:aTarget selector:sel userInfo:userInfo repeats:yesOrNo];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
     return [timer autorelease];
 }
 
@@ -51,13 +54,6 @@
     _sel = s;
     _userInfo = [ui retain];
 
-    _timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_current_queue());
-    dispatch_source_set_timer(_timerSource, dispatch_time(DISPATCH_TIME_NOW, date.timeIntervalSinceNow*NSEC_PER_SEC), _timeInterval*NSEC_PER_SEC, _tolerance);
-    dispatch_source_set_event_handler(_timerSource, ^{
-        [_target performSelector:_sel withObject:self];
-    });
-    dispatch_resume(_timerSource);
-
     return self;
 }
 
@@ -65,14 +61,27 @@
 {
     [_target performSelector:_sel withObject:self];
     if(_timeInterval == 0.0) {
-        dispatch_source_cancel(_timerSource);
+        dispatch_source_cancel(self.source);
+        [self release];
     }
 }
 
 - (void)invalidate
 {
     _valid = NO;
-    dispatch_suspend(_timerSource);
+    dispatch_suspend(self.source);
 }
 
+@end
+
+@implementation NSTimer (Private)
+- (void)setSource:(dispatch_source_t)source
+{
+    _source = source;
+}
+
+- (dispatch_source_t)source
+{
+    return _source;
+}
 @end

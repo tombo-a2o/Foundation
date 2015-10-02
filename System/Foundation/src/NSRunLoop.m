@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <dispatch/dispatch.h>
 #import <assert.h>
+#import "NSTimerInternal.h"
 
 @implementation NSRunLoop
 
@@ -40,23 +41,21 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 
 - (void)addTimer:(NSTimer *)timer forMode:(NSString *)mode
 {
-    assert(0);
-    /*
-    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_current_queue());
+    dispatch_source_t source = timer.source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_current_queue());
 
-    NSDate *fireDate = timer.fireDate;
+    NSDate *date = timer.fireDate;
     NSTimeInterval interval = timer.timeInterval;
-    NSTimeInterval tolerance = timer.torelance;
+    NSTimeInterval tolerance = timer.tolerance;
 
-    __block NSTimer t = timer;
+    __block NSTimer *t = [timer retain];
 
-    dispatch_source_set_timer(source, ----, ----, ---);
+    dispatch_source_set_timer(source, dispatch_time(DISPATCH_TIME_NOW, date.timeIntervalSinceNow*NSEC_PER_SEC), interval*NSEC_PER_SEC, tolerance);
     dispatch_source_set_event_handler(source, ^{
         if(t.valid) {
-            [tfire]
+            [t fire];
         }
     });
-    */
+    dispatch_resume(source);
 }
 
 - (void)addPort:(NSPort *)aPort forMode:(NSString *)mode

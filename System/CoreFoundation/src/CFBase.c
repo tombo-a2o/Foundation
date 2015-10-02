@@ -274,7 +274,6 @@ static void *__CFAllocatorNullReallocate(void *ptr, CFIndex newsize, CFOptionFla
     return NULL;
 }
 
-#if defined (__cplusplus)
 static void * __CFAllocatorCPPMalloc(CFIndex allocSize, CFOptionFlags hint, void *info)
 {
 	return malloc(allocSize);	
@@ -287,7 +286,6 @@ static void __CFAllocatorCPPFree(void *ptr, void *info)
 {
 	free(ptr);
 }
-#endif // C++
 
 
 static struct __CFAllocator __kCFAllocatorMalloc = {
@@ -312,11 +310,7 @@ static struct __CFAllocator __kCFAllocatorMalloc = {
     // Using the malloc functions directly is a total cheat, but works (in C)
     // because the function signatures match in their common prefix of arguments.
     // This saves us one hop through an adaptor function.
-#if !defined (__cplusplus)
-	{0, NULL, NULL, NULL, NULL, (void *)malloc, (void *)realloc, (void *)free, NULL}
-#else
 	{0, NULL, NULL, NULL, NULL, __CFAllocatorCPPMalloc,__CFAllocatorCPPReAlloc, __CFAllocatorCPPFree, NULL}
-#endif // __cplusplus
 };
 
 static struct __CFAllocator __kCFAllocatorMallocZone = {

@@ -227,7 +227,8 @@
             break;
         }
     }
-    NSString *str = (NSString *)[NSPathStore2 pathStoreWithCharacters:buffer length:length];
+    //NSString *str = (NSString *)[NSPathStore2 pathStoreWithCharacters:buffer length:length];
+    NSString *str = [NSString stringWithCharacters:buffer length:length];
     free(buffer);
     return str;
 }
@@ -254,7 +255,8 @@
     buffer[len1] = (unichar)PATH_DOT;
     [ext getCharacters:buffer + 1 + len1 range:NSMakeRange(0, len2)];
 
-    NSString *str = (NSString *)[NSPathStore2 pathStoreWithCharacters:buffer length:len1 + 1 + len2];
+    //NSString *str = (NSString *)[NSPathStore2 pathStoreWithCharacters:buffer length:len1 + 1 + len2];
+    NSString *str = [NSString stringWithCharacters:buffer length:len1+1+len2];
     free(buffer);
     return str;
 }

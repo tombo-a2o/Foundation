@@ -603,22 +603,11 @@ extern void _CFRuntimeSetInstanceTypeIDAndIsa(CFTypeRef cf, CFTypeID newTypeID);
 #define CF_TAGGED_OBJ_TYPE(PTR)	0
 #endif
 
-#define CF_OBJC_FUNCDISPATCHV(typeID, ret, obj, ...) do{} while(0)
-#define CF_OBJC_CALLV(obj, ...) (0)
-
-/*
 #define CF_OBJC_FUNCDISPATCHV(typeID, ret, obj, ...) \
-_Pragma("clang diagnostic push") \
-_Pragma("clang diagnostic ignored \"-Wreturn-type\"") \
-_Pragma("clang diagnostic ignored \"-Wobjc-method-access\"") \
-_Pragma("clang diagnostic ignored \"-Wincompatible-pointer-types\"") \
 if (CF_IS_OBJC(typeID, obj)) { \
     return (ret)[(id)obj __VA_ARGS__]; \
-} \
-_Pragma("clang diagnostic pop")
-
+}
 #define CF_OBJC_CALLV(obj, ...) [obj __VA_ARGS__]
-*/
 
 #define CF_IS_OBJC(typeID, obj) ({ \
 	Class cls = object_getClass((id)obj); \

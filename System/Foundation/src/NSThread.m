@@ -54,6 +54,16 @@ static void NSThreadEnd(NSThread *thread)
     [thread release];
 }
 
++ (void)initialize
+{
+    dispatch_once_t once;
+    dispatch_once(&once, ^{
+        NSMainThread = [[NSThread alloc] init];
+        NSMainThread->_queue = dispatch_get_main_queue();
+        dispatch_queue_set_specific(NSMainThread->_queue, NSThreadKey, NSMainThread, NULL);
+    });
+}
+
 + (NSThread *)currentThread
 {
     NSThread *thread = dispatch_get_specific(NSThreadKey);

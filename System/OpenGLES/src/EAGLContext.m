@@ -33,7 +33,7 @@ static EAGLContext *_currentContext = nil;
 } 
 
 -(instancetype)initWithAPI:(EAGLRenderingAPI)api {
-  return [self initWithAPI:api sharegroup:nil];
+  return [self initWithAPI:api sharegroup:[[EAGLSharegroup alloc] init]];
 }
 
 -(instancetype)initWithAPI:(EAGLRenderingAPI)api sharegroup:(EAGLSharegroup *)sharegroup {
@@ -41,7 +41,6 @@ static EAGLContext *_currentContext = nil;
     _API = api;
     _sharegroup = sharegroup;
 
-    emscripten_set_canvas_size(256, 256);
     EmscriptenWebGLContextAttributes attr;
     emscripten_webgl_init_context_attributes(&attr);
     attr.alpha = attr.depth = attr.stencil = attr.antialias = attr.preserveDrawingBuffer = attr.preferLowPowerToHighPerformance = attr.failIfMajorPerformanceCaveat = 0;

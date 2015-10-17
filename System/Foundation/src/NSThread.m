@@ -56,7 +56,7 @@ static void NSThreadEnd(NSThread *thread)
 
 + (void)initialize
 {
-    dispatch_once_t once;
+    static dispatch_once_t once;
     dispatch_once(&once, ^{
         NSMainThread = [[NSThread alloc] init];
         NSMainThread->_queue = dispatch_get_main_queue();

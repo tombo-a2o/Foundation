@@ -125,8 +125,9 @@ static void NSThreadEnd(NSThread *thread)
 
 + (NSArray *)callStackSymbols
 {
-    // not implemented
-    assert(0);
+    // Should parse new Error().stack
+    EM_ASM({console.log(new Error())});
+    return [NSArray array];
 }
 
 + (BOOL)isMainThread

@@ -30,7 +30,7 @@ static EAGLContext *_currentContext = nil;
 +(BOOL)setCurrentContext:(EAGLContext *)context {
     _currentContext = context;
     return emscripten_webgl_make_context_current(context.webglContext) == EMSCRIPTEN_RESULT_SUCCESS;
-} 
+}
 
 -(instancetype)initWithAPI:(EAGLRenderingAPI)api {
   return [self initWithAPI:api sharegroup:[[EAGLSharegroup alloc] init]];
@@ -51,12 +51,12 @@ static EAGLContext *_currentContext = nil;
 }
 
 -(BOOL)renderbufferStorage:(NSUInteger)target fromDrawable:(id<EAGLDrawable>)drawable {
-    NSAssert(0, @"not implemented");
+    NSLog(@"%s not implemented",__FUNCTION__);
     return NO;
 }
 
 -(BOOL)presentRenderbuffer:(NSUInteger)target {
-    NSAssert(0, @"not implemented");
+    NSLog(@"%s not implemented",__FUNCTION__);
     return NO;
 }
 @end

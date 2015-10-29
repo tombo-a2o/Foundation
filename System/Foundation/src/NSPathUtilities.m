@@ -18,7 +18,7 @@
 
 + (NSString *)pathWithComponents:(NSArray *)components
 {
-    return [NSPathStore2 pathWithComponents:components];
+    return [NSString stringWithString:[NSPathStore2 pathWithComponents:components]];
 }
 
 - (NSArray *)pathComponents
@@ -77,7 +77,7 @@
     {
         return @"";
     }
-    
+
     return [[self pathComponents] lastObject];
 }
 
@@ -115,7 +115,7 @@
         return nil;
     }
     [self getCharacters:characters range:NSMakeRange(0, index)];
-    NSString *path = [NSPathStore2 pathStoreWithCharacters:characters length:index];
+    NSString *path = [NSString stringWithCharacters:characters length:index];
     free(characters);
     return path;
 }
@@ -227,7 +227,6 @@
             break;
         }
     }
-    //NSString *str = (NSString *)[NSPathStore2 pathStoreWithCharacters:buffer length:length];
     NSString *str = [NSString stringWithCharacters:buffer length:length];
     free(buffer);
     return str;
@@ -255,7 +254,6 @@
     buffer[len1] = (unichar)PATH_DOT;
     [ext getCharacters:buffer + 1 + len1 range:NSMakeRange(0, len2)];
 
-    //NSString *str = (NSString *)[NSPathStore2 pathStoreWithCharacters:buffer length:len1 + 1 + len2];
     NSString *str = [NSString stringWithCharacters:buffer length:len1+1+len2];
     free(buffer);
     return str;
@@ -291,7 +289,7 @@
         [path getCharacters:buffer range:NSMakeRange(0, length)];
     }
 
-    NSString *str = (NSString *)[NSPathStore2 pathStoreWithCharacters:buffer length:length];
+    NSString *str = [NSString stringWithCharacters:buffer length:length];
     free(buffer);
     return str;
 }
@@ -304,12 +302,12 @@
     unichar *buffer = alloca(capacity * sizeof(unichar));
     [self getCharacters:buffer range:NSMakeRange(0, length)];
     length = _NSExpandTildeInPath(buffer, length);
-    return (NSString *)[NSPathStore2 pathStoreWithCharacters:buffer length:length];
+    return [NSString stringWithCharacters:buffer length:length];
 }
 
 - (NSString *)_stringByStandardizingPathUsingCache:(BOOL)useCache
 {
-    return _NSStandardizePathUsingCache(self, useCache);
+    return [NSString stringWithString:_NSStandardizePathUsingCache(self, useCache)];
 }
 
 - (NSString *)stringByStandardizingPath

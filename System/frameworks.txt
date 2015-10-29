@@ -3,7 +3,6 @@ AdSupport
 AudioToolbox
 AVFoundation
 CFNetwork
-CommonCrypto
 CoreAudio
 CoreFoundation
 CoreLocation

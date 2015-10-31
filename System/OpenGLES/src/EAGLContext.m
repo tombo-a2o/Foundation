@@ -2,8 +2,10 @@
 #import <OpenGLES/EAGL.h>
 #import <emscripten/html5.h>
 #import <QuartzCore/CAEAGLLayer.h>
+#import <QuartzCore/CALayer+Private.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#import <emscripten.h>
 
 NSString * const kEAGLDrawablePropertyColorFormat = @"EAGLDrawablePropertyColorFormat";
 NSString * const kEAGLDrawablePropertyRetainedBacking = @"EAGLDrawablePropertyRetainedBacking";
@@ -11,10 +13,6 @@ NSString * const kEAGLColorFormatRGB565 = @"EAGLColorFormat565";
 NSString * const kEAGLColorFormatRGBA8 = @"EAGLColorFormatRGBA8";
 
 @implementation EAGLSharegroup
-@end
-
-@interface CALayer(private)
--(void)_setTextureId:(NSNumber *)value;
 @end
 
 @interface EAGLContext()
@@ -93,8 +91,8 @@ static EAGLContext *_currentContext = nil;
         NSLog(@"%s kEAGLDrawablePropertyRetainedBacking=YES is not supported", __FUNCTION__);
     }
 
-    GLint width = layer.bounds.size.width;
-    GLint height = layer.bounds.size.height;
+    GLint width = layer.bounds.size.width * emscripten_get_device_pixel_ratio();
+    GLint height = layer.bounds.size.height * emscripten_get_device_pixel_ratio();
 
     glRenderbufferStorage(target, format, width, height);
 
@@ -111,8 +109,8 @@ static EAGLContext *_currentContext = nil;
         return NO;
     }
 
-    GLint width = layer.bounds.size.width;
-    GLint height = layer.bounds.size.height;
+    GLint width = layer.bounds.size.width * emscripten_get_device_pixel_ratio();
+    GLint height = layer.bounds.size.height * emscripten_get_device_pixel_ratio();
 
     GLuint texture;
     glGenTextures(1, &texture);
@@ -130,7 +128,7 @@ static EAGLContext *_currentContext = nil;
     //NSLog(@"presentRenderbuffer %d (%d, %d)", texture, width, height);
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    [layer _setTextureId:[NSNumber numberWithInt:texture]];
+    [layer _setTextureId:texture];
 
     return YES;
 }

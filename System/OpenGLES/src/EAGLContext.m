@@ -41,7 +41,12 @@ static EAGLContext *_currentContext = nil;
 
 +(BOOL)setCurrentContext:(EAGLContext *)context {
     _currentContext = context;
-    return emscripten_webgl_make_context_current(context.webglContext) == EMSCRIPTEN_RESULT_SUCCESS;
+    if(context) {
+        return emscripten_webgl_make_context_current(context.webglContext) == EMSCRIPTEN_RESULT_SUCCESS;
+    } else {
+        // emscripten_webgl_make_context_current(null) returns false, so cannot unset current context
+        return YES;
+    }
 }
 
 -(instancetype)initWithAPI:(EAGLRenderingAPI)api {
@@ -74,6 +79,7 @@ static EAGLContext *_currentContext = nil;
 
     GLint renderbuffer;
     glGetIntegerv(GL_RENDERBUFFER_BINDING, &renderbuffer);
+    //NSLog(@"%d -> %@", renderbuffer, layer);
     [_renderBufferEAGLLayer setObject:layer forKey:[NSNumber numberWithInt:renderbuffer]];
 
     NSString *pixelFormat = [layer.drawableProperties objectForKey:kEAGLDrawablePropertyColorFormat];
@@ -98,7 +104,12 @@ static EAGLContext *_currentContext = nil;
 -(BOOL)presentRenderbuffer:(NSUInteger)target {
     GLint renderbuffer;
     glGetIntegerv(GL_RENDERBUFFER_BINDING, &renderbuffer);
+    //NSLog(@"renderbuffer %d", renderbuffer);
     CAEAGLLayer *layer = [_renderBufferEAGLLayer objectForKey:[NSNumber numberWithInt:renderbuffer]];
+    if(!layer) {
+        NSLog(@"Layer not found renderbuffer=%d", renderbuffer);
+        return NO;
+    }
 
     GLint width = layer.bounds.size.width;
     GLint height = layer.bounds.size.height;
@@ -116,8 +127,10 @@ static EAGLContext *_currentContext = nil;
         return NO;
     }
 
+    //NSLog(@"presentRenderbuffer %d (%d, %d)", texture, width, height);
+
     glBindTexture(GL_TEXTURE_2D, 0);
-    [layer _setTextureId:[NSNumber numberWithInt:renderbuffer]];
+    [layer _setTextureId:[NSNumber numberWithInt:texture]];
 
     return YES;
 }

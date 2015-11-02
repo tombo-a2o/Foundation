@@ -91,8 +91,9 @@ static EAGLContext *_currentContext = nil;
         NSLog(@"%s kEAGLDrawablePropertyRetainedBacking=YES is not supported", __FUNCTION__);
     }
 
-    GLint width = layer.bounds.size.width * emscripten_get_device_pixel_ratio();
-    GLint height = layer.bounds.size.height * emscripten_get_device_pixel_ratio();
+    CGFloat scale = layer.contentsScale;
+    GLint width = layer.bounds.size.width * scale;
+    GLint height = layer.bounds.size.height * scale;
 
     glRenderbufferStorage(target, format, width, height);
 
@@ -109,8 +110,9 @@ static EAGLContext *_currentContext = nil;
         return NO;
     }
 
-    GLint width = layer.bounds.size.width * emscripten_get_device_pixel_ratio();
-    GLint height = layer.bounds.size.height * emscripten_get_device_pixel_ratio();
+    CGFloat scale = layer.contentsScale;
+    GLint width = layer.bounds.size.width * scale;
+    GLint height = layer.bounds.size.height * scale;
 
     GLuint texture;
     glGenTextures(1, &texture);

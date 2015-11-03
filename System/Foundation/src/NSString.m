@@ -2078,6 +2078,7 @@ static BOOL _NSScanStringValue(NSString *self, NSNumericValueType type, NSNumeri
         }
         charPtr[numChars++] = (char)ch;
         index++;
+        if(index >= [self length]) break;
         ch = [self characterAtIndex:index];
     }
     charPtr[numChars++] = 0;

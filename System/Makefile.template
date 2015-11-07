@@ -41,19 +41,19 @@ clean:
 
 $$(__BUILD_DIR__)/%.o: %.m
 	mkdir -p $$(dir $$@)
-	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
+	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
 $$(__BUILD_DIR__)/%.o: %.c
 	mkdir -p $$(dir $$@)
-	$$(CC) $$(STYLE_CFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
+	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
 $$(__BUILD_DIR__)/%.o: %.mm
 	mkdir -p $$(dir $$@)
-	$$(CC) $$(STYLE_CPPFLAGS) $$(CPPFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
+	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CXXFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
 $$(__BUILD_DIR__)/%.o: %.cpp
 	mkdir -p $$(dir $$@)
-	$$(CC) $$(STYLE_CPPFLAGS) $$(CPPFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
+	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CXXFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__): $$(__OBJECTS__)
 	llvm-link -o $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc $$^

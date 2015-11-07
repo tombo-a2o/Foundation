@@ -1,7 +1,7 @@
 include ../Makefile.template
 
 CC				= emcc
-CFLAGS			= -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_9 -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I./src -I./include -I./private_include -I../CFNetwork/include -I../CoreGraphics/include -I../Security/include -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h -include ../global.pch -include ../debug.pch -include ../Fixme.pch -DDEBUG=1
+CFLAGS			= -c -x objective-c -pipe -std=gnu99 -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DCF_BUILDING_CF=1 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_9 -DU_SHOW_DRAFT_API=1 -DU_SHOW_CPLUSPLUS_API=0 -I./src -I./include -I./private_include -I../CFNetwork/include -I../CoreGraphics/include -I../Security/include -DVERSION=$(VERSION) -include CoreFoundation_Prefix.h -include ../global.pch -include ../debug.pch -include ../Fixme.pch -DDEBUG=1 $(OPT_CFLAGS)
 
 BUILD_DIR		?= build/debug
 INSTALL_DIR		= $(EMSCRIPTEN)/system/frameworks

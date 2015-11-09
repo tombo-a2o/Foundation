@@ -12,7 +12,7 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
     NSRunLoop *runLoop = dispatch_get_specific(_NS_RUNLOOP_KEY);
     if(!runLoop) {
         runLoop = [[NSRunLoop alloc] init];
-        [runLoop retain]; // TODO release 
+        [runLoop retain]; // TODO release
         dispatch_queue_set_specific(dispatch_get_current_queue(), _NS_RUNLOOP_KEY, runLoop, NULL);
     }
     return runLoop;
@@ -23,7 +23,7 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
     NSRunLoop *runLoop = dispatch_queue_get_specific(dispatch_get_main_queue(), _NS_RUNLOOP_KEY);
     if(!runLoop) {
         runLoop = [[NSRunLoop alloc] init];
-        [runLoop retain]; // TODO release 
+        [runLoop retain]; // TODO release
         dispatch_queue_set_specific(dispatch_get_main_queue(), _NS_RUNLOOP_KEY, runLoop, NULL);
     }
     return runLoop;
@@ -107,7 +107,7 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
     }
 
     // check limitDate is infinite
-    
+
     if(dispatch_get_current_queue() == dispatch_get_main_queue()) {
         dispatch_main();
     } else {
@@ -123,17 +123,23 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes
 {
+    [self retain];
     dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,  (int64_t)(delay * NSEC_PER_SEC));
     dispatch_after(t, dispatch_get_current_queue(), ^{
+        NSLog(@"NSDelayedPerforming w/mode %@", self);
         [self performSelector:aSelector withObject:anArgument];
+        [self release];
     });
 }
 
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay
 {
+    [self retain];
     dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,  (int64_t)(delay * NSEC_PER_SEC));
     dispatch_after(t, dispatch_get_current_queue(), ^{
+        NSLog(@"NSDelayedPerforming %x", self);
         [self performSelector:aSelector withObject:anArgument];
+        [self release];
     });
 }
 

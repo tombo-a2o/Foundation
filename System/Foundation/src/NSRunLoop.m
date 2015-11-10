@@ -126,7 +126,6 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
     [self retain];
     dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,  (int64_t)(delay * NSEC_PER_SEC));
     dispatch_after(t, dispatch_get_current_queue(), ^{
-        NSLog(@"NSDelayedPerforming w/mode %@", self);
         [self performSelector:aSelector withObject:anArgument];
         [self release];
     });
@@ -137,7 +136,6 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
     [self retain];
     dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,  (int64_t)(delay * NSEC_PER_SEC));
     dispatch_after(t, dispatch_get_current_queue(), ^{
-        NSLog(@"NSDelayedPerforming %x", self);
         [self performSelector:aSelector withObject:anArgument];
         [self release];
     });

@@ -12,6 +12,7 @@
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
 #import <objc/runtime.h>
+#import <emscripten/trace.h>
 //#import "wrap.h"
 
 extern void __CFInitialize();
@@ -25,6 +26,7 @@ static void _enumerationMutationHandler(id object)
 static void NSPlatformInitialize() __attribute__((constructor));
 static void NSPlatformInitialize()
 {
+    emscripten_trace_enter_context("NSPlatformInitialize");
     __CFInitialize();
     @autoreleasepool {
         NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleExecutableKey];
@@ -35,4 +37,5 @@ static void NSPlatformInitialize()
 
         objc_setEnumerationMutationHandler(_enumerationMutationHandler);
     }
+    emscripten_trace_exit_context();
 }

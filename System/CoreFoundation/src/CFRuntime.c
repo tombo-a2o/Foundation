@@ -34,6 +34,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <emscripten/trace.h>
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
 #include <dlfcn.h>
 #include <mach-o/dyld.h>
@@ -981,6 +982,8 @@ void __CFInitialize(void) {
     if (!__CFInitialized && !__CFInitializing) {
         __CFInitializing = 1;
 
+    emscripten_trace_enter_context("__CFInitialize");
+
     UErrorCode err = 0;
     int icuDataFd = open("/System/icu/icu.dat", O_RDONLY);
     if (icuDataFd != -1) {
@@ -1287,6 +1290,8 @@ void __CFInitialize(void) {
         CFRelease(localeString);
 #endif
         __CFInitialized = 1;
+
+        emscripten_trace_exit_context();
     }
 }
 

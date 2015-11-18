@@ -327,7 +327,7 @@ static pthread_mutex_t _NSOperationLock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
                 [_operation release];
                 return;
             }
-            
+
             for (_NSOperationInternal *_opi in _inverse_dependencies)
             {
                 if (_opi->_waiting_deps >= 2)
@@ -1071,6 +1071,7 @@ static NSComparisonResult compareOperationEffectivePriorities(id obj1, id obj2, 
         {
             [_pendingOperations removeObjectIdenticalTo:op];
             [_operations addObject:op];
+            [self retain];
             void (^start)(void) = ^{
                 NSOperation *o = [op retain];
                 NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
@@ -1084,7 +1085,7 @@ static NSComparisonResult compareOperationEffectivePriorities(id obj1, id obj2, 
                 {
                     [o._internal observeValueForKeyPath:@"isFinished" ofObject:o change:nil context:nil];
                 }
-                
+
                 if (!previousValue)
                 {
                     [threadDictionary removeObjectForKey:NSOperationQueueKey];
@@ -1094,6 +1095,7 @@ static NSComparisonResult compareOperationEffectivePriorities(id obj1, id obj2, 
                     [threadDictionary setObject:previousValue forKey:NSOperationQueueKey];
                 }
                 [op release];
+                [self release];
             };
 
             if (_isMainQueue)

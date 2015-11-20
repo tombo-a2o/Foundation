@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -741,7 +741,7 @@ CFHashCode CFHash(CFTypeRef cf) {
     if (NULL == cf) { CRSetCrashLogMessage("*** CFHash() called with NULL ***"); HALT; }
     CFTYPE_OBJC_FUNCDISPATCH0(CFHashCode, cf, hash);
     __CFGenericAssertIsCF(cf);
-    CFHashCode (*hash)(CFTypeRef cf) = __CFRuntimeClassTable[__CFGenericTypeID_inline(cf)]->hash; 
+    CFHashCode (*hash)(CFTypeRef cf) = __CFRuntimeClassTable[__CFGenericTypeID_inline(cf)]->hash;
     if (NULL != hash) {
 	return hash(cf);
     }
@@ -1012,13 +1012,13 @@ void __CFInitialize(void) {
 #elif DEPLOYMENT_TARGET_LINUX
         __CFTSDLinuxInitialize();
 #endif
-        
+
         __CFProphylacticAutofsAccess = true;
 
         for (CFIndex idx = 0; idx < sizeof(__CFEnv) / sizeof(__CFEnv[0]); idx++) {
             __CFEnv[idx].value = __CFEnv[idx].name ? getenv(__CFEnv[idx].name) : NULL;
         }
-        
+
 #if !defined(kCFUseCollectableAllocator)
         kCFUseCollectableAllocator = objc_collectingEnabled();
 #endif
@@ -1080,7 +1080,7 @@ void __CFInitialize(void) {
 	    CFBasicHashSetCapacity(__NSRetainCounters[idx].table, 40);
 	    __NSRetainCounters[idx].lock = CFSpinLockInit;
 	}
-        
+
         memcpy(__CFConstantStringClassReference, (void *)objc_getClass("__NSCFConstantString"), sizeof(__CFConstantStringClassReference));
         __CFConstantStringClassReferencePtr = &__CFConstantStringClassReference;
 
@@ -1135,7 +1135,7 @@ void __CFInitialize(void) {
 
         __CFErrorInitialize();
         _CFRuntimeBridgeClasses(CFErrorGetTypeID(), "__NSCFError");
-        
+
         __CFTreeInitialize();
         __CFURLInitialize();
         _CFRuntimeBridgeClasses(CFURLGetTypeID(), "NSURL");
@@ -1143,7 +1143,7 @@ void __CFInitialize(void) {
         __CFAttributedStringInitialize();
         _CFRuntimeBridgeClasses(CFAttributedStringGetTypeID(), "__NSCFAttributedString");
         _CFRuntimeBridgeClasses(CFLocaleGetTypeID(), "__NSCFLocale");
-        
+
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_EMSCRIPTEN
         __CFBundleInitialize();
         __CFPFactoryInitialize();
@@ -1182,7 +1182,7 @@ void __CFInitialize(void) {
         __CFRunLoopTimerInitialize();
         _CFRuntimeBridgeClasses(CFRunLoopTimerGetTypeID(), "__NSCFTimer");
 #endif
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
         __CFTimeZoneInitialize();
         _CFRuntimeBridgeClasses(CFTimeZoneGetTypeID(), "__NSTimeZone");
 
@@ -1236,7 +1236,7 @@ void __CFInitialize(void) {
         _CFProcessPath();	// cache this early
 
         __CFOAInitialize();
-        
+
 
         if (__CFRuntimeClassTableCount < 256) __CFRuntimeClassTableCount = 256;
 
@@ -1267,7 +1267,7 @@ void __CFInitialize(void) {
         char *languages = strdup(getenv("LANGUAGES"));
         for (char *lang = strtok_r(languages, ", ", &strtokSavePtr); lang; lang = strtok_r(NULL, ", ", &strtokSavePtr))
         {
-            if (count == size) 
+            if (count == size)
             {
                 size *= 2;
                 strings = (CFStringRef *)realloc(strings, size * sizeof(CFStringRef));
@@ -1283,7 +1283,7 @@ void __CFInitialize(void) {
         CFRelease(languageArray);
         free(strings);
         free(languages);
-        
+
         char *locale = (char *)__CFgetenv("LOCALE");
         CFStringRef localeString = CFStringCreateWithBytes(kCFAllocatorDefault, locale, strlen(locale), kCFStringEncodingUTF8, false);
         CFPreferencesSetAppValue(CFSTR("AppleLocale"), localeString, kCFPreferencesCurrentApplication);
@@ -1792,5 +1792,3 @@ static void _CFRelease(CFTypeRef cf) {
 
 #undef __kCFAllocatorTypeID_CONST
 #undef __CFGenericAssertIsCF
-
-

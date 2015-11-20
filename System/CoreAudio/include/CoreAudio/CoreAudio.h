@@ -1,6 +1,8 @@
 #ifndef __CoreAudio__
 #define __CoreAudio__
 
+#include <MacTypes.h>
+
 struct AudioStreamBasicDescription {
     Float64 mSampleRate;
     UInt32 mFormatID;

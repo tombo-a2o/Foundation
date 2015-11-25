@@ -19,6 +19,7 @@ struct __CFStringTokenizer {
     CFOptionFlags _options;
     CFLocaleRef _locale;
     UBreakIterator *_break_itr;
+    UChar *_text;
 };
 
 static void __CFStringTokenizerDeallocate(CFTypeRef cf) {
@@ -34,6 +35,10 @@ static void __CFStringTokenizerDeallocate(CFTypeRef cf) {
     if (tokenizer->_break_itr) {
         ubrk_close(tokenizer->_break_itr);
     }
+
+    if (tokenizer->_text) {
+        free(tokenizer->_text);
+    }
 }
 
 
@@ -47,7 +52,7 @@ static const CFRuntimeClass __CFStringTokenizerClass = {
     __CFStringTokenizerDeallocate,
     NULL,   // __CFStringTokenizerEqual,
     NULL,   // __CFStringTokenizerHash,
-    NULL,   // 
+    NULL,   //
     NULL
 };
 
@@ -108,22 +113,16 @@ CFStringTokenizerRef CFStringTokenizerCreate(CFAllocatorRef allocator, CFStringR
             break;
     }
 
-    UChar stack_text[BUFFER_SIZE] = {0};
-    UChar *text = &stack_text[0];
     CFIndex len = CFStringGetLength(string);
-    if (len > BUFFER_SIZE) {
-        text = malloc(len * sizeof(UChar));
-        if (text == NULL) {
-            CFRelease(tokenizer);
-            return NULL;
-        }
+    tokenizer->_text = malloc(len * sizeof(UChar));
+    if (tokenizer->_text == NULL) {
+        CFRelease(tokenizer);
+        return NULL;
     }
-    CFStringGetCharacters(string, CFRangeMake(0, len), (UniChar *)text);
+
+    CFStringGetCharacters(string, CFRangeMake(0, len), (UniChar *)tokenizer->_text);
     UErrorCode err = 0;
-    tokenizer->_break_itr = ubrk_open(type, cstr, text, len, &err);
-    if (text != &stack_text[0]) {
-        free(text);
-    }
+    tokenizer->_break_itr = ubrk_open(type, cstr, tokenizer->_text, len, &err);
 
     if (tokenizer->_break_itr == NULL) {
         CFRelease(tokenizer);
@@ -158,7 +157,7 @@ void CFStringTokenizerSetString(CFStringTokenizerRef tokenizer, CFStringRef stri
     ubrk_setText(tokenizer->_break_itr, text, len, &err);
     if (text != &stack_text[0]) {
         free(text);
-    }  
+    }
 }
 
 CFStringTokenizerTokenType CFStringTokenizerGoToTokenAtIndex(CFStringTokenizerRef tokenizer, CFIndex index) {
@@ -196,4 +195,3 @@ CFIndex CFStringTokenizerGetCurrentSubTokens(CFStringTokenizerRef tokenizer, CFR
 
 }
 */
-

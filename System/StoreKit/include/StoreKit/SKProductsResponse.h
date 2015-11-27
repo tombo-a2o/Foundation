@@ -2,6 +2,9 @@
 #import <Foundation/NSArray.h>
 
 @interface SKProductsResponse : NSObject
+
+// Response Information
 @property(readonly) NSArray *products;
 @property(readonly) NSArray *invalidProductIdentifiers;
+
 @end

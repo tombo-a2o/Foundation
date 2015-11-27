@@ -1,7 +1,26 @@
-#import <Foundation/NSObject.h>
-#import <Foundation/NSData.h>
-#import <Foundation/NSDate.h>
+#import <Foundation/Foundation.h>
 
+typedef NSInteger SKPaymentTransactionState;
+
+@interface SKPaymentTransaction : NSObject
+
+// Getting Information About the Transaction
+@property(nonatomic, readonly) NSError *error;
+@property(nonatomic, readonly) SKPayment *payment;
+@property(nonatomic, readonly) SKPaymentTransactionState transactionState;
+@property(nonatomic, readonly) NSString *transactionIdentifier;
+@property(nonatomic, readonly) NSData *transactionReceipt;
+@property(nonatomic, readonly) NSDate *transactionDate;
+
+// Getting Information about the Transaction's Downloadable Content
+@property(nonatomic, readonly) NSArray *downloads;
+
+// Restored Transactions
+@property(nonatomic, readonly) SKPaymentTransaction *originalTransaction;
+
+@end
+
+// Constants
 enum {
     SKPaymentTransactionStatePurchasing,
     SKPaymentTransactionStatePurchased,
@@ -9,15 +28,3 @@ enum {
     SKPaymentTransactionStateRestored,
     SKPaymentTransactionStateDeferred,
 };
-typedef NSInteger SKPaymentTransactionState;
-
-@interface SKPaymentTransaction : NSObject
-@property(nonatomic, readonly) NSError *error;
-@property(nonatomic, readonly) SKPayment *payment;
-@property(nonatomic, readonly) SKPaymentTransactionState transactionState;
-@property(nonatomic, readonly) NSString *transactionIdentifier;
-@property(nonatomic, readonly) NSData *transactionReceipt;
-@property(nonatomic, readonly) NSDate *transactionDate;
-@property(nonatomic, readonly) NSArray *downloads;
-@property(nonatomic, readonly) SKPaymentTransaction *originalTransaction;
-@end

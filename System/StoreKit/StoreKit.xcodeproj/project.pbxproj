@@ -160,6 +160,7 @@
 				TargetAttributes = {
 					D96B1F601C09166B005704D7 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = GBD2Y4C45U;
 					};
 				};
 			};
@@ -301,6 +302,8 @@
 		D96B1F761C09166B005704D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -320,6 +323,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.tombo.StoreKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -327,6 +331,8 @@
 		D96B1F771C09166B005704D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -346,6 +352,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.tombo.StoreKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

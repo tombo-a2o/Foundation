@@ -7,42 +7,55 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D923A6B21C09173800EC5559 /* SKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6A81C09173800EC5559 /* SKBase.h */; };
-		D923A6B31C09173800EC5559 /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6A91C09173800EC5559 /* SKDownload.h */; };
-		D923A6B41C09173800EC5559 /* SKPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6AA1C09173800EC5559 /* SKPayment.h */; };
-		D923A6B51C09173800EC5559 /* SKPaymentQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6AB1C09173800EC5559 /* SKPaymentQueue.h */; };
-		D923A6B61C09173800EC5559 /* SKPaymentTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6AC1C09173800EC5559 /* SKPaymentTransaction.h */; };
-		D923A6B71C09173800EC5559 /* SKProduct.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6AD1C09173800EC5559 /* SKProduct.h */; };
-		D923A6B81C09173800EC5559 /* SKProductsResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6AE1C09173800EC5559 /* SKProductsResponse.h */; };
-		D923A6B91C09173800EC5559 /* SKRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6AF1C09173800EC5559 /* SKRequest.h */; };
-		D923A6BA1C09173800EC5559 /* SKStoreProductViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6B01C09173800EC5559 /* SKStoreProductViewController.h */; };
-		D923A6BB1C09173800EC5559 /* StoreKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D923A6B11C09173800EC5559 /* StoreKit.h */; };
 		D923A6C31C09177700EC5559 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BE1C09177700EC5559 /* SKDownload.m */; };
 		D923A6C41C09177700EC5559 /* SKPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BF1C09177700EC5559 /* SKPayment.m */; };
 		D923A6C51C09177700EC5559 /* SKPaymentQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C01C09177700EC5559 /* SKPaymentQueue.m */; };
 		D923A6C61C09177700EC5559 /* SKRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C11C09177700EC5559 /* SKRequest.m */; };
 		D923A6C71C09177700EC5559 /* SKStoreProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */; };
 		D9810E231C0A8BDE0019C82D /* SKProductsResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */; };
+		D9EF2D691C0AB14000179F0C /* SKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D551C0AB10400179F0C /* SKBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D6A1C0AB14000179F0C /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D561C0AB10400179F0C /* SKDownload.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D6B1C0AB14000179F0C /* SKPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D571C0AB10400179F0C /* SKPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D6C1C0AB14000179F0C /* SKPaymentQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D581C0AB10400179F0C /* SKPaymentQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D6D1C0AB14000179F0C /* SKPaymentTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D591C0AB10400179F0C /* SKPaymentTransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D6E1C0AB14000179F0C /* SKProduct.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5A1C0AB10400179F0C /* SKProduct.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D6F1C0AB14000179F0C /* SKProductsResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5B1C0AB10400179F0C /* SKProductsResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D701C0AB14000179F0C /* SKRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5C1C0AB10400179F0C /* SKRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D711C0AB14000179F0C /* SKStoreProductViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5D1C0AB10400179F0C /* SKStoreProductViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9EF2D721C0AB14000179F0C /* StoreKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5E1C0AB10400179F0C /* StoreKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		D9EF2D2E1C0AAD6A00179F0C /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		D923A6A81C09173800EC5559 /* SKBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKBase.h; path = include/StoreKit/SKBase.h; sourceTree = SOURCE_ROOT; };
-		D923A6A91C09173800EC5559 /* SKDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKDownload.h; path = include/StoreKit/SKDownload.h; sourceTree = SOURCE_ROOT; };
-		D923A6AA1C09173800EC5559 /* SKPayment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPayment.h; path = include/StoreKit/SKPayment.h; sourceTree = SOURCE_ROOT; };
-		D923A6AB1C09173800EC5559 /* SKPaymentQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPaymentQueue.h; path = include/StoreKit/SKPaymentQueue.h; sourceTree = SOURCE_ROOT; };
-		D923A6AC1C09173800EC5559 /* SKPaymentTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPaymentTransaction.h; path = include/StoreKit/SKPaymentTransaction.h; sourceTree = SOURCE_ROOT; };
-		D923A6AD1C09173800EC5559 /* SKProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKProduct.h; path = include/StoreKit/SKProduct.h; sourceTree = SOURCE_ROOT; };
-		D923A6AE1C09173800EC5559 /* SKProductsResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKProductsResponse.h; path = include/StoreKit/SKProductsResponse.h; sourceTree = SOURCE_ROOT; };
-		D923A6AF1C09173800EC5559 /* SKRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKRequest.h; path = include/StoreKit/SKRequest.h; sourceTree = SOURCE_ROOT; };
-		D923A6B01C09173800EC5559 /* SKStoreProductViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKStoreProductViewController.h; path = include/StoreKit/SKStoreProductViewController.h; sourceTree = SOURCE_ROOT; };
-		D923A6B11C09173800EC5559 /* StoreKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoreKit.h; path = include/StoreKit/StoreKit.h; sourceTree = SOURCE_ROOT; };
-		D923A6BE1C09177700EC5559 /* SKDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKDownload.m; path = src/SKDownload.m; sourceTree = SOURCE_ROOT; };
-		D923A6BF1C09177700EC5559 /* SKPayment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKPayment.m; path = src/SKPayment.m; sourceTree = SOURCE_ROOT; };
-		D923A6C01C09177700EC5559 /* SKPaymentQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKPaymentQueue.m; path = src/SKPaymentQueue.m; sourceTree = SOURCE_ROOT; };
-		D923A6C11C09177700EC5559 /* SKRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKRequest.m; path = src/SKRequest.m; sourceTree = SOURCE_ROOT; };
-		D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKStoreProductViewController.m; path = src/SKStoreProductViewController.m; sourceTree = SOURCE_ROOT; };
+		D923A6BE1C09177700EC5559 /* SKDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDownload.m; sourceTree = "<group>"; };
+		D923A6BF1C09177700EC5559 /* SKPayment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPayment.m; sourceTree = "<group>"; };
+		D923A6C01C09177700EC5559 /* SKPaymentQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentQueue.m; sourceTree = "<group>"; };
+		D923A6C11C09177700EC5559 /* SKRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRequest.m; sourceTree = "<group>"; };
+		D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStoreProductViewController.m; sourceTree = "<group>"; };
 		D96B1F611C09166B005704D7 /* StoreKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StoreKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKProductsResponse.m; path = src/SKProductsResponse.m; sourceTree = SOURCE_ROOT; };
+		D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProductsResponse.m; sourceTree = "<group>"; };
+		D9EF2D551C0AB10400179F0C /* SKBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKBase.h; path = StoreKit/SKBase.h; sourceTree = "<group>"; };
+		D9EF2D561C0AB10400179F0C /* SKDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKDownload.h; path = StoreKit/SKDownload.h; sourceTree = "<group>"; };
+		D9EF2D571C0AB10400179F0C /* SKPayment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPayment.h; path = StoreKit/SKPayment.h; sourceTree = "<group>"; };
+		D9EF2D581C0AB10400179F0C /* SKPaymentQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPaymentQueue.h; path = StoreKit/SKPaymentQueue.h; sourceTree = "<group>"; };
+		D9EF2D591C0AB10400179F0C /* SKPaymentTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPaymentTransaction.h; path = StoreKit/SKPaymentTransaction.h; sourceTree = "<group>"; };
+		D9EF2D5A1C0AB10400179F0C /* SKProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKProduct.h; path = StoreKit/SKProduct.h; sourceTree = "<group>"; };
+		D9EF2D5B1C0AB10400179F0C /* SKProductsResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKProductsResponse.h; path = StoreKit/SKProductsResponse.h; sourceTree = "<group>"; };
+		D9EF2D5C1C0AB10400179F0C /* SKRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKRequest.h; path = StoreKit/SKRequest.h; sourceTree = "<group>"; };
+		D9EF2D5D1C0AB10400179F0C /* SKStoreProductViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKStoreProductViewController.h; path = StoreKit/SKStoreProductViewController.h; sourceTree = "<group>"; };
+		D9EF2D5E1C0AB10400179F0C /* StoreKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoreKit.h; path = StoreKit/StoreKit.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,18 +72,19 @@
 		D923A6BC1C09174500EC5559 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				D923A6A81C09173800EC5559 /* SKBase.h */,
-				D923A6A91C09173800EC5559 /* SKDownload.h */,
-				D923A6AA1C09173800EC5559 /* SKPayment.h */,
-				D923A6AB1C09173800EC5559 /* SKPaymentQueue.h */,
-				D923A6AC1C09173800EC5559 /* SKPaymentTransaction.h */,
-				D923A6AD1C09173800EC5559 /* SKProduct.h */,
-				D923A6AE1C09173800EC5559 /* SKProductsResponse.h */,
-				D923A6AF1C09173800EC5559 /* SKRequest.h */,
-				D923A6B01C09173800EC5559 /* SKStoreProductViewController.h */,
-				D923A6B11C09173800EC5559 /* StoreKit.h */,
+				D9EF2D551C0AB10400179F0C /* SKBase.h */,
+				D9EF2D561C0AB10400179F0C /* SKDownload.h */,
+				D9EF2D571C0AB10400179F0C /* SKPayment.h */,
+				D9EF2D581C0AB10400179F0C /* SKPaymentQueue.h */,
+				D9EF2D591C0AB10400179F0C /* SKPaymentTransaction.h */,
+				D9EF2D5A1C0AB10400179F0C /* SKProduct.h */,
+				D9EF2D5B1C0AB10400179F0C /* SKProductsResponse.h */,
+				D9EF2D5C1C0AB10400179F0C /* SKRequest.h */,
+				D9EF2D5D1C0AB10400179F0C /* SKStoreProductViewController.h */,
+				D9EF2D5E1C0AB10400179F0C /* StoreKit.h */,
 			);
 			name = Headers;
+			path = include;
 			sourceTree = "<group>";
 		};
 		D923A6BD1C09175F00EC5559 /* Sources */ = {
@@ -84,12 +98,14 @@
 				D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */,
 			);
 			name = Sources;
+			path = src;
 			sourceTree = "<group>";
 		};
 		D96B1F571C09166B005704D7 = {
 			isa = PBXGroup;
 			children = (
-				D96B1F631C09166B005704D7 /* StoreKit */,
+				D923A6BD1C09175F00EC5559 /* Sources */,
+				D923A6BC1C09174500EC5559 /* Headers */,
 				D96B1F621C09166B005704D7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,15 +118,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D96B1F631C09166B005704D7 /* StoreKit */ = {
-			isa = PBXGroup;
-			children = (
-				D923A6BD1C09175F00EC5559 /* Sources */,
-				D923A6BC1C09174500EC5559 /* Headers */,
-			);
-			path = StoreKit;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -118,16 +125,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D923A6B91C09173800EC5559 /* SKRequest.h in Headers */,
-				D923A6B61C09173800EC5559 /* SKPaymentTransaction.h in Headers */,
-				D923A6B81C09173800EC5559 /* SKProductsResponse.h in Headers */,
-				D923A6B31C09173800EC5559 /* SKDownload.h in Headers */,
-				D923A6B71C09173800EC5559 /* SKProduct.h in Headers */,
-				D923A6B41C09173800EC5559 /* SKPayment.h in Headers */,
-				D923A6B21C09173800EC5559 /* SKBase.h in Headers */,
-				D923A6BB1C09173800EC5559 /* StoreKit.h in Headers */,
-				D923A6BA1C09173800EC5559 /* SKStoreProductViewController.h in Headers */,
-				D923A6B51C09173800EC5559 /* SKPaymentQueue.h in Headers */,
+				D9EF2D691C0AB14000179F0C /* SKBase.h in Headers */,
+				D9EF2D6A1C0AB14000179F0C /* SKDownload.h in Headers */,
+				D9EF2D6B1C0AB14000179F0C /* SKPayment.h in Headers */,
+				D9EF2D6C1C0AB14000179F0C /* SKPaymentQueue.h in Headers */,
+				D9EF2D6D1C0AB14000179F0C /* SKPaymentTransaction.h in Headers */,
+				D9EF2D6E1C0AB14000179F0C /* SKProduct.h in Headers */,
+				D9EF2D6F1C0AB14000179F0C /* SKProductsResponse.h in Headers */,
+				D9EF2D701C0AB14000179F0C /* SKRequest.h in Headers */,
+				D9EF2D711C0AB14000179F0C /* SKStoreProductViewController.h in Headers */,
+				D9EF2D721C0AB14000179F0C /* StoreKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +149,7 @@
 				D96B1F5D1C09166B005704D7 /* Frameworks */,
 				D96B1F5E1C09166B005704D7 /* Headers */,
 				D96B1F5F1C09166B005704D7 /* Resources */,
+				D9EF2D2E1C0AAD6A00179F0C /* Copy Files */,
 			);
 			buildRules = (
 			);

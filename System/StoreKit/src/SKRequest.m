@@ -8,11 +8,13 @@ NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
 
 - (void)start
 {
+    // SKRequest is an abstract class.
     [self doesNotRecognizeSelector:_cmd];
 }
 
 - (void)cancel
 {
+    // SKRequest is an abstract class.
     [self doesNotRecognizeSelector:_cmd];
 }
 

@@ -43,48 +43,56 @@ static SKPaymentQueue* _defaultQueue;
 - (void)addPayment:(SKPayment *)payment
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 // Completes a pending transaction.
 - (void)finishTransaction:(SKPaymentTransaction *)transaction
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 // Asks the payment queue to restore previously completed purchases.
 - (void)restoreCompletedTransactions
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 // Asks the payment queue to restore previously completed purchases, providing an opaque identifier for the user’s account.
 - (void)restoreCompletedTransactionsWithApplicationUsername:(NSString *)username
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 // Adds a set of downloads to the download list.
 - (void)startDownloads:(NSArray *)downloads
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 // Removes a set of downloads from the download list.
 - (void)cancelDownloads:(NSArray *)downloads
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 // Pauses a set of downloads.
 - (void)pauseDownloads:(NSArray *)downloads
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 // Resumes a set of downloads.
 - (void)resumeDownloads:(NSArray *)downloads
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 @end

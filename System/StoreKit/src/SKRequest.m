@@ -47,6 +47,7 @@ NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
 - (void)cancel
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 @end
@@ -59,6 +60,7 @@ NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
 - (instancetype)initWithReceiptProperties:(NSDictionary/*<NSString *, id>*/ *)properties
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
 
@@ -66,12 +68,14 @@ NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
 - (void)start
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 // Cancels a previously started request.
 - (void)cancel
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 @end

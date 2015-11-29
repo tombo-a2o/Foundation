@@ -6,6 +6,7 @@
 - (void)loadProductWithParameters:(NSDictionary*)parameters completionBlock:(void (^)(BOOL result, NSError *error))block
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 @end

@@ -6,6 +6,7 @@
 + (instancetype)paymentWithProduct:(SKProduct *)product
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
 
@@ -13,18 +14,21 @@
 + (id)paymentWithProductIdentifier:(NSString *)identifier
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
 
 - (id)copyWithZone:(NSZone *)zone
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
 
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
     // FIXME: implement
+    [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
 

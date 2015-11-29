@@ -39,7 +39,7 @@
 @interface SKProductsRequest : SKRequest
 
 // Initializing a Products Request
-- (instancetype)initWithProductIdentifiers:(NSSet *)productIdentifiers;
+- (instancetype)initWithProductIdentifiers:(NSSet/*<NSString *>*/ *)productIdentifiers;
 
 // Settings the Delegate
 @property(nonatomic, assign) id< SKProductsRequestDelegate > delegate;

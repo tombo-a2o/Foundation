@@ -16,4 +16,16 @@
     return nil;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    // FIXME: implement
+    return nil;
+}
+
+- (id)mutableCopyWithZone:(NSZone *)zone
+{
+    // FIXME: implement
+    return nil;
+}
+
 @end

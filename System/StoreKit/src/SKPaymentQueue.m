@@ -1,31 +1,42 @@
 #import <StoreKit/SKPaymentQueue.h>
 
-@implementation SKPaymentQueue
+static SKPaymentQueue* _defaultQueue;
+
+@implementation SKPaymentQueue {
+    NSMutableArray *_transactionObservers;
+}
+
+- (instancetype)init {
+    _transactionObservers = [[NSMutableArray alloc] init];
+    return [super init];
+}
 
 // Returns whether the user is allowed to make payments.
 + (BOOL)canMakePayments
 {
-    // FIXME: implement
+    // TODO: implement parental controls etc.
     return YES;
 }
 
 // Returns the singleton payment queue instance.
 + (instancetype)defaultQueue
 {
-    // FIXME: implement
-    return nil;
+    if (!_defaultQueue) {
+        _defaultQueue = [[SKPaymentQueue alloc] init];
+    }
+    return _defaultQueue;
 }
 
 // Adds an observer to the payment queue.
 - (void)addTransactionObserver:(id<SKPaymentTransactionObserver>)observer
 {
-    // FIXME: implement
+    [_transactionObservers addObject:observer];
 }
 
 // Removes an observer from the payment queue.
 - (void)removeTransactionObserver:(id<SKPaymentTransactionObserver>)observer
 {
-    // FIXME: implement
+    [_transactionObservers removeObject:observer];
 }
 
 // Adds a payment request to the queue.

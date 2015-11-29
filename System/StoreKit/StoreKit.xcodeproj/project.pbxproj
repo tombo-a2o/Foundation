@@ -22,6 +22,7 @@
 		D923A6C51C09177700EC5559 /* SKPaymentQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C01C09177700EC5559 /* SKPaymentQueue.m */; };
 		D923A6C61C09177700EC5559 /* SKRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C11C09177700EC5559 /* SKRequest.m */; };
 		D923A6C71C09177700EC5559 /* SKStoreProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */; };
+		D9810E231C0A8BDE0019C82D /* SKProductsResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		D923A6C11C09177700EC5559 /* SKRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKRequest.m; path = src/SKRequest.m; sourceTree = SOURCE_ROOT; };
 		D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKStoreProductViewController.m; path = src/SKStoreProductViewController.m; sourceTree = SOURCE_ROOT; };
 		D96B1F611C09166B005704D7 /* StoreKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StoreKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SKProductsResponse.m; path = src/SKProductsResponse.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 				D923A6C01C09177700EC5559 /* SKPaymentQueue.m */,
 				D923A6C11C09177700EC5559 /* SKRequest.m */,
 				D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */,
+				D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -201,6 +204,7 @@
 				D923A6C51C09177700EC5559 /* SKPaymentQueue.m in Sources */,
 				D923A6C71C09177700EC5559 /* SKStoreProductViewController.m in Sources */,
 				D923A6C31C09177700EC5559 /* SKDownload.m in Sources */,
+				D9810E231C0A8BDE0019C82D /* SKProductsResponse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -37,8 +37,8 @@ static inline id newDecodedNumber(NSCoder *coder)
         }
         else if ([coder containsValueForKey:NS_intval])
         {
-            int64_t i = [coder decodeInt64ForKey:NS_intval];
-            return [[NSNumber alloc] initWithLongLong:i];
+            int32_t i = [coder decodeIntForKey:NS_intval];
+            return [[NSNumber alloc] initWithLong:i];
         }
         else if ([coder containsValueForKey:NS_dblval])
         {

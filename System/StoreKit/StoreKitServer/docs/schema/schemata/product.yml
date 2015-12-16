@@ -1,0 +1,78 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: FIXME - Product
+description: FIXME
+stability: prototype
+strictProperties: true
+type:
+- object
+definitions:
+  id:
+    description: unique identifier of product
+    readOnly: true
+    format: uuid
+    type:
+    - string
+  name:
+    description: unique name of product
+    readOnly: true
+    type:
+    - string
+  identity:
+    anyOf:
+    - "$ref": "/schemata/product#/definitions/id"
+    - "$ref": "/schemata/product#/definitions/name"
+  created_at:
+    description: when product was created
+    format: date-time
+    type:
+    - string
+  updated_at:
+    description: when product was updated
+    format: date-time
+    type:
+    - string
+links:
+- description: Create a new product.
+  href: "/products"
+  method: POST
+  rel: create
+  schema:
+    properties: {}
+    type:
+    - object
+  title: Create
+- description: Delete an existing product.
+  href: "/products/{(%2Fschemata%2Fproduct%23%2Fdefinitions%2Fidentity)}"
+  method: DELETE
+  rel: destroy
+  title: Delete
+- description: Info for existing product.
+  href: "/products/{(%2Fschemata%2Fproduct%23%2Fdefinitions%2Fidentity)}"
+  method: GET
+  rel: self
+  title: Info
+- description: List existing products.
+  href: "/products"
+  method: GET
+  rel: instances
+  title: List
+- description: Update an existing product.
+  href: "/products/{(%2Fschemata%2Fproduct%23%2Fdefinitions%2Fidentity)}"
+  method: PATCH
+  rel: update
+  schema:
+    properties: {}
+    type:
+    - object
+  title: Update
+properties:
+  created_at:
+    "$ref": "/schemata/product#/definitions/created_at"
+  id:
+    "$ref": "/schemata/product#/definitions/id"
+  name:
+    "$ref": "/schemata/product#/definitions/name"
+  updated_at:
+    "$ref": "/schemata/product#/definitions/updated_at"
+id: schemata/product

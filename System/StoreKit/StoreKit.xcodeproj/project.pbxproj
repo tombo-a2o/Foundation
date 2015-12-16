@@ -13,6 +13,8 @@
 		D923A6C61C09177700EC5559 /* SKRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C11C09177700EC5559 /* SKRequest.m */; };
 		D923A6C71C09177700EC5559 /* SKStoreProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */; };
 		D9810E231C0A8BDE0019C82D /* SKProductsResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */; };
+		D9D753971C212C7300C40E06 /* StoreKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D9D753961C212C7300C40E06 /* StoreKitTests.m */; };
+		D9D753991C212C7300C40E06 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D96B1F611C09166B005704D7 /* StoreKit.framework */; };
 		D9EF2D691C0AB14000179F0C /* SKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D551C0AB10400179F0C /* SKBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9EF2D6A1C0AB14000179F0C /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D561C0AB10400179F0C /* SKDownload.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9EF2D6B1C0AB14000179F0C /* SKPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D571C0AB10400179F0C /* SKPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -24,6 +26,16 @@
 		D9EF2D711C0AB14000179F0C /* SKStoreProductViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5D1C0AB10400179F0C /* SKStoreProductViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9EF2D721C0AB14000179F0C /* StoreKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5E1C0AB10400179F0C /* StoreKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D9D7539A1C212C7300C40E06 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D96B1F581C09166B005704D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D96B1F601C09166B005704D7;
+			remoteInfo = StoreKit;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		D9EF2D2E1C0AAD6A00179F0C /* Copy Files */ = {
@@ -46,6 +58,9 @@
 		D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStoreProductViewController.m; sourceTree = "<group>"; };
 		D96B1F611C09166B005704D7 /* StoreKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StoreKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProductsResponse.m; sourceTree = "<group>"; };
+		D9D753941C212C7300C40E06 /* StoreKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StoreKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9D753961C212C7300C40E06 /* StoreKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreKitTests.m; sourceTree = "<group>"; };
+		D9D753981C212C7300C40E06 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D9EF2D551C0AB10400179F0C /* SKBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKBase.h; path = StoreKit/SKBase.h; sourceTree = "<group>"; };
 		D9EF2D561C0AB10400179F0C /* SKDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKDownload.h; path = StoreKit/SKDownload.h; sourceTree = "<group>"; };
 		D9EF2D571C0AB10400179F0C /* SKPayment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPayment.h; path = StoreKit/SKPayment.h; sourceTree = "<group>"; };
@@ -63,6 +78,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D9D753911C212C7300C40E06 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D9D753991C212C7300C40E06 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +129,7 @@
 			children = (
 				D923A6BD1C09175F00EC5559 /* Sources */,
 				D923A6BC1C09174500EC5559 /* Headers */,
+				D9D753951C212C7300C40E06 /* StoreKitTests */,
 				D96B1F621C09166B005704D7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -114,8 +138,18 @@
 			isa = PBXGroup;
 			children = (
 				D96B1F611C09166B005704D7 /* StoreKit.framework */,
+				D9D753941C212C7300C40E06 /* StoreKitTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D9D753951C212C7300C40E06 /* StoreKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				D9D753961C212C7300C40E06 /* StoreKitTests.m */,
+				D9D753981C212C7300C40E06 /* Info.plist */,
+			);
+			path = StoreKitTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,6 +194,24 @@
 			productReference = D96B1F611C09166B005704D7 /* StoreKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		D9D753931C212C7300C40E06 /* StoreKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D9D7539E1C212C7300C40E06 /* Build configuration list for PBXNativeTarget "StoreKitTests" */;
+			buildPhases = (
+				D9D753901C212C7300C40E06 /* Sources */,
+				D9D753911C212C7300C40E06 /* Frameworks */,
+				D9D753921C212C7300C40E06 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D9D7539B1C212C7300C40E06 /* PBXTargetDependency */,
+			);
+			name = StoreKitTests;
+			productName = StoreKitTests;
+			productReference = D9D753941C212C7300C40E06 /* StoreKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -172,6 +224,9 @@
 					D96B1F601C09166B005704D7 = {
 						CreatedOnToolsVersion = 7.1.1;
 						DevelopmentTeam = GBD2Y4C45U;
+					};
+					D9D753931C212C7300C40E06 = {
+						CreatedOnToolsVersion = 7.2;
 					};
 				};
 			};
@@ -188,12 +243,20 @@
 			projectRoot = "";
 			targets = (
 				D96B1F601C09166B005704D7 /* StoreKit */,
+				D9D753931C212C7300C40E06 /* StoreKitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		D96B1F5F1C09166B005704D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D9D753921C212C7300C40E06 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -216,7 +279,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D9D753901C212C7300C40E06 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D9D753971C212C7300C40E06 /* StoreKitTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D9D7539B1C212C7300C40E06 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D96B1F601C09166B005704D7 /* StoreKit */;
+			targetProxy = D9D7539A1C212C7300C40E06 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D96B1F731C09166B005704D7 /* Debug */ = {
@@ -320,15 +399,11 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)"
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)"
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = io.tombo.StoreKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -345,19 +420,39 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)"
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)"
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = io.tombo.StoreKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		D9D7539C1C212C7300C40E06 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/StoreKit.framework/StoreKit";
+				INFOPLIST_FILE = StoreKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.tombo.StoreKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D9D7539D1C212C7300C40E06 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/StoreKit.framework/StoreKit";
+				INFOPLIST_FILE = StoreKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.tombo.StoreKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -381,6 +476,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D9D7539E1C212C7300C40E06 /* Build configuration list for PBXNativeTarget "StoreKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D9D7539C1C212C7300C40E06 /* Debug */,
+				D9D7539D1C212C7300C40E06 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

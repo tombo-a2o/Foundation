@@ -123,6 +123,12 @@ CFStringTokenizerRef CFStringTokenizerCreate(CFAllocatorRef allocator, CFStringR
     CFStringGetCharacters(string, CFRangeMake(0, len), (UniChar *)tokenizer->_text);
     UErrorCode err = 0;
     tokenizer->_break_itr = ubrk_open(type, cstr, tokenizer->_text, len, &err);
+    
+    if(U_FAILURE(err)) {
+        fprintf(stderr, "ubrk_open error: code=%d, messaage=%s\n", err, u_errorName(err));
+        CFRelease(tokenizer);
+        return NULL;
+    }
 
     if (tokenizer->_break_itr == NULL) {
         CFRelease(tokenizer);

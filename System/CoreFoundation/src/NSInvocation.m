@@ -21,6 +21,7 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 #import <stdio.h>
+#import <assert.h>
 
 #define ALIGN_TO(value, alignment) \
     (((value) % (alignment)) ? \
@@ -461,7 +462,45 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
     }
     else
     {
-        __invoke__(&objc_msgSend, _retdata, _frame, [_signature frameLength], [_signature methodReturnType]);
+
+#define objc_msgSend_vii ((void(*)(id, SEL))objc_msgSend)
+#define objc_msgSend_iii ((id(*)(id, SEL))objc_msgSend)
+#define objc_msgSend_viii ((void(*)(id, SEL, id))objc_msgSend)
+#define objc_msgSend_iiii ((id(*)(id, SEL, id))objc_msgSend)
+#define objc_msgSend_viiii ((void(*)(id, SEL, id, id))objc_msgSend)
+#define objc_msgSend_iiiii ((id(*)(id, SEL, id, id))objc_msgSend)
+
+        const char *returnType = [_signature methodReturnType];
+        BOOL returnsValue = *returnType != 'v';
+        int* args = _frame;
+        switch([_signature frameLength]/4)
+        {
+        case 2:
+            if(returnsValue) {
+                *((id*)_retdata) = objc_msgSend_iii(args[0], args[1]);
+            } else {
+                objc_msgSend_vii(args[0], args[1]);
+            }
+            break;
+        case 3:
+            if(returnsValue) {
+                *((id*)_retdata) = objc_msgSend_iiii(args[0], args[1], args[2]);
+            } else {
+                objc_msgSend_viii(args[0], args[1], args[2]);
+            }
+            break;
+        case 4:
+            if(returnsValue) {
+                *((id*)_retdata) = objc_msgSend_iiiii(args[0], args[1], args[2], args[3]);
+            } else {
+                objc_msgSend_viiii(args[0], args[1], args[2], args[3]);
+            }
+            break;
+        default:
+            assert(0);
+        }
+        
+        //__invoke__(&objc_msgSend, _retdata, _frame, [_signature frameLength], [_signature methodReturnType]);
     }
 
     if (_retainedArgs)

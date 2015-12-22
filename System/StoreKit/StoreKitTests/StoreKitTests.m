@@ -1,11 +1,3 @@
-//
-//  StoreKitTests.m
-//  StoreKitTests
-//
-//  Created by Tasuku SUENAGA on 2015/12/16.
-//  Copyright © 2015年 Tombo, inc. All rights reserved.
-//
-
 #import <XCTest/XCTest.h>
 #import "StoreKit.h"
 
@@ -21,10 +13,6 @@
 
 - (void)tearDown {
     [super tearDown];
-}
-
-- (void)testCanMakePayments {
-    XCTAssertTrue([SKPaymentQueue canMakePayments]);
 }
 
 @end

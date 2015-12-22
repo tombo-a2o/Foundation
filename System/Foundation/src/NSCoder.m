@@ -480,21 +480,6 @@ static inline const char *nextType(const char *type)
 
 @implementation NSCoder (NSKeyedGeometryCoding)
 
-- (CGRect)decodeRectForKey:(NSString *)key
-{
-    return NSRectFromString([self decodeObjectForKey:key]);
-}
-
-- (CGSize)decodeSizeForKey:(NSString *)key
-{
-    return NSSizeFromString([self decodeObjectForKey:key]);
-}
-
-- (CGPoint)decodePointForKey:(NSString *)key
-{
-    return NSPointFromString([self decodeObjectForKey:key]);
-}
-
 - (void)encodeRect:(CGRect)r forKey:(NSString *)key
 {
     [self encodeObject:NSStringFromRect(r) forKey:key];
@@ -511,4 +496,3 @@ static inline const char *nextType(const char *type)
 }
 
 @end
-

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B453CC42E23B6B306900E6F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F175FA0D3481DCBCD4458D0F /* libPods.a */; };
 		D923A6C31C09177700EC5559 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BE1C09177700EC5559 /* SKDownload.m */; };
 		D923A6C41C09177700EC5559 /* SKPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BF1C09177700EC5559 /* SKPayment.m */; };
 		D923A6C51C09177700EC5559 /* SKPaymentQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C01C09177700EC5559 /* SKPaymentQueue.m */; };
@@ -53,6 +54,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		21EBFE8BF7270370C4D7A159 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		CCE670F467FC28840CF415F2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D923A6BE1C09177700EC5559 /* SKDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDownload.m; sourceTree = "<group>"; };
 		D923A6BF1C09177700EC5559 /* SKPayment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPayment.m; sourceTree = "<group>"; };
 		D923A6C01C09177700EC5559 /* SKPaymentQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentQueue.m; sourceTree = "<group>"; };
@@ -76,6 +79,7 @@
 		D9EF2D5C1C0AB10400179F0C /* SKRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKRequest.h; path = StoreKit/SKRequest.h; sourceTree = "<group>"; };
 		D9EF2D5D1C0AB10400179F0C /* SKStoreProductViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKStoreProductViewController.h; path = StoreKit/SKStoreProductViewController.h; sourceTree = "<group>"; };
 		D9EF2D5E1C0AB10400179F0C /* StoreKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoreKit.h; path = StoreKit/StoreKit.h; sourceTree = "<group>"; };
+		F175FA0D3481DCBCD4458D0F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B453CC42E23B6B306900E6F /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +102,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F1D4611AC56ECBFDCADF251 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CCE670F467FC28840CF415F2 /* Pods.debug.xcconfig */,
+				21EBFE8BF7270370C4D7A159 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		901F9368F728BA071FBD120C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F175FA0D3481DCBCD4458D0F /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D923A6BC1C09174500EC5559 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,6 +158,8 @@
 				D923A6BC1C09174500EC5559 /* Headers */,
 				D9D753951C212C7300C40E06 /* StoreKitTests */,
 				D96B1F621C09166B005704D7 /* Products */,
+				5F1D4611AC56ECBFDCADF251 /* Pods */,
+				901F9368F728BA071FBD120C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -187,11 +211,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D96B1F751C09166B005704D7 /* Build configuration list for PBXNativeTarget "StoreKit" */;
 			buildPhases = (
+				F4FCE69F7287CF981BDE3DA2 /* Check Pods Manifest.lock */,
 				D96B1F5C1C09166B005704D7 /* Sources */,
 				D96B1F5D1C09166B005704D7 /* Frameworks */,
 				D96B1F5E1C09166B005704D7 /* Headers */,
 				D96B1F5F1C09166B005704D7 /* Resources */,
 				D9EF2D2E1C0AAD6A00179F0C /* Copy Files */,
+				5B582202249BC3725CF865DC /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -272,6 +298,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5B582202249BC3725CF865DC /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F4FCE69F7287CF981BDE3DA2 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D96B1F5C1C09166B005704D7 /* Sources */ = {
@@ -402,6 +461,7 @@
 		};
 		D96B1F761C09166B005704D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCE670F467FC28840CF415F2 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -423,6 +483,7 @@
 		};
 		D96B1F771C09166B005704D7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 21EBFE8BF7270370C4D7A159 /* Pods.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

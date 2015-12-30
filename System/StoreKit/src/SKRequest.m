@@ -1,4 +1,5 @@
 #import <StoreKit/StoreKit.h>
+#import "AFNetworking.h"
 
 NSString * const SKReceiptPropertyIsExpired = @"expired";
 NSString * const SKReceiptPropertyIsRevoked = @"revoked";
@@ -22,7 +23,7 @@ NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
 
 @implementation SKProductsRequest {
     NSMutableArray *_productIdentifiers;
-    SKProductsResponse *_response;
+    SKProductsResponse *_productsResponse;
 }
 
 @dynamic delegate;
@@ -38,11 +39,30 @@ NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
 // Sends the request to the Apple App Store.
 - (void)start
 {
-    _response = [[SKProductsResponse alloc] init];
+    _productsResponse = [[SKProductsResponse alloc] init];
 
     // FIXME: implement generating SKProductsResponse.
 
-    [self.delegate productsRequest:self didReceiveResponse:_response];
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+
+    NSDictionary *parameters = @{@"productIdentifiers": _productIdentifiers};
+    // FIXME: change URL
+    NSError *serializerError = nil;
+    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:@"http://www.titech.ac/tombo/products" parameters:parameters error:&serializerError];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            NSLog(@"%@ %@", response, responseObject);
+
+            _productsResponse = responseObject;
+            [self.delegate productsRequest:self didReceiveResponse:_productsResponse];
+        }
+    }];
+    [dataTask resume];
 }
 
 // Cancels a previously started request.

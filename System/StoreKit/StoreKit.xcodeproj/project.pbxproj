@@ -509,6 +509,7 @@
 		};
 		D9D7539C1C212C7300C40E06 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCE670F467FC28840CF415F2 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/StoreKit.framework/StoreKit";
 				INFOPLIST_FILE = StoreKitTests/Info.plist;
@@ -521,6 +522,7 @@
 		};
 		D9D7539D1C212C7300C40E06 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 21EBFE8BF7270370C4D7A159 /* Pods.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/StoreKit.framework/StoreKit";
 				INFOPLIST_FILE = StoreKitTests/Info.plist;

@@ -1,4 +1,5 @@
 #import <XCTest/XCTest.h>
+#import "Nocilla.h"
 #import "StoreKit.h"
 #import "TestTransactionObserver.h"
 
@@ -16,12 +17,29 @@
 
 @implementation SKProductsRequestTests
 
+- (void)setUp
+{
+    [super setUp];
+    [[LSNocilla sharedInstance] start];
+}
+
+- (void)tearDown
+{
+    [[LSNocilla sharedInstance] stop];
+    [super tearDown];
+}
+
 - (void)testStart {
     _expectation = [self expectationWithDescription:@"SKProductRequest start"];
 
     NSSet *set = [NSSet setWithObjects:@[@"productIdentifier1", @"productIdentifier2"], nil];
     SKProductsRequest *productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:set];
     productsRequest.delegate = self;
+
+    stubRequest(@"GET", @"http://www.google.com/nonsense/path").
+    withHeaders(@{@"Accept": @"application/json"}).
+    withBody(@"test body");
+
     [productsRequest start];
 
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {

@@ -36,9 +36,8 @@
     SKProductsRequest *productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:set];
     productsRequest.delegate = self;
 
-    stubRequest(@"GET", @"http://www.google.com/nonsense/path").
-    withHeaders(@{@"Accept": @"application/json"}).
-    withBody(@"test body");
+    stubRequest(@"POST", SKTomboProductsURL).
+    withBody(@"{\"productIdentifiers\":[[\"productIdentifier1\",\"productIdentifier2\"]]}");
 
     [productsRequest start];
 

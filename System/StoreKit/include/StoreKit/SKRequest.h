@@ -57,5 +57,6 @@
 extern NSString * const SKReceiptPropertyIsExpired;
 extern NSString * const SKReceiptPropertyIsRevoked;
 extern NSString * const SKReceiptPropertyIsVolumePurchase;
+extern NSString * const SKTomboProductsURL;
 
 #endif

@@ -22,7 +22,7 @@ NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
 @end
 
 @implementation SKProductsRequest {
-    NSMutableArray *_productIdentifiers;
+    NSSet *_productIdentifiers;
     SKProductsResponse *_productsResponse;
 }
 
@@ -46,7 +46,7 @@ NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
-    NSDictionary *parameters = @{@"productIdentifiers": _productIdentifiers};
+    NSDictionary *parameters = @{@"productIdentifiers": [[_productIdentifiers allObjects] mutableCopy]};
     // FIXME: change URL
     NSError *serializerError = nil;
     NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:@"http://www.titech.ac/tombo/products" parameters:parameters error:&serializerError];

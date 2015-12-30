@@ -8,14 +8,6 @@
 
 @implementation SKPaymentQueueTests
 
-- (void)setUp {
-    [super setUp];
-}
-
-- (void)tearDown {
-    [super tearDown];
-}
-
 - (void)testCanMakePayments {
     // Now canMakePayments always returns YES
     XCTAssertTrue([SKPaymentQueue canMakePayments]);

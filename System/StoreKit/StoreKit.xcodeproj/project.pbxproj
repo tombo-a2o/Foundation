@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1B453CC42E23B6B306900E6F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F175FA0D3481DCBCD4458D0F /* libPods.a */; };
+		D90769011C33E308005EBBDB /* SKRequestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D90769001C33E308005EBBDB /* SKRequestTests.m */; };
 		D923A6C31C09177700EC5559 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BE1C09177700EC5559 /* SKDownload.m */; };
 		D923A6C41C09177700EC5559 /* SKPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BF1C09177700EC5559 /* SKPayment.m */; };
 		D923A6C51C09177700EC5559 /* SKPaymentQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C01C09177700EC5559 /* SKPaymentQueue.m */; };
@@ -56,6 +57,7 @@
 /* Begin PBXFileReference section */
 		21EBFE8BF7270370C4D7A159 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		CCE670F467FC28840CF415F2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		D90769001C33E308005EBBDB /* SKRequestTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRequestTests.m; sourceTree = "<group>"; };
 		D923A6BE1C09177700EC5559 /* SKDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDownload.m; sourceTree = "<group>"; };
 		D923A6BF1C09177700EC5559 /* SKPayment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPayment.m; sourceTree = "<group>"; };
 		D923A6C01C09177700EC5559 /* SKPaymentQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentQueue.m; sourceTree = "<group>"; };
@@ -175,8 +177,9 @@
 		D9D753951C212C7300C40E06 /* StoreKitTests */ = {
 			isa = PBXGroup;
 			children = (
-				D9D753961C212C7300C40E06 /* StoreKitTests.m */,
 				D9D753981C212C7300C40E06 /* Info.plist */,
+				D9D753961C212C7300C40E06 /* StoreKitTests.m */,
+				D90769001C33E308005EBBDB /* SKRequestTests.m */,
 				D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */,
 				D9901E0B1C292C09001609FB /* TestTransactionObserver.m */,
 				D9901E0D1C292D2D001609FB /* TestTransactionObserver.h */,
@@ -351,6 +354,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D9901E0C1C292C09001609FB /* TestTransactionObserver.m in Sources */,
+				D90769011C33E308005EBBDB /* SKRequestTests.m in Sources */,
 				D9901E0A1C292AA6001609FB /* SKPaymentQueueTests.m in Sources */,
 				D9D753971C212C7300C40E06 /* StoreKitTests.m in Sources */,
 			);

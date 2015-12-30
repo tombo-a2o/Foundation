@@ -40,7 +40,7 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
 // Sends the request to the Apple App Store.
 - (void)start
 {
-    _productsResponse = [[SKProductsResponse alloc] init];
+    _productsResponse = nil;
 
     // FIXME: implement generating SKProductsResponse.
 
@@ -54,12 +54,26 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
 
     NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
-            NSLog(@"Error: %@", error);
+            NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
+            [self.delegate request:self didFailWithError:error];
         } else {
-            NSLog(@"%@ %@", response, responseObject);
+            NSMutableArray *products = [[NSMutableArray alloc] init];
+            NSArray *productsArray = [responseObject objectForKey:@"products"];
+            for (NSDictionary *productDict in productsArray) {
+                NSString *productIdentifier = [productDict objectForKey:@"productIdentifier"];
+                NSString *localizedTitle = [productDict objectForKey:@"localizedTitle"];
+                NSString *localizedDescription = [productDict objectForKey:@"localizedDescription"];
+                NSDecimalNumber *price = [NSDecimalNumber decimalNumberWithString:[productDict objectForKey:@"price"]];
+                NSLocale *priceLocale = [[NSLocale alloc] initWithLocaleIdentifier:[productDict objectForKey:@"priceLocale"]];
 
-            _productsResponse = responseObject;
+                SKProduct *product = [[SKProduct alloc] initWithProductIdentifier:productIdentifier localizedTitle:localizedTitle localizedDescription:localizedDescription price:price priceLocale:priceLocale];
+                [products addObject:product];
+            }
+            _productsResponse = [[SKProductsResponse alloc] initWithProducts:products];
+
+            // NOTE: I don't know the sequence of calling these notification methods
             [self.delegate productsRequest:self didReceiveResponse:_productsResponse];
+            [self.delegate requestDidFinish:self];
         }
     }];
     [dataTask resume];

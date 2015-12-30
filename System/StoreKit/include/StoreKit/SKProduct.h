@@ -14,4 +14,7 @@
 @property(nonatomic, readonly) NSArray/*<NSNumber *>*/ *downloadContentLengths;
 @property(nonatomic, readonly) NSString *downloadContentVersion;
 
+// FIXME: move to private
+- (instancetype)initWithProductIdentifier:(NSString *)productIdentifier localizedTitle:(NSString *)localizedTitle localizedDescription:(NSString *)localizedDescription price:(NSDecimalNumber *)price priceLocale:(NSLocale *)priceLocale;
+
 @end

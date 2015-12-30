@@ -4,7 +4,10 @@
 @interface SKProductsResponse : NSObject
 
 // Response Information
-@property(readonly) NSArray *products;
+@property(readonly) NSArray<SKProduct *> *products;
 @property(readonly) NSArray *invalidProductIdentifiers;
+
+// FIXME: move to private
+- (instancetype)initWithProducts:(NSArray *)products;
 
 @end

@@ -18,6 +18,10 @@ typedef NSInteger SKPaymentTransactionState;
 // Restored Transactions
 @property(nonatomic, readonly) SKPaymentTransaction *originalTransaction;
 
+// FIXME: move to private
+// TODO: reconsider signature
+- (instancetype)initWithTransactionIdentifier:(NSString *)transactionIdentifier payment:(SKPayment *)payment transactionState:(SKPaymentTransactionState)transactionState transactionReceipt:(NSData *)transactionReceipt transactionDate:(NSDate *)transactionDate error:(NSError *)error;
+
 @end
 
 // Constants

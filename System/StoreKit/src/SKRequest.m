@@ -43,8 +43,6 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
 {
     _productsResponse = nil;
 
-    // FIXME: implement generating SKProductsResponse.
-
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     _URLSessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
@@ -78,6 +76,7 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
             [self.delegate requestDidFinish:self];
         }
     }];
+
     [dataTask resume];
 }
 

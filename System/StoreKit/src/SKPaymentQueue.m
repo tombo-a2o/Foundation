@@ -1,9 +1,13 @@
 #import <StoreKit/SKPaymentQueue.h>
+#import "AFNetworking.h"
+
+NSString * const SKTomboPaymentsURL = @"http://tombo.titech.ac/payments";
 
 static SKPaymentQueue* _defaultQueue;
 
 @implementation SKPaymentQueue {
     NSMutableArray *_transactionObservers;
+    AFURLSessionManager *_URLSessionManager;
 }
 
 - (instancetype)init {
@@ -42,8 +46,51 @@ static SKPaymentQueue* _defaultQueue;
 // Adds a payment request to the queue.
 - (void)addPayment:(SKPayment *)payment
 {
-    // FIXME: implement
-    [self doesNotRecognizeSelector:_cmd];
+    // TODO: Support a "real" queue. Now we don't use a queue. An added payment is immediately executed.
+
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    _URLSessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+
+    NSObject *applicationUserName = payment.applicationUsername;
+    if (applicationUserName == nil) {
+        applicationUserName = [NSNull null];
+    }
+
+    NSDictionary *parameters = @{@"payments": @[@{
+        @"productIdentifier": payment.productIdentifier,
+        @"quantity": [NSNumber numberWithInteger:payment.quantity],
+        @"requestData": [NSNull null],
+        @"applicationUsername": applicationUserName
+    }]};
+    NSError *serializerError = nil;
+    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboPaymentsURL parameters:parameters error:&serializerError];
+    _URLSessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+
+    NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        _URLSessionManager = nil;
+
+        NSMutableArray *transactions = [[NSMutableArray alloc] init];
+        if (error) {
+            NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
+            SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:nil payment:payment transactionState:SKPaymentTransactionStateFailed transactionReceipt:nil transactionDate:nil error:error];
+            [transactions addObject:transaction];
+        } else {
+            NSArray *transactionsArray = [responseObject objectForKey:@"transactions"];
+            for (NSDictionary *transactionDict in transactionsArray) {
+                NSString *transactionIdentifier = [transactionDict objectForKey:@"transactionIdentifier"];
+                NSData *transactionReceipt = [transactionDict objectForKey:@"transactionReceipt"];
+                NSDate *transactionDate = [transactionDict objectForKey:@"transactionDate"];
+
+                SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:transactionIdentifier payment:payment transactionState:SKPaymentTransactionStatePurchased transactionReceipt:transactionReceipt transactionDate:transactionDate error:error];
+                [transactions addObject:transaction];
+            }
+        }
+        for (id<SKPaymentTransactionObserver> observer in _transactionObservers) {
+            [observer paymentQueue:self updatedTransactions:transactions];
+        }
+    }];
+
+    [dataTask resume];
 }
 
 // Completes a pending transaction.

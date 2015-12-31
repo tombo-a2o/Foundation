@@ -3,8 +3,7 @@
 #import "StoreKit.h"
 #import "TestTransactionObserver.h"
 
-@interface SKProductsRequestTests : XCTestCase <SKProductsRequestDelegate>
-{
+@interface SKProductsRequestTests : XCTestCase <SKProductsRequestDelegate> {
     XCTestExpectation *_expectationDidFinish;
     SKRequest *_request;
     SKProductsResponse *_response;
@@ -57,9 +56,10 @@
         ]
     } options:NSJSONWritingPrettyPrinted error:nil]);
 
+    _expectationDidFinish = [self expectationWithDescription:@"SKProductRequestDelegate requestDidFinish"];
+
     [productsRequest start];
 
-    _expectationDidFinish = [self expectationWithDescription:@"SKProductRequestDelegate requestDidFinish"];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
         if (error != nil) {
             XCTFail(@"Timeout: %@", error);

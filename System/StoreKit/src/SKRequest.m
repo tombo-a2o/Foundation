@@ -25,6 +25,7 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
 @implementation SKProductsRequest {
     NSSet *_productIdentifiers;
     SKProductsResponse *_productsResponse;
+    AFURLSessionManager *_URLSessionManager;
 }
 
 @dynamic delegate;
@@ -45,14 +46,15 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
     // FIXME: implement generating SKProductsResponse.
 
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    _URLSessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
     NSDictionary *parameters = @{@"productIdentifiers": [[_productIdentifiers allObjects] mutableCopy]};
     NSError *serializerError = nil;
     NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboProductsURL parameters:parameters error:&serializerError];
-    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    _URLSessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
 
-    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        _URLSessionManager = nil;
         if (error) {
             NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
             [self.delegate request:self didFailWithError:error];
@@ -82,8 +84,7 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
 // Cancels a previously started request.
 - (void)cancel
 {
-    // FIXME: implement
-    [self doesNotRecognizeSelector:_cmd];
+    [_URLSessionManager.operationQueue cancelAllOperations];
 }
 
 @end

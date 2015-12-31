@@ -80,6 +80,8 @@
     }];
 }
 
+// FIXME: implement testCancel()
+
 #pragma mark - SKProductsRequestDelegate
 
 - (void)requestDidFinish:(SKRequest *)request

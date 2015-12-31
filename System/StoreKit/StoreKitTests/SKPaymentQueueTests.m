@@ -86,6 +86,10 @@
         XCTAssertEqual(_transactions[0].transactionDate.timeIntervalSince1970, 322088297);
         XCTAssertEqualObjects(_transactions[1].transactionIdentifier, @"transactionIdentifier2");
         XCTAssertEqual(_transactions[1].transactionDate.timeIntervalSince1970, 1404206625);
+
+        for (SKPaymentTransaction *transaction in _transactions) {
+            [queue finishTransaction:transaction];
+        }
     }];
 }
 

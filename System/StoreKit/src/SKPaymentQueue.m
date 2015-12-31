@@ -118,8 +118,9 @@ static SKPaymentQueue* _defaultQueue;
 // Completes a pending transaction.
 - (void)finishTransaction:(SKPaymentTransaction *)transaction
 {
-    // FIXME: implement
-    [self doesNotRecognizeSelector:_cmd];
+    // TODO: Support a "real" queue. Now we don't use a queue. An added payment is immediately executed.
+
+    // currently do nothing
 }
 
 // Asks the payment queue to restore previously completed purchases.

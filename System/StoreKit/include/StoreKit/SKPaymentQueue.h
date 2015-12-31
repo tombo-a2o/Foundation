@@ -47,3 +47,5 @@
 - (void)resumeDownloads:(NSArray/*<SKDownload *>*/ *)downloads;
 
 @end
+
+extern NSString * const SKTomboPaymentsURL;

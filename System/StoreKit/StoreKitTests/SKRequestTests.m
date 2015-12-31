@@ -1,7 +1,6 @@
 #import <XCTest/XCTest.h>
 #import "Nocilla.h"
 #import "StoreKit.h"
-#import "TestTransactionObserver.h"
 
 @interface SKProductsRequestTests : XCTestCase <SKProductsRequestDelegate> {
     XCTestExpectation *_expectationDidFinish;

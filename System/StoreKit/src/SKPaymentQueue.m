@@ -72,16 +72,20 @@ static SKPaymentQueue* _defaultQueue;
         NSMutableArray *transactions = [[NSMutableArray alloc] init];
         if (error) {
             NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
-            SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:nil payment:payment transactionState:SKPaymentTransactionStateFailed transactionReceipt:nil transactionDate:nil error:error];
+            SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:nil payment:payment transactionState:SKPaymentTransactionStateFailed transactionDate:nil error:error];
             [transactions addObject:transaction];
         } else {
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            NSLocale *posixLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+            [dateFormatter setLocale:posixLocale];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+
             NSArray *transactionsArray = [responseObject objectForKey:@"transactions"];
             for (NSDictionary *transactionDict in transactionsArray) {
                 NSString *transactionIdentifier = [transactionDict objectForKey:@"transactionIdentifier"];
-                NSData *transactionReceipt = [transactionDict objectForKey:@"transactionReceipt"];
-                NSDate *transactionDate = [transactionDict objectForKey:@"transactionDate"];
+                NSDate *transactionDate = [dateFormatter dateFromString:[transactionDict objectForKey:@"transactionDate"]];
 
-                SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:transactionIdentifier payment:payment transactionState:SKPaymentTransactionStatePurchased transactionReceipt:transactionReceipt transactionDate:transactionDate error:error];
+                SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:transactionIdentifier payment:payment transactionState:SKPaymentTransactionStatePurchased transactionDate:transactionDate error:error];
                 [transactions addObject:transaction];
             }
         }

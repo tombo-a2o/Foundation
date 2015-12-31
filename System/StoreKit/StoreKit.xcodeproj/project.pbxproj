@@ -16,10 +16,8 @@
 		D923A6C71C09177700EC5559 /* SKStoreProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */; };
 		D9810E231C0A8BDE0019C82D /* SKProductsResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */; };
 		D9901E0A1C292AA6001609FB /* SKPaymentQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */; };
-		D9901E0C1C292C09001609FB /* TestTransactionObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = D9901E0B1C292C09001609FB /* TestTransactionObserver.m */; };
 		D9B5C5621C34947F00146EB5 /* SKProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B5C5611C34947F00146EB5 /* SKProduct.m */; };
 		D9B5C5641C34B22A00146EB5 /* SKPaymentTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B5C5631C34B22A00146EB5 /* SKPaymentTransaction.m */; };
-		D9D753971C212C7300C40E06 /* StoreKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D9D753961C212C7300C40E06 /* StoreKitTests.m */; };
 		D9D753991C212C7300C40E06 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D96B1F611C09166B005704D7 /* StoreKit.framework */; };
 		D9EF2D691C0AB14000179F0C /* SKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D551C0AB10400179F0C /* SKBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9EF2D6A1C0AB14000179F0C /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D561C0AB10400179F0C /* SKDownload.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -68,12 +66,9 @@
 		D96B1F611C09166B005704D7 /* StoreKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StoreKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProductsResponse.m; sourceTree = "<group>"; };
 		D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentQueueTests.m; sourceTree = "<group>"; };
-		D9901E0B1C292C09001609FB /* TestTransactionObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTransactionObserver.m; sourceTree = "<group>"; };
-		D9901E0D1C292D2D001609FB /* TestTransactionObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestTransactionObserver.h; sourceTree = "<group>"; };
 		D9B5C5611C34947F00146EB5 /* SKProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProduct.m; sourceTree = "<group>"; };
 		D9B5C5631C34B22A00146EB5 /* SKPaymentTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentTransaction.m; sourceTree = "<group>"; };
 		D9D753941C212C7300C40E06 /* StoreKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StoreKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D9D753961C212C7300C40E06 /* StoreKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreKitTests.m; sourceTree = "<group>"; };
 		D9D753981C212C7300C40E06 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D9EF2D551C0AB10400179F0C /* SKBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKBase.h; path = StoreKit/SKBase.h; sourceTree = "<group>"; };
 		D9EF2D561C0AB10400179F0C /* SKDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKDownload.h; path = StoreKit/SKDownload.h; sourceTree = "<group>"; };
@@ -184,11 +179,8 @@
 			isa = PBXGroup;
 			children = (
 				D9D753981C212C7300C40E06 /* Info.plist */,
-				D9D753961C212C7300C40E06 /* StoreKitTests.m */,
 				D90769001C33E308005EBBDB /* SKRequestTests.m */,
 				D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */,
-				D9901E0B1C292C09001609FB /* TestTransactionObserver.m */,
-				D9901E0D1C292D2D001609FB /* TestTransactionObserver.h */,
 			);
 			path = StoreKitTests;
 			sourceTree = "<group>";
@@ -361,10 +353,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D9901E0C1C292C09001609FB /* TestTransactionObserver.m in Sources */,
 				D90769011C33E308005EBBDB /* SKRequestTests.m in Sources */,
 				D9901E0A1C292AA6001609FB /* SKPaymentQueueTests.m in Sources */,
-				D9D753971C212C7300C40E06 /* StoreKitTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

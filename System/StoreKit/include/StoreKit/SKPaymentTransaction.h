@@ -9,7 +9,6 @@ typedef NSInteger SKPaymentTransactionState;
 @property(nonatomic, readonly) SKPayment *payment;
 @property(nonatomic, readonly) SKPaymentTransactionState transactionState;
 @property(nonatomic, readonly) NSString *transactionIdentifier;
-@property(nonatomic, readonly) NSData *transactionReceipt;
 @property(nonatomic, readonly) NSDate *transactionDate;
 
 // Getting Information about the Transaction's Downloadable Content
@@ -20,7 +19,7 @@ typedef NSInteger SKPaymentTransactionState;
 
 // FIXME: move to private
 // TODO: reconsider signature
-- (instancetype)initWithTransactionIdentifier:(NSString *)transactionIdentifier payment:(SKPayment *)payment transactionState:(SKPaymentTransactionState)transactionState transactionReceipt:(NSData *)transactionReceipt transactionDate:(NSDate *)transactionDate error:(NSError *)error;
+- (instancetype)initWithTransactionIdentifier:(NSString *)transactionIdentifier payment:(SKPayment *)payment transactionState:(SKPaymentTransactionState)transactionState transactionDate:(NSDate *)transactionDate error:(NSError *)error;
 
 @end
 

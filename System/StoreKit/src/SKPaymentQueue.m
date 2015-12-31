@@ -47,55 +47,67 @@ static SKPaymentQueue* _defaultQueue;
 - (void)addPayment:(SKPayment *)payment
 {
     // TODO: Support a "real" queue. Now we don't use a queue. An added payment is immediately executed.
+    NSNumberFormatter *quantityFormatter = [[NSNumberFormatter alloc] init];
+    [quantityFormatter setNumberStyle:NSNumberFormatterSpellOutStyle];
 
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    _URLSessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    NSString *confirmationMessage = [NSString stringWithFormat:@"Do you want to buy %@ %@ for %@", [quantityFormatter stringFromNumber:[NSNumber numberWithInt:payment.quantity]], @"TODO: get title", @"TODO: get price"];
 
-    NSObject *applicationUserName = payment.applicationUsername;
-    if (applicationUserName == nil) {
-        applicationUserName = [NSNull null];
-    }
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Confirm Your In-App Purchase" message:confirmationMessage preferredStyle:UIAlertControllerStyleAlert];
 
-    NSDictionary *parameters = @{@"payments": @[@{
-        @"productIdentifier": payment.productIdentifier,
-        @"quantity": [NSNumber numberWithInteger:payment.quantity],
-        @"requestData": [NSNull null],
-        @"applicationUsername": applicationUserName
-    }]};
-    NSError *serializerError = nil;
-    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboPaymentsURL parameters:parameters error:&serializerError];
-    _URLSessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        // do nothing
+    }]];
 
-    NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-        _URLSessionManager = nil;
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Buy" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        _URLSessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
-        NSMutableArray *transactions = [[NSMutableArray alloc] init];
-        if (error) {
-            NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
-            // FIXME: generate random transaction id in UUID-like format
-            SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:nil payment:payment transactionState:SKPaymentTransactionStateFailed transactionDate:nil error:error];
-            [transactions addObject:transaction];
-        } else {
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            NSLocale *posixLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-            [dateFormatter setLocale:posixLocale];
-            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+        NSObject *applicationUserName = payment.applicationUsername;
+        if (applicationUserName == nil) {
+            applicationUserName = [NSNull null];
+        }
 
-            NSArray *transactionsArray = [responseObject objectForKey:@"transactions"];
-            for (NSDictionary *transactionDict in transactionsArray) {
-                NSString *transactionIdentifier = [transactionDict objectForKey:@"transactionIdentifier"];
-                NSDate *transactionDate = [dateFormatter dateFromString:[transactionDict objectForKey:@"transactionDate"]];
+        NSDictionary *parameters = @{@"payments": @[@{
+                                                        @"productIdentifier": payment.productIdentifier,
+                                                        @"quantity": [NSNumber numberWithInteger:payment.quantity],
+                                                        @"requestData": [NSNull null],
+                                                        @"applicationUsername": applicationUserName
+                                                        }]};
+        NSError *serializerError = nil;
+        NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboPaymentsURL parameters:parameters error:&serializerError];
+        _URLSessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
 
-                SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:transactionIdentifier payment:payment transactionState:SKPaymentTransactionStatePurchased transactionDate:transactionDate error:error];
+        NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+            _URLSessionManager = nil;
+
+            NSMutableArray *transactions = [[NSMutableArray alloc] init];
+            if (error) {
+                NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
+                // FIXME: generate random transaction id in UUID-like format
+                SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:nil payment:payment transactionState:SKPaymentTransactionStateFailed transactionDate:nil error:error];
                 [transactions addObject:transaction];
-            }
-        }
-        for (id<SKPaymentTransactionObserver> observer in _transactionObservers) {
-            [observer paymentQueue:self updatedTransactions:transactions];
-        }
-    }];
+            } else {
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                NSLocale *posixLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+                [dateFormatter setLocale:posixLocale];
+                [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
 
-    [dataTask resume];
+                NSArray *transactionsArray = [responseObject objectForKey:@"transactions"];
+                for (NSDictionary *transactionDict in transactionsArray) {
+                    NSString *transactionIdentifier = [transactionDict objectForKey:@"transactionIdentifier"];
+                    NSDate *transactionDate = [dateFormatter dateFromString:[transactionDict objectForKey:@"transactionDate"]];
+
+                    SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:transactionIdentifier payment:payment transactionState:SKPaymentTransactionStatePurchased transactionDate:transactionDate error:error];
+                    [transactions addObject:transaction];
+                }
+            }
+            for (id<SKPaymentTransactionObserver> observer in _transactionObservers) {
+                [observer paymentQueue:self updatedTransactions:transactions];
+            }
+        }];
+
+        [dataTask resume];
+    }]];
 }
 
 // Completes a pending transaction.

@@ -72,6 +72,7 @@ static SKPaymentQueue* _defaultQueue;
         NSMutableArray *transactions = [[NSMutableArray alloc] init];
         if (error) {
             NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
+            // FIXME: generate random transaction id in UUID-like format
             SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:nil payment:payment transactionState:SKPaymentTransactionStateFailed transactionDate:nil error:error];
             [transactions addObject:transaction];
         } else {

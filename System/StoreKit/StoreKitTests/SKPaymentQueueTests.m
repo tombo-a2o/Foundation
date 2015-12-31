@@ -48,7 +48,7 @@
     [queue removeTransactionObserver:observer2];
 }
 
-- (void)testAddPayment {
+- (void)testConnectToPaymentAPI {
     SKPaymentQueue *queue = [SKPaymentQueue defaultQueue];
     [queue addTransactionObserver:self];
 
@@ -74,7 +74,7 @@
 
     _expectation = [self expectationWithDescription:@"SKPaymentTransactionObserver"];
 
-    [queue addPayment:payment];
+    [queue connectToPaymentAPI:payment];
 
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
         if (error != nil) {

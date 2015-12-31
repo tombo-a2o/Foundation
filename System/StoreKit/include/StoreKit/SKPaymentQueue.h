@@ -46,6 +46,9 @@
 - (void)pauseDownloads:(NSArray/*<SKDownload *>*/*)downloads;
 - (void)resumeDownloads:(NSArray/*<SKDownload *>*/ *)downloads;
 
+// FIXME: move to private (for testing)
+- (void)connectToPaymentAPI:(SKPayment *)payment;
+
 @end
 
 extern NSString * const SKTomboPaymentsURL;

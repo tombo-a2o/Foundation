@@ -1,7 +1,7 @@
 ---
 "$schema": http://json-schema.org/draft-04/hyper-schema
-title: FIXME - Product
-description: FIXME
+title: Product
+description: Product for sale
 stability: prototype
 strictProperties: true
 type:
@@ -10,18 +10,50 @@ definitions:
   id:
     description: unique identifier of product
     readOnly: true
-    format: uuid
     type:
-    - string
-  name:
-    description: unique name of product
+    - integer
+  product_identifier:
+    description: unique identifier of product
+    example: com.example.iap.coins.100
     readOnly: true
+    pattern: "^[A-Za-z0-9_.]+$"
     type:
     - string
+  localized_description:
+    description: description of product
+    type:
+    - string
+  localized_title:
+    description: title of product
+    type:
+    - string
+  price:
+    description: price of product
+    type:
+    - integer
+  price_locale:
+    description: locale of product''s price
+    type:
+    - string
+  downloadable:
+    description: downloadable flag of product
+    type:
+    - boolean
+  download_content_lengths:
+    description: content lengths of downloadable product
+    type:
+    - array
+    items:
+      type:
+      - integer
+  download_content_version:
+    description: version of downloadable product
+    type:
+    - integer
   identity:
     anyOf:
     - "$ref": "/schemata/product#/definitions/id"
-    - "$ref": "/schemata/product#/definitions/name"
+    - "$ref": "/schemata/product#/definitions/product_identifier"
   created_at:
     description: when product was created
     format: date-time
@@ -71,8 +103,22 @@ properties:
     "$ref": "/schemata/product#/definitions/created_at"
   id:
     "$ref": "/schemata/product#/definitions/id"
-  name:
-    "$ref": "/schemata/product#/definitions/name"
   updated_at:
     "$ref": "/schemata/product#/definitions/updated_at"
+  product_identifier:
+    "$ref": "/schemata/product#/definitions/product_identifier"
+  localized_description:
+    "$ref": "/schemata/product#/definitions/localized_description"
+  localized_title:
+    "$ref": "/schemata/product#/definitions/localized_title"
+  price:
+    "$ref": "/schemata/product#/definitions/price"
+  price_locale:
+    "$ref": "/schemata/product#/definitions/price_locale"
+  downloadable:
+    "$ref": "/schemata/product#/definitions/downloadable"
+  download_content_lengths:
+    "$ref": "/schemata/product#/definitions/download_content_lengths"
+  download_content_version:
+    "$ref": "/schemata/product#/definitions/download_content_version"
 id: schemata/product

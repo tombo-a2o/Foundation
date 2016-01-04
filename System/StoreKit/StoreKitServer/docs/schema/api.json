@@ -1,0 +1,207 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema",
+  "type": [
+    "object"
+  ],
+  "definitions": {
+    "product": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "Product",
+      "description": "Product for sale",
+      "stability": "prototype",
+      "strictProperties": true,
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of product",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "product_identifier": {
+          "description": "unique identifier of product",
+          "example": "com.example.iap.coins.100",
+          "readOnly": true,
+          "pattern": "^[A-Za-z0-9_.]+$",
+          "type": [
+            "string"
+          ]
+        },
+        "localized_description": {
+          "description": "description of product",
+          "type": [
+            "string"
+          ]
+        },
+        "localized_title": {
+          "description": "title of product",
+          "type": [
+            "string"
+          ]
+        },
+        "price": {
+          "description": "price of product",
+          "type": [
+            "integer"
+          ]
+        },
+        "price_locale": {
+          "description": "locale of product''s price",
+          "type": [
+            "string"
+          ]
+        },
+        "downloadable": {
+          "description": "downloadable flag of product",
+          "type": [
+            "boolean"
+          ]
+        },
+        "download_content_lengths": {
+          "description": "content lengths of downloadable product",
+          "type": [
+            "array"
+          ],
+          "items": {
+            "type": [
+              "integer"
+            ]
+          }
+        },
+        "download_content_version": {
+          "description": "version of downloadable product",
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/product/definitions/id"
+            },
+            {
+              "$ref": "#/definitions/product/definitions/product_identifier"
+            }
+          ]
+        },
+        "created_at": {
+          "description": "when product was created",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        },
+        "updated_at": {
+          "description": "when product was updated",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new product.",
+          "href": "/products",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Delete an existing product.",
+          "href": "/products/{(%23%2Fdefinitions%2Fproduct%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing product.",
+          "href": "/products/{(%23%2Fdefinitions%2Fproduct%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing products.",
+          "href": "/products",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        },
+        {
+          "description": "Update an existing product.",
+          "href": "/products/{(%23%2Fdefinitions%2Fproduct%2Fdefinitions%2Fidentity)}",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Update"
+        }
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/definitions/product/definitions/created_at"
+        },
+        "id": {
+          "$ref": "#/definitions/product/definitions/id"
+        },
+        "updated_at": {
+          "$ref": "#/definitions/product/definitions/updated_at"
+        },
+        "product_identifier": {
+          "$ref": "#/definitions/product/definitions/product_identifier"
+        },
+        "localized_description": {
+          "$ref": "#/definitions/product/definitions/localized_description"
+        },
+        "localized_title": {
+          "$ref": "#/definitions/product/definitions/localized_title"
+        },
+        "price": {
+          "$ref": "#/definitions/product/definitions/price"
+        },
+        "price_locale": {
+          "$ref": "#/definitions/product/definitions/price_locale"
+        },
+        "downloadable": {
+          "$ref": "#/definitions/product/definitions/downloadable"
+        },
+        "download_content_lengths": {
+          "$ref": "#/definitions/product/definitions/download_content_lengths"
+        },
+        "download_content_version": {
+          "$ref": "#/definitions/product/definitions/download_content_version"
+        }
+      }
+    }
+  },
+  "properties": {
+    "product": {
+      "$ref": "#/definitions/product"
+    }
+  },
+  "description": "A schema of A2O server",
+  "id": "a2o-server",
+  "links": [
+    {
+      "href": "http://api.tombo.io/",
+      "rel": "self"
+    }
+  ],
+  "title": "A2O server"
+}

@@ -6,6 +6,7 @@
  read/write for both 64 and 32 bit, else @encode is preferred
  */
 #import <Foundation/NSString.h>
+#import <Foundation/NSCoder.h>
 #import <CoreGraphics/CGGeometry.h>
 
 #define NSRANGE_32 "{_NSRange=II}"
@@ -95,3 +96,12 @@ NSString *NSStringFromRect(CGRect r);
 CGSize NSSizeFromString(NSString *string);
 CGPoint NSPointFromString(NSString *string);
 CGRect NSRectFromString(NSString *string);
+
+@interface NSCoder (NSCoderUIGeometryExtensions)
+- (void)encodeCGPoint:(CGPoint)point forKey:(NSString *)key;
+- (CGPoint)decodeCGPointForKey:(NSString *)key;
+- (void)encodeCGSize:(CGSize)size forKey:(NSString *)key;
+- (CGSize)decodeCGSizeForKey:(NSString *)key;
+- (void)encodeCGRect:(CGRect)rect forKey:(NSString *)key;
+- (CGRect)decodeCGRectForKey:(NSString *)key;
+@end

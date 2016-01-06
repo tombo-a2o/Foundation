@@ -325,16 +325,16 @@ static id newDecodedValue(NSCoder *aCoder)
         switch (flags)
         {
             case NSPointType: {
-                CGPoint pt = [aCoder decodePointForKey:NS_pointval];
+                CGPoint pt = [aCoder decodeCGPointForKey:NS_pointval];
                 return createValue((uint8_t *)&pt, @encode(CGPoint), sizeof(CGPoint), flags);
             }
             case NSSizeType: {
-                CGSize sz = [aCoder decodeSizeForKey:NS_sizeval];
+                CGSize sz = [aCoder decodeCGSizeForKey:NS_sizeval];
                 return createValue((uint8_t *)&sz, @encode(CGSize), sizeof(CGSize), flags);
             }
             case NSCGRectType:
             case NSRectType: {
-                CGRect rect = [aCoder decodeRectForKey:NS_rectval];
+                CGRect rect = [aCoder decodeCGRectForKey:NS_rectval];
                 return createValue((uint8_t *)&rect, @encode(CGRect), sizeof(CGRect), flags);
             }
             case NSRangeType: {

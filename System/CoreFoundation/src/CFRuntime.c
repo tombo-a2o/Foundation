@@ -500,7 +500,7 @@ static inline Boolean isCFType(CFTypeRef obj) {
 #define CFTYPE_IS_OBJC(obj) (!isCFType(obj))
 #define CFTYPE_OBJC_FUNCDISPATCH(obj, sel) if (CFTYPE_IS_OBJC(obj)) { ((void (*)(CFTypeRef, SEL))objc_msgSend)(obj, sel_getUid(#sel)); return; }
 #define CFTYPE_OBJC_FUNCDISPATCH0(rettype, obj, sel) if (CFTYPE_IS_OBJC(obj)) return ((rettype (*)(CFTypeRef, SEL))objc_msgSend)(obj, sel_getUid(#sel))
-#define CFTYPE_OBJC_FUNCDISPATCH1(rettype, obj, sel, a1) if (CFTYPE_IS_OBJC(obj)) return ((rettype (*)(CFTypeRef, SEL, ...))objc_msgSend)(obj, sel_getUid(#sel), a1)
+#define CFTYPE_OBJC_FUNCDISPATCH1(rettype, obj, sel, a1) if (CFTYPE_IS_OBJC(obj)) return ((rettype (*)(CFTypeRef, SEL, id))objc_msgSend)(obj, sel_getUid(#sel), a1)
 
 
 CFTypeID CFGetTypeID(CFTypeRef cf) {

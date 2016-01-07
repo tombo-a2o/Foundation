@@ -833,7 +833,7 @@ extern void __CFTimeZoneInitialize();
 extern void __CFCalendarInitialize();
 extern void __CFTimeZoneInitialize();
 #endif
-#if ANDROID
+#if ANDROID || EMSCRIPTEN
 extern void __CFPreferencesDomainInitialize(void);
 #else
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
@@ -1257,7 +1257,10 @@ void __CFInitialize(void) {
         __CFProphylacticAutofsAccess = false;
         __CFInitializing = 0;
 
-#ifdef APPORTABLE
+#if defined(EMSCRIPTEN)
+        __CFPreferencesDomainInitialize();
+#endif
+#if defined(APPORTABLE)
         __CFPreferencesDomainInitialize();
         #define LANG_MAX 100
         char *strtokSavePtr;

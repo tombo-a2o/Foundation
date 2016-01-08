@@ -166,7 +166,15 @@ CFTypeID CFDateGetTypeID(void) {
 }
 
 CFDateRef CFDateCreate(CFAllocatorRef allocator, CFAbsoluteTime at) {
-    return (CFDateRef)[[NSDate alloc] initWithTimeIntervalSinceReferenceDate:at];
+    CFDateRef memory;
+    uint32_t size;
+    size = sizeof(struct __CFDate) - sizeof(CFRuntimeBase);
+    memory = (CFDateRef)_CFRuntimeCreateInstance(allocator, CFDateGetTypeID(), size, NULL);
+    if (NULL == memory) {
+        return NULL;
+    }
+    ((struct __CFDate *)memory)->_time = at;
+    return memory;
 }
 
 CFTimeInterval CFDateGetAbsoluteTime(CFDateRef date) {

@@ -319,13 +319,6 @@ CF_PRIVATE
     return [__NSPlaceholderDate immutablePlaceholder];
 }
 
-+ (id)__new:(NSTimeInterval)t
-{
-    __NSDate *date = ___CFAllocateObject(self);
-    date->_time = t;
-    return date;
-}
-
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
 {
     return NO;
@@ -345,6 +338,30 @@ CF_PRIVATE
 {
     // this seems strange to implement but it seems to be implemented
     [super dealloc];
+}
+
+- (oneway void)release
+{
+    CFRelease((CFTypeRef)self);
+}
+
+- (id)retain
+{
+    return (id)CFRetain((CFTypeRef)self);
+}
+
+- (NSUInteger)hash
+{
+    return CFHash((CFTypeRef)self);
+}
+
+- (BOOL)isEqual:(id)object
+{
+    if (object == nil)
+    {
+        return NO;
+    }
+    return CFEqual((CFTypeRef)self, (CFTypeRef)object);
 }
 
 @end
@@ -375,7 +392,7 @@ SINGLETON_RR()
 
 - (id)initWithTimeIntervalSinceReferenceDate:(NSTimeInterval)t
 {
-    return (id)[__NSDate __new:t];
+    return (id)CFDateCreate(kCFAllocatorDefault, t);
 }
 
 @end

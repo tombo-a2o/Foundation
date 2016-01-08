@@ -310,34 +310,16 @@ CF_PRIVATE
 
 @end
 
-@implementation __NSDate {
-    NSTimeInterval _time;
-}
-
-+ (id)allocWithZone:(NSZone *)zone
-{
-    return [__NSPlaceholderDate immutablePlaceholder];
-}
+@implementation __NSDate
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
 {
     return NO;
 }
 
-- (id)initWithTimeIntervalSinceReferenceDate:(NSTimeInterval)t
-{
-    return (id)[[NSDate alloc] initWithTimeIntervalSinceReferenceDate:t];
-}
-
 - (NSTimeInterval)timeIntervalSinceReferenceDate
 {
-    return _time;
-}
-
-- (void)dealloc
-{
-    // this seems strange to implement but it seems to be implemented
-    [super dealloc];
+    return CFDateGetAbsoluteTime((CFDateRef)self);
 }
 
 - (oneway void)release
@@ -376,11 +358,6 @@ CF_PRIVATE
         immutablePlaceholder = [__NSPlaceholderDate alloc];
     });
     return immutablePlaceholder;
-}
-
-- (NSTimeInterval)timeIntervalSinceReferenceDate
-{
-    return 0.0;
 }
 
 SINGLETON_RR()

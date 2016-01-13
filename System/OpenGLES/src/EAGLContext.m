@@ -59,6 +59,8 @@ static EAGLContext *_currentContext = nil;
     EmscriptenWebGLContextAttributes attr;
     emscripten_webgl_init_context_attributes(&attr);
     attr.enableExtensionsByDefault = 1;
+    attr.premultipliedAlpha = 0;
+    attr.alpha = 0;
     _webglContext = emscripten_webgl_create_context(0, &attr);
     emscripten_webgl_make_context_current(_webglContext);
 

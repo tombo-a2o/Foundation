@@ -291,10 +291,7 @@ DEFINE_SET_WITH_METHOD(Rect, CGRect, rectValue)
         // Special case to call implementation directly
         imp = method_getImplementation(m);
         free(type);
-        void *extras[1] = {
-            key
-        };
-        self = [super initWithContainerClassID:cls key:key implementation:imp selector:method_getName(m) extraArguments:extras count:1];
+        self = [super initWithContainerClassID:cls key:key implementation:imp selector:method_getName(m) extraArguments:nil count:0];
     }
     else
     {

@@ -64,16 +64,16 @@ void _NSSetUsingKeyValueSetter(id obj, NSKeyValueSetter *setter, id value)
     switch (setter->_extraArgumentCount)
     {
         case 0:
-            [obj performSelector:setter->_selector withObject:value];
+            ((void (*)(id, SEL, id))setter->_implementation)(obj, setter->_selector, value);
             break;
         case 1:
-            [obj performSelector:setter->_selector withObject:value withObject:setter->_extraArgument1];
+            ((void (*)(id, SEL, id, void*))setter->_implementation)(obj, setter->_selector, value, setter->_extraArgument1);
             break;
         case 2:
-            [obj performSelector:setter->_selector withObject:value withObject:setter->_extraArgument1 withObject:setter->_extraArgument2];
+            ((void (*)(id, SEL, id, void*, void*))setter->_implementation)(obj, setter->_selector, value, setter->_extraArgument1, setter->_extraArgument2);
             break;
         case 3:
-            [obj performSelector:setter->_selector withObject:value withObject:setter->_extraArgument1 withObject:setter->_extraArgument2 withObject:setter->_extraArgument3];
+            ((void (*)(id, SEL, id, void*, void*, void*))setter->_implementation)(obj, setter->_selector, value, setter->_extraArgument1, setter->_extraArgument2, setter->_extraArgument3);
             break;
     }
 }

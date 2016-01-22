@@ -3,6 +3,6 @@
 description: A schema of A2O server
 id: a2o-server
 links:
-- href: http://api.tombo.io/
+- href: http://api.tombo.io
   rel: self
 title: A2O server

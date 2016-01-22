@@ -34,36 +34,43 @@
               },
               "localized_description": {
                 "description": "description of product",
+                "example": "description of product",
                 "type": [
                   "string"
                 ]
               },
               "localized_title": {
                 "description": "title of product",
+                "example": "title of product",
                 "type": [
                   "string"
                 ]
               },
               "price": {
                 "description": "price of product",
+                "example": 100,
                 "type": [
                   "integer"
                 ]
               },
               "price_locale": {
                 "description": "locale of product''s price",
+                "example": "en_US",
                 "type": [
                   "string"
                 ]
               },
               "downloadable": {
                 "description": "downloadable flag of product",
+                "example": false,
                 "type": [
                   "boolean"
                 ]
               },
               "download_content_lengths": {
                 "description": "content lengths of downloadable product",
+                "example": [
+                ],
                 "type": [
                   "array"
                 ],
@@ -75,12 +82,14 @@
               },
               "download_content_version": {
                 "description": "version of downloadable product",
+                "example": 0,
                 "type": [
                   "integer"
                 ]
               },
               "created_at": {
                 "description": "when product was created",
+                "example": "2015-01-01T12:34:56.789Z",
                 "format": "date-time",
                 "type": [
                   "string"
@@ -88,12 +97,23 @@
               },
               "updated_at": {
                 "description": "when product was updated",
+                "example": "2015-01-01T12:34:56.789Z",
                 "format": "date-time",
                 "type": [
                   "string"
                 ]
               }
-            }
+            },
+            "required": [
+              "product_identifier",
+              "localized_description",
+              "localized_title",
+              "price",
+              "price_locale",
+              "downloadable",
+              "created_at",
+              "updated_at"
+            ]
           }
         }
       },

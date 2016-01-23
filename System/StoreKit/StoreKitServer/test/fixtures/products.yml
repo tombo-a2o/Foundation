@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product_identifier: MyString1
+  localized_description: MyString1
+  localized_title: MyString1
+  price: 100
+  price_locale: ja_JP
+  downloadable: false
+
+two:
+  product_identifier: MyString2
+  localized_description: MyString2
+  localized_title: MyString2
+  price: 200
+  price_locale: en_US
+  downloadable: false

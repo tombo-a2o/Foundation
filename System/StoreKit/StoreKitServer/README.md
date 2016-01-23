@@ -22,3 +22,7 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+## ToDo
+
+- Introduce typus https://github.com/typus/typus for external users (for internal users, we can use rails_admin like phpMyAdmin)

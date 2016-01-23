@@ -78,7 +78,8 @@ static SKPaymentQueue* _defaultQueue;
             [dateFormatter setLocale:posixLocale];
             [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
 
-            NSArray *transactionsArray = [responseObject objectForKey:@"transactions"];
+            NSDictionary *data = [responseObject objectForKey:@"data"];
+            NSArray *transactionsArray = [data objectForKey:@"transactions"];
             for (NSDictionary *transactionDict in transactionsArray) {
                 NSString *transactionIdentifier = [transactionDict objectForKey:@"transactionIdentifier"];
                 NSDate *transactionDate = [dateFormatter dateFromString:[transactionDict objectForKey:@"transactionDate"]];

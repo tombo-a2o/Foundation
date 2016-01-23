@@ -57,8 +57,9 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
             NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
             [self.delegate request:self didFailWithError:error];
         } else {
+            NSDictionary *data = [responseObject objectForKey:@"data"];
+            NSArray *productsArray = [data objectForKey:@"products"];
             NSMutableArray *products = [[NSMutableArray alloc] init];
-            NSArray *productsArray = [responseObject objectForKey:@"products"];
             for (NSDictionary *productDict in productsArray) {
                 NSString *productIdentifier = [productDict objectForKey:@"productIdentifier"];
                 NSString *localizedTitle = [productDict objectForKey:@"localizedTitle"];

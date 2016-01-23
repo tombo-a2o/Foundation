@@ -59,18 +59,22 @@
     withBody(@"{\"payments\":[{\"requestData\":null,\"applicationUsername\":null,\"productIdentifier\":\"product1\",\"quantity\":1}]}").
     andReturn(200).
     withHeaders(@{@"Content-Type": @"application/json"}).
-    withBody([NSJSONSerialization dataWithJSONObject:@{
-                                                       @"transactions": @[
-                                                               @{
-                                                                   @"transactionIdentifier": @"transactionIdentifier1",
-                                                                   @"transactionDate": @"1980-03-17T05:58:17+09:00",
-                                                               },
-                                                               @{
-                                                                   @"transactionIdentifier": @"transactionIdentifier2",
-                                                                   @"transactionDate": @"2014-07-01T01:23:45-08:00",
-                                                               },
-                                                           ]
-                                                       } options:NSJSONWritingPrettyPrinted error:nil]);
+    withBody([NSJSONSerialization dataWithJSONObject:
+        @{
+            @"data": @{
+                @"transactions": @[
+                    @{
+                        @"transactionIdentifier": @"transactionIdentifier1",
+                        @"transactionDate": @"1980-03-17T05:58:17+09:00",
+                    },
+                    @{
+                        @"transactionIdentifier": @"transactionIdentifier2",
+                        @"transactionDate": @"2014-07-01T01:23:45-08:00",
+                    },
+                ]
+            }
+        }
+        options:NSJSONWritingPrettyPrinted error:nil]);
 
     _expectation = [self expectationWithDescription:@"SKPaymentTransactionObserver"];
 

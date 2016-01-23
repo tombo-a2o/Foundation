@@ -37,22 +37,24 @@
     andReturn(200).
     withHeaders(@{@"Content-Type": @"application/json"}).
     withBody([NSJSONSerialization dataWithJSONObject:@{
-        @"products": @[
-            @{
-                @"productIdentifier": @"productIdentifier1",
-                @"localizedTitle": @"product 1",
-                @"localizedDescription": @"description of product 1",
-                @"price": @"101",
-                @"priceLocale": @"ja_JP"
-            },
-            @{
-                @"productIdentifier": @"productIdentifier2",
-                @"localizedTitle": @"product 2",
-                @"localizedDescription": @"description of product 2",
-                @"price": @"102",
-                @"priceLocale": @"en_US"
-            },
-        ]
+        @"data": @{
+            @"products": @[
+                @{
+                    @"productIdentifier": @"productIdentifier1",
+                    @"localizedTitle": @"product 1",
+                    @"localizedDescription": @"description of product 1",
+                    @"price": @"101",
+                    @"priceLocale": @"ja_JP"
+                },
+                @{
+                    @"productIdentifier": @"productIdentifier2",
+                    @"localizedTitle": @"product 2",
+                    @"localizedDescription": @"description of product 2",
+                    @"price": @"102",
+                    @"priceLocale": @"en_US"
+                }
+            ]
+        }
     } options:NSJSONWritingPrettyPrinted error:nil]);
 
     _expectationDidFinish = [self expectationWithDescription:@"SKProductRequestDelegate requestDidFinish"];
@@ -65,17 +67,19 @@
             return;
         }
 
-        XCTAssertEqualObjects(_response.products[0].productIdentifier, @"productIdentifier1");
-        XCTAssertEqualObjects(_response.products[0].localizedTitle, @"product 1");
-        XCTAssertEqualObjects(_response.products[0].localizedDescription, @"description of product 1");
-        XCTAssertEqualObjects(_response.products[0].price, [[NSDecimalNumber alloc] initWithInt:101]);
-        XCTAssertEqualObjects([_response.products[0].priceLocale localeIdentifier], @"ja_JP");
+        NSArray <SKProduct *> *products = _response.products;
 
-        XCTAssertEqualObjects(_response.products[1].productIdentifier, @"productIdentifier2");
-        XCTAssertEqualObjects(_response.products[1].localizedTitle, @"product 2");
-        XCTAssertEqualObjects(_response.products[1].localizedDescription, @"description of product 2");
-        XCTAssertEqualObjects(_response.products[1].price, [[NSDecimalNumber alloc] initWithInt:102]);
-        XCTAssertEqualObjects([_response.products[1].priceLocale localeIdentifier], @"en_US");
+        XCTAssertEqualObjects(products[0].productIdentifier, @"productIdentifier1");
+        XCTAssertEqualObjects(products[0].localizedTitle, @"product 1");
+        XCTAssertEqualObjects(products[0].localizedDescription, @"description of product 1");
+        XCTAssertEqualObjects(products[0].price, [[NSDecimalNumber alloc] initWithInt:101]);
+        XCTAssertEqualObjects([products[0].priceLocale localeIdentifier], @"ja_JP");
+
+        XCTAssertEqualObjects(products[1].productIdentifier, @"productIdentifier2");
+        XCTAssertEqualObjects(products[1].localizedTitle, @"product 2");
+        XCTAssertEqualObjects(products[1].localizedDescription, @"description of product 2");
+        XCTAssertEqualObjects(products[1].price, [[NSDecimalNumber alloc] initWithInt:102]);
+        XCTAssertEqualObjects([products[1].priceLocale localeIdentifier], @"en_US");
     }];
 }
 

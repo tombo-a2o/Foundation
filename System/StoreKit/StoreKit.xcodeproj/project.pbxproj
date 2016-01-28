@@ -6,50 +6,64 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		D9DB9E981C5A05E800139AB5 /* Framework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = D9DB9E9B1C5A05E800139AB5 /* Build configuration list for PBXAggregateTarget "Framework" */;
+			buildPhases = (
+				D9DB9EB91C5A080500139AB5 /* ShellScript */,
+			);
+			dependencies = (
+				D9DB9EB81C5A07ED00139AB5 /* PBXTargetDependency */,
+			);
+			name = Framework;
+			productName = Framework;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
-		1B453CC42E23B6B306900E6F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F175FA0D3481DCBCD4458D0F /* libPods.a */; };
 		D90769011C33E308005EBBDB /* SKRequestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D90769001C33E308005EBBDB /* SKRequestTests.m */; };
-		D923A6C31C09177700EC5559 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BE1C09177700EC5559 /* SKDownload.m */; };
-		D923A6C41C09177700EC5559 /* SKPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BF1C09177700EC5559 /* SKPayment.m */; };
-		D923A6C51C09177700EC5559 /* SKPaymentQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C01C09177700EC5559 /* SKPaymentQueue.m */; };
-		D923A6C61C09177700EC5559 /* SKRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C11C09177700EC5559 /* SKRequest.m */; };
-		D923A6C71C09177700EC5559 /* SKStoreProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */; };
-		D9810E231C0A8BDE0019C82D /* SKProductsResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */; };
 		D9901E0A1C292AA6001609FB /* SKPaymentQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */; };
-		D9B5C5621C34947F00146EB5 /* SKProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B5C5611C34947F00146EB5 /* SKProduct.m */; };
-		D9B5C5641C34B22A00146EB5 /* SKPaymentTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B5C5631C34B22A00146EB5 /* SKPaymentTransaction.m */; };
-		D9D753991C212C7300C40E06 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D96B1F611C09166B005704D7 /* StoreKit.framework */; };
-		D9EF2D691C0AB14000179F0C /* SKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D551C0AB10400179F0C /* SKBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D6A1C0AB14000179F0C /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D561C0AB10400179F0C /* SKDownload.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D6B1C0AB14000179F0C /* SKPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D571C0AB10400179F0C /* SKPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D6C1C0AB14000179F0C /* SKPaymentQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D581C0AB10400179F0C /* SKPaymentQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D6D1C0AB14000179F0C /* SKPaymentTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D591C0AB10400179F0C /* SKPaymentTransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D6E1C0AB14000179F0C /* SKProduct.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5A1C0AB10400179F0C /* SKProduct.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D6F1C0AB14000179F0C /* SKProductsResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5B1C0AB10400179F0C /* SKProductsResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D701C0AB14000179F0C /* SKRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5C1C0AB10400179F0C /* SKRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D711C0AB14000179F0C /* SKStoreProductViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5D1C0AB10400179F0C /* SKStoreProductViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9EF2D721C0AB14000179F0C /* StoreKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5E1C0AB10400179F0C /* StoreKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EA31C5A065C00139AB5 /* StoreKit.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D9DB9EA21C5A065C00139AB5 /* StoreKit.h */; };
+		D9DB9EA51C5A065C00139AB5 /* StoreKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DB9EA41C5A065C00139AB5 /* StoreKit.m */; };
+		D9DB9EAA1C5A06D700139AB5 /* SKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D551C0AB10400179F0C /* SKBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EAB1C5A06D700139AB5 /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D561C0AB10400179F0C /* SKDownload.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EAC1C5A06D700139AB5 /* SKPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D571C0AB10400179F0C /* SKPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EAD1C5A06D700139AB5 /* SKPaymentQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D581C0AB10400179F0C /* SKPaymentQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EAE1C5A06D700139AB5 /* SKPaymentTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D591C0AB10400179F0C /* SKPaymentTransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EAF1C5A06D700139AB5 /* SKProduct.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5A1C0AB10400179F0C /* SKProduct.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EB01C5A06D700139AB5 /* SKProductsResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5B1C0AB10400179F0C /* SKProductsResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EB11C5A06D700139AB5 /* SKRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5C1C0AB10400179F0C /* SKRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EB21C5A06D700139AB5 /* SKStoreProductViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5D1C0AB10400179F0C /* SKStoreProductViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9DB9EB31C5A06D700139AB5 /* StoreKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D5E1C0AB10400179F0C /* StoreKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		D9D7539A1C212C7300C40E06 /* PBXContainerItemProxy */ = {
+		D9DB9EB51C5A07E500139AB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D96B1F581C09166B005704D7 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D96B1F601C09166B005704D7;
+			remoteGlobalIDString = D9DB9E9F1C5A065C00139AB5;
+			remoteInfo = StoreKit;
+		};
+		D9DB9EB71C5A07ED00139AB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D96B1F581C09166B005704D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D9DB9E9F1C5A065C00139AB5;
 			remoteInfo = StoreKit;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		D9EF2D2E1C0AAD6A00179F0C /* Copy Files */ = {
+		D9DB9E9E1C5A065C00139AB5 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
 			files = (
+				D9DB9EA31C5A065C00139AB5 /* StoreKit.h in CopyFiles */,
 			);
-			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -63,13 +77,15 @@
 		D923A6C01C09177700EC5559 /* SKPaymentQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentQueue.m; sourceTree = "<group>"; };
 		D923A6C11C09177700EC5559 /* SKRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRequest.m; sourceTree = "<group>"; };
 		D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStoreProductViewController.m; sourceTree = "<group>"; };
-		D96B1F611C09166B005704D7 /* StoreKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StoreKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProductsResponse.m; sourceTree = "<group>"; };
 		D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentQueueTests.m; sourceTree = "<group>"; };
 		D9B5C5611C34947F00146EB5 /* SKProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProduct.m; sourceTree = "<group>"; };
 		D9B5C5631C34B22A00146EB5 /* SKPaymentTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentTransaction.m; sourceTree = "<group>"; };
 		D9D753941C212C7300C40E06 /* StoreKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StoreKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9D753981C212C7300C40E06 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D9DB9EA01C5A065C00139AB5 /* libStoreKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libStoreKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9DB9EA21C5A065C00139AB5 /* StoreKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreKit.h; sourceTree = "<group>"; };
+		D9DB9EA41C5A065C00139AB5 /* StoreKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreKit.m; sourceTree = "<group>"; };
 		D9EF2D551C0AB10400179F0C /* SKBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKBase.h; path = StoreKit/SKBase.h; sourceTree = "<group>"; };
 		D9EF2D561C0AB10400179F0C /* SKDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKDownload.h; path = StoreKit/SKDownload.h; sourceTree = "<group>"; };
 		D9EF2D571C0AB10400179F0C /* SKPayment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPayment.h; path = StoreKit/SKPayment.h; sourceTree = "<group>"; };
@@ -84,19 +100,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		D96B1F5D1C09166B005704D7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1B453CC42E23B6B306900E6F /* libPods.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D9D753911C212C7300C40E06 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D9D753991C212C7300C40E06 /* StoreKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D9DB9E9D1C5A065C00139AB5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +174,7 @@
 				D923A6BD1C09175F00EC5559 /* Sources */,
 				D923A6BC1C09174500EC5559 /* Headers */,
 				D9D753951C212C7300C40E06 /* StoreKitTests */,
+				D9DB9EA11C5A065C00139AB5 /* StoreKit */,
 				D96B1F621C09166B005704D7 /* Products */,
 				5F1D4611AC56ECBFDCADF251 /* Pods */,
 				901F9368F728BA071FBD120C /* Frameworks */,
@@ -169,8 +184,8 @@
 		D96B1F621C09166B005704D7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D96B1F611C09166B005704D7 /* StoreKit.framework */,
 				D9D753941C212C7300C40E06 /* StoreKitTests.xctest */,
+				D9DB9EA01C5A065C00139AB5 /* libStoreKit.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -185,50 +200,38 @@
 			path = StoreKitTests;
 			sourceTree = "<group>";
 		};
+		D9DB9EA11C5A065C00139AB5 /* StoreKit */ = {
+			isa = PBXGroup;
+			children = (
+				D9DB9EA21C5A065C00139AB5 /* StoreKit.h */,
+				D9DB9EA41C5A065C00139AB5 /* StoreKit.m */,
+			);
+			path = StoreKit;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		D96B1F5E1C09166B005704D7 /* Headers */ = {
+		D9DB9EA91C5A067200139AB5 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D9EF2D691C0AB14000179F0C /* SKBase.h in Headers */,
-				D9EF2D6A1C0AB14000179F0C /* SKDownload.h in Headers */,
-				D9EF2D6B1C0AB14000179F0C /* SKPayment.h in Headers */,
-				D9EF2D6C1C0AB14000179F0C /* SKPaymentQueue.h in Headers */,
-				D9EF2D6D1C0AB14000179F0C /* SKPaymentTransaction.h in Headers */,
-				D9EF2D6E1C0AB14000179F0C /* SKProduct.h in Headers */,
-				D9EF2D6F1C0AB14000179F0C /* SKProductsResponse.h in Headers */,
-				D9EF2D701C0AB14000179F0C /* SKRequest.h in Headers */,
-				D9EF2D711C0AB14000179F0C /* SKStoreProductViewController.h in Headers */,
-				D9EF2D721C0AB14000179F0C /* StoreKit.h in Headers */,
+				D9DB9EB31C5A06D700139AB5 /* StoreKit.h in Headers */,
+				D9DB9EAA1C5A06D700139AB5 /* SKBase.h in Headers */,
+				D9DB9EAB1C5A06D700139AB5 /* SKDownload.h in Headers */,
+				D9DB9EAC1C5A06D700139AB5 /* SKPayment.h in Headers */,
+				D9DB9EAD1C5A06D700139AB5 /* SKPaymentQueue.h in Headers */,
+				D9DB9EAE1C5A06D700139AB5 /* SKPaymentTransaction.h in Headers */,
+				D9DB9EAF1C5A06D700139AB5 /* SKProduct.h in Headers */,
+				D9DB9EB01C5A06D700139AB5 /* SKProductsResponse.h in Headers */,
+				D9DB9EB11C5A06D700139AB5 /* SKRequest.h in Headers */,
+				D9DB9EB21C5A06D700139AB5 /* SKStoreProductViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D96B1F601C09166B005704D7 /* StoreKit */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D96B1F751C09166B005704D7 /* Build configuration list for PBXNativeTarget "StoreKit" */;
-			buildPhases = (
-				F4FCE69F7287CF981BDE3DA2 /* Check Pods Manifest.lock */,
-				D96B1F5C1C09166B005704D7 /* Sources */,
-				D96B1F5D1C09166B005704D7 /* Frameworks */,
-				D96B1F5E1C09166B005704D7 /* Headers */,
-				D96B1F5F1C09166B005704D7 /* Resources */,
-				D9EF2D2E1C0AAD6A00179F0C /* Copy Files */,
-				5B582202249BC3725CF865DC /* Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = StoreKit;
-			productName = StoreKit;
-			productReference = D96B1F611C09166B005704D7 /* StoreKit.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		D9D753931C212C7300C40E06 /* StoreKitTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D9D7539E1C212C7300C40E06 /* Build configuration list for PBXNativeTarget "StoreKitTests" */;
@@ -240,12 +243,31 @@
 			buildRules = (
 			);
 			dependencies = (
-				D9D7539B1C212C7300C40E06 /* PBXTargetDependency */,
+				D9DB9EB61C5A07E500139AB5 /* PBXTargetDependency */,
 			);
 			name = StoreKitTests;
 			productName = StoreKitTests;
 			productReference = D9D753941C212C7300C40E06 /* StoreKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D9DB9E9F1C5A065C00139AB5 /* StoreKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D9DB9EA61C5A065C00139AB5 /* Build configuration list for PBXNativeTarget "StoreKit" */;
+			buildPhases = (
+				D9DB9E9C1C5A065C00139AB5 /* Sources */,
+				D9DB9E9D1C5A065C00139AB5 /* Frameworks */,
+				D9DB9E9E1C5A065C00139AB5 /* CopyFiles */,
+				D9DB9EA91C5A067200139AB5 /* Headers */,
+				D9DB9EB41C5A075500139AB5 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StoreKit;
+			productName = StoreKit;
+			productReference = D9DB9EA01C5A065C00139AB5 /* libStoreKit.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
@@ -256,11 +278,13 @@
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Tombo, inc.";
 				TargetAttributes = {
-					D96B1F601C09166B005704D7 = {
-						CreatedOnToolsVersion = 7.1.1;
-						DevelopmentTeam = GBD2Y4C45U;
-					};
 					D9D753931C212C7300C40E06 = {
+						CreatedOnToolsVersion = 7.2;
+					};
+					D9DB9E981C5A05E800139AB5 = {
+						CreatedOnToolsVersion = 7.2;
+					};
+					D9DB9E9F1C5A065C00139AB5 = {
 						CreatedOnToolsVersion = 7.2;
 					};
 				};
@@ -277,20 +301,14 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D96B1F601C09166B005704D7 /* StoreKit */,
 				D9D753931C212C7300C40E06 /* StoreKitTests */,
+				D9DB9E981C5A05E800139AB5 /* Framework */,
+				D9DB9E9F1C5A065C00139AB5 /* StoreKit */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		D96B1F5F1C09166B005704D7 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D9D753921C212C7300C40E06 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -301,54 +319,35 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		5B582202249BC3725CF865DC /* Copy Pods Resources */ = {
+		D9DB9EB41C5A075500139AB5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "set -e\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/A/Headers\"\n\n# Link the \"Current\" version to \"A\"\n/bin/ln -sfh A \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/Current\"\n/bin/ln -sfh Versions/Current/Headers \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Headers\"\n/bin/ln -sfh \"Versions/Current/${PRODUCT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/${PRODUCT_NAME}\"\n\n# The -a ensures that the headers maintain the source modification date so that we don't constantly\n# cause propagating rebuilds of files that import these headers.\n/bin/cp -a \"${TARGET_BUILD_DIR}/${PUBLIC_HEADERS_FOLDER_PATH}/\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/A/Headers\"";
 		};
-		F4FCE69F7287CF981BDE3DA2 /* Check Pods Manifest.lock */ = {
+		D9DB9EB91C5A080500139AB5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
+			shellScript = "set -e\nset +u\n# Avoid recursively calling this script.\nif [[ $SF_MASTER_SCRIPT_RUNNING ]]\nthen\nexit 0\nfi\nset -u\nexport SF_MASTER_SCRIPT_RUNNING=1\n\nSF_TARGET_NAME=${PROJECT_NAME}\nSF_EXECUTABLE_PATH=\"lib${SF_TARGET_NAME}.a\"\nSF_WRAPPER_NAME=\"${SF_TARGET_NAME}.framework\"\n\n# The following conditionals come from\n# https://github.com/kstenerud/iOS-Universal-Framework\n\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]\nthen\nSF_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]\nthen\nSF_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SF_SDK_PLATFORM\" = \"iphoneos\" ]]\nthen\nSF_OTHER_PLATFORM=iphonesimulator\nelse\nSF_OTHER_PLATFORM=iphoneos\nfi\n\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$SF_SDK_PLATFORM$ ]]\nthen\nSF_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${SF_OTHER_PLATFORM}\"\nelse\necho \"Could not find platform name from build products directory: $BUILT_PRODUCTS_DIR\"\nexit 1\nfi\n\n# Build the other platform.\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SF_OTHER_PLATFORM}${SF_SDK_VERSION} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n# Smash the two static libraries into one fat binary and store it in the .framework\nxcrun lipo -create \"${BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" -output \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n\n# Copy the binary to the other architecture folder to have a complete framework in both.\ncp -a \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		D96B1F5C1C09166B005704D7 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D923A6C41C09177700EC5559 /* SKPayment.m in Sources */,
-				D923A6C61C09177700EC5559 /* SKRequest.m in Sources */,
-				D923A6C51C09177700EC5559 /* SKPaymentQueue.m in Sources */,
-				D9B5C5641C34B22A00146EB5 /* SKPaymentTransaction.m in Sources */,
-				D923A6C71C09177700EC5559 /* SKStoreProductViewController.m in Sources */,
-				D9B5C5621C34947F00146EB5 /* SKProduct.m in Sources */,
-				D923A6C31C09177700EC5559 /* SKDownload.m in Sources */,
-				D9810E231C0A8BDE0019C82D /* SKProductsResponse.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D9D753901C212C7300C40E06 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -358,13 +357,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D9DB9E9C1C5A065C00139AB5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D9DB9EA51C5A065C00139AB5 /* StoreKit.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		D9D7539B1C212C7300C40E06 /* PBXTargetDependency */ = {
+		D9DB9EB61C5A07E500139AB5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D96B1F601C09166B005704D7 /* StoreKit */;
-			targetProxy = D9D7539A1C212C7300C40E06 /* PBXContainerItemProxy */;
+			target = D9DB9E9F1C5A065C00139AB5 /* StoreKit */;
+			targetProxy = D9DB9EB51C5A07E500139AB5 /* PBXContainerItemProxy */;
+		};
+		D9DB9EB81C5A07ED00139AB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D9DB9E9F1C5A065C00139AB5 /* StoreKit */;
+			targetProxy = D9DB9EB71C5A07ED00139AB5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -389,6 +401,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -408,10 +421,12 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
 				INFOPLIST_FILE = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 				SDKROOT = iphoneos;
+				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -438,6 +453,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -451,57 +467,16 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
 				INFOPLIST_FILE = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 				SDKROOT = iphoneos;
+				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		D96B1F761C09166B005704D7 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CCE670F467FC28840CF415F2 /* Pods.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = io.tombo.StoreKit;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		D96B1F771C09166B005704D7 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 21EBFE8BF7270370C4D7A159 /* Pods.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = io.tombo.StoreKit;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -531,6 +506,50 @@
 			};
 			name = Release;
 		};
+		D9DB9E991C5A05E800139AB5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D9DB9E9A1C5A05E800139AB5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D9DB9EA71C5A065C00139AB5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		D9DB9EA81C5A065C00139AB5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -543,15 +562,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D96B1F751C09166B005704D7 /* Build configuration list for PBXNativeTarget "StoreKit" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D96B1F761C09166B005704D7 /* Debug */,
-				D96B1F771C09166B005704D7 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		D9D7539E1C212C7300C40E06 /* Build configuration list for PBXNativeTarget "StoreKitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -560,6 +570,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D9DB9E9B1C5A05E800139AB5 /* Build configuration list for PBXAggregateTarget "Framework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D9DB9E991C5A05E800139AB5 /* Debug */,
+				D9DB9E9A1C5A05E800139AB5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		D9DB9EA61C5A065C00139AB5 /* Build configuration list for PBXNativeTarget "StoreKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D9DB9EA71C5A065C00139AB5 /* Debug */,
+				D9DB9EA81C5A065C00139AB5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

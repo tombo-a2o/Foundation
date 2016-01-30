@@ -56,7 +56,7 @@
     SKPayment *payment = [SKPayment paymentWithProduct:product];
 
     stubRequest(@"POST", SKTomboPaymentsURL).
-    withBody(@"{\"payments\":[{\"requestData\":null,\"applicationUsername\":null,\"productIdentifier\":\"product1\",\"quantity\":1}]}").
+    withBody(@"{\"payments\":[{\"quantity\":1,\"requestData\":null,\"applicationUsername\":null,\"productIdentifier\":\"product1\"}]}").
     andReturn(200).
     withHeaders(@{@"Content-Type": @"application/json"}).
     withBody([NSJSONSerialization dataWithJSONObject:

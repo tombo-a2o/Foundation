@@ -22,7 +22,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		2D0A1F64BD95B2B4E6816519 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F175FA0D3481DCBCD4458D0F /* libPods.a */; };
 		D90769011C33E308005EBBDB /* SKRequestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D90769001C33E308005EBBDB /* SKRequestTests.m */; };
 		D94BB96C1C5C5ACD00816E24 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BE1C09177700EC5559 /* SKDownload.m */; };
 		D94BB96D1C5C5ACD00816E24 /* SKPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BF1C09177700EC5559 /* SKPayment.m */; };
@@ -112,7 +111,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D0A1F64BD95B2B4E6816519 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

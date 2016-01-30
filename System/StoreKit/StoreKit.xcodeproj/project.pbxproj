@@ -34,7 +34,6 @@
 		D94BB9731C5C5ACD00816E24 /* SKStoreProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */; };
 		D9901E0A1C292AA6001609FB /* SKPaymentQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */; };
 		D9AC88741C5C5D590018D907 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9AC88731C5C5D590018D907 /* libPods.a */; };
-		D9DB9EA31C5A065C00139AB5 /* StoreKit.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D9DB9EA21C5A065C00139AB5 /* StoreKit.h */; };
 		D9DB9EAA1C5A06D700139AB5 /* SKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D551C0AB10400179F0C /* SKBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9DB9EAB1C5A06D700139AB5 /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D561C0AB10400179F0C /* SKDownload.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9DB9EAC1C5A06D700139AB5 /* SKPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D571C0AB10400179F0C /* SKPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -71,7 +70,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				D9DB9EA31C5A065C00139AB5 /* StoreKit.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

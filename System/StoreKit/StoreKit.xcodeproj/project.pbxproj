@@ -622,6 +622,16 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/Nocilla\"",
+					"-fembed-bitcode",
+				);
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -643,6 +653,16 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/Nocilla\"",
+					"-fembed-bitcode",
+				);
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

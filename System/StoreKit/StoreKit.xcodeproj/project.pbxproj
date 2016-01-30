@@ -23,9 +23,16 @@
 
 /* Begin PBXBuildFile section */
 		D90769011C33E308005EBBDB /* SKRequestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D90769001C33E308005EBBDB /* SKRequestTests.m */; };
+		D94BB96C1C5C5ACD00816E24 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BE1C09177700EC5559 /* SKDownload.m */; };
+		D94BB96D1C5C5ACD00816E24 /* SKPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6BF1C09177700EC5559 /* SKPayment.m */; };
+		D94BB96E1C5C5ACD00816E24 /* SKPaymentQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C01C09177700EC5559 /* SKPaymentQueue.m */; };
+		D94BB96F1C5C5ACD00816E24 /* SKPaymentTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B5C5631C34B22A00146EB5 /* SKPaymentTransaction.m */; };
+		D94BB9701C5C5ACD00816E24 /* SKProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B5C5611C34947F00146EB5 /* SKProduct.m */; };
+		D94BB9711C5C5ACD00816E24 /* SKProductsResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */; };
+		D94BB9721C5C5ACD00816E24 /* SKRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C11C09177700EC5559 /* SKRequest.m */; };
+		D94BB9731C5C5ACD00816E24 /* SKStoreProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */; };
 		D9901E0A1C292AA6001609FB /* SKPaymentQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */; };
-		D9DB9EA31C5A065C00139AB5 /* StoreKit.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D9DB9EA21C5A065C00139AB5 /* StoreKit.h */; };
-		D9DB9EA51C5A065C00139AB5 /* StoreKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DB9EA41C5A065C00139AB5 /* StoreKit.m */; };
+		D9AC88741C5C5D590018D907 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9AC88731C5C5D590018D907 /* libPods.a */; };
 		D9DB9EAA1C5A06D700139AB5 /* SKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D551C0AB10400179F0C /* SKBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9DB9EAB1C5A06D700139AB5 /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D561C0AB10400179F0C /* SKDownload.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9DB9EAC1C5A06D700139AB5 /* SKPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = D9EF2D571C0AB10400179F0C /* SKPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -39,14 +46,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		D9DB9EB51C5A07E500139AB5 /* PBXContainerItemProxy */ = {
+		D9DB9EB71C5A07ED00139AB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D96B1F581C09166B005704D7 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = D9DB9E9F1C5A065C00139AB5;
 			remoteInfo = StoreKit;
 		};
-		D9DB9EB71C5A07ED00139AB5 /* PBXContainerItemProxy */ = {
+		D9EC55BE1C5A102100EA6768 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D96B1F581C09166B005704D7 /* Project object */;
 			proxyType = 1;
@@ -62,7 +69,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				D9DB9EA31C5A065C00139AB5 /* StoreKit.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,15 +83,16 @@
 		D923A6C01C09177700EC5559 /* SKPaymentQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentQueue.m; sourceTree = "<group>"; };
 		D923A6C11C09177700EC5559 /* SKRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRequest.m; sourceTree = "<group>"; };
 		D923A6C21C09177700EC5559 /* SKStoreProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStoreProductViewController.m; sourceTree = "<group>"; };
+		D96D679A1C5C5B8C0067B72A /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		D9810E221C0A8BDE0019C82D /* SKProductsResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProductsResponse.m; sourceTree = "<group>"; };
 		D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentQueueTests.m; sourceTree = "<group>"; };
+		D9AC88711C5C5D540018D907 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
+		D9AC88731C5C5D590018D907 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		D9B5C5611C34947F00146EB5 /* SKProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProduct.m; sourceTree = "<group>"; };
 		D9B5C5631C34B22A00146EB5 /* SKPaymentTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPaymentTransaction.m; sourceTree = "<group>"; };
 		D9D753941C212C7300C40E06 /* StoreKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StoreKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9D753981C212C7300C40E06 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D9DB9EA01C5A065C00139AB5 /* libStoreKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libStoreKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		D9DB9EA21C5A065C00139AB5 /* StoreKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreKit.h; sourceTree = "<group>"; };
-		D9DB9EA41C5A065C00139AB5 /* StoreKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreKit.m; sourceTree = "<group>"; };
 		D9EF2D551C0AB10400179F0C /* SKBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKBase.h; path = StoreKit/SKBase.h; sourceTree = "<group>"; };
 		D9EF2D561C0AB10400179F0C /* SKDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKDownload.h; path = StoreKit/SKDownload.h; sourceTree = "<group>"; };
 		D9EF2D571C0AB10400179F0C /* SKPayment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SKPayment.h; path = StoreKit/SKPayment.h; sourceTree = "<group>"; };
@@ -111,6 +118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9AC88741C5C5D590018D907 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +137,9 @@
 		901F9368F728BA071FBD120C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D9AC88731C5C5D590018D907 /* libPods.a */,
+				D9AC88711C5C5D540018D907 /* libPods.a */,
+				D96D679A1C5C5B8C0067B72A /* libPods.a */,
 				F175FA0D3481DCBCD4458D0F /* libPods.a */,
 			);
 			name = Frameworks;
@@ -174,7 +185,6 @@
 				D923A6BD1C09175F00EC5559 /* Sources */,
 				D923A6BC1C09174500EC5559 /* Headers */,
 				D9D753951C212C7300C40E06 /* StoreKitTests */,
-				D9DB9EA11C5A065C00139AB5 /* StoreKit */,
 				D96B1F621C09166B005704D7 /* Products */,
 				5F1D4611AC56ECBFDCADF251 /* Pods */,
 				901F9368F728BA071FBD120C /* Frameworks */,
@@ -198,15 +208,6 @@
 				D9901E091C292AA6001609FB /* SKPaymentQueueTests.m */,
 			);
 			path = StoreKitTests;
-			sourceTree = "<group>";
-		};
-		D9DB9EA11C5A065C00139AB5 /* StoreKit */ = {
-			isa = PBXGroup;
-			children = (
-				D9DB9EA21C5A065C00139AB5 /* StoreKit.h */,
-				D9DB9EA41C5A065C00139AB5 /* StoreKit.m */,
-			);
-			path = StoreKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -236,14 +237,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D9D7539E1C212C7300C40E06 /* Build configuration list for PBXNativeTarget "StoreKitTests" */;
 			buildPhases = (
+				615BDB4D432308FCB117BCDE /* Check Pods Manifest.lock */,
 				D9D753901C212C7300C40E06 /* Sources */,
 				D9D753911C212C7300C40E06 /* Frameworks */,
 				D9D753921C212C7300C40E06 /* Resources */,
+				FC49767E1376382FBE4CB00E /* Embed Pods Frameworks */,
+				E7955D86B1C342954C40D7BB /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				D9DB9EB61C5A07E500139AB5 /* PBXTargetDependency */,
+				D9EC55BF1C5A102100EA6768 /* PBXTargetDependency */,
 			);
 			name = StoreKitTests;
 			productName = StoreKitTests;
@@ -254,11 +258,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D9DB9EA61C5A065C00139AB5 /* Build configuration list for PBXNativeTarget "StoreKit" */;
 			buildPhases = (
+				26A1D3D1E9CAAF6DC1D8D980 /* Check Pods Manifest.lock */,
 				D9DB9E9C1C5A065C00139AB5 /* Sources */,
 				D9DB9E9D1C5A065C00139AB5 /* Frameworks */,
 				D9DB9E9E1C5A065C00139AB5 /* CopyFiles */,
 				D9DB9EA91C5A067200139AB5 /* Headers */,
 				D9DB9EB41C5A075500139AB5 /* ShellScript */,
+				A9B381B8AEC88B242BC22946 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -275,7 +281,7 @@
 		D96B1F581C09166B005704D7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Tombo, inc.";
 				TargetAttributes = {
 					D9D753931C212C7300C40E06 = {
@@ -301,9 +307,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D9D753931C212C7300C40E06 /* StoreKitTests */,
-				D9DB9E981C5A05E800139AB5 /* Framework */,
 				D9DB9E9F1C5A065C00139AB5 /* StoreKit */,
+				D9DB9E981C5A05E800139AB5 /* Framework */,
+				D9D753931C212C7300C40E06 /* StoreKitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -319,6 +325,51 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		26A1D3D1E9CAAF6DC1D8D980 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		615BDB4D432308FCB117BCDE /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		A9B381B8AEC88B242BC22946 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		D9DB9EB41C5A075500139AB5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -343,7 +394,37 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nset +u\n# Avoid recursively calling this script.\nif [[ $SF_MASTER_SCRIPT_RUNNING ]]\nthen\nexit 0\nfi\nset -u\nexport SF_MASTER_SCRIPT_RUNNING=1\n\nSF_TARGET_NAME=${PROJECT_NAME}\nSF_EXECUTABLE_PATH=\"lib${SF_TARGET_NAME}.a\"\nSF_WRAPPER_NAME=\"${SF_TARGET_NAME}.framework\"\n\n# The following conditionals come from\n# https://github.com/kstenerud/iOS-Universal-Framework\n\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]\nthen\nSF_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]\nthen\nSF_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SF_SDK_PLATFORM\" = \"iphoneos\" ]]\nthen\nSF_OTHER_PLATFORM=iphonesimulator\nelse\nSF_OTHER_PLATFORM=iphoneos\nfi\n\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$SF_SDK_PLATFORM$ ]]\nthen\nSF_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${SF_OTHER_PLATFORM}\"\nelse\necho \"Could not find platform name from build products directory: $BUILT_PRODUCTS_DIR\"\nexit 1\nfi\n\n# Build the other platform.\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SF_OTHER_PLATFORM}${SF_SDK_VERSION} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n# Smash the two static libraries into one fat binary and store it in the .framework\nxcrun lipo -create \"${BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" -output \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n\n# Copy the binary to the other architecture folder to have a complete framework in both.\ncp -a \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"";
+			shellScript = "set -e\nset +u\n# Avoid recursively calling this script.\nif [[ $SF_MASTER_SCRIPT_RUNNING ]]\nthen\nexit 0\nfi\nset -u\nexport SF_MASTER_SCRIPT_RUNNING=1\n\nSF_TARGET_NAME=${PROJECT_NAME}\nSF_EXECUTABLE_PATH=\"lib${SF_TARGET_NAME}.a\"\nSF_WRAPPER_NAME=\"${SF_TARGET_NAME}.framework\"\n\n# The following conditionals come from\n# https://github.com/kstenerud/iOS-Universal-Framework\n\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]\nthen\nSF_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]\nthen\nSF_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SF_SDK_PLATFORM\" = \"iphoneos\" ]]\nthen\nSF_OTHER_PLATFORM=iphonesimulator\nelse\nSF_OTHER_PLATFORM=iphoneos\nfi\n\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$SF_SDK_PLATFORM$ ]]\nthen\nSF_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${SF_OTHER_PLATFORM}\"\nelse\necho \"Could not find platform name from build products directory: $BUILT_PRODUCTS_DIR\"\nexit 1\nfi\n\n# Build the other platform.\nxcrun xcodebuild ONLY_ACTIVE_ARCH=NO -workspace \"${PROJECT_DIR}/${PROJECT_NAME}.xcworkspace\" -scheme \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SF_OTHER_PLATFORM}${SF_SDK_VERSION} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n# Smash the two static libraries into one fat binary and store it in the .framework\nxcrun lipo -create \"${BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" -output \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n\n# Copy the binary to the other architecture folder to have a complete framework in both.\ncp -a \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"";
+		};
+		E7955D86B1C342954C40D7BB /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FC49767E1376382FBE4CB00E /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -361,22 +442,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D9DB9EA51C5A065C00139AB5 /* StoreKit.m in Sources */,
+				D94BB96C1C5C5ACD00816E24 /* SKDownload.m in Sources */,
+				D94BB96D1C5C5ACD00816E24 /* SKPayment.m in Sources */,
+				D94BB96E1C5C5ACD00816E24 /* SKPaymentQueue.m in Sources */,
+				D94BB96F1C5C5ACD00816E24 /* SKPaymentTransaction.m in Sources */,
+				D94BB9701C5C5ACD00816E24 /* SKProduct.m in Sources */,
+				D94BB9711C5C5ACD00816E24 /* SKProductsResponse.m in Sources */,
+				D94BB9721C5C5ACD00816E24 /* SKRequest.m in Sources */,
+				D94BB9731C5C5ACD00816E24 /* SKStoreProductViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		D9DB9EB61C5A07E500139AB5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D9DB9E9F1C5A065C00139AB5 /* StoreKit */;
-			targetProxy = D9DB9EB51C5A07E500139AB5 /* PBXContainerItemProxy */;
-		};
 		D9DB9EB81C5A07ED00139AB5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D9DB9E9F1C5A065C00139AB5 /* StoreKit */;
 			targetProxy = D9DB9EB71C5A07ED00139AB5 /* PBXContainerItemProxy */;
+		};
+		D9EC55BF1C5A102100EA6768 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D9DB9E9F1C5A065C00139AB5 /* StoreKit */;
+			targetProxy = D9EC55BE1C5A102100EA6768 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -522,29 +610,40 @@
 		};
 		D9DB9EA71C5A065C00139AB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCE670F467FC28840CF415F2 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				TEST_HOST = "";
 			};
 			name = Debug;
 		};
 		D9DB9EA81C5A065C00139AB5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 21EBFE8BF7270370C4D7A159 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -578,6 +677,7 @@
 				D9DB9E9A1C5A05E800139AB5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D9DB9EA61C5A065C00139AB5 /* Build configuration list for PBXNativeTarget "StoreKit" */ = {
 			isa = XCConfigurationList;
@@ -586,6 +686,7 @@
 				D9DB9EA81C5A065C00139AB5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

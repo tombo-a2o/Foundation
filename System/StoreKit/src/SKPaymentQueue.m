@@ -1,4 +1,4 @@
-#import <StoreKit/SKPaymentQueue.h>
+#import <StoreKit/StoreKit.h>
 #import "AFNetworking.h"
 
 NSString * const SKTomboPaymentsURL = @"http://tombo.titech.ac/payments";
@@ -45,6 +45,8 @@ static SKPaymentQueue* _defaultQueue;
 
 - (void)connectToPaymentAPI:(SKPayment *)payment
 {
+    SKDebugLog(@"payment: %@", payment);
+
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     _URLSessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
@@ -66,6 +68,7 @@ static SKPaymentQueue* _defaultQueue;
     NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         _URLSessionManager = nil;
 
+        SKDebugLog(@"error: %@ response: %@", error, response);
         NSMutableArray *transactions = [[NSMutableArray alloc] init];
         if (error) {
             NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
@@ -87,6 +90,7 @@ static SKPaymentQueue* _defaultQueue;
                 SKPaymentTransaction *transaction = [[SKPaymentTransaction alloc] initWithTransactionIdentifier:transactionIdentifier payment:payment transactionState:SKPaymentTransactionStatePurchased transactionDate:transactionDate error:error];
                 [transactions addObject:transaction];
             }
+            SKDebugLog(@"transactions: %@", transactions);
         }
         for (id<SKPaymentTransactionObserver> observer in _transactionObservers) {
             [observer paymentQueue:self updatedTransactions:transactions];

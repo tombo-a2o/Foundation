@@ -41,6 +41,8 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
 // Sends the request to the Apple App Store.
 - (void)start
 {
+    SKDebugLog(@"productIdentifiers: %@", _productIdentifiers);
+
     _productsResponse = nil;
 
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -53,6 +55,7 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
 
     NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         _URLSessionManager = nil;
+        SKDebugLog(@"error: %@ response: %@", error, response);
         if (error) {
             NSLog(@"Error(%@): %@", NSStringFromClass([self class]), error);
             [self.delegate request:self didFailWithError:error];
@@ -71,6 +74,8 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
                 [products addObject:product];
             }
             _productsResponse = [[SKProductsResponse alloc] initWithProducts:products];
+
+            SKDebugLog(@"products: %@", _productsResponse);
 
             // NOTE: I don't know the sequence of calling these notification methods
             [self.delegate productsRequest:self didReceiveResponse:_productsResponse];

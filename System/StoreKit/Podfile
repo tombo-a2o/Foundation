@@ -1,11 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '7.0'
 
-target 'StoreKit' do
-  pod 'AFNetworking', '~> 3.0'
-end
-
 target 'StoreKitTests' do
-  pod 'AFNetworking', '~> 3.0'
   pod 'Nocilla', '~> 0.10'
 end

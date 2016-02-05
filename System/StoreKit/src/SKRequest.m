@@ -1,5 +1,5 @@
 #import <StoreKit/StoreKit.h>
-#import "AFNetworking.h"
+#import "SKAFNetworking.h"
 
 NSString * const SKReceiptPropertyIsExpired = @"expired";
 NSString * const SKReceiptPropertyIsRevoked = @"revoked";
@@ -25,7 +25,7 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
 @implementation SKProductsRequest {
     NSSet *_productIdentifiers;
     SKProductsResponse *_productsResponse;
-    AFURLSessionManager *_URLSessionManager;
+    SKAFURLSessionManager *_URLSessionManager;
 }
 
 @dynamic delegate;
@@ -46,12 +46,12 @@ NSString * const SKTomboProductsURL = @"http://tombo.titech.ac/products";
     _productsResponse = nil;
 
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    _URLSessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    _URLSessionManager = [[SKAFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
     NSDictionary *parameters = @{@"productIdentifiers": [[_productIdentifiers allObjects] mutableCopy]};
     NSError *serializerError = nil;
-    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboProductsURL parameters:parameters error:&serializerError];
-    _URLSessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    NSMutableURLRequest *request = [[SKAFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboProductsURL parameters:parameters error:&serializerError];
+    _URLSessionManager.responseSerializer = [SKAFJSONResponseSerializer serializer];
 
     NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         _URLSessionManager = nil;

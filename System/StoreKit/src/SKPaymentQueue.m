@@ -1,5 +1,5 @@
 #import <StoreKit/StoreKit.h>
-#import "AFNetworking.h"
+#import "SKAFNetworking.h"
 
 NSString * const SKTomboPaymentsURL = @"http://tombo.titech.ac/payments";
 
@@ -7,7 +7,7 @@ static SKPaymentQueue* _defaultQueue;
 
 @implementation SKPaymentQueue {
     NSMutableArray *_transactionObservers;
-    AFURLSessionManager *_URLSessionManager;
+    SKAFURLSessionManager *_URLSessionManager;
 }
 
 - (instancetype)init {
@@ -48,7 +48,7 @@ static SKPaymentQueue* _defaultQueue;
     SKDebugLog(@"payment: %@", payment);
 
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    _URLSessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    _URLSessionManager = [[SKAFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
     NSObject *applicationUserName = payment.applicationUsername;
     if (applicationUserName == nil) {
@@ -62,8 +62,8 @@ static SKPaymentQueue* _defaultQueue;
                                                     @"applicationUsername": applicationUserName
                                                     }]};
     NSError *serializerError = nil;
-    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboPaymentsURL parameters:parameters error:&serializerError];
-    _URLSessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    NSMutableURLRequest *request = [[SKAFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboPaymentsURL parameters:parameters error:&serializerError];
+    _URLSessionManager.responseSerializer = [SKAFJSONResponseSerializer serializer];
 
     NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         _URLSessionManager = nil;

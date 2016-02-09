@@ -48,9 +48,13 @@ NSString * const SKTomboProductsURL = @"https://api.tombo.io/products";
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     _URLSessionManager = [[SKAFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
-    NSDictionary *parameters = @{@"productIdentifiers": [[_productIdentifiers allObjects] mutableCopy]};
+    NSArray *productIdentifiers = [_productIdentifiers allObjects];
+    productIdentifiers = [productIdentifiers sortedArrayUsingSelector:@selector(compare:)];
+
+    NSDictionary *parameters = @{@"product_identifier": [productIdentifiers componentsJoinedByString: @","]};
     NSError *serializerError = nil;
-    NSMutableURLRequest *request = [[SKAFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:SKTomboProductsURL parameters:parameters error:&serializerError];
+    NSMutableURLRequest *request = [[SKAFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:SKTomboProductsURL parameters:parameters error:&serializerError];
+
     _URLSessionManager.responseSerializer = [SKAFJSONResponseSerializer serializer];
 
     NSURLSessionDataTask *dataTask = [_URLSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {

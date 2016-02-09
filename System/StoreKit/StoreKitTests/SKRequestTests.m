@@ -28,12 +28,11 @@
 }
 
 - (void)testStart {
-    NSSet *set = [NSSet setWithObjects:@[@"productIdentifier1", @"productIdentifier2"], nil];
+    NSSet *set = [NSSet setWithObjects:@"productIdentifier1", @"productIdentifier2", nil];
     SKProductsRequest *productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:set];
     productsRequest.delegate = self;
 
-    stubRequest(@"POST", SKTomboProductsURL).
-    withBody(@"{\"productIdentifiers\":[[\"productIdentifier1\",\"productIdentifier2\"]]}").
+    stubRequest(@"GET", [NSString stringWithFormat:@"%@?product_identifier=productIdentifier1%%2CproductIdentifier2", SKTomboProductsURL]).
     andReturn(200).
     withHeaders(@{@"Content-Type": @"application/json"}).
     withBody([NSJSONSerialization dataWithJSONObject:@{

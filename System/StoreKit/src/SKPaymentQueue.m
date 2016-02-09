@@ -1,7 +1,7 @@
 #import <StoreKit/StoreKit.h>
 #import "SKAFNetworking.h"
 
-NSString * const SKTomboPaymentsURL = @"http://tombo.titech.ac/payments";
+NSString * const SKTomboPaymentsURL = @"https://api.tombo.io/payments";
 
 static SKPaymentQueue* _defaultQueue;
 

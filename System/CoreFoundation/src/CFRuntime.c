@@ -35,13 +35,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <emscripten/trace.h>
+#include <sys/stat.h>
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
 #include <dlfcn.h>
 #include <mach-o/dyld.h>
 #include <mach/mach.h>
 #include <crt_externs.h>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <CoreFoundation/CFStringDefaultEncoding.h>
 #endif
 #if DEPLOYMENT_TARGET_EMBEDDED
@@ -987,11 +987,15 @@ void __CFInitialize(void) {
     UErrorCode err = 0;
     int icuDataFd = open("/System/icu/icu.dat", O_RDONLY);
     if (icuDataFd != -1) {
-        size_t icuDataLen = lseek(icuDataFd, 0, SEEK_END);
-        lseek(icuDataFd, 0, SEEK_SET);
-        void *icuData = mmap(0, icuDataLen, PROT_READ, MAP_SHARED, icuDataFd, 0);
-        close(icuDataFd);
+        struct stat stbuf;
+        fstat(icuDataFd, &stbuf);
+        size_t icuDataLen = stbuf.st_size;
 
+        // void *icuData = mmap(0, icuDataLen, PROT_READ, MAP_SHARED, icuDataFd, 0);
+        char *icuData = (char*)malloc(icuDataLen);
+        read(icuDataFd, icuData, icuDataLen);
+        close(icuDataFd);
+        
         udata_setCommonData(icuData, &err);
         if (err != 0)
         {

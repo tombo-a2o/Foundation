@@ -46,9 +46,9 @@ static void __NSLogCString(int32_t lev, const char *message, size_t length, char
 
 void NSLogv(NSString *fmt, va_list args)
 {
-    @autoreleasepool {
+//    @autoreleasepool {
         _CFLogvEx(&__NSLogCString, &_NSCFCopyDescription2, nil, 4, (CFStringRef)fmt, args);
-    }
+//    }
 }
 
 void NSLog(NSString *fmt, ...)

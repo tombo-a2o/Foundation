@@ -16,7 +16,6 @@ extern bool _Block_isDeallocating(const void *aBlock);
 - (void)performAfterDelay:(NSTimeInterval)delay;
 - (void)invoke;
 - (id)copyWithZone:(NSZone *)zone;
-- (id)copy;
 
 @end
 

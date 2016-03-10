@@ -6,7 +6,10 @@ NSString *const SLServiceTypeTwitter = @"twitter";
 NSString *const SLServiceTypeSinaWeibo = @"sinaWeibo";
 NSString *const SLServiceTypeTencentWeibo = @"tencentWeibo";
 
-@implementation SLComposeViewController
+@implementation SLComposeViewController {
+    NSString *_initialText;
+    NSMutableArray *_urls;
+}
 
 + (SLComposeViewController *)composeViewControllerForServiceType:(NSString *)serviceType
 {
@@ -26,6 +29,7 @@ NSString *const SLServiceTypeTencentWeibo = @"tencentWeibo";
         self.modalPresentationStyle = UIModalPresentationCurrentContext;
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         _serviceType = serviceType;
+        _urls = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -36,56 +40,78 @@ NSString *const SLServiceTypeTencentWeibo = @"tencentWeibo";
     if([_serviceType isEqualToString:SLServiceTypeTwitter]) {
         [self _prepareTweetView];
     } else if([_serviceType isEqualToString:SLServiceTypeFacebook]) {
-        
+        [self _prepareFacebookView];
     } else {
         assert(0);
     }
     
 }
 
+#define TWITTER 1
+#define FACEBOOK 2
+
 - (void)_prepareTweetView
 {
-    UIView *view = self.view;
-    view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.3];
-    
-    UIView *rootView = [[UIView alloc] initWithFrame:CGRectMake(30,115,260,260)];
-    rootView.backgroundColor = [UIColor whiteColor];
-    rootView.layer.cornerRadius = 10;
-    [view addSubview:rootView];
-
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 240, 40)];
-    titleLabel.text = @"Twitter";
-    titleLabel.textColor = [UIColor blackColor];
-    titleLabel.font = [UIFont boldSystemFontOfSize:17];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.lineBreakMode = NSLineBreakByCharWrapping;
-    titleLabel.numberOfLines = 0;
-//    titleLabel.backgroundColor = [UIColor redColor];
-    [rootView addSubview:titleLabel];
-    
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(180, 0, 80, 40)];
-    [closeButton setTitleColor:[UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
-    closeButton.titleLabel.font = [UIFont boldSystemFontOfSize:13];
-    closeButton.titleLabel.textAlignment = NSTextAlignmentRight;
-    [closeButton setTitle:@"閉じる" forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(closeWindow:) forControlEvents:UIControlEventTouchUpInside];
-//    closeButton.backgroundColor = [UIColor blueColor];
-//    closeButton.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
-    [rootView addSubview:closeButton];
-    
-    UIWebView *webview = [[UIWebView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(titleLabel.frame)+5, 240, 200)];
-    [webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://twitter.com/intent/tweet"]]];
-    [rootView addSubview:webview];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitter" message:@"外部サイトに移動します" delegate:self cancelButtonTitle:@"キャンセル" otherButtonTitles:@"はい", nil];
+    alert.tag = TWITTER;
+    [alert show];
 }
 
-- (void)closeWindow:(UIButton*)button
+- (void)_prepareFacebookView
 {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Facebook" message:@"外部サイトに移動します" delegate:self cancelButtonTitle:@"キャンセル" otherButtonTitles:@"はい", nil];
+    alert.tag = FACEBOOK;
+    [alert show];
+}
+
+-(void)applicationWillEnterForeground
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+static inline NSString* escapeHTML(NSString *input)
+{
+    return (NSString *)CFURLCreateStringByAddingPercentEscapes(
+        NULL,
+        (CFStringRef)input,
+        NULL,
+        CFSTR("!*'();:@&=+$,/?%#[]"),
+        kCFStringEncodingUTF8);
+}
+
+-(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if(buttonIndex == 0) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+        
+        if(alertView.tag == TWITTER) {
+            NSMutableString *baseUrl = [NSMutableString stringWithString:@"https://twitter.com/intent/tweet?text="];
+            [baseUrl appendString:escapeHTML(_initialText)];
+            if([_urls count]) {
+                NSURL *url = [_urls lastObject];
+                [baseUrl appendString:@"&url="];
+                [baseUrl appendString:escapeHTML([url absoluteString])];
+            }
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:baseUrl]];
+        } else if(alertView.tag == FACEBOOK){
+            NSMutableString *baseUrl = [NSMutableString stringWithString:@"http://www.facebook.com/sharer/sharer.php?u="];
+            if([_urls count]) {
+                NSURL *url = [_urls lastObject];
+                [baseUrl appendString:escapeHTML([url absoluteString])];
+            } else {
+                assert(0);
+            }
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:baseUrl]];
+        }
+    }
 }
 
 - (BOOL)setInitialText:(NSString *)text
 {
-    return NO;
+    _initialText = [text copy];
+    return YES;
 }
 
 - (BOOL)addImage:(UIImage *)image
@@ -100,11 +126,13 @@ NSString *const SLServiceTypeTencentWeibo = @"tencentWeibo";
 
 - (BOOL)addURL:(NSURL *)url
 {
-    return NO;
+    [_urls addObject:url];
+    return YES;
 }
 
 - (BOOL)removeAllURLs
 {
-    return NO;
+    [_urls removeAllObjects];
+    return YES;
 }
 @end

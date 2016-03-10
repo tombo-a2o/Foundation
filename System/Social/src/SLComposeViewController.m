@@ -67,7 +67,9 @@ NSString *const SLServiceTypeTencentWeibo = @"tencentWeibo";
 -(void)applicationWillEnterForeground
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        self.completionHandler(SLComposeViewControllerResultDone);
+    }];
 }
 
 static inline NSString* escapeHTML(NSString *input)
@@ -82,28 +84,39 @@ static inline NSString* escapeHTML(NSString *input)
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if(buttonIndex == 0) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:^{
+            self.completionHandler(SLComposeViewControllerResultCancelled);
+        }];
     } else {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
         
+        NSMutableString *baseUrl;
         if(alertView.tag == TWITTER) {
-            NSMutableString *baseUrl = [NSMutableString stringWithString:@"https://twitter.com/intent/tweet?text="];
+            baseUrl = [NSMutableString stringWithString:@"https://twitter.com/intent/tweet?text="];
             [baseUrl appendString:escapeHTML(_initialText)];
             if([_urls count]) {
                 NSURL *url = [_urls lastObject];
                 [baseUrl appendString:@"&url="];
                 [baseUrl appendString:escapeHTML([url absoluteString])];
             }
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:baseUrl]];
         } else if(alertView.tag == FACEBOOK){
-            NSMutableString *baseUrl = [NSMutableString stringWithString:@"http://www.facebook.com/sharer/sharer.php?u="];
+            baseUrl = [NSMutableString stringWithString:@"http://www.facebook.com/sharer/sharer.php?u="];
             if([_urls count]) {
                 NSURL *url = [_urls lastObject];
                 [baseUrl appendString:escapeHTML([url absoluteString])];
             } else {
                 assert(0);
             }
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:baseUrl]];
+        } else {
+            assert(0);
+        }
+        BOOL ret = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:baseUrl]];
+        if(!ret) {
+            // TODO alert
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+            [self dismissViewControllerAnimated:YES completion:^{
+                self.completionHandler(SLComposeViewControllerResultCancelled);
+            }];
         }
     }
 }

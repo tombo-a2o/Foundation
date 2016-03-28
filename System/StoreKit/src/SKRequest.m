@@ -47,6 +47,11 @@ NSString * const SKTomboProductsURL = @"https://api.tombo.io/products";
 
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     _URLSessionManager = [[SKAFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+#ifdef DEBUG
+    _URLSessionManager.securityPolicy.validatesDomainName = NO;
+    _URLSessionManager.securityPolicy.allowInvalidCertificates = YES;
+    SKDebugLog(@"ALLOW INVALID CERTIFICATES");
+#endif
 
     NSArray *productIdentifiers = [_productIdentifiers allObjects];
     productIdentifiers = [productIdentifiers sortedArrayUsingSelector:@selector(compare:)];

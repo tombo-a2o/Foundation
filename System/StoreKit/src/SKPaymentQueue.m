@@ -49,6 +49,11 @@ static SKPaymentQueue* _defaultQueue;
 
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     _URLSessionManager = [[SKAFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+#ifdef DEBUG
+    _URLSessionManager.securityPolicy.validatesDomainName = NO;
+    _URLSessionManager.securityPolicy.allowInvalidCertificates = YES;
+    SKDebugLog(@"ALLOW INVALID CERTIFICATES");
+#endif
 
     NSObject *applicationUserName = payment.applicationUsername;
     if (applicationUserName == nil) {
@@ -107,7 +112,7 @@ static SKPaymentQueue* _defaultQueue;
     NSNumberFormatter *quantityFormatter = [[NSNumberFormatter alloc] init];
     [quantityFormatter setNumberStyle:NSNumberFormatterSpellOutStyle];
 
-    NSString *confirmationMessage = [NSString stringWithFormat:@"Do you want to buy %@ %@ for %@", [quantityFormatter stringFromNumber:[NSNumber numberWithInt:payment.quantity]], @"TODO: get title", @"TODO: get price"];
+    NSString *confirmationMessage = [NSString stringWithFormat:@"Do you want to buy %@ %@ for %@", [quantityFormatter stringFromNumber:[NSNumber numberWithLong:payment.quantity]], @"TODO: get title", @"TODO: get price"];
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Confirm Your In-App Purchase" message:confirmationMessage preferredStyle:UIAlertControllerStyleAlert];
 

@@ -70,8 +70,15 @@
 {
     _valid = NO;
     dispatch_suspend(self.source);
+    [self release];
 }
 
+- (void)dealloc
+{
+    [_target release];
+    [_userInfo release];
+    [super dealloc];
+}
 @end
 
 @implementation NSTimer (Private)

@@ -2,7 +2,6 @@
 
 #ifndef _SKAFNETWORK_EMSCRIPTEN_
 
-#define TARGET_OS_IOS 1
 #define NS_ASSUME_NONNULL_BEGIN
 #define nullable
 #define _Nullable

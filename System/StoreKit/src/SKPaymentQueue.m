@@ -1,5 +1,6 @@
 #import <StoreKit/StoreKit.h>
 #import "SKAFNetworking.h"
+#import <UIKit/UIKit.h>
 
 NSString * const SKTomboPaymentsURL = @"https://api.tombo.io/payments";
 

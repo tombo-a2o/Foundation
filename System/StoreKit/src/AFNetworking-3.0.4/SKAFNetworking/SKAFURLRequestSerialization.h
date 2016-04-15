@@ -21,14 +21,14 @@
 
 #import <Foundation/Foundation.h>
 #import <TargetConditionals.h>
+// FIX_FOR_EMSCRIPTEN:
+#import "SKAFNetworkEmscripten.h"
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import <UIKit/UIKit.h>
 #elif TARGET_OS_WATCH
 #import <WatchKit/WatchKit.h>
 #endif
-
-NS_ASSUME_NONNULL_BEGIN
 
 /**
  The `SKAFURLRequestSerialization` protocol is adopted by an object that encodes parameters for a specified HTTP requests. Request serializers may encode parameters as query strings, HTTP bodies, setting the appropriate HTTP header fields as necessary.
@@ -129,7 +129,8 @@ typedef NS_ENUM(NSUInteger, SKAFHTTPRequestQueryStringSerializationStyle) {
 
  @discussion To add or remove default request headers, use `setValue:forHTTPHeaderField:`.
  */
-@property (readonly, nonatomic, strong) NSDictionary <NSString *, NSString *> *HTTPRequestHeaders;
+// FIX_FOR_EMSCRIPTEN:
+@property (readonly, nonatomic, strong) NSDictionary *HTTPRequestHeaders;
 
 /**
  Creates and returns a serializer with default configuration.
@@ -175,7 +176,8 @@ forHTTPHeaderField:(NSString *)field;
 /**
  HTTP methods for which serialized requests will encode parameters as a query string. `GET`, `HEAD`, and `DELETE` by default.
  */
-@property (nonatomic, strong) NSSet <NSString *> *HTTPMethodsEncodingParametersInURI;
+// FIX_FOR_EMSCRIPTEN:
+@property (nonatomic, strong) NSSet *HTTPMethodsEncodingParametersInURI;
 
 /**
  Set the method of query string serialization according to one of the pre-defined styles.
@@ -227,9 +229,10 @@ forHTTPHeaderField:(NSString *)field;
 
  @return An `NSMutableURLRequest` object
  */
+// FIX_FOR_EMSCRIPTEN:
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                               URLString:(NSString *)URLString
-                                             parameters:(nullable NSDictionary <NSString *, id> *)parameters
+                                             parameters:(nullable NSDictionary *)parameters
                               constructingBodyWithBlock:(nullable void (^)(id <SKAFMultipartFormData> formData))block
                                                   error:(NSError * _Nullable __autoreleasing *)error;
 
@@ -334,7 +337,8 @@ forHTTPHeaderField:(NSString *)field;
  @param headers The HTTP headers to be appended to the form data.
  @param body The data to be encoded and appended to the form data. This parameter must not be `nil`.
  */
-- (void)appendPartWithHeaders:(nullable NSDictionary <NSString *, NSString *> *)headers
+// FIX_FOR_EMSCRIPTEN:
+- (void)appendPartWithHeaders:(nullable NSDictionary *)headers
                          body:(NSData *)body;
 
 /**

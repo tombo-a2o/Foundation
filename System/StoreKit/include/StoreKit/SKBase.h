@@ -8,5 +8,5 @@ enum {
     SKErrorPaymentCancelled,
     SKErrorPaymentInvalid,
     SKErrorPaymentNotAllowed,
-    SKErrorStoreProductNotAvailable 
+    SKErrorStoreProductNotAvailable
 };

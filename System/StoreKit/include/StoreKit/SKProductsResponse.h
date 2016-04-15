@@ -2,6 +2,12 @@
 #import <Foundation/NSArray.h>
 
 @interface SKProductsResponse : NSObject
-@property(readonly) NSArray *products;
+
+// Response Information
+@property(readonly) NSArray<SKProduct *> *products;
 @property(readonly) NSArray *invalidProductIdentifiers;
+
+// FIXME: move to private
+- (instancetype)initWithProducts:(NSArray *)products;
+
 @end

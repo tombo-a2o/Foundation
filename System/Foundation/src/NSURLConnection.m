@@ -155,6 +155,12 @@ static NSData *createDataFromXhr(int xhr) {
     } 
 }
 
+- (void)didFailWithError:(NSError*)error {
+    if([self.delegate respondsToSelector:@selector(connection:didFailWithError:)]) {
+        [(id<NSURLConnectionDataDelegate>)self.delegate connection:self didFailWithError:error];
+    }
+}
+
 static void onloadCallback(void *ctx) {
     NSURLConnection *connection= (NSURLConnection*)ctx;
     int xhr = connection.xhr;
@@ -176,11 +182,19 @@ static void onloadCallback(void *ctx) {
     }
 }
 
+static void onerrorCallback(void *ctx) {
+    NSURLConnection *connection= (NSURLConnection*)ctx;
+    
+    NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSURLErrorUnknown userInfo:nil];
+    [connection performSelector:@selector(didFailWithError:) withObject:error];
+}
+
 - (void)start
 {
     int xhr = self.xhr = xhrCreateAndOpen(self.currentRequest, YES);
     self.readyState = 0;
-    _xhr_set_onload(xhr, dispatch_get_current_queue(), self, onloadCallback); 
+    _xhr_set_onload(xhr, dispatch_get_current_queue(), self, onloadCallback);
+    _xhr_set_onerror(xhr, dispatch_get_current_queue(), self, onerrorCallback);
     _xhr_send(xhr, NULL);
 }
 
@@ -272,4 +286,3 @@ static void onloadCallback(void *ctx) {
 }
 
 @end
-

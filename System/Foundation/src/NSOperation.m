@@ -381,9 +381,11 @@ static pthread_mutex_t _NSOperationLock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
             }
             dispatch_time_t val = dispatch_time(DISPATCH_TIME_NOW, 6 * NSEC_PER_MSEC);
             [_queue retain];
+            [self retain];
             dispatch_after(val, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
                 [_queue _removeFinishedOperation:self];
                 [_queue release];
+                [self release];
                 //TODO: make call to remove this operation from the dispatch queue and re-run the queue scheduler.
             });
 

@@ -4,7 +4,7 @@
 NSString * const SKReceiptPropertyIsExpired = @"expired";
 NSString * const SKReceiptPropertyIsRevoked = @"revoked";
 NSString * const SKReceiptPropertyIsVolumePurchase = @"vpp";
-NSString * const SKTomboProductsURL = @"https://api.tombo.io/products";
+NSString * const SKTomboProductsURL = @"https://api.tom.bo/products";
 
 @implementation SKRequest
 

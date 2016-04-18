@@ -2,7 +2,7 @@
 #import "SKAFNetworking.h"
 #import <UIKit/UIKit.h>
 
-NSString * const SKTomboPaymentsURL = @"https://api.tombo.io/payments";
+NSString * const SKTomboPaymentsURL = @"https://api.tom.bo/payments";
 
 static SKPaymentQueue* _defaultQueue;
 

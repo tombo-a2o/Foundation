@@ -27,6 +27,10 @@
 #import <CoreServices/CoreServices.h>
 #endif
 
+#ifdef EMSCRIPTEN
+#include <bsd/stdlib.h>
+#endif
+
 NSString * const TomboAFURLRequestSerializationErrorDomain = @"com.alamofire.error.serialization.request";
 NSString * const TomboAFNetworkingOperationFailingURLRequestErrorKey = @"com.alamofire.serialization.request.error.response";
 

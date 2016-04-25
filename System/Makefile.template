@@ -20,12 +20,13 @@ __PUBLIC_HEADERS__ = $(5)
 __PRIVATE_HEADERS__ = $(6)
 __RESOURCE_DIR__ = $(7)
 __HEADERS__ = $$(__PUBLIC_HEADERS__) $$(__PRIVATE_HEADERS__)
+__OBJECTS_DIR__ = $$(__BUILD_DIR__)/objects
 
 __OBJECTS__ = $$(patsubst %.m,%.o, \
           $$(patsubst %.c,%.o, \
           $$(patsubst %.mm,%.o, \
           $$(patsubst %.cpp,%.o, \
-		  $$(addprefix $$(__BUILD_DIR__)/, $$(__SOURCES__))))))
+		  $$(addprefix $$(__OBJECTS_DIR__)/, $$(__SOURCES__))))))
 
 __DEPS__ = $$(patsubst %.o,%.d, $$(__OBJECTS__))
 
@@ -39,19 +40,19 @@ default: full_framework
 clean:
 	-/bin/rm -rf $$(__BUILD_DIR__)
 
-$$(__BUILD_DIR__)/%.o: %.m
+$$(__OBJECTS_DIR__)/%.o: %.m
 	mkdir -p $$(dir $$@)
 	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
-$$(__BUILD_DIR__)/%.o: %.c
+$$(__OBJECTS_DIR__)/%.o: %.c
 	mkdir -p $$(dir $$@)
 	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
-$$(__BUILD_DIR__)/%.o: %.mm
+$$(__OBJECTS_DIR__)/%.o: %.mm
 	mkdir -p $$(dir $$@)
 	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CXXFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
-$$(__BUILD_DIR__)/%.o: %.cpp
+$$(__OBJECTS_DIR__)/%.o: %.cpp
 	mkdir -p $$(dir $$@)
 	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CXXFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 

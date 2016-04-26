@@ -125,11 +125,13 @@ static EAGLContext *_currentContext = nil;
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, width, height, 0);
+    
+#if DEBUG
     if(glGetError() != GL_NO_ERROR) {
         NSLog(@"failed to glCopyTexImage2D");
         return NO;
     }
-
+#endif
     //NSLog(@"presentRenderbuffer %d (%d, %d)", texture, width, height);
 
     glBindTexture(GL_TEXTURE_2D, 0);

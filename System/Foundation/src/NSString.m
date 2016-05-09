@@ -1224,6 +1224,12 @@ SINGLETON_RR()
     return composed;
 }
 
+- (BOOL)containsString:(NSString *)str
+{
+    NSRange range = [self rangeOfString:str];
+    return range.location != NSNotFound;
+}
+
 - (NSString *)description
 {
     return self;

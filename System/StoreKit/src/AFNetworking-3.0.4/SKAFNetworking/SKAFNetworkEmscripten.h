@@ -6,8 +6,17 @@
 // Define nullable keywords
 #ifndef NS_ASSUME_NONNULL_BEGIN
 #define NS_ASSUME_NONNULL_BEGIN
+#endif
+
+#ifndef nullable
 #define nullable
+#endif
+
+#ifndef _Nullable
 #define _Nullable
+#endif
+
+#ifndef NS_ASSUME_NONNULL_END
 #define NS_ASSUME_NONNULL_END
 #endif
 

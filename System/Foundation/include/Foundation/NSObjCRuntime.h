@@ -353,3 +353,15 @@ enum {NSNotFound = NSIntegerMax};
 #ifndef NS_UNIMPLEMENTED
 #define NS_UNIMPLEMENTED CF_UNIMPLEMENTED
 #endif
+
+#ifndef NS_ASSUME_NONNULL_BEGIN
+#define NS_ASSUME_NONNULL_BEGIN
+#endif
+
+#ifndef NS_ASSUME_NONNULL_END
+#define NS_ASSUME_NONNULL_END
+#endif
+
+#ifndef nullable
+#define nullable
+#endif

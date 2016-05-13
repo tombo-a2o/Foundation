@@ -15,7 +15,7 @@
 #import <emscripten/trace.h>
 //#import "wrap.h"
 
-extern void __CFInitialize();
+extern void __CFInitialize(void);
 extern char ***_NSGetArgv(void);
 
 static void _enumerationMutationHandler(id object)

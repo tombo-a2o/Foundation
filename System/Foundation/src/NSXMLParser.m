@@ -4,7 +4,11 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
-#if 0
+#if 1
+@implementation NSXMLParser
+@end
+
+#else
 
 #import <Foundation/NSXMLParser.h>
 

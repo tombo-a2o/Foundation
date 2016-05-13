@@ -1,4 +1,5 @@
 #import <GameKit/GKPlayer.h>
+#import <UIKit/UIViewController.h>
 
 @interface GKLocalPlayer : GKPlayer 
 + (GKLocalPlayer *)localPlayer;

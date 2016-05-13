@@ -171,7 +171,7 @@ CF_EXPORT CFTypeRef CFAutorelease(CFTypeRef cf);
 CF_EXPORT CFTypeRef _CFAutoreleasePoolAddObject(CFTypeRef cf);
 CF_EXPORT void _CFAutoreleasePoolPop(void *ctx);
 CF_EXPORT void _CFAutoreleasePoolPrintPools(void);
-CF_EXPORT void *_CFAutoreleasePoolPush();
+CF_EXPORT void *_CFAutoreleasePoolPush(void);
 
 CF_EXTERN_C_END
 

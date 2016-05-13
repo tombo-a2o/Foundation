@@ -4,7 +4,12 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
-#if 0
+#if 1
+
+@implementation NSURLProtectionSpace
+@end
+
+#else
 
 #import "NSURLProtectionSpaceInternal.h"
 #import <Foundation/NSString.h>

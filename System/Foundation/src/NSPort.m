@@ -4,7 +4,18 @@
 //
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
-#if 0
+#if 1
+
+@implementation NSPort
+@end
+
+@implementation NSMachPort
+@end
+
+@implementation NSMessagePort
+@end
+
+#else
 
 #import <Foundation/NSPort.h>
 #import <Foundation/NSException.h>

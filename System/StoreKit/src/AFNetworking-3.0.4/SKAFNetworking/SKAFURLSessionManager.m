@@ -114,7 +114,7 @@ typedef void (^SKAFURLSessionTaskCompletionHandler)(NSURLResponse *response, id 
 #pragma mark -
 
 @interface SKAFURLSessionManagerTaskDelegate : NSObject <NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate>
-@property (nonatomic, weak) SKAFURLSessionManager *manager;
+@property (nonatomic/*, weak*/) SKAFURLSessionManager *manager;
 @property (nonatomic, strong) NSMutableData *mutableData;
 @property (nonatomic, strong) NSProgress *uploadProgress;
 @property (nonatomic, strong) NSProgress *downloadProgress;
@@ -221,7 +221,7 @@ typedef void (^SKAFURLSessionTaskCompletionHandler)(NSURLResponse *response, id 
     [self.uploadProgress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary/*<NSString *,id>*/ *)change context:(void *)context {
     if ([object isKindOfClass:[NSURLSessionTask class]]) {
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesReceived))]) {
             self.downloadProgress.completedUnitCount = [change[@"new"] longLongValue];

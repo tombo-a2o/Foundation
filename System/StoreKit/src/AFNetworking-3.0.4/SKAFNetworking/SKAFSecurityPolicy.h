@@ -21,6 +21,8 @@
 
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
+// FIX_FOR_EMSCRIPTEN:
+#import "SKAFNetworkEmscripten.h"
 
 typedef NS_ENUM(NSUInteger, SKAFSSLPinningMode) {
     SKAFSSLPinningModeNone,

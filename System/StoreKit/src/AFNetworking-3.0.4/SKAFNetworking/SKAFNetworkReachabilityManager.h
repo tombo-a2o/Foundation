@@ -20,6 +20,8 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+// FIX_FOR_EMSCRIPTEN:
+#import "SKAFNetworkEmscripten.h"
 
 #if !TARGET_OS_WATCH
 #import <SystemConfiguration/SystemConfiguration.h>

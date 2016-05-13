@@ -21,6 +21,8 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
+// FIX_FOR_EMSCRIPTEN:
+#import "SKAFNetworkEmscripten.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

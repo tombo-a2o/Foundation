@@ -21,6 +21,8 @@ __PRIVATE_HEADERS__ = $(6)
 __RESOURCE_DIR__ = $(7)
 __HEADERS__ = $$(__PUBLIC_HEADERS__) $$(__PRIVATE_HEADERS__)
 __OBJECTS_DIR__ = $$(__BUILD_DIR__)/objects
+__STATIC_LIB__ = $$(__FRAMEWORK_NAME__).a
+__SHARED_LIB__ = $$(__FRAMEWORK_NAME__).so.js
 
 __OBJECTS__ = $$(patsubst %.m,%.o, \
           $$(patsubst %.c,%.o, \
@@ -56,10 +58,15 @@ $$(__OBJECTS_DIR__)/%.o: %.cpp
 	mkdir -p $$(dir $$@)
 	$$(CC) $$(CPPFLAGS) $$(STYLE_CPPFLAGS) $$(CXXFLAGS) -MMD -MP -MF $$(@:%.o=%.d) $$< -o $$@
 
-$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__): $$(__OBJECTS__)
+$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc: $$(__OBJECTS__)
 	llvm-link -o $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc $$^
-	rm -f $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__)
-	llvm-ar rcs $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+
+$$(__BUILD_DIR__)/$$(__STATIC_LIB__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+	rm -f $$(__BUILD_DIR__)/$$(__STATIC_LIB__)
+	llvm-ar rcs $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+
+$$(__BUILD_DIR__)/$$(__SHARED_LIB__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+	$$(CC) -o $$(__BUILD_DIR__)/$$(__SHARED_LIB__) -s SIDE_MODULE=1 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
 
 framework_dir:
 	rm -rf $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework
@@ -71,6 +78,8 @@ framework_dir:
 	ln -sf Versions/Current/Headers $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Headers
 	ln -sf Versions/Current/PrivateHeaders $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/PrivateHeaders
 	ln -sf Versions/Current/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__FRAMEWORK_NAME__)
+	ln -sf Versions/Current/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__STATIC_LIB__)
+	ln -sf Versions/Current/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_LIB__)
 
 header_only_framework: framework_dir
 	for file in $$(__PUBLIC_HEADERS__); do \
@@ -84,13 +93,15 @@ header_only_framework: framework_dir
 		cp $$$$file $$$$dest ;\
 	done
 
-full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__)
+full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__SHARED_LIB__)
 	[ "$$(__RESOURCE_DIR__)" = "" ] || for file in `find $$(__RESOURCE_DIR__) -type f -not -name ".*"` ; do \
 		dest=$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources/`dirname $$$${file#*/}` ;\
 		mkdir -p $$$$dest ;\
 		cp "$$$$file" $$$$dest ;\
 	done
-	cp $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__FRAMEWORK_NAME__)
+	cp $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__STATIC_LIB__)
+	cp $$(__BUILD_DIR__)/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_LIB__)
+	ln -sf $$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__FRAMEWORK_NAME__)
 
 install_header_only: header_only_framework
 	rm -rf $$(__INSTALL_DIR__)/$$(__FRAMEWORK_NAME__).framework

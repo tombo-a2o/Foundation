@@ -5,8 +5,14 @@
 //  Copyright (c) 2014 Apportable. All rights reserved.
 //
 #if 1
+#import <Foundation/NSPort.h>
 
 @implementation NSPort
++ (NSPort *)port
+{
+    return nil;
+}
+
 @end
 
 @implementation NSMachPort

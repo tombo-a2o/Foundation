@@ -9,6 +9,8 @@ DSTBASE = $(EMSCRIPTEN)/system/frameworks
 
 STYLE=normal
 STYLE_CFLAGS=-O2
+STYLE_LFLAGS ?= -O0
+LFLAGS =
 STYLE_LFLAGS=
 ARCHFLAGS=
 
@@ -16,6 +18,8 @@ CC = emcc
 
 MAX_MACOSX_VERSION=MAC_OS_X_VERSION_10_9
 CFLAGS=-v -c -x objective-c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -fobjc-runtime=macosx -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -DMAC_OS_X_VERSION_MAX_ALLOWED=$(MAX_MACOSX_VERSION) -DCF_BUILDING_CF=1 -I./include -I./ -I../CoreFoundation/src -I../Foundation/src -I../CFNetwork/include -include ../CoreFoundation/src/CoreFoundation_Prefix.h
+STYLE_LFLAGS ?= -O0
+LFLAGS =
 
 .PHONY: all install clean
 
@@ -29,9 +33,13 @@ $(OBJBASE)/CoreText:
 
 $(OBJBASE)/%.o: src/%.c $(HFILES) $(OBJBASE)/CoreText
 	$(CC) $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
+STYLE_LFLAGS ?= -O0
+LFLAGS =
 
 %.ll: %.c $(HFILES)
 	$(CC) -emit-llvm -S $(STYLE_CFLAGS) $(ARCHFLAGS) $(CFLAGS) $< -o $@
+STYLE_LFLAGS ?= -O0
+LFLAGS =
 
 $(OBJBASE)/CoreText_$(STYLE): $(addprefix $(OBJBASE)/,$(OBJECTS))
 	llvm-link -o $(OBJBASE)/CoreText_$(STYLE).bc $^

@@ -4,6 +4,8 @@ CC				= emcc
 STYLE_CPPFLAGS ?= -DDEBUG -O0 -g
 CPPFLAGS = -v -c -pipe -Wmost -Wno-trigraphs -Wreturn-type -fconstant-cfstrings -fno-exceptions -fblocks -D__IPHONE_OS_VERSION_MIN_REQUIRED=70000 -DDEPLOYMENT_TARGET_EMSCRIPTEN=1 -I./src -I./include -I./private_include -I./include/CFNetwork -I./private_include/CFNetwork -I./src/Headers -I./src/Utils -I./src/SharedCode -I./src/Proxies -I./src/HTTP -DVERSION=$(VERSION) -include ../global.pch -include ../debug.pch -include ../Fixme.pch -include ../CoreFoundation/src/CoreFoundation_Prefix.h -s USE_ZLIB=1
 CFLAGS = -x objective-c -std=gnu99
+STYLE_LFLAGS ?= -O0
+LFLAGS =
 
 BUILD_DIR		?= build/debug
 INSTALL_DIR		= $(EMSCRIPTEN)/system/frameworks

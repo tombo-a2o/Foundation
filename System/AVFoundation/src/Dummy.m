@@ -1,2 +1,0 @@
-#include <AVFoundation/AVFoundation.h>
-

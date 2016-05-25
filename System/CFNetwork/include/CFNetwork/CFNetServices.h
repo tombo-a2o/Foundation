@@ -25,7 +25,7 @@
  
      Contains:   CoreFoundation Network Net Services header
  
-     Copyright:  2001-2005 by Apple Computer, Inc., all rights reserved
+     Copyright:  © 2001-2005 by Apple Computer, Inc., all rights reserved
  
      Warning:    *** APPLE INTERNAL USE ONLY ***
                  This file may contain unreleased API's

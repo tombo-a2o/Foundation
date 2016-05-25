@@ -25,7 +25,7 @@
  
      Contains:   CoreFoundation Network HTTP server SPI
  
-     Copyright:  2003-2005 by Apple Computer, Inc., all rights reserved
+     Copyright:  © 2003-2005 by Apple Computer, Inc., all rights reserved
  
      Warning:    *** APPLE INTERNAL USE ONLY ***
                  This file contains unreleased SPI's

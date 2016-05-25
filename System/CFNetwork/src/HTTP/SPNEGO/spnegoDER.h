@@ -55,7 +55,7 @@ extern "C" {
 #endif
 
 /***
-** ASN and OID definitions from Microsoft:
+Ê*** ASN and OID definitions from Microsoft:
  *** http://msdn.microsoft.com/library/
  ***    default.asp?url=/library/en-us/dnsecure/html/http-sso-2.asp
  ***/

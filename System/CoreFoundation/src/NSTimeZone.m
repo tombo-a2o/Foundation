@@ -443,4 +443,10 @@ static void NSTimeZoneCacheAdd(NSString *name, NSTimeZone *tz)
     return CFEqual((CFTypeRef)self, (CFTypeRef)obj);
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    // is is correct????
+    return [self retain];
+}
+
 @end

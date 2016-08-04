@@ -92,6 +92,7 @@ typedef NS_OPTIONS(NSUInteger, NSDataBase64DecodingOptions) {
 - (NSString *)base64EncodedStringWithOptions:(NSDataBase64EncodingOptions)options NS_AVAILABLE(10_9, 7_0);
 - (id)initWithBase64EncodedData:(NSData *)base64Data options:(NSDataBase64DecodingOptions)options NS_AVAILABLE(10_9, 7_0);
 - (NSData *)base64EncodedDataWithOptions:(NSDataBase64EncodingOptions)options NS_AVAILABLE(10_9, 7_0);
+- (NSString *)base64Encoding;
 @end
 
 @interface NSData (NSDeprecated)

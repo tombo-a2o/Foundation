@@ -403,12 +403,7 @@ NSString *NSHomeDirectoryForUser(NSString *userName)
 
 NSString *NSTemporaryDirectory(void)
 {
-    static dispatch_once_t once = 0L;
-    static NSString *path = nil;
-    dispatch_once(&once, ^{
-        path = [[NSString alloc] initWithUTF8String:getenv("TEMPDIR")];
-    });
-    return path;
+    return @"/tmp";
 }
 
 NSString *NSOpenStepRootDirectory(void)

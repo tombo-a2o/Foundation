@@ -831,6 +831,12 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
     return [NSDictionary dictionaryWithObjects:objects forKeys:keys count:numAttributes];
 }
 
+- (NSDictionary *)fileSystemAttributesAtPath:(NSString *)path
+{
+    return [self attributesOfFileSystemForPath:path error:nil];
+}
+
+
 - (NSString *)currentDirectoryPath
 {
     char buffer[BUG_COMPLIANT_PATH_MAX];

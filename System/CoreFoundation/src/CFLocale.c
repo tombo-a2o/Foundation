@@ -754,6 +754,9 @@ CFArrayRef CFLocaleCopyPreferredLanguages(void) {
 	}
     }
     if (languagesArray)	CFRelease(languagesArray);
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+    // TODO: use navigator.language
+    CFArrayAppendValue(newArray, CFSTR("ja"));
 #endif
     return newArray;
 }
@@ -1353,4 +1356,3 @@ static bool __CFLocaleNoName(const char *locale, const char *value, CFStringRef 
 }
 
 #undef kMaxICUNameSize
-

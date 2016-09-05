@@ -455,8 +455,8 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
     id *ret = [self _idxToArg:0];
     id obj = *[self _idxToArg:1];
     SEL sel = *[self _idxToArg:2];
-    id arg1 = [self _idxToArg:3];
-    id arg2 = [self _idxToArg:4];
+    id arg1 = *[self _idxToArg:3];
+    id arg2 = *[self _idxToArg:4];
 
     if (blockClass)
     {

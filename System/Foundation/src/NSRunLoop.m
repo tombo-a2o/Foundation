@@ -2,10 +2,25 @@
 #import <dispatch/dispatch.h>
 #import <assert.h>
 #import "NSTimerInternal.h"
+#import <Foundation/NSRunLoopInternal.h>
+
+@implementation NSRunLoopInfiniteRunLoopExitException
+-(instancetype)init
+{
+    return [super initWithName:@"NSRunLoopInfiniteRunLoopExitException" reason:@"RunLoopExit" userInfo:nil];
+}
+@end
 
 @implementation NSRunLoop
 
 void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
+
+- (instancetype)init
+{
+    self = [super init];
+    _infiniteLoopEmulation = NO;
+    return self;
+}
 
 + (NSRunLoop *)currentRunLoop
 {
@@ -111,7 +126,8 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
     if(dispatch_get_current_queue() == dispatch_get_main_queue()) {
         dispatch_main();
     } else {
-        // todo
+        _infiniteLoopEmulation = YES;
+        @throw [[NSRunLoopInfiniteRunLoopExitException alloc] init];
     }
 
     return false;

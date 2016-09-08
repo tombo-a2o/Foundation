@@ -11,6 +11,7 @@
 #import <Foundation/NSException.h>
 #import <Foundation/NSLock.h>
 #import <Foundation/NSRunLoop.h>
+#import <Foundation/NSRunLoopInternal.h>
 #import <Foundation/NSString.h>
 #import <CoreFoundation/CFRunLoop.h>
 #import <CoreFoundation/CFNumber.h>
@@ -215,10 +216,14 @@ static void NSThreadEnd(NSThread *thread)
     dispatch_async(_queue, ^{
         @autoreleasepool {
             self->_state = NSThreadRunning;
-            [self main];
-            self->_state = NSThreadFinished;
-            // TODO: needs special treatment for runloop
-            [self release];
+            @try {
+                [self main];
+                self->_state = NSThreadFinished;
+                [self release];
+            }
+            @catch(NSRunLoopInfiniteRunLoopExitException *exception) {
+                NSLog(@"Infinite RunLoop emulation");
+            }
         }
     });
 }

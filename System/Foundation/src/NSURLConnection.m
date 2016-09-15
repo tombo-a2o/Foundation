@@ -36,7 +36,7 @@ extern void _xhr_open(int xhr, const char *method, const char *url, int async, c
 extern void _xhr_set_onload(int xhr, dispatch_queue_t queue, void *ctx, void func(void*));
 extern void _xhr_set_onerror(int xhr, dispatch_queue_t queue, void *ctx, void func(void*));
 extern void _xhr_set_request_header(int xhr, const char *key, const char *value);
-extern void _xhr_send(int xhr, const char *data);
+extern void _xhr_send(int xhr, const char *data, int length);
 extern int _xhr_get_ready_state(int xhr);
 extern int _xhr_get_status(int xhr);
 extern int _xhr_get_status_text(int xhr, void **text); // return length, text needs to be freed by caller 
@@ -195,7 +195,8 @@ static void onerrorCallback(void *ctx) {
     self.readyState = 0;
     _xhr_set_onload(xhr, dispatch_get_current_queue(), self, onloadCallback);
     _xhr_set_onerror(xhr, dispatch_get_current_queue(), self, onerrorCallback);
-    _xhr_send(xhr, NULL);
+    NSData *body = self.currentRequest.HTTPBody;
+    _xhr_send(xhr, body.bytes, body.length);
 }
 
 - (void)cancel
@@ -235,7 +236,8 @@ static void onerrorCallback(void *ctx) {
     }
 
     int xhr = xhrCreateAndOpen(request, NO);
-    _xhr_send(xhr, NULL); // block
+    NSData *body = request.HTTPBody;
+    _xhr_send(xhr, body.bytes, body.length); // block
     
     int status = _xhr_get_status(xhr);
 

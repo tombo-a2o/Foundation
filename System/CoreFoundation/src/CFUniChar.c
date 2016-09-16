@@ -276,9 +276,17 @@ static bool __CFUniCharLoadBytesFromFile(const wchar_t *fileName, const void **b
     int fd = -1;
 
     if ((fd = open(fileName, O_RDONLY, 0)) < 0) {
-	return false;
+        return false;
     }
-    if (fstat(fd, &statBuf) < 0 || (*bytes = mmap(0, statBuf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == (void *)-1) {
+    if (fstat(fd, &statBuf) < 0) {
+        close(fd);
+        return false;
+    }
+    if ((*bytes = malloc(statBuf.st_size)) == NULL) {
+        close(fd);
+        return false;
+    }
+    if (read(fd, *bytes, statBuf.st_size) < statBuf.st_size) {
         close(fd);
         return false;
     }
@@ -1499,4 +1507,3 @@ void __CFUniCharCleanup(void)
 #endif
 
 #undef USE_MACHO_SEGMENT
-

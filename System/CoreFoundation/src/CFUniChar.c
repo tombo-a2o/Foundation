@@ -402,7 +402,6 @@ static CFSpinLock_t __CFUniCharBitmapLock = CFSpinLockInit;
 #error Unknown or unspecified DEPLOYMENT_TARGET
 #endif
 
-static bool __CFUniCharLoadBitmapAlreadyFalse = false;
 static bool __CFUniCharLoadBitmapData(void) {
     __CFUniCharBitmapData *array;
     uint32_t headerSize;
@@ -414,15 +413,10 @@ static bool __CFUniCharLoadBitmapData(void) {
     const void *bitmap;
     int idx, bitmapIndex;
     int64_t fileSize;
-    if(__CFUniCharLoadBitmapAlreadyFalse ) {
-        return false;
-    }
 
     __CFSpinLock(&__CFUniCharBitmapLock);
 
     if (__CFUniCharBitmapDataArray || !__CFUniCharLoadFile(CF_UNICHAR_BITMAP_FILE, &bytes, &fileSize) || !__CFSimpleFileSizeVerification(bytes, fileSize)) {
-        __CFUniCharLoadBitmapAlreadyFalse = true;
-        EM_ASM({console.warn("Failed to load Bitmap Data at __CFUniCharLoadBitmapData");});
         __CFSpinUnlock(&__CFUniCharBitmapLock);
         return false;
     }
@@ -1242,12 +1236,8 @@ static CFSpinLock_t __CFUniCharPropTableLock = CFSpinLockInit;
 #error Unknown or unspecified DEPLOYMENT_TARGET
 #endif
 
-static bool CFUniCharLoadPropertyAlreadyFalse = false;
 const void *CFUniCharGetUnicodePropertyDataForPlane(uint32_t propertyType, uint32_t plane) {
 
-    if(CFUniCharLoadPropertyAlreadyFalse) {
-        return NULL;
-    }
     __CFSpinLock(&__CFUniCharPropTableLock);
 
     if (NULL == __CFUniCharUnicodePropertyTable) {
@@ -1262,8 +1252,6 @@ const void *CFUniCharGetUnicodePropertyDataForPlane(uint32_t propertyType, uint3
 	int64_t fileSize;
 
         if (!__CFUniCharLoadFile(PROP_DB_FILE, &bytes, &fileSize) || !__CFSimpleFileSizeVerification(bytes, fileSize)) {
-            CFUniCharLoadPropertyAlreadyFalse = true;
-            EM_ASM({console.warn("Failed to load PropertyData at CFUniCharGetUnicodePropertyDataForPlane");});
             __CFSpinUnlock(&__CFUniCharPropTableLock);
             return NULL;
         }

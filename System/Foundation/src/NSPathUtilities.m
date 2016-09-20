@@ -403,7 +403,7 @@ NSString *NSHomeDirectoryForUser(NSString *userName)
 
 NSString *NSTemporaryDirectory(void)
 {
-    return @"/tmp";
+    return @"/tmp/";
 }
 
 NSString *NSOpenStepRootDirectory(void)

@@ -59,6 +59,8 @@
     [super dealloc];
 }
 
+static NSFilesystemItemRemoveOperation *ctx;
+// static int NSFilesystemItemRemoveOperationFunction(const char *path, const struct stat *stat_info, int flags, struct FTW *info, void *ctx)
 static int NSFilesystemItemRemoveOperationFunction(const char *path, const struct stat *stat_info, int flags, struct FTW *info, void *ctx)
 {
     NSFilesystemItemRemoveOperation *op = (NSFilesystemItemRemoveOperation *)ctx;
@@ -100,13 +102,16 @@ static int NSFilesystemItemRemoveOperationFunction(const char *path, const struc
 {
     @autoreleasepool
     {
-        extern int _nftw_context(const char *path, int (*fn)(const char *, const struct stat *, int, struct FTW *, void *), int nfds, int ftwflags, void *ctx);
-        int err = _nftw_context([_removePath cString], NSFilesystemItemRemoveOperationFunction, 0, FTW_DEPTH, self);
+        // extern int _nftw_context(const char *path, int (*fn)(const char *, const struct stat *, int, struct FTW *, void *), int nfds, int ftwflags, void *ctx);
+        // int err = _nftw_context([_removePath cString], NSFilesystemItemRemoveOperationFunction, 0, FTW_DEPTH, self);
+        ctx = self;
+        int err = nftw([_removePath cString], NSFilesystemItemRemoveOperationFunction, 0, FTW_DEPTH);
         if (_error == nil && err != 0)
         {
             NSError *error = [NSFilesystemItemRemoveOperation _errorWithErrno:errno atPath:_removePath];
             [self _setError:error];
         }
+        ctx = NULL;
     }
 }
 

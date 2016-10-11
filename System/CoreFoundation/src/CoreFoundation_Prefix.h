@@ -111,8 +111,6 @@ typedef int		boolean_t;
 
 #if DEPLOYMENT_TARGET_EMSCRIPTEN
 #define CF_PRIVATE
-#define __strong
-#define __weak
 #include <compat/malloc.h>
 #include <malloc/malloc.h>
 #include <fcntl.h>

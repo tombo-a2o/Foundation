@@ -12,5 +12,8 @@
 @property int64_t totalUnitCount;
 @property(copy) void (^pausingHandler)(void);
 @property(copy) void (^cancellationHandler)(void);
+@property(getter=isCancellable) BOOL cancellable;
+@property(getter=isPausable) BOOL pausable;
+@property(copy) void (^resumingHandler)(void);
 
 @end

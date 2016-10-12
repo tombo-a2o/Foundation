@@ -3,7 +3,7 @@
 
 @class NSArray, NSDictionary, NSString;
 
-@interface NSSet : NSObject <NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration>
+@interface NSSet <__covariant ObjectType> : NSObject <NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration>
 
 - (NSUInteger)count;
 - (id)member:(id)object;

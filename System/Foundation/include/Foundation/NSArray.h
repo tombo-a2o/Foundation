@@ -11,7 +11,7 @@ typedef NS_OPTIONS(NSUInteger, NSBinarySearchingOptions) {
 
 @class NSData, NSIndexSet, NSString, NSURL;
 
-@interface NSArray : NSObject <NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration>
+@interface NSArray <__covariant ObjectType> : NSObject <NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration>
 
 - (NSUInteger)count;
 - (id)objectAtIndex:(NSUInteger)idx;

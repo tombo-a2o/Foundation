@@ -22,8 +22,8 @@
 //#import <mach/mach_time.h>
 #import <stdio.h>
 
-extern char ***_NSGetEnviron(void);
-
+// extern char ***_NSGetEnviron(void);
+extern char **__environ;
 /*
  TODO: this probably should be more thread safe since some of the underpinnings may not necessarily be
  guaranteed to be stable across all threads; ala setenv etc.
@@ -52,7 +52,7 @@ SINGLETON_RR()
 - (NSDictionary *)environment
 {
     NSDictionary *e = nil;
-    char **env = *_NSGetEnviron();
+    char **env = __environ;
     NSMutableArray *keys = [[NSMutableArray alloc] init];
     NSMutableArray *values = [[NSMutableArray alloc] init];
     while (*env != NULL)

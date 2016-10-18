@@ -95,6 +95,9 @@ CONST_STRING_DECL(kCFStreamSSLPeerName, "kCFStreamSSLPeerName")
 CONST_STRING_DECL(kCFStreamSSLValidatesCertificateChain, "kCFStreamSSLValidatesCertificateChain")
 CONST_STRING_DECL(kCFStreamSocketSecurityLevelTLSv1SSLv3, "kCFStreamSocketSecurityLevelTLSv1SSLv3")
 
+CONST_STRING_DECL(kCFStreamPropertySocketSecurityLevel, "kCFStreamPropertySocketSecurityLevel");
+CONST_STRING_DECL(kCFStreamSocketSecurityLevelNegotiatedSSL, "kCFStreamSocketSecurityLevelNegotiatedSSL");
+
 /*!
     @constant _kCFStreamPropertySSLAllowAnonymousCiphers
     @discussion Stream property key both set and copy operations. CFBooleanRef to set whether

@@ -17,7 +17,6 @@ SOURCES = $(addprefix src/, \
     HTTP/CFHTTPFilter.c \
     HTTP/CFHTTPMessage.c \
     HTTP/CFHTTPStream.c \
-    Proxies/ProxySupport.c \
     SharedCode/CFNetConnection.c \
     SharedCode/CFNetworkSchedule.c \
     SharedCode/CFNetworkThreadSupport.c \

@@ -43,14 +43,4 @@
 #define NSUnimplementedFunction() \
     DEBUG_LOG("Function %s is not implemented!", __FUNCTION__)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-extern void __real_abort(void) __attribute__ ((noreturn));
-#ifdef __cplusplus
-}
-#endif
-
-#define abort __real_abort
-
 #endif // !__ASSEMBLER__

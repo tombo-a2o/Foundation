@@ -941,24 +941,72 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
             return NO;
         }
     }
-    copyfile_flags_t flags = COPYFILE_DATA;
+
     if (error != NULL)
     {
         *error = nil;
     }
-    int err = copyfile([srcPath fileSystemRepresentation], [dstPath fileSystemRepresentation], NULL, flags);
-
-    if (err != 0)
-    {
-        if (error)
-        {
-            *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{
-                NSLocalizedDescriptionKey: [NSString stringWithUTF8String:strerror(errno)]
-            }];
-        }
-        return NO;
+    
+    int srcFd = open([srcPath fileSystemRepresentation], O_RDONLY);
+    if(srcFd < 0) {
+        goto out_error;
     }
-    return YES;
+    int dstFd = open([dstPath fileSystemRepresentation], O_WRONLY | O_CREAT | O_EXCL, 0666);
+    if(dstFd < 0) {
+        goto out_error;
+    }
+    
+    char buf[4096];
+    ssize_t nread;
+    
+    while ((nread = read(srcFd, buf, sizeof(buf))) > 0)
+    {
+        char *out_ptr = buf;
+        ssize_t nwritten;
+
+        do {
+            nwritten = write(dstFd, out_ptr, nread);
+
+            if (nwritten >= 0)
+            {
+                nread -= nwritten;
+                out_ptr += nwritten;
+            }
+            else if (errno != EINTR)
+            {
+                goto out_error;
+            }
+        } while (nread > 0);
+    }
+
+    if (nread == 0)
+    {
+        if (close(dstFd) < 0)
+        {
+            dstFd = -1;
+            goto out_error;
+        }
+        close(srcFd);
+
+        /* Success! */
+        return YES;
+    }
+    
+    int saved_errno;
+ out_error:
+    saved_errno = errno;
+
+    close(srcFd);
+    if (dstFd >= 0)
+        close(dstFd);
+
+    if (error)
+    {
+        *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{
+            NSLocalizedDescriptionKey: [NSString stringWithUTF8String:strerror(saved_errno)]
+        }];
+    }
+    return NO;
 }
 
 - (BOOL)copyItemAtURL:(NSURL *)srcURL toURL:(NSURL *)dstURL error:(NSError **)error

@@ -264,6 +264,8 @@ static void onerrorCallback(void *ctx) {
         return;
     }
 
+    NSAssert(0, @"%s is not implemented", __FUNCTION__);
+#if 0
     CFMutableURLRequestRef req = CFURLRequestCreateMutableCopy(kCFAllocatorDefault, [request _CFURLRequest]);
     CFURLConnectionSendAsynchronousRequest(req, ^(CFURLResponseRef response, CFDataRef data, CFErrorRef error) {
         NSURLResponse *resp = [NSHTTPURLResponse _responseWithCFURLResponse:response];
@@ -274,6 +276,7 @@ static void onerrorCallback(void *ctx) {
         }];
     });
     CFRelease(req);
+#endif
 }
 
 @end

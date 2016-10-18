@@ -16,13 +16,11 @@ SOURCES = $(addprefix src/, \
     HTTP/CFHTTPConnection.c \
     HTTP/CFHTTPFilter.c \
     HTTP/CFHTTPMessage.c \
-    HTTP/CFHTTPStream.c \
     SharedCode/CFNetConnection.c \
     SharedCode/CFNetworkSchedule.c \
     SharedCode/CFNetworkThreadSupport.c \
     SharedCode/CFError.c \
     URL/CFURLAuthChallenge.c \
-    URL/CFURLConnection.c \
     URL/CFURLRequest.c \
     URL/CFURLResponse.c \
     URL/_CFURLAccess.c \

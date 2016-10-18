@@ -32,6 +32,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFRuntime.h>
 #include <CoreFoundation/CFPriv.h>
+#include <CoreFoundation/CFLogUtilities.h>
 #include <CFNetwork/CFHTTPMessage.h>
 #include "CFHTTPMessagePriv.h"
 #include "CFHTTPStreamPriv.h"
@@ -379,7 +380,7 @@ static CFStringRef _CFHTTPAuthenticationCreateNTLMHeaderForRequest(CFHTTPAuthent
 static _AuthConnectionSpecific* _AuthConnectionSpecificRetain(CFAllocatorRef allocator, _AuthConnectionSpecific* specific);
 static void _AuthConnectionSpecificRelease(CFAllocatorRef allocator, _AuthConnectionSpecific* specific);
 
-#if defined(__MACH__) || defined(APPORTABLE)
+#if defined(__MACH__) || defined(APPORTABLE) || TARGET_OS_EMSCRIPTEN
 static Boolean _CFMD5(const UInt8* d, UInt32 n, UInt8* md, UInt32 md_length);
 //static Boolean _CFCanTryKerberos(void);
 #endif // __MACH__
@@ -1340,6 +1341,10 @@ Boolean _CFMD5(const UInt8* d, UInt32 n, UInt8* md, UInt32 md_length) {
 	CC_MD5_Final(md, &ctx);
 
 	return TRUE;
+}
+#elif TARGET_OS_EMSCRIPTEN
+Boolean _CFMD5(const UInt8* d, UInt32 n, UInt8* md, UInt32 md_length) {
+	CFLog(kCFLogLevelWarning, CFSTR("*** %s is not implemented."), __PRETTY_FUNCTION__);
 }
 #endif
 

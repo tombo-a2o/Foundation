@@ -19,6 +19,8 @@
 #define CGRECT_64 "{CGRect={CGPoint=dd}{CGSize=dd}}"
 #define CGAFFINETRANSFORM_32 "{CGAffineTransform=ffffff}"
 #define CGAFFINETRANSFORM_64 "{CGAffineTransform=dddddd}"
+#define CATRANSFORM3D_32 "{CATransform3D=ffffffffffffffff}"
+#define CATRANSFORM3D_64 "{CATransform3D=dddddddddddddddd}"
 #define UIEDGEINSETS_32 "{UIEdgeInsets=ffff}"
 #define UIEDGEINSETS_64 "{UIEdgeInsets=dddd}"
 #define NSEDGEINSETS_64 "{NSEdgeInsets=ffff}"

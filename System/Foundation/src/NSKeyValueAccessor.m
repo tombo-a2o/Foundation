@@ -19,6 +19,7 @@
 #import <Foundation/NSMethodSignature.h>
 #import "NSExternals.h"
 #import <CoreFoundation/CFSet.h>
+#import <QuartzCore/CATransform3D.h>
 
 #import <stdio.h>
 #import <stdlib.h>
@@ -175,6 +176,10 @@ CFSetCallBacks _NSKVOSetterCallbacks = {
             { \
                 imp = (IMP)&PREFIX ## Rect ## SUFFIX; \
             } \
+            else if (strcmp(type, @encode(CATransform3D)) == 0) \
+            { \
+                imp = (IMP)&PREFIX ## CATransform3D ## SUFFIX; \
+            } \
             else \
             { \
                 imp = (IMP)&PREFIX ## Struct ## SUFFIX; \
@@ -267,6 +272,7 @@ DEFINE_SET_WITH_METHOD(Range, NSRange, rangeValue)
 DEFINE_SET_WITH_METHOD(Point, CGPoint, pointValue)
 DEFINE_SET_WITH_METHOD(Size, CGSize, sizeValue)
 DEFINE_SET_WITH_METHOD(Rect, CGRect, rectValue)
+DEFINE_SET_WITH_METHOD(CATransform3D, CATransform3D, CATransform3DValue)
 
 #undef DEFINE_SET_WITH_METHOD
 
@@ -389,6 +395,7 @@ DEFINE_SET_IN_IVAR(Range, NSRange, rangeValue)
 DEFINE_SET_IN_IVAR(Point, CGPoint, pointValue)
 DEFINE_SET_IN_IVAR(Size, CGSize, sizeValue)
 DEFINE_SET_IN_IVAR(Rect, CGRect, rectValue)
+DEFINE_SET_IN_IVAR(CATransform3D, CATransform3D, CATransform3DValue)
 
 #undef DEFINE_SET_IN_IVAR
 
@@ -543,6 +550,7 @@ DEFINE_GET_VALUE_WITH_METHOD(Range, NSRange)
 DEFINE_GET_VALUE_WITH_METHOD(Point, CGPoint)
 DEFINE_GET_VALUE_WITH_METHOD(Size, CGSize)
 DEFINE_GET_VALUE_WITH_METHOD(Rect, CGRect)
+DEFINE_GET_VALUE_WITH_METHOD(CATransform3D, CATransform3D)
 
 #undef DEFINE_GET_NUMBER_WITH_METHOD
 #undef DEFINE_GET_VALUE_WITH_METHOD
@@ -659,6 +667,7 @@ DEFINE_GET_VALUE_IN_IVAR(Range, NSRange)
 DEFINE_GET_VALUE_IN_IVAR(Point, CGPoint)
 DEFINE_GET_VALUE_IN_IVAR(Size, CGSize)
 DEFINE_GET_VALUE_IN_IVAR(Rect, CGRect)
+DEFINE_GET_VALUE_IN_IVAR(CATransform3D, CATransform3D)
 
 #undef DEFINE_GET_NUMBER_IN_IVAR
 #undef DEFINE_GET_VALUE_IN_IVAR

@@ -628,6 +628,9 @@ static inline void waitCheck(id lock, SEL cmd, pthread_t thread)
 
 - (BOOL)waitUntilDate:(NSDate *)limit
 {
+#if 1
+    NSUnimplementedMethod();
+#else
     waitCheck(self, _cmd, _thread);
 
     if (!_isInitialized)
@@ -653,6 +656,7 @@ static inline void waitCheck(id lock, SEL cmd, pthread_t thread)
     _thread = oldThread;
 
     return success;
+#endif
 }
 
 - (void)signal

@@ -184,12 +184,13 @@
         }
         
         dict[NSFileGroupOwnerAccountID] = [NSNumber numberWithLong:info->st_gid];
+#if !DEPLOYMENT_TARGET_EMSCRIPTEN
         struct group *grp = getgrgid(info->st_gid);
         if (grp != NULL && grp->gr_name != NULL)
         {
             dict[NSFileGroupOwnerAccountName] = [NSString stringWithUTF8String:grp->gr_name];
         }
-
+#endif
         dict[NSFilePosixPermissions] = [NSNumber numberWithInt:info->st_mode & ~(S_IFMT)];
     }
     return self;

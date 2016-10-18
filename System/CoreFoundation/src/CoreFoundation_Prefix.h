@@ -423,7 +423,7 @@ CF_PRIVATE int asprintf(char **ret, const char *format, ...);
 
 #if DEPLOYMENT_TARGET_EMSCRIPTEN
 
-uint64_t mach_absolute_time();
+uint64_t mach_absolute_time(void);
 
 #endif
 

@@ -461,7 +461,8 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
     if (blockClass)
     {
         struct Block_layout *block_layout = (struct Block_layout *)target;
-        __invoke__(block_layout->invoke, _retdata, _frame, [_signature frameLength], [_signature methodReturnType]);
+        //__invoke__(block_layout->invoke, _retdata, _frame, [_signature frameLength], [_signature methodReturnType]);
+        NSAssert(0, @"NSBlock invocation is not implemented");
     }
     else if ([_signature _stret])
     {

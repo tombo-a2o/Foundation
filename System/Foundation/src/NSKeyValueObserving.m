@@ -1008,7 +1008,9 @@ void _NSKVONotifyingEnableForInfoAndKey(NSKVONotifyingInfo *notifyingInfo, NSStr
                     }
                     else
                     {
-                        replacementSetter = (IMP)&_CF_forwarding_prep_0; // aha - this is how other structs work.
+                        NSLog(@"Generic replacementSetter is not implemented");
+                        assert(0);
+                        //replacementSetter = (IMP)&_CF_forwarding_prep_0; // aha - this is how other structs work.
                     }
                 }
                 else
@@ -1067,6 +1069,7 @@ void _NSKVONotifyingEnableForInfoAndKey(NSKVONotifyingInfo *notifyingInfo, NSStr
                 NSKeyValueSetter *notifyingSetter = [NSObject _createValueSetterWithContainerClassID:notifyingInfo->_notifyingClass key:key];
                 [notifyingSetter setMethod:class_getInstanceMethod(notifyingInfo->_notifyingClass, selector)];
 
+#if 0
                 if (replacementSetter == (IMP)&_CF_forwarding_prep_0)
                 {
                     NSKVONotifyingSetMethodImplementation(notifyingInfo, @selector(forwardInvocation:), (IMP)&NSKVOForwardInvocation, nil);
@@ -1082,6 +1085,7 @@ void _NSKVONotifyingEnableForInfoAndKey(NSKVONotifyingInfo *notifyingInfo, NSStr
                     const char *originalTypeEncoding = method_getTypeEncoding(m);
                     class_addMethod(otherClass, newForwardingSelector, originalIMP, originalTypeEncoding);
                 }
+#endif
             }
         }
     }

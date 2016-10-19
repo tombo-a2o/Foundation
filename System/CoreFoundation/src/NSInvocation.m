@@ -188,7 +188,7 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
     // signature should be @encode(long long) @encode(id) @encode(SEL) @encode(SEL) @encode(marg_list)
     class_addMethod([NSObject class], @selector(forward::), (IMP)&_CF_forwarding_prep_0, "q@::^v");
 #else
-    objc_setForwardHandler(&_CF_forwarding_prep_0, &_CF_forwarding_prep_1);
+    //objc_setForwardHandler(&_CF_forwarding_prep_0, &_CF_forwarding_prep_1);
 #endif
 }
 

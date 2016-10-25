@@ -75,3 +75,7 @@ void CFRunLoopWakeUp(CFRunLoopRef rl)
 {
     CFLog(kCFLogLevelWarning, CFSTR("*** %s is not implemented."), __PRETTY_FUNCTION__);
 }
+void CFRunLoopStop(CFRunLoopRef rl)
+{
+    CFLog(kCFLogLevelWarning, CFSTR("*** %s is not implemented."), __PRETTY_FUNCTION__);
+}

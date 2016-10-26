@@ -6,6 +6,8 @@
 //
 #if 1
 
+NSString * const NSURLAuthenticationMethodServerTrust = @"NSURLAuthenticationMethodServerTrust";
+
 @implementation NSURLProtectionSpace
 @end
 

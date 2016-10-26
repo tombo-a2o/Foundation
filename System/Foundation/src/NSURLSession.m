@@ -1,5 +1,7 @@
 #import <Foundation/NSURLSession.h>
 
+const int64_t NSURLSessionTransferSizeUnknown = -1;
+
 @implementation NSURLSession
 + (NSURLSession *)sessionWithConfiguration:(NSURLSessionConfiguration *)configuration
 {

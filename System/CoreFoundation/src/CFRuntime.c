@@ -1057,7 +1057,7 @@ void __CFInitialize(void) {
         /* Here so that __kCFAllocatorTypeID gets index 2. */
         __CFAllocatorInitialize();
 
-#ifdef APPORTABLE
+#if defined(APPORTABLE) || DEPLOYMENT_TARGET_EMSCRIPTEN
         __CFAppleLanguages = strdup((char *)getenv("LANGUAGES"));
 
 #elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED

@@ -2297,7 +2297,7 @@ static CFURLRef _CFBundleGetTableURL( CFLocaleRef loc, CFBundleRef bundle, CFStr
     CFStringRef locIdent = CFLocaleGetIdentifier(loc);
     CFURLRef tableURL = CFBundleCopyResourceURLForLocalization( bundle, tableName, _CFBundleStringTableType, NULL, locIdent);
     if (tableURL == NULL) {
-        CFStringRef lprojName = _CFBundleCopyLanguageAbbreviationForLocalization(locIdent);
+        CFStringRef lprojName = _CFBundleCopyLanguageNameForLocalization(locIdent);
         tableURL = CFBundleCopyResourceURLForLocalization( bundle, tableName, _CFBundleStringTableType, NULL, lprojName);
         CFRelease(lprojName);
     }
@@ -2413,4 +2413,3 @@ CF_EXPORT CFStringRef CFBundleCopyLocalizedString(CFBundleRef bundle, CFStringRe
     CFRelease(stringTable);
     return result;
 }
-

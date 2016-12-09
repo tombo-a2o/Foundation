@@ -974,6 +974,9 @@ pthread_t _CF_pthread_main_thread_np(void) {
 #if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD
 void __CFInitialize(void) __attribute__ ((constructor));
 #endif
+#if DEPLOYMENT_TARGET_EMSCRIPTEN
+extern 
+#endif
 #if DEPLOYMENT_TARGET_WINDOWS
 CF_EXPORT
 #endif

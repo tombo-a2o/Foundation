@@ -245,7 +245,7 @@ static void onerrorCallback(void *ctx) {
 
     NSData *data = createDataFromXhr(xhr);
 
-    return [data autorelease];
+    return data;
 }
 
 @end

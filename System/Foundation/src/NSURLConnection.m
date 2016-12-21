@@ -7,6 +7,7 @@
 
 #import <Foundation/NSURLConnection.h>
 #import <Foundation/NSArray.h>
+#import <Foundation/NSBundle.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSURL.h>
 #import <Foundation/NSData.h>
@@ -32,6 +33,14 @@
 #import <emscripten.h>
 #import <emscripten/xhr.h>
 
+
+static void setDefaultUserAgent(int xhr) {
+    NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+    NSString *bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    NSString *userAgent = [NSString stringWithFormat:@"%@/%@ CFNetwork/808.2.16 Darwin/16.3.0", bundleName, bundleVersion];
+    _xhr_set_request_header(xhr, "User-Agent", [userAgent UTF8String]);
+}
+
 static int xhrCreateAndOpen(NSURLRequest *request, BOOL async) {
     NSString *method = request.HTTPMethod;
     NSURL *url = request.URL;
@@ -43,6 +52,7 @@ static int xhrCreateAndOpen(NSURLRequest *request, BOOL async) {
         NSString *value = [headers objectForKey:key];
         _xhr_set_request_header(xhr, [key UTF8String], [value UTF8String]);
     }
+    setDefaultUserAgent(xhr);
     return xhr;
 }
 

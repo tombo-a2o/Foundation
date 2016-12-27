@@ -185,7 +185,7 @@ static void onloadCallback(void *ctx) {
 static void onerrorCallback(void *ctx) {
     NSURLConnection *connection= (NSURLConnection*)ctx;
     
-    NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSURLErrorUnknown userInfo:nil];
+    NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnknown userInfo:nil];
     [connection performSelector:@selector(didFailWithError:) withObject:error];
     [connection release];
 }
@@ -247,15 +247,17 @@ static void onerrorCallback(void *ctx) {
 
     if(status == 0) {
         // connection, dns, timeout, etc...
-        *error = [[[NSError alloc] init] autorelease];
-        return NULL;
+        if(error) {
+            *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnknown userInfo:nil];
+        }
+        return nil;
     }
 
     //length = _xhr_get_status_text(xhr, &data);
     //NSString *statusText = [[NSString alloc] initWithBytesNoCopy:data length:length encoding:NSASCIIStringEncoding freeWhenDone:YES];
 
     if(response) {
-        *response= createResponseFromXhr(xhr, request);
+        *response = createResponseFromXhr(xhr, request);
     }
 
     NSData *data = createDataFromXhr(xhr);

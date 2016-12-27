@@ -178,6 +178,7 @@ static void onloadCallback(void *ctx) {
         NSData *data = createDataFromXhr(xhr);
         [connection performSelector:@selector(didReceiveData:) withObject:data];
         [connection performSelector:@selector(didFinishLoading:) withObject:nil];
+        [connection release];
     }
 }
 
@@ -186,10 +187,12 @@ static void onerrorCallback(void *ctx) {
     
     NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSURLErrorUnknown userInfo:nil];
     [connection performSelector:@selector(didFailWithError:) withObject:error];
+    [connection release];
 }
 
 - (void)start
 {
+    [self retain];
     int xhr = self.xhr = xhrCreateAndOpen(self.currentRequest, YES);
     self.readyState = 0;
     _xhr_set_onload(xhr, dispatch_get_current_queue(), self, onloadCallback);

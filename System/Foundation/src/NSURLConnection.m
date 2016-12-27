@@ -192,6 +192,8 @@ static void onerrorCallback(void *ctx) {
 
 - (void)start
 {
+    if(self.xhr) return;
+    
     [self retain];
     int xhr = self.xhr = xhrCreateAndOpen(self.currentRequest, YES);
     self.readyState = 0;

@@ -1515,6 +1515,7 @@ static void setClassForClassName(Class cls, NSString *codedName)
     }
     BOOL error = NO;
 
+    int actualLength = 0;
     for (int i = 0; i < len; i++)
     {
         uint64_t offset2;
@@ -1527,20 +1528,20 @@ static void setClassForClassName(Class cls, NSString *codedName)
         {
             error = YES;
         }
-        elements[i] = _decodeObjectBinary(self, uid1);
-        if (elements[i] == nil)
+        id element = _decodeObjectBinary(self, uid1);
+        if(element)
         {
-            error = YES;
+            elements[actualLength++] = element;
         }
         if (error)
         {
-            RELEASE_LOG("failed to decode array element");
+            RELEASE_LOG("failed to decode array element\n");
             len = i;
             break;
         }
     }
 
-    NSArray *array = error ? nil : [[NSArray alloc] initWithObjects:elements count:len];
+    NSArray *array = error ? nil : [[NSArray alloc] initWithObjects:elements count:actualLength];
 
     for (int i = len - 1; i >= 0; i--)
     {

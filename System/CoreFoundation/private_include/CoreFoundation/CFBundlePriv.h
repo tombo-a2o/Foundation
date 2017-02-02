@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -198,7 +198,7 @@ CF_EXPORT
 CFStringRef CFBundleCopyLocalizationForLocalizationInfo(SInt32 languageCode, SInt32 regionCode, SInt32 scriptCode, CFStringEncoding stringEncoding);
     /* Returns the default localization for the combination of codes */
     /* specified.  Pass in -1 for language, region code, or script code, or */
-    /* 0xFFFF for stringEncoding, if you do not wish to specify one of these. */ 
+    /* 0xFFFF for stringEncoding, if you do not wish to specify one of these. */
 
 CF_EXPORT
 void _CFBundleSetDefaultLocalization(CFStringRef localizationName);
@@ -236,7 +236,7 @@ void _CFBundleFlushCachesForURL(CFURLRef url) CF_DEPRECATED(10_0, 10_8, 2_0, 6_0
 CF_EXPORT
 void _CFBundleFlushBundleCaches(CFBundleRef bundle);    // The previous two functions flush cached resource paths; this one also flushes bundle-specific caches such as the info dictionary and strings files
 
-CF_EXPORT 
+CF_EXPORT
 CFArrayRef _CFBundleCopyAllBundles(void); // Pending publication, the only known client of this is PowerBox. Email david_smith@apple.com before using this.
 
 CF_EXPORT
@@ -287,7 +287,8 @@ CFBundleRefNum _CFBundleOpenBundleResourceFork(CFBundleRef bundle);	// deprecate
 CF_EXPORT
 void _CFBundleCloseBundleResourceFork(CFBundleRef bundle);	// deprecated in favor of CFBundleCloseBundleResourceMap
 
+CF_EXPORT CFStringRef CFBundleCopyLocalizedStringForLocalization(CFBundleRef bundle, CFStringRef key, CFStringRef value, CFStringRef tableName, CFStringRef localizationName);
+
 CF_EXTERN_C_END
 
 #endif /* ! __COREFOUNDATION_CFBUNDLEPRIV__ */
-

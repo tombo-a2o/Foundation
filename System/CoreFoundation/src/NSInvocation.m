@@ -457,6 +457,7 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
     SEL sel = *[self _idxToArg:2];
     id arg1 = *[self _idxToArg:3];
     id arg2 = *[self _idxToArg:4];
+    id arg3 = *[self _idxToArg:5];
 
     if (blockClass)
     {
@@ -469,6 +470,7 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
 #define objc_msgSend_stret_viii ((void(*)(id, id, SEL))objc_msgSend_stret)
 #define objc_msgSend_stret_viiii ((void(*)(id, id, SEL, id))objc_msgSend_stret)
 #define objc_msgSend_stret_viiiii ((void(*)(id, id, SEL, id, id))objc_msgSend_stret)
+#define objc_msgSend_stret_viiiiii ((void(*)(id, id, SEL, id, id, id))objc_msgSend_stret)
         char dummy[RET_SIZE_ARGS];
         switch([_signature numberOfArguments])
         {
@@ -480,6 +482,9 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
             break;
         case 4:
             objc_msgSend_stret_viiiii(ret, obj, sel, arg1, arg2);
+            break;
+        case 5:
+            objc_msgSend_stret_viiiiii(ret, obj, sel, arg1, arg2, arg3);
             break;
         default:
             NSLog(@"Unsupported argument number %d", [_signature numberOfArguments]);
@@ -496,6 +501,8 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
 #define objc_msgSend_iiii ((id(*)(id, SEL, id))objc_msgSend)
 #define objc_msgSend_viiii ((void(*)(id, SEL, id, id))objc_msgSend)
 #define objc_msgSend_iiiii ((id(*)(id, SEL, id, id))objc_msgSend)
+#define objc_msgSend_viiiii ((void(*)(id, SEL, id, id, id))objc_msgSend)
+#define objc_msgSend_iiiiii ((id(*)(id, SEL, id, id, id))objc_msgSend)
 
         switch([_signature numberOfArguments])
         {
@@ -520,11 +527,18 @@ id ___forwarding___(struct objc_sendv_margs *args, void *returnStorage)
                 objc_msgSend_viiii(obj, sel, arg1, arg2);
             }
             break;
+        case 5:
+            if(returnsValue) {
+                *ret = objc_msgSend_iiiiii(obj, sel, arg1, arg2, arg3);
+            } else {
+                objc_msgSend_viiiii(obj, sel, arg1, arg2, arg3);
+            }
+            break;
         default:
             NSLog(@"Unsupported argument number %d", [_signature numberOfArguments]);
             assert(0);
         }
-        
+
         //__invoke__(&objc_msgSend, _retdata, _frame, [_signature frameLength], [_signature methodReturnType]);
     }
 

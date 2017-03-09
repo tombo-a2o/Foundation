@@ -9,8 +9,14 @@ const int64_t NSURLSessionTransferSizeUnknown = -1;
 }
 @end
 @implementation NSURLSessionConfiguration
++ (NSURLSessionConfiguration *)defaultSessionConfiguration
+{
+    NSLog(@"*** %s is not implemented", __FUNCTION__);
+    return nil;
+}
 + (NSURLSessionConfiguration *)ephemeralSessionConfiguration
 {
+    NSLog(@"*** %s is not implemented", __FUNCTION__);
     return nil;
 }
 @end

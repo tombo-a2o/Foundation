@@ -227,11 +227,11 @@ static void _NSSetStructValueForKeyWithMethod(id obj, SEL cmd, id value, NSStrin
             }
             [value getValue:buffer];
             NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:method_getTypeEncoding(method)];
-            
+
             NSInvocation *inv = [NSInvocation invocationWithMethodSignature:sig];
             [inv setTarget:obj];
             [inv setSelector:cmd];
-            [inv setArgument:buffer atIndex:2];
+            [inv setArgument:&buffer atIndex:2];
             [inv invoke];
             free(buffer);
         }
@@ -290,7 +290,7 @@ DEFINE_SET_WITH_METHOD(CATransform3D, CATransform3D, CATransform3DValue)
         [self release];
         return nil;
     }
-    
+
     char *type = method_copyArgumentType(m, 2);
     IMP imp = NULL;
     if (*type == _C_ID || *type == _C_CLASS)
@@ -315,7 +315,7 @@ DEFINE_SET_WITH_METHOD(CATransform3D, CATransform3D, CATransform3DValue)
         };
         self = [super initWithContainerClassID:cls key:key implementation:imp selector:method_getName(m) extraArguments:extras count:2];
     }
-    
+
     if (self)
     {
         _method = m;
@@ -455,7 +455,7 @@ static void _NSSetValueAndNotifyForUndefinedKey(id obj, SEL cmd, id value, NSStr
 {
     SEL sel = @selector(setValue:forUndefinedKey:);
     IMP imp = method_getImplementation(class_getInstanceMethod(cls, sel));
-    
+
     if (_NSKVONotifyingMutatorsShouldNotifyForIsaAndKey(cls, key))
     {
         void *extras[1] = {
@@ -502,9 +502,9 @@ static id _NSGetStructValueWithMethod(id obj, SEL cmd, Method method)
         {
             // fault?
         }
-        
+
         NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:method_getTypeEncoding(method)];
-        
+
         NSInvocation *inv = [NSInvocation invocationWithMethodSignature:sig];
         [inv setTarget:obj];
         [inv setSelector:cmd];
@@ -518,7 +518,7 @@ static id _NSGetStructValueWithMethod(id obj, SEL cmd, Method method)
         // fault?
     }
     free(type);
-    
+
     return val;
 }
 
@@ -622,9 +622,9 @@ static id _NSGetStructValueInIvar(id obj, SEL cmd, Ivar ivar)
         {
             // fault?
         }
-        
+
         object_getInstanceVariable(obj, ivar_getName(ivar), (void **)buffer);
-        
+
         val = [NSValue value:buffer withObjCType:type];
         free(buffer);
     }
@@ -1077,7 +1077,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             .implementation = NULL,
             .selector = NULL
         };
-        
+
         if (NSKVOMutableArrayGetters == NULL)
         {
             NSKVOMutableArrayGetters = CFSetCreateMutable(kCFAllocatorDefault, 0, &_NSKVOSetterCallbacks);
@@ -1089,7 +1089,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             CFSetAddValue(NSKVOMutableArrayGetters, arrayGetter);
             [arrayGetter release];
         }
-        
+
         return [[NSKeyValueNotifyingMutableCollectionGetter alloc] initWithContainerClassID:cls key:key mutableCollectionGetter:arrayGetter proxyClass:[NSKeyValueNotifyingMutableArray class]];
     }
     else
@@ -1118,12 +1118,12 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
         if (!hasInsertionAndRemovalMethods)
         {
             NSKeyValueSetter *setter = [NSObject _createValueSetterWithContainerClassID:cls key:key];
-            
+
             if ([setter isKindOfClass:[NSKeyValueIvarSetter class]])
             {
                 NSKeyValueIvarSetter *ivarSetter = (NSKeyValueIvarSetter*)setter;
                 (void)ivarSetter;
-                
+
                 return [[NSKeyValueIvarMutableCollectionGetter alloc] initWithContainerClassID:cls key:key containerIsa:cls ivar:[ivarSetter ivar] proxyClass:[NSKeyValueIvarMutableArray class]];
             }
             else
@@ -1153,7 +1153,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             {
                 proxy = [[NSKeyValueFastMutableCollection2Getter alloc] initWithContainerClassID:cls key:key baseGetter:getter mutatingMethods:mutatingMethods proxyClass:[NSKeyValueFastMutableArray2 class]];
             }
-            
+
             [mutatingMethods release];
             return proxy;
         }
@@ -1172,7 +1172,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             .implementation = NULL,
             .selector = NULL
         };
-        
+
         if (NSKVOMutableOrderedSetGetters == NULL)
         {
             NSKVOMutableOrderedSetGetters = CFSetCreateMutable(kCFAllocatorDefault, 0, &_NSKVOSetterCallbacks);
@@ -1184,7 +1184,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             CFSetAddValue(NSKVOMutableOrderedSetGetters, orderedSetGetter);
             [orderedSetGetter release];
         }
-        
+
         return [[NSKeyValueNotifyingMutableCollectionGetter alloc] initWithContainerClassID:cls key:key mutableCollectionGetter:orderedSetGetter proxyClass:[NSKeyValueNotifyingMutableOrderedSet class]];
     }
     else
@@ -1192,19 +1192,19 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
         int keyLength = [key lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
         char keyBuffer[keyLength+1];
         [key getCString:keyBuffer maxLength:keyLength+1 encoding:NSUTF8StringEncoding];
-        
+
         if ([key length] != 0)
         {
             keyBuffer[0] = toupper(keyBuffer[0]);
         }
-        
+
         NSKeyValueGetter *getter = [NSObject _createValueGetterWithContainerClassID:cls key:key];
-        
+
         Method insertObjectAtIndex = NSKeyValueMethodForPattern(cls, "insertObject:in%sAtIndex:", keyBuffer);
         Method insertObjectsAtIndexes = NSKeyValueMethodForPattern(cls, "insert%s:atIndexes:", keyBuffer);
         Method removeObjectAtIndex = NSKeyValueMethodForPattern(cls, "removeObjectFrom%sAtIndex:", keyBuffer);
         Method removeObjectsAtIndexes = NSKeyValueMethodForPattern(cls, "remove%sAtIndexes:", keyBuffer);
-        
+
         BOOL hasInsertionAndRemovalMethods = (insertObjectAtIndex || insertObjectsAtIndexes) &&
                                              (removeObjectAtIndex || removeObjectsAtIndexes);
         if (!hasInsertionAndRemovalMethods)
@@ -1214,7 +1214,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             {
                 NSKeyValueIvarSetter *ivarSetter = (NSKeyValueIvarSetter*)setter;
                 (void)ivarSetter;
-                
+
                 return [[NSKeyValueIvarMutableCollectionGetter alloc] initWithContainerClassID:cls key:key containerIsa:cls ivar:[ivarSetter ivar] proxyClass:[NSKeyValueIvarMutableOrderedSet class]];
             }
             else
@@ -1231,7 +1231,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             mutatingMethods->removeObjectsAtIndexes = removeObjectsAtIndexes;
             mutatingMethods->replaceObjectAtIndex = NSKeyValueMethodForPattern(cls, "replaceObjectIn%sAtIndex:withObject:", keyBuffer);
             mutatingMethods->replaceObjectsAtIndexes = NSKeyValueMethodForPattern(cls, "replace%sAtIndexes:with%s:", keyBuffer);
-            
+
             NSKeyValueProxyGetter* proxy;
             if ([getter isKindOfClass:[NSKeyValueCollectionGetter class]])
             {
@@ -1242,7 +1242,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             {
                 proxy = [[NSKeyValueFastMutableCollection2Getter alloc] initWithContainerClassID:cls key:key baseGetter:getter mutatingMethods:mutatingMethods proxyClass:[NSKeyValueFastMutableOrderedSet2 class]];
             }
-            
+
             [mutatingMethods release];
             return proxy;
         }
@@ -1261,7 +1261,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             .implementation = NULL,
             .selector = NULL
         };
-        
+
         if (NSKVOMutableSetGetters == NULL)
         {
             NSKVOMutableSetGetters = CFSetCreateMutable(kCFAllocatorDefault, 0, &_NSKVOSetterCallbacks);
@@ -1273,7 +1273,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             CFSetAddValue(NSKVOMutableSetGetters, setGetter);
             [setGetter release];
         }
-        
+
         return [[NSKeyValueNotifyingMutableCollectionGetter alloc] initWithContainerClassID:cls key:key mutableCollectionGetter:setGetter proxyClass:[NSKeyValueNotifyingMutableSet class]];
     }
     else
@@ -1281,19 +1281,19 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
         int keyLength = [key lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
         char keyBuffer[keyLength+1];
         [key getCString:keyBuffer maxLength:keyLength+1 encoding:NSUTF8StringEncoding];
-        
+
         if ([key length] != 0)
         {
             keyBuffer[0] = toupper(keyBuffer[0]);
         }
-        
+
         NSKeyValueGetter *getter = [NSObject _createValueGetterWithContainerClassID:cls key:key];
-        
+
         Method addObject = NSKeyValueMethodForPattern(cls, "add%sObject:", keyBuffer);
         Method unionSet = NSKeyValueMethodForPattern(cls, "add%s:", keyBuffer);
         Method removeObject = NSKeyValueMethodForPattern(cls, "remove%sObject:", keyBuffer);
         Method minusSet = NSKeyValueMethodForPattern(cls, "remove%s:", keyBuffer);
-        
+
         BOOL hasAdditionAndRemovalMethods = (addObject || unionSet) &&
                                             (removeObject || minusSet);
         if (!hasAdditionAndRemovalMethods)
@@ -1303,7 +1303,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             {
                 NSKeyValueIvarSetter *ivarSetter = (NSKeyValueIvarSetter*)setter;
                 (void)ivarSetter;
-                
+
                 return [[NSKeyValueIvarMutableCollectionGetter alloc] initWithContainerClassID:cls key:key containerIsa:cls ivar:[ivarSetter ivar] proxyClass:[NSKeyValueIvarMutableSet class]];
             }
             else
@@ -1320,7 +1320,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             mutatingMethods->minusSet = minusSet;
             mutatingMethods->intersectSet = NSKeyValueMethodForPattern(cls, "intersect%s:", keyBuffer);
             mutatingMethods->setSet = NSKeyValueMethodForPattern(cls, "set%s:", keyBuffer);
-            
+
             NSKeyValueProxyGetter* proxy;
             if ([getter isKindOfClass:[NSKeyValueCollectionGetter class]])
             {
@@ -1331,7 +1331,7 @@ static Method NSKeyValueMethodForPattern(Class cls, const char* pattern, const c
             {
                 proxy = [[NSKeyValueFastMutableCollection2Getter alloc] initWithContainerClassID:cls key:key baseGetter:getter mutatingMethods:mutatingMethods proxyClass:[NSKeyValueFastMutableSet2 class]];
             }
-            
+
             [mutatingMethods release];
             return proxy;
         }

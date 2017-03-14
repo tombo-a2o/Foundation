@@ -92,7 +92,7 @@ typedef enum {
 - (id)initWithPath:(NSString *)path
 {
     NSURL *url = [[NSURL alloc] initFileURLWithPath:path isDirectory:YES];
-    self = [self initWithURL:url];    
+    self = [self initWithURL:url];
     [url release];
     return self;
 }
@@ -148,7 +148,7 @@ static void __NSBundleMainBundleDealloc()
 
 - (NSURL *)URLForResource:(NSString *)name withExtension:(NSString *)ext subdirectory:(NSString *)subpath localization:(NSString *)localizationName
 {
-    return [(NSURL *)CFBundleCopyResourceURLForLocalization(_cfBundle, (CFStringRef)name, (CFStringRef)ext, (CFStringRef)subpath, (CFStringRef)localizationName) autorelease];  
+    return [(NSURL *)CFBundleCopyResourceURLForLocalization(_cfBundle, (CFStringRef)name, (CFStringRef)ext, (CFStringRef)subpath, (CFStringRef)localizationName) autorelease];
 }
 
 - (NSString *)pathForResource:(NSString *)name ofType:(NSString *)ext
@@ -231,6 +231,11 @@ static void __NSBundleMainBundleDealloc()
     return path;
 }
 
+- (NSURL *)resourceURL
+{
+    return [(NSURL *)CFBundleCopyResourcesDirectoryURL(_cfBundle) autorelease];
+}
+
 - (NSString *)executablePath
 {
     CFBundleRef bundle = [self _cfBundle];
@@ -248,6 +253,11 @@ static void __NSBundleMainBundleDealloc()
     {
         return nil;
     }
+}
+
+- (NSURL *)executableURL
+{
+    return [(NSURL *)CFBundleCopyExecutableURL(_cfBundle) autorelease];
 }
 
 - (NSString *)pathForAuxiliaryExecutable:(NSString *)executableName
@@ -343,16 +353,6 @@ static void __NSBundleMainBundleDealloc()
     {
         return nil;
     }
-}
-
-- (NSURL *)resourceURL
-{
-    return [self bundleURL];
-}
-
-- (NSURL *)executableURL
-{
-    return [[self bundleURL] URLByAppendingPathComponent:[[self infoDictionary] objectForKey:@"CFBundleExecutable"]];
 }
 
 - (NSURL *)URLForAuxiliaryExecutable:(NSString *)executableName
@@ -518,7 +518,7 @@ static void __NSBundleMainBundleDealloc()
         // ensure an initialize is triggered and the class is reasonable
         if (cls != Nil && class_respondsToSelector(object_getClass(cls), @selector(self)))
         {
-            _principalClass = [cls self];    
+            _principalClass = [cls self];
         }
     }
     return _principalClass;

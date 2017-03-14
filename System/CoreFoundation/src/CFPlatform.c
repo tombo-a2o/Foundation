@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -89,7 +89,7 @@ CF_PRIVATE const wchar_t *_CFDLLPath(void) {
         wchar_t *DLLFileName = L"CoreFoundation.dll";
 #endif
         HMODULE ourModule = GetModuleHandleW(DLLFileName);
-        
+
         CFAssert(ourModule, __kCFLogAssertion, "GetModuleHandle failed");
 
         DWORD wResult = GetModuleFileNameW(ourModule, cachedPath, MAX_PATH+1);
@@ -182,7 +182,7 @@ const char *_CFProcessPath(void) {
 const char *_CFProcessPath(void) {
     if (__CFProcessPath) return __CFProcessPath;
     char buf[CFMaxPathSize + 1];
-    
+
     ssize_t res = readlink("/proc/self/exe", buf, CFMaxPathSize);
     if (res > 0) {
         // null terminate, readlink does not
@@ -199,11 +199,14 @@ const char *_CFProcessPath(void) {
 #endif
 
 #if DEPLOYMENT_TARGET_EMSCRIPTEN
-static const char *dummy = "/path_to_executable";
+// static const char *dummy = "/path_to_executable";
+static const char *progname = "a2o_application";
+static const char *processPath = "/a2o_application.app/a2o_application";
 const char *_CFProcessPath(void) {
 	if (__CFProcessPath) return __CFProcessPath;
 
-	__CFProcessPath = dummy;
+    __CFprogname = progname;
+	__CFProcessPath = processPath;
 	return __CFProcessPath;
 }
 
@@ -232,7 +235,7 @@ CF_PRIVATE CFStringRef _CFProcessNameString(void) {
 static CFURLRef _CFCopyHomeDirURLForUser(struct passwd *upwd, bool fallBackToHome) {
     const char *fixedHomePath = issetugid() ? NULL : __CFgetenv("CFFIXED_USER_HOME");
     const char *homePath = NULL;
-    
+
     // Calculate the home directory we will use
     // First try CFFIXED_USER_HOME (only if not setugid), then fall back to the upwd, then fall back to HOME environment variable
     CFURLRef home = NULL;
@@ -240,7 +243,7 @@ static CFURLRef _CFCopyHomeDirURLForUser(struct passwd *upwd, bool fallBackToHom
     if (!home && upwd && upwd->pw_dir) home = CFURLCreateFromFileSystemRepresentation(kCFAllocatorSystemDefault, (uint8_t *)upwd->pw_dir, strlen(upwd->pw_dir), true);
     if (fallBackToHome && !home) homePath = __CFgetenv("HOME");
     if (fallBackToHome && !home && homePath) home = CFURLCreateFromFileSystemRepresentation(kCFAllocatorSystemDefault, (uint8_t *)homePath, strlen(homePath), true);
-    
+
     return home;
 }
 
@@ -315,7 +318,7 @@ CFURLRef CFCopyHomeDirectoryURL(void) {
     CFURLRef retVal = NULL;
     CFIndex len = 0;
     CFStringRef str = NULL;
-   
+
     UniChar pathChars[MAX_PATH];
     if (S_OK == SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, SHGFP_TYPE_CURRENT, (wchar_t *)pathChars)) {
         len = (CFIndex)wcslen((wchar_t *)pathChars);
@@ -432,23 +435,23 @@ CF_INLINE CFIndex strlen_UniChar(const UniChar* p) {
  *
  * The CFMutableStringRef result must be released by the caller.
  *
- * If anything fails along the way, the result will be NULL.  
+ * If anything fails along the way, the result will be NULL.
  */
 CF_EXPORT CFMutableStringRef _CFCreateApplicationRepositoryPath(CFAllocatorRef alloc, int nFolder) {
     CFMutableStringRef result = NULL;
     UniChar szPath[MAX_PATH];
-    
+
     // get the current path to the data repository: CSIDL_APPDATA (roaming) or CSIDL_LOCAL_APPDATA (nonroaming)
     if (S_OK == SHGetFolderPathW(NULL, nFolder, NULL, 0, (wchar_t *) szPath)) {
 	CFStringRef directoryPath;
-	
+
 	// make it a CFString
 	directoryPath = CFStringCreateWithCharacters(alloc, szPath, strlen_UniChar(szPath));
 	if (directoryPath) {
 	    CFBundleRef bundle;
 	    CFStringRef bundleName;
 	    CFStringRef completePath;
-	    
+
 	    // attempt to get the bundle name
 	    bundle = CFBundleGetMainBundle();
 	    if (bundle) {
@@ -457,7 +460,7 @@ CF_EXPORT CFMutableStringRef _CFCreateApplicationRepositoryPath(CFAllocatorRef a
 	    else {
 		bundleName = NULL;
 	    }
-	    
+
 	    if (bundleName) {
 		// the path will be "<directoryPath>\Apple Computer\<bundleName>\" if there is a bundle name
 		completePath = CFStringCreateWithFormat(alloc, NULL, CFSTR("%@\\Apple Computer\\%@\\"), directoryPath, bundleName);
@@ -590,12 +593,12 @@ static void __CFTSDFinalize(void *arg) {
         // We've already been destroyed. The call above set the bad pointer again. Now we just return.
         return;
     }
-    
+
     __CFTSDTable *table = (__CFTSDTable *)arg;
     table->destructorCount++;
-        
+
     // On first calls invoke destructor. Later we destroy the data.
-    // Note that invocation of the destructor may cause a value to be set again in the per-thread data slots. The destructor count and destructors are preserved.  
+    // Note that invocation of the destructor may cause a value to be set again in the per-thread data slots. The destructor count and destructors are preserved.
     // This logic is basically the same as what pthreads does. We just skip the 'created' flag.
     for (int32_t i = 0; i < CF_TSD_MAX_SLOTS; i++) {
         if (table->data[i] && table->destructors[i]) {
@@ -604,10 +607,10 @@ static void __CFTSDFinalize(void *arg) {
             table->destructors[i]((void *)(old));
         }
     }
-    
+
     if (table->destructorCount == PTHREAD_DESTRUCTOR_ITERATIONS - 1) {    // On PTHREAD_DESTRUCTOR_ITERATIONS-1 call, destroy our data
         free(table);
-        
+
         // Now if the destructor is called again we will take the shortcut at the beginning of this function.
         __CFTSDSetSpecific(CF_TSD_BAD_PTR);
         return;
@@ -627,7 +630,7 @@ static __CFTSDTable *__CFTSDGetTable() {
         table = (__CFTSDTable *)calloc(1, sizeof(__CFTSDTable));
         __CFTSDSetSpecific(table);
     }
-    
+
     return table;
 }
 
@@ -662,10 +665,10 @@ CF_EXPORT void *_CFSetTSD(uint32_t slot, void *newVal, tsdDestructor destructor)
     }
 
     void *oldVal = (void *)table->data[slot];
-    
+
     table->data[slot] = (uintptr_t)newVal;
     table->destructors[slot] = destructor;
-    
+
     return oldVal;
 }
 
@@ -684,30 +687,30 @@ static wchar_t *createWideFileSystemRepresentation(const char *str, CFIndex *res
     // Get the real length of the string in UTF16 characters
     CFStringRef cfStr = CFStringCreateWithCString(kCFAllocatorSystemDefault, str, kCFStringEncodingUTF8);
     CFIndex strLen = CFStringGetLength(cfStr);
-    
+
     // Allocate a wide buffer to hold the converted string, including space for a NULL terminator
     wchar_t *wideBuf = (wchar_t *)malloc((strLen + 1) * sizeof(wchar_t));
-    
+
     // Copy the string into the buffer and terminate
     CFStringGetCharacters(cfStr, CFRangeMake(0, strLen), (UniChar *)wideBuf);
     wideBuf[strLen] = 0;
-    
+
     CFRelease(cfStr);
     if (resultLen) *resultLen = strLen;
     return wideBuf;
 }
 
-// Copies a UTF16 buffer into a supplied UTF8 buffer. 
+// Copies a UTF16 buffer into a supplied UTF8 buffer.
 static void copyToNarrowFileSystemRepresentation(const wchar_t *wide, CFIndex dstBufSize, char *dstbuf) {
     // Get the real length of the wide string in UTF8 characters
     CFStringRef cfStr = CFStringCreateWithCharacters(kCFAllocatorSystemDefault, (const UniChar *)wide, wcslen(wide));
     CFIndex strLen = CFStringGetLength(cfStr);
     CFIndex bytesUsed;
-    
+
     // Copy the wide string into the buffer and terminate
     CFStringGetBytes(cfStr, CFRangeMake(0, strLen), kCFStringEncodingUTF8, 0, false, (uint8_t *)dstbuf, dstBufSize, &bytesUsed);
     dstbuf[bytesUsed] = 0;
-    
+
     CFRelease(cfStr);
 }
 
@@ -734,13 +737,13 @@ CF_EXPORT int _NS_rmdir(const char *name) {
 
 CF_EXPORT int _NS_chmod(const char *name, int mode) {
     wchar_t *wide = createWideFileSystemRepresentation(name, NULL);
-    
+
     // Convert mode
     int newMode = 0;
     if (mode | 0400) newMode |= _S_IREAD;
     if (mode | 0200) newMode |= _S_IWRITE;
     if (mode | 0100) newMode |= _S_IEXEC;
-    
+
     int res = _wchmod(wide, newMode);
     free(wide);
     return res;
@@ -759,12 +762,12 @@ CF_EXPORT char *_NS_getcwd(char *dstbuf, size_t size) {
 	CFLog(kCFLogLevelWarning, CFSTR("CFPlatform: getcwd called with null buffer"));
 	return 0;
     }
-    
+
     wchar_t *buf = _wgetcwd(NULL, 0);
     if (!buf) {
         return NULL;
     }
-        
+
     // Convert result to UTF8
     copyToNarrowFileSystemRepresentation(buf, (CFIndex)size, dstbuf);
     free(buf);
@@ -837,7 +840,7 @@ CF_EXPORT int _NS_access(const char *name, int amode) {
 CF_EXPORT int _NS_mkstemp(char *name, int bufSize) {
     CFIndex nameLen;
     wchar_t *wide = createWideFileSystemRepresentation(name, &nameLen);
-    
+
     // First check to see if the directory that this new temporary file will be created in exists. If not, set errno to ENOTDIR. This mimics the behavior of mkstemp on MacOS more closely.
     // Look for the last '\' in the path
     wchar_t *lastSlash = wcsrchr(wide, '\\');
@@ -845,7 +848,7 @@ CF_EXPORT int _NS_mkstemp(char *name, int bufSize) {
 	free(wide);
 	return -1;
     }
-    
+
     // Set the last slash to NULL temporarily and use it for _wstat
     *lastSlash = 0;
     struct _stat dirInfo;
@@ -859,20 +862,20 @@ CF_EXPORT int _NS_mkstemp(char *name, int bufSize) {
     }
     // Restore the last slash
     *lastSlash = '\\';
-    
+
     errno_t err = _wmktemp_s(wide, nameLen + 1);
     if (err != 0) {
         free(wide);
         return 0;
     }
-    
+
     int fd;
     _wsopen_s(&fd, wide, _O_RDWR | _O_CREAT | CF_OPENFLGS, _SH_DENYNO, _S_IREAD | _S_IWRITE);
-    
+
     // Convert the wide name back into the UTF8 buffer the caller supplied
     copyToNarrowFileSystemRepresentation(wide, bufSize, name);
     free(wide);
-    return fd;    
+    return fd;
 }
 
 
@@ -884,18 +887,18 @@ Boolean _isAFloppy(char driveLetter)
     TCHAR tsz[8];
     Boolean retval = false;
     int iDrive;
-    
+
     if (driveLetter >= 'a' && driveLetter <= 'z') {
         driveLetter = driveLetter - 'a' + 'A';
     }
-    
+
     if ((driveLetter < 'A') || (driveLetter > 'Z')) {
         // invalid driveLetter; I guess it's not a floppy...
         return false;
     }
-    
+
     iDrive = driveLetter - 'A' + 1;
-    
+
     // On Windows NT, use the technique described in the Knowledge Base article Q115828 and in the "FLOPPY" SDK sample.
     wsprintf(tsz, TEXT("\\\\.\\%c:"), TEXT('@') + iDrive);
     h = CreateFile(tsz, 0, FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
@@ -903,7 +906,7 @@ Boolean _isAFloppy(char driveLetter)
     {
         DISK_GEOMETRY Geom[20];
         DWORD cb;
-        
+
         if (DeviceIoControl (h, IOCTL_DISK_GET_MEDIA_TYPES, 0, 0,
                              Geom, sizeof(Geom), &cb, 0)
             && cb > 0)
@@ -924,7 +927,7 @@ Boolean _isAFloppy(char driveLetter)
                     break;
             }
         }
-        
+
         CloseHandle(h);
     }
 
@@ -934,74 +937,74 @@ Boolean _isAFloppy(char driveLetter)
 
 extern CFStringRef CFCreateWindowsDrivePathFromVolumeName(CFStringRef volNameStr) {
     if (!volNameStr) return NULL;
-    
+
     // This code is designed to match as closely as possible code from QuickTime's library
     CFIndex strLen = CFStringGetLength(volNameStr);
     if (strLen == 0) {
 	return NULL;
     }
-    
+
     // Get drive names
     long length, result;
     wchar_t *driveNames = NULL;
-    
+
     // Get the size of the buffer to store the list of drives
     length = GetLogicalDriveStringsW(0, 0);
     if (!length) {
         return NULL;
     }
-    
+
     driveNames = (wchar_t *)malloc((length + 1) * sizeof(wchar_t));
     result = GetLogicalDriveStringsW(length, driveNames);
-    
+
     if (!result || result > length) {
         free(driveNames);
         return NULL;
     }
-    
+
     // Get the volume name string into a wide buffer
     wchar_t *theVolumeName = (wchar_t *)malloc((strLen + 1) * sizeof(wchar_t));
     CFStringGetCharacters(volNameStr, CFRangeMake(0, strLen), (UniChar *)theVolumeName);
     theVolumeName[strLen] = 0;
-    
+
     // lowercase volume name
     _wcslwr(theVolumeName);
-    
+
     // Iterate through the drive names, looking for something that matches
     wchar_t *drivePtr = driveNames;
     CFStringRef drivePathResult = NULL;
 
     while (*drivePtr) {
         _wcslwr(drivePtr);
-        
+
         if (!_isAFloppy((char)*drivePtr)) {
             UINT                oldErrorMode;
             DWORD               whoCares1, whoCares2;
             BOOL                getVolInfoSucceeded;
             UniChar             thisVolumeName[MAX_PATH];
-            
+
             // Convert this drive string into a volume name
             oldErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
             getVolInfoSucceeded = GetVolumeInformationW(drivePtr, (LPWSTR)thisVolumeName, sizeof(thisVolumeName), NULL, &whoCares1, &whoCares2, NULL, 0);
             SetErrorMode(oldErrorMode);
-            
+
             if (getVolInfoSucceeded) {
                 _wcslwr((wchar_t *)thisVolumeName);
-                
+
                 // If the volume corresponding to this drive matches the input volume
                 // then this drive is the winner.
-                if (!wcscmp((const wchar_t *)thisVolumeName, theVolumeName) || 
+                if (!wcscmp((const wchar_t *)thisVolumeName, theVolumeName) ||
                     (*thisVolumeName == 0x00 && (CFStringCompare(volNameStr, CFSTR("NONAME"), 0) == kCFCompareEqualTo))) {
                     drivePathResult = CFStringCreateWithCharacters(kCFAllocatorSystemDefault, (const UniChar *)drivePtr, wcslen(drivePtr));
                     break;
                 }
             }
         }
-        
+
         drivePtr += wcslen(drivePtr) + 1;
     }
-    
-    
+
+
     free(driveNames);
     free(theVolumeName);
     return drivePathResult;
@@ -1020,18 +1023,18 @@ CF_PRIVATE int _NS_gettimeofday(struct timeval *tv, struct timezone *tz) {
         t |= ft.dwHighDateTime;
         t <<= 32;
         t |= ft.dwLowDateTime;
-        
+
         // Convert to microseconds
         t /= 10;
-        
+
         // Difference between 1/1/1970 and 1/1/1601
         t -= 11644473600000000Ui64;
-        
+
         // Convert microseconds to seconds
         tv->tv_sec = (long)(t / 1000000UL);
         tv->tv_usec = (long)(t % 1000000UL);
     }
-    
+
     // We don't support tz
     return 0;
 }
@@ -1043,18 +1046,18 @@ CF_PRIVATE int _NS_gettimeofday(struct timeval *tv, struct timezone *tz) {
 
 #if DEPLOYMENT_TARGET_LINUX
 
-bool OSAtomicCompareAndSwapPtr(void *oldp, void *newp, void *volatile *dst) 
-{ 
+bool OSAtomicCompareAndSwapPtr(void *oldp, void *newp, void *volatile *dst)
+{
     return __sync_bool_compare_and_swap(dst, oldp, newp);
 }
 
-bool OSAtomicCompareAndSwapLong(long oldl, long newl, long volatile *dst) 
-{ 
+bool OSAtomicCompareAndSwapLong(long oldl, long newl, long volatile *dst)
+{
     return __sync_val_compare_and_swap(dst, oldl, newl);
 }
 
-bool OSAtomicCompareAndSwapPtrBarrier(void *oldp, void *newp, void *volatile *dst) 
-{ 
+bool OSAtomicCompareAndSwapPtrBarrier(void *oldp, void *newp, void *volatile *dst)
+{
     return __sync_bool_compare_and_swap(dst, oldp, newp);
 }
 
@@ -1099,7 +1102,7 @@ void OSMemoryBarrier() {
 #include <Block_private.h>
 
 void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) {
-    struct Block_layout *layout = (struct Block_layout *)block; 
+    struct Block_layout *layout = (struct Block_layout *)block;
     pthread_once(predicate, (void (*)(void))layout->invoke);
 }
 
@@ -1136,4 +1139,3 @@ CF_PRIVATE int asprintf(char **ret, const char *format, ...) {
 }
 
 #endif
-

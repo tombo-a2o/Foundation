@@ -140,10 +140,12 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 - (void)performSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes
 {
     [self retain];
+    [anArgument retain];
     dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,  (int64_t)(delay * NSEC_PER_SEC));
     dispatch_after(t, dispatch_get_current_queue(), ^{
         [self performSelector:aSelector withObject:anArgument];
         [self release];
+        [anArgument release];
     });
 }
 
@@ -151,16 +153,20 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 {
     if(delay > 0) {
         [self retain];
+        [anArgument retain];
         dispatch_time_t t = dispatch_time(DISPATCH_TIME_NOW,  (int64_t)(delay * NSEC_PER_SEC));
         dispatch_after(t, dispatch_get_current_queue(), ^{
             [self performSelector:aSelector withObject:anArgument];
             [self release];
+            [anArgument release];
         });
     } else {
         [self retain];
+        [anArgument retain];
         dispatch_async(dispatch_get_current_queue(), ^{
             [self performSelector:aSelector withObject:anArgument];
             [self release];
+            [anArgument release];
         });
     }
 }
@@ -183,8 +189,12 @@ void *_NS_RUNLOOP_KEY = (void*)"NS_RUNLOOP_KEY";
 
 - (void)performSelector:(SEL)aSelector target:(id)target argument:(id)arg order:(NSUInteger)order modes:(NSArray *)modes
 {
+    [target retain];
+    [arg retain];
     dispatch_async(dispatch_get_current_queue(), ^{
         [target performSelector:aSelector withObject:arg];
+        [target release];
+        [arg release];
     });
 }
 

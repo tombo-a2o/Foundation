@@ -139,6 +139,9 @@ FOUNDATION_EXPORT const int64_t NSURLSessionTransferSizeUnknown;
 @interface NSURLSessionUploadTask : NSURLSessionDataTask <NSCopying>
 @end
 
+@interface NSURLSessionStreamTask : NSURLSessionDataTask <NSCopying>
+@end
+
 /* Session Delegates */
 @protocol NSURLSessionDelegate <NSObject>
 @optional

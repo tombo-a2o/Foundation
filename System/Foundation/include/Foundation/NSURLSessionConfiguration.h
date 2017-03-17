@@ -15,7 +15,6 @@
 //******************************************************************************
 #pragma once
 
-#import <Foundation/FoundationExport.h>
 #import <Foundation/NSObject.h>
 #import <Foundation/NSURLRequest.h>
 
@@ -28,7 +27,6 @@
 @class NSURLCache;
 @class NSArray;
 
-FOUNDATION_EXPORT_CLASS
 @interface NSURLSessionConfiguration : NSObject <NSCopying>
 + (NSURLSessionConfiguration*)defaultSessionConfiguration;
 + (NSURLSessionConfiguration*)ephemeralSessionConfiguration;

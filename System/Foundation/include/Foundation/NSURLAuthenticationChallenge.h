@@ -15,7 +15,6 @@
 //******************************************************************************
 #pragma once
 
-#import <Foundation/FoundationExport.h>
 #import <Foundation/NSObject.h>
 
 @protocol NSURLAuthenticationChallengeSender;
@@ -33,16 +32,15 @@ enum {
 
 typedef NSInteger NSURLSessionAuthChallengeDisposition;
 
-FOUNDATION_EXPORT_CLASS
 @interface NSURLAuthenticationChallenge : NSObject <NSSecureCoding>
 - (instancetype)initWithAuthenticationChallenge:(NSURLAuthenticationChallenge*)challenge
-                                         sender:(id<NSURLAuthenticationChallengeSender>)sender STUB_METHOD;
+                                         sender:(id<NSURLAuthenticationChallengeSender>)sender;
 - (instancetype)initWithProtectionSpace:(NSURLProtectionSpace*)space
                      proposedCredential:(NSURLCredential*)credential
                    previousFailureCount:(NSInteger)count
                         failureResponse:(NSURLResponse*)response
                                   error:(NSError*)error
-                                 sender:(id<NSURLAuthenticationChallengeSender>)sender STUB_METHOD;
+                                 sender:(id<NSURLAuthenticationChallengeSender>)sender;
 @property (readonly, copy) NSError* error;
 @property (readonly, copy) NSURLResponse* failureResponse;
 @property (readonly) NSInteger previousFailureCount;

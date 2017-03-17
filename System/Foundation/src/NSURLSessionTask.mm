@@ -15,7 +15,6 @@
 //******************************************************************************
 
 #import <Foundation/Foundation.h>
-#import <Starboard.h>
 #import "NSURLSession-Internal.h"
 #import "NSURLSessionTask-Internal.h"
 #import "NSURLProtocolInternal.h"
@@ -121,17 +120,18 @@ enum HttpStatus : int {
             // Per RFC 7233 section 4.2, a byte-content-range header will always contain FIRST-LAST, and may optionally contain
             // /COMPLETE_LENGTH, but only on 206 (Partial Content) or 416 (Range Not Satisfiable) responses.
             unsigned long long first = 0, last = 0, completeLength = 0;
-            int tokens = sscanf_s([rangeResponse UTF8String], "bytes %llu-%llu/%llu", &first, &last, &completeLength);
-            if (tokens >= 2) { // "bytes" $FIRST "-" $LAST
-                received = first;
-                if (tokens >= 3) { // "/" $COMPLETE_LENGTH
-                    expected = completeLength;
-                } else {
-                    // last is the zero-based index of the last byte the server is including in the response;
-                    // here we add 1 to compensate.
-                    expected = last + 1;
-                }
-            }
+            NSLog(@"*** %s FIXME", __FUNCTION__);
+            // int tokens = sscanf_s([rangeResponse UTF8String], "bytes %llu-%llu/%llu", &first, &last, &completeLength);
+            // if (tokens >= 2) { // "bytes" $FIRST "-" $LAST
+            //     received = first;
+            //     if (tokens >= 3) { // "/" $COMPLETE_LENGTH
+            //         expected = completeLength;
+            //     } else {
+            //         // last is the zero-based index of the last byte the server is including in the response;
+            //         // here we add 1 to compensate.
+            //         expected = last + 1;
+            //     }
+            // }
         }
     }
 
@@ -222,7 +222,7 @@ enum HttpStatus : int {
  @Status Stub
 */
 - (void)suspend {
-    UNIMPLEMENTED();
+    NSLog(@"*** %s FIXME", __FUNCTION__);
     @synchronized(self) {
         if (_state == NSURLSessionTaskStateSuspended) {
             return;

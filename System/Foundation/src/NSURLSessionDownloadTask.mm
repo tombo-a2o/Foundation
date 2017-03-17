@@ -15,11 +15,7 @@
 //******************************************************************************
 
 #import <Foundation/Foundation.h>
-#import <Foundation/NSOutputStream.h>
-#import <Starboard.h>
 #import "NSURLSessionTask-Internal.h"
-
-#import <windows.h>
 
 NSString* const NSURLSessionDownloadTaskResumeData = @"NSURLSessionDownloadTaskResumeData";
 @interface NSURLSessionDownloadTask () {
@@ -115,10 +111,11 @@ dataTask:(NSURLSessionDataTask*)dataTask {
 }
 
 - (void)_finalizeOutputStream {
-    NSOutputStream* outputStream =
-        reinterpret_cast<NSOutputStream*>(InterlockedExchangePointer(reinterpret_cast<void* volatile*>(&_outputStream), nil));
-    [outputStream close];
-    [outputStream release];
+    NSLog(@"*** %s FIXME", __FUNCTION__);
+    // NSOutputStream* outputStream =
+    //     reinterpret_cast<NSOutputStream*>(InterlockedExchangePointer(reinterpret_cast<void* volatile*>(&_outputStream), nil));
+    // [outputStream close];
+    // [outputStream release];
 }
 
 /**

@@ -15,7 +15,6 @@
 //******************************************************************************
 
 #import <Foundation/Foundation.h>
-#import <Starboard.h>
 #import "NSURLSessionTask-Internal.h"
 
 @interface NSURLSessionDataTask () {
@@ -25,7 +24,7 @@
 
 @implementation NSURLSessionDataTask
 - (void)_promoteToDownloadTask {
-    UNIMPLEMENTED();
+    NSLog(@"*** %s is not implemented", __FUNCTION__);
 }
 
 - (void)_storeDataInCache {

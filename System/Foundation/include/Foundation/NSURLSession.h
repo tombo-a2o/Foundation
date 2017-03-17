@@ -15,7 +15,6 @@
 //******************************************************************************
 #pragma once
 
-#import <Foundation/FoundationExport.h>
 #import <Foundation/NSObject.h>
 #import <Foundation/NSURLAuthenticationChallenge.h>
 
@@ -71,7 +70,6 @@ typedef NS_ENUM(NSInteger, NSURLSessionResponseDisposition) {
 
 FOUNDATION_EXPORT const int64_t NSURLSessionTransferSizeUnknown;
 
-FOUNDATION_EXPORT_CLASS
 @interface NSURLSession : NSObject
 + (NSURLSession*)sessionWithConfiguration:(NSURLSessionConfiguration*)configuration;
 + (NSURLSession*)sessionWithConfiguration:(NSURLSessionConfiguration*)configuration
@@ -113,7 +111,6 @@ FOUNDATION_EXPORT_CLASS
 @end
 
 /* Tasks */
-FOUNDATION_EXPORT_CLASS
 @interface NSURLSessionTask : NSObject <NSCopying>
 - (void)cancel;
 - (void)resume;
@@ -132,16 +129,13 @@ FOUNDATION_EXPORT_CLASS
 @property (readonly, copy) NSError* error;
 @end
 
-FOUNDATION_EXPORT_CLASS
 @interface NSURLSessionDataTask : NSURLSessionTask <NSCopying>
 @end
 
-FOUNDATION_EXPORT_CLASS
 @interface NSURLSessionDownloadTask : NSURLSessionTask <NSCopying>
 - (void)cancelByProducingResumeData:(void (^)(NSData*))completionHandler;
 @end
 
-FOUNDATION_EXPORT_CLASS
 @interface NSURLSessionUploadTask : NSURLSessionDataTask <NSCopying>
 @end
 

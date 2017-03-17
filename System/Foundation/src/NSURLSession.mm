@@ -16,22 +16,17 @@
 
 #import <Foundation/Foundation.h>
 #import <Foundation/NSURLSession.h>
+#import <objc/runtime.h>
 #import <functional>
-#import <Starboard.h>
-#import <windows.h>
 
 #import <map>
 #import <mutex>
 #import <condition_variable>
 
-#import "NSRunLoopSource.h"
-#import "NSRunLoop+Internal.h"
 #import "NSURLSession-Internal.h"
 #import "NSURLSessionTask-Internal.h"
 
 const int64_t NSURLSessionTransferSizeUnknown = -1LL;
-
-#import <StubReturn.h>
 
 #define _THROW_IF_NULL_REQUEST(request)                                        \
 do {                                                                           \
@@ -54,7 +49,8 @@ template <typename... Args>
 static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd, Args... args) {
     if (object && [object respondsToSelector:cmd]) {
         [queue addOperationWithBlock:^{
-            reinterpret_cast<void (*)(id, SEL, Args...)>(objc_msgSend)(object, cmd, args...);
+            NSLog(@"*** %s FIXME", __FUNCTION__);
+            // reinterpret_cast<void (*)(id, SEL, Args...)>(objc_msgSend)(object, cmd, args...);
         }];
         return true;
     }
@@ -123,7 +119,7 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
 @end
 
 @interface NSURLSession () <_NSURLSessionTaskDelegate> {
-    std::map<id, idretaint<_NSURLSessionInflightTaskInfo>> _inflightTasks;
+    std::map<id, _NSURLSessionInflightTaskInfo*> _inflightTasks;
     NSMutableSet* _allTasks;
 
     bool _invalidating;
@@ -131,7 +127,7 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
     std::condition_variable _taskRemovalCondition;
 
     NSThread* _taskDispatchThread;
-    NSRunLoopSource* _runLoopCancelSource;
+    // NSRunLoopSource* _runLoopCancelSource;
 
     uint32_t _threadInitializedFuse;
     NSUInteger _nextTaskIdentifier;
@@ -210,7 +206,8 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
     [_delegateQueue release];
     [_allTasks release];
     [_taskDispatchThread release];
-    [_runLoopCancelSource release];
+    NSLog(@"*** %s FIXME", __FUNCTION__);
+    // [_runLoopCancelSource release];
     [super dealloc];
 }
 
@@ -223,19 +220,21 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
 
 - (void)_ensureTaskDispatchThreadIsRunning {
     // TODO(DH): this should be an atomic<bool>, but atomics require an intrinsic we can't emit right now.
-    if (InterlockedCompareExchange(&_threadInitializedFuse, 0x1, 0x0) == 0x0) {
-        _runLoopCancelSource = [[NSRunLoopSource alloc] init];
-        _taskDispatchThread = [[NSThread alloc] initWithTarget:self selector:@selector(_taskDispatchThreadBody:) object:nil];
-        [_taskDispatchThread start];
-    }
+    NSLog(@"*** %s FIXME", __FUNCTION__);
+    // if (InterlockedCompareExchange(&_threadInitializedFuse, 0x1, 0x0) == 0x0) {
+    //     _runLoopCancelSource = [[NSRunLoopSource alloc] init];
+    //     _taskDispatchThread = [[NSThread alloc] initWithTarget:self selector:@selector(_taskDispatchThreadBody:) object:nil];
+    //     [_taskDispatchThread start];
+    // }
 }
 
 - (void)_taskDispatchThreadBody:(id)sender {
     NSRunLoop* currentRunLoop = [NSRunLoop currentRunLoop];
-    [currentRunLoop _addInputSource:_runLoopCancelSource forMode:@"kCFRunLoopDefaultMode"];
-    while (!_invalidating) {
-        [currentRunLoop runUntilDate:[NSDate distantFuture]];
-    }
+    NSLog(@"*** %s FIXME", __FUNCTION__);
+    // [currentRunLoop _addInputSource:_runLoopCancelSource forMode:@"kCFRunLoopDefaultMode"];
+    // while (!_invalidating) {
+    //     [currentRunLoop runUntilDate:[NSDate distantFuture]];
+    // }
 }
 
 - (NSThread*)_taskDispatchThread {
@@ -281,7 +280,9 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
 }
 
 - (NSUInteger)_nextTaskIdentifier {
-    return InterlockedIncrementNoFence((long*)&_nextTaskIdentifier);
+    NSLog(@"*** %s FIXME", __FUNCTION__);
+    // return InterlockedIncrementNoFence((long*)&_nextTaskIdentifier);
+    return 0;
 }
 
 - (_NSURLSessionInflightTaskInfo*)_inflightDataForTask:(NSURLSessionTask*)task {
@@ -411,7 +412,7 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
 - (NSURLSessionUploadTask*)uploadTaskWithRequest:(NSURLRequest*)request
                                         fromData:(NSData*)data
                                completionHandler:(NSURLSessionTaskCompletionHandler)completionHandler {
-    UNIMPLEMENTED();
+    NSLog(@"*** %s is not implemented", __FUNCTION__);
     if (_invalidating) {
         return nil;
     }
@@ -434,7 +435,7 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
 - (NSURLSessionUploadTask*)uploadTaskWithRequest:(NSURLRequest*)request
                                         fromFile:(NSURL*)fileURL
                                completionHandler:(NSURLSessionTaskCompletionHandler)completionHandler {
-    UNIMPLEMENTED();
+    NSLog(@"*** %s is not implemented", __FUNCTION__);
     if (_invalidating) {
         return nil;
     }
@@ -447,7 +448,7 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
 @Status Stub
 */
 - (NSURLSessionUploadTask*)uploadTaskWithStreamedRequest:(NSURLRequest*)request {
-    UNIMPLEMENTED();
+    NSLog(@"*** %s is not implemented", __FUNCTION__);
     if (_invalidating) {
         return nil;
     }
@@ -469,7 +470,8 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
 
 - (void)_waitForTasks {
     std::unique_lock<std::mutex> lock(_mutex);
-    _taskRemovalCondition.wait(lock, [&]() { return [_allTasks count] == 0; });
+    NSLog(@"*** %s FIXME", __FUNCTION__);
+    // _taskRemovalCondition.wait(lock, [&]() { return [_allTasks count] == 0; });
     lock.unlock();
 }
 
@@ -509,7 +511,8 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
     self.delegate = nil;
     self.delegateQueue = nil;
 
-    [_runLoopCancelSource _trigger];
+    NSLog(@"*** %s FIXME", __FUNCTION__);
+    // [_runLoopCancelSource _trigger];
 }
 
 /**

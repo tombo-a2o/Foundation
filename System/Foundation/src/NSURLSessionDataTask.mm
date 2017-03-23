@@ -38,10 +38,8 @@
     [self._taskDelegate dataTask:self willCacheResponse:proposedCachedURLResponse completionHandler:continuation];
 }
 
-- (void)URLProtocol:(NSURLProtocol*)connection
- didReceiveResponse:(NSURLResponse*)response
- cacheStoragePolicy:(NSURLCacheStoragePolicy)policy {
-    [super URLProtocol:connection didReceiveResponse:response cacheStoragePolicy:policy];
+- (void)_updateWithURLResponse:(NSURLResponse*)response {
+    [super _updateWithURLResponse:response];
 
     auto continuation = ^(NSURLSessionResponseDisposition disposition) {
         switch (disposition) {
@@ -57,17 +55,17 @@
     };
     [self._taskDelegate dataTask:self didReceiveResponse:response completionHandler:continuation];
 
-    _shouldCache = (policy != NSURLCacheStorageNotAllowed);
+    _shouldCache = (self.currentRequest.cachePolicy != NSURLCacheStorageNotAllowed);
 }
 
-- (void)URLProtocol:(NSURLProtocol*)connection didLoadData:(NSData*)data {
+- (void)_didReceiveData:(NSData*)data {
     if (!self.response) {
         // TODO: Some of our URL machinery will leak data before a redirect
         // we don't want to count that data.
         return;
     }
 
-    [super URLProtocol:connection didLoadData:data];
+    [super _didReceiveData:data];
     [self._taskDelegate dataTask:self didReceiveData:data];
 
     if (_shouldCache) {
@@ -75,12 +73,12 @@
     }
 }
 
-- (void)URLProtocolDidFinishLoading:(NSURLProtocol*)connection {
+- (void)_didFinishLoading {
     if (_shouldCache) {
         [self _storeDataInCache];
     }
 
-    [super URLProtocolDidFinishLoading:connection];
+    [super _didFinishLoading];
 }
 
 @end

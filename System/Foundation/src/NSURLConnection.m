@@ -21,7 +21,6 @@
 #import <Foundation/NSOperation.h>
 #import <Foundation/NSURLProtocol.h>
 #import "NSURLAuthenticationChallengeInternal.h"
-#import "NSURLConnectionInternal.h"
 #import "NSURLProtectionSpaceInternal.h"
 #import "NSURLProtocolInternal.h"
 #import "NSURLRequestInternal.h"
@@ -140,19 +139,19 @@ static NSData *createDataFromXhr(int xhr) {
 - (void)didReceiveResponse:(NSHTTPURLResponse*)response {
     if([self.delegate respondsToSelector:@selector(connection:didReceiveResponse:)]) {
         [(id<NSURLConnectionDataDelegate>)self.delegate connection:self didReceiveResponse:response];
-    } 
+    }
 }
 
 - (void)didReceiveData:(NSData*)data {
     if([self.delegate respondsToSelector:@selector(connection:didReceiveData:)]) {
         [(id<NSURLConnectionDataDelegate>)self.delegate connection:self didReceiveData:data];
-    } 
+    }
 }
 
 - (void)didFinishLoading:(id)dummy {
     if([self.delegate respondsToSelector:@selector(connectionDidFinishLoading:)]) {
         [(id<NSURLConnectionDataDelegate>)self.delegate connectionDidFinishLoading:self];
-    } 
+    }
 }
 
 - (void)didFailWithError:(NSError*)error {
@@ -185,7 +184,7 @@ static void onloadCallback(void *ctx) {
 
 static void onerrorCallback(void *ctx) {
     NSURLConnection *connection= (NSURLConnection*)ctx;
-    
+
     NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnknown userInfo:nil];
     [connection performSelector:@selector(didFailWithError:) withObject:error];
     [connection release];
@@ -194,7 +193,7 @@ static void onerrorCallback(void *ctx) {
 - (void)start
 {
     if(self.xhr) return;
-    
+
     [self retain];
     int xhr = self.xhr = xhrCreateAndOpen(self.currentRequest, YES);
     self.readyState = 0;
@@ -243,7 +242,7 @@ static void onerrorCallback(void *ctx) {
     int xhr = xhrCreateAndOpen(request, NO);
     NSData *body = request.HTTPBody;
     _xhr_send(xhr, body.bytes, body.length); // block
-    
+
     int status = _xhr_get_status(xhr);
 
     if(status == 0) {

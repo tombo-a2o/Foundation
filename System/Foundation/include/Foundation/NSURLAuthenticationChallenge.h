@@ -16,6 +16,7 @@
 #pragma once
 
 #import <Foundation/NSObject.h>
+#import <CFNetwork/CFURLConnection.h>
 
 @protocol NSURLAuthenticationChallengeSender;
 @class NSURLProtectionSpace;

@@ -21,7 +21,6 @@
 #import <Foundation/NSOperation.h>
 #import <Foundation/NSURLProtocol.h>
 #import "NSURLAuthenticationChallengeInternal.h"
-#import "NSURLConnectionInternal.h"
 #import "NSURLProtectionSpaceInternal.h"
 #import "NSURLProtocolInternal.h"
 #import "NSURLRequestInternal.h"
@@ -33,56 +32,7 @@
 #import <Foundation/NSURLError.h>
 #import <emscripten.h>
 #import <emscripten/xhr.h>
-
-
-static void setDefaultUserAgent(int xhr) {
-    NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-    NSString *bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-    NSString *userAgent = [NSString stringWithFormat:@"%@/%@ CFNetwork/808.2.16 Darwin/16.3.0", bundleName, bundleVersion];
-    _xhr_set_request_header(xhr, "User-Agent", [userAgent UTF8String]);
-}
-
-static int xhrCreateAndOpen(NSURLRequest *request, BOOL async) {
-    NSString *method = request.HTTPMethod;
-    NSURL *url = request.URL;
-    NSDictionary *headers = request.allHTTPHeaderFields;
-
-    int xhr = _xhr_create();
-    _xhr_open(xhr, [method UTF8String], [url.absoluteString UTF8String], async ? 1 : 0, [url.user UTF8String], [url.password UTF8String]);
-    for(NSString *key in [headers allKeys]) {
-        NSString *value = [headers objectForKey:key];
-        _xhr_set_request_header(xhr, [key UTF8String], [value UTF8String]);
-    }
-    setDefaultUserAgent(xhr);
-    return xhr;
-}
-
-static NSHTTPURLResponse *createResponseFromXhr(int xhr, NSURLRequest *request) {
-    void *data;
-    int length = _xhr_get_all_response_headers(xhr, &data);
-    NSString *headerText = [[NSString alloc] initWithBytesNoCopy:data length:length-1 encoding:NSASCIIStringEncoding freeWhenDone:YES];
-
-    NSMutableDictionary *respHeaders = [[NSMutableDictionary alloc] init];
-    NSArray *responseHeaders = [headerText componentsSeparatedByString:@"\r\n"];
-    for(NSString *line in responseHeaders) {
-        if(line.length == 0) continue;
-
-        NSRange range = [line rangeOfString:@":"];
-        assert(range.location != NSNotFound);
-        NSString *key = [line substringToIndex:range.location];
-        NSString *value = [line substringFromIndex:range.location+2]; // ":" + space
-        [respHeaders setObject:value forKey:key];
-    }
-
-    int status = _xhr_get_status(xhr);
-    return [[NSHTTPURLResponse alloc] initWithURL:request.URL statusCode:status HTTPVersion:@"HTTP/1.1" headerFields:respHeaders];
-}
-
-static NSData *createDataFromXhr(int xhr) {
-    void *data;
-    int length = _xhr_get_response_text(xhr, &data);
-    return [NSData dataWithBytesNoCopy:data length:length freeWhenDone:YES]; 
-}
+#import "NSURLXHRUtils.h"
 
 @interface NSURLConnection ()
 @property(readwrite, copy) NSURLRequest *originalRequest;
@@ -140,19 +90,19 @@ static NSData *createDataFromXhr(int xhr) {
 - (void)didReceiveResponse:(NSHTTPURLResponse*)response {
     if([self.delegate respondsToSelector:@selector(connection:didReceiveResponse:)]) {
         [(id<NSURLConnectionDataDelegate>)self.delegate connection:self didReceiveResponse:response];
-    } 
+    }
 }
 
 - (void)didReceiveData:(NSData*)data {
     if([self.delegate respondsToSelector:@selector(connection:didReceiveData:)]) {
         [(id<NSURLConnectionDataDelegate>)self.delegate connection:self didReceiveData:data];
-    } 
+    }
 }
 
 - (void)didFinishLoading:(id)dummy {
     if([self.delegate respondsToSelector:@selector(connectionDidFinishLoading:)]) {
         [(id<NSURLConnectionDataDelegate>)self.delegate connectionDidFinishLoading:self];
-    } 
+    }
 }
 
 - (void)didFailWithError:(NSError*)error {
@@ -169,14 +119,14 @@ static void onloadCallback(void *ctx) {
     connection.readyState = newState;
 
     if(currentState < 2 && newState >= 2) {
-        NSHTTPURLResponse *response= createResponseFromXhr(xhr, connection.currentRequest);
+        NSHTTPURLResponse *response= __nsurl_createResponseFromXhr(xhr, connection.currentRequest);
         [connection performSelector:@selector(didReceiveResponse:) withObject:response];
     }
     if(currentState < 3 && newState >= 3) {
         // Return all data at once
     }
     if(currentState < 4 && newState >= 4) {
-        NSData *data = createDataFromXhr(xhr);
+        NSData *data = __nsurl_createDataFromXhr(xhr);
         [connection performSelector:@selector(didReceiveData:) withObject:data];
         [connection performSelector:@selector(didFinishLoading:) withObject:nil];
         [connection release];
@@ -185,7 +135,7 @@ static void onloadCallback(void *ctx) {
 
 static void onerrorCallback(void *ctx) {
     NSURLConnection *connection= (NSURLConnection*)ctx;
-    
+
     NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnknown userInfo:nil];
     [connection performSelector:@selector(didFailWithError:) withObject:error];
     [connection release];
@@ -194,9 +144,9 @@ static void onerrorCallback(void *ctx) {
 - (void)start
 {
     if(self.xhr) return;
-    
+
     [self retain];
-    int xhr = self.xhr = xhrCreateAndOpen(self.currentRequest, YES);
+    int xhr = self.xhr = __nsurl_xhrCreateAndOpen(self.currentRequest, YES);
     self.readyState = 0;
     _xhr_set_onload(xhr, dispatch_get_current_queue(), self, onloadCallback);
     _xhr_set_onerror(xhr, dispatch_get_current_queue(), self, onerrorCallback);
@@ -240,10 +190,10 @@ static void onerrorCallback(void *ctx) {
         return nil;
     }
 
-    int xhr = xhrCreateAndOpen(request, NO);
+    int xhr = __nsurl_xhrCreateAndOpen(request, NO);
     NSData *body = request.HTTPBody;
     _xhr_send(xhr, body.bytes, body.length); // block
-    
+
     int status = _xhr_get_status(xhr);
 
     if(status == 0) {
@@ -258,10 +208,10 @@ static void onerrorCallback(void *ctx) {
     //NSString *statusText = [[NSString alloc] initWithBytesNoCopy:data length:length encoding:NSASCIIStringEncoding freeWhenDone:YES];
 
     if(response) {
-        *response = createResponseFromXhr(xhr, request);
+        *response = __nsurl_createResponseFromXhr(xhr, request);
     }
 
-    NSData *data = createDataFromXhr(xhr);
+    NSData *data = __nsurl_createDataFromXhr(xhr);
 
     return data;
 }

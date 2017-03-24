@@ -12,6 +12,7 @@
 #import "NSURLProtectionSpaceInternal.h"
 #import "NSURLResponseInternal.h"
 #import <CFNetwork/CFURLAuthChallenge.h>
+#import <CFNetwork/CFURLConnection.h>
 
 @implementation NSURLAuthenticationChallenge
 {

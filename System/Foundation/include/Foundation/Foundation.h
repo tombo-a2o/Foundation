@@ -101,6 +101,7 @@
 #import <Foundation/NSUbiquitousKeyValueStore.h>
 #import <Foundation/NSUndoManager.h>
 #import <Foundation/NSURLSession.h>
+#import <Foundation/NSURLSessionConfiguration.h>
 #import <Foundation/NSUUID.h>
 
 #endif

@@ -17,6 +17,7 @@
 #import <Foundation/Foundation.h>
 #import <Foundation/NSURLSession.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 #import <functional>
 
 #import <map>
@@ -48,10 +49,9 @@ NSString* const NSURLErrorBackgroundTaskCancelledReasonKey = @"NSURLErrorBackgro
 template <typename... Args>
 static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd, Args... args) {
     if (object && [object respondsToSelector:cmd]) {
-        [queue addOperationWithBlock:^{
-            NSLog(@"*** %s FIXME", __FUNCTION__);
-            // reinterpret_cast<void (*)(id, SEL, Args...)>(objc_msgSend)(object, cmd, args...);
-        }];
+        // [queue addOperationWithBlock:^{
+            reinterpret_cast<void (*)(id, SEL, Args...)>(objc_msgSend)(object, cmd, args...);
+        // }];
         return true;
     }
     return false;

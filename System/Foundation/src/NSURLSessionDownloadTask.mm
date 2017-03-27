@@ -20,7 +20,7 @@
 NSString* const NSURLSessionDownloadTaskResumeData = @"NSURLSessionDownloadTaskResumeData";
 @interface NSURLSessionDownloadTask () {
     NSURL* _temporaryFileURL;
-    NSOutputStream* _outputStream;
+    NSFileHandle* _fileHandle;
     bool _resumed;
 }
 @end
@@ -87,7 +87,7 @@ dataTask:(NSURLSessionDataTask*)dataTask {
 */
 - (void)dealloc {
     [_temporaryFileURL release];
-    [_outputStream release];
+    [_fileHandle release];
     [super dealloc];
 }
 
@@ -96,7 +96,7 @@ dataTask:(NSURLSessionDataTask*)dataTask {
 */
 - (void)cancel {
     @synchronized(self) {
-        bool shouldClose;
+        bool shouldClose = false;
 
         if (self.state != NSURLSessionTaskStateCanceling) {
             shouldClose = true;
@@ -111,11 +111,12 @@ dataTask:(NSURLSessionDataTask*)dataTask {
 }
 
 - (void)_finalizeOutputStream {
-    NSLog(@"*** %s FIXME", __FUNCTION__);
     // NSOutputStream* outputStream =
     //     reinterpret_cast<NSOutputStream*>(InterlockedExchangePointer(reinterpret_cast<void* volatile*>(&_outputStream), nil));
-    // [outputStream close];
-    // [outputStream release];
+    NSFileHandle* fileHandle = _fileHandle;
+    [fileHandle closeFile];
+    [fileHandle release];
+    _fileHandle = nil;
 }
 
 /**
@@ -194,18 +195,12 @@ dataTask:(NSURLSessionDataTask*)dataTask {
         return;
     }
 
-    if (!_outputStream) {
-        _outputStream = [[NSOutputStream outputStreamToFileAtPath:[_temporaryFileURL path] append:YES] retain];
-        [_outputStream open];
+    if (!_fileHandle) {
+        _fileHandle = [NSFileHandle fileHandleForWritingAtPath:[_temporaryFileURL path]];
+        [_fileHandle seekToEndOfFile];
     }
 
-    NSUInteger remaining = data.length;
-    const uint8_t* bytes = reinterpret_cast<const uint8_t*>(data.bytes);
-    while (remaining > 0) {
-        NSInteger written = [_outputStream write:bytes maxLength:remaining];
-        remaining -= written;
-        bytes += written;
-    }
+    [_fileHandle writeData:data];
 
     [self._taskDelegate downloadTask:self
                         didWriteData:data.length

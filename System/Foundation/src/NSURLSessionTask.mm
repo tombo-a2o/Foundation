@@ -18,29 +18,28 @@
 #import "NSURLSession-Internal.h"
 #import "NSURLSessionTask-Internal.h"
 #import "NSURLProtocolInternal.h"
-#import <emscripten/xhr.h>
-#import "NSURLXHRUtils.h"
 
 const float NSURLSessionTaskPriorityHigh = 1.0f;
 const float NSURLSessionTaskPriorityDefault = 0.5f;
 const float NSURLSessionTaskPriorityLow = 0.0f;
 
-#pragma region HTTP Status Codes
 enum HttpStatus : int {
     PartialContent = 206,
     RangeNotSatisfiableError = 416,
 };
-#pragma endregion
 
 @interface NSURLSessionTask () {
+    NSURLProtocol* _protocolConnection;
     NSURLSessionConfiguration* _configuration;
 }
-@property(nonatomic, assign) int xhr;
-@property(nonatomic, assign) int readyState;
 @end
 
 @implementation NSURLSessionTask
 @synthesize _taskDelegate = _taskDelegate;
+
++ (Class)_protocolClassForRequest:(NSURLRequest*)request {
+    return [NSURLProtocol _protocolClassForRequest:request];
+}
 
 - (id)_initWithTaskDelegate:(id<_NSURLSessionTaskDelegate>)taskDelegate
                  identifier:(NSUInteger)identifier
@@ -86,8 +85,9 @@ enum HttpStatus : int {
     [_originalRequest release];
     [_response release];
     [_error release];
+    [_taskDelegate release];
     [_configuration release];
-    _xhr_clean(_xhr);
+    [_protocolConnection release];
     [super dealloc];
 }
 
@@ -143,10 +143,9 @@ enum HttpStatus : int {
     self.state = state;
 
     [_taskDelegate task:self didCompleteWithError:self.error];
-    [_taskDelegate release];
 
-    _xhr_clean(_xhr);
-    _xhr = 0;
+    [_protocolConnection release];
+    _protocolConnection = nil;
 }
 
 /**
@@ -163,41 +162,10 @@ enum HttpStatus : int {
     }
 }
 
-static void onloadCallback(void *ctx) {
-    NSURLSessionTask *task= (NSURLSessionTask*)ctx;
-    int xhr = task.xhr;
-    int currentState = task.readyState;
-    int newState = _xhr_get_ready_state(xhr);
-    task.readyState = newState;
-
-    if(currentState < 2 && newState >= 2) {
-        NSHTTPURLResponse *response= __nsurl_createResponseFromXhr(xhr, task.currentRequest);
-        [task _updateWithURLResponse:response];
-    }
-    if(currentState < 3 && newState >= 3) {
-        // Return all data at once
-    }
-    if(currentState < 4 && newState >= 4) {
-        NSData *data = __nsurl_createDataFromXhr(xhr);
-
-        [task _didReceiveData:data];
-        [task _didFinishLoading];
-        [task release];
-    }
-}
-
-static void onerrorCallback(void *ctx) {
-    NSURLSessionTask *task= (NSURLSessionTask*)ctx;
-
-    NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnknown userInfo:nil];
-    [task _didFailWithError:error];
-    [task release];
-}
-
 - (void)_startLoading {
-    if (!_xhr) {
-        NSString *scheme = [[_currentRequest URL] scheme];
-        if(!([scheme isEqualToString:@"http"] || [scheme isEqualToString:@"https"])) {
+    if (!_protocolConnection) {
+        Class protocolClass = [[self class] _protocolClassForRequest:_currentRequest];
+        if (!protocolClass || ![protocolClass canInitWithRequest:_currentRequest]) {
             NSError* error = [NSError
                 errorWithDomain:NSCocoaErrorDomain
                            code:0
@@ -208,16 +176,12 @@ static void onerrorCallback(void *ctx) {
             [self _signalCompletionInState:NSURLSessionTaskStateCompleted withError:error];
             return;
         }
-        NSLog(@"%s FIXME use cached response", __FUNCTION__);
-        NSCachedURLResponse* cachedResponse = [self _cachedResponseFromConfiguration];
 
-        _xhr = __nsurl_xhrCreateAndOpen(_currentRequest, YES);
-        _xhr_set_onload(_xhr, dispatch_get_current_queue(), self, onloadCallback);
-        _xhr_set_onerror(_xhr, dispatch_get_current_queue(), self, onerrorCallback);
-        NSData *body = _currentRequest.HTTPBody;
-        _xhr_send(_xhr, body.bytes, body.length);
-        [self retain];
+        NSCachedURLResponse* cachedResponse = [self _cachedResponseFromConfiguration];
+        _protocolConnection = [[protocolClass alloc] initWithRequest:_currentRequest cachedResponse:cachedResponse client:self];
     }
+
+    [_protocolConnection startLoading];
 }
 
 /**
@@ -235,8 +199,8 @@ static void onerrorCallback(void *ctx) {
 }
 
 - (void)_stopLoading {
-    _xhr_abort(_xhr);
-    _xhr = 0;
+    [_protocolConnection stopLoading];
+    _protocolConnection = nil;
 }
 
 /**
@@ -251,15 +215,19 @@ static void onerrorCallback(void *ctx) {
     }
 }
 
-- (void)_didReceiveData:(NSData*)data {
-    self.countOfBytesReceived = self.countOfBytesReceived + [data length];
+/**
+ @Status Interoperable
+*/
+- (void)URLProtocol:(NSURLProtocol*)connection
+ didReceiveResponse:(NSURLResponse*)response
+ cacheStoragePolicy:(NSURLCacheStoragePolicy)policy {
+    [self _updateWithURLResponse:response];
 }
 
-- (void)_didFinishLoading {
-    [self _signalCompletionInState:NSURLSessionTaskStateCompleted withError:nil];
-}
-
-- (void)_didFailWithError:(NSError*)error {
+/**
+ @Status Interoperable
+*/
+- (void)URLProtocol:(NSURLProtocol*)connection didFailWithError:(NSError*)error {
     [self _signalCompletionInState:NSURLSessionTaskStateCompleted withError:error];
 }
 
@@ -296,6 +264,12 @@ static void onerrorCallback(void *ctx) {
 /**
  @Status Interoperable
 */
+- (void)URLProtocol:(NSURLProtocol*)connection cachedResponseIsValid:(NSCachedURLResponse*)cachedResponse {
+}
+
+/**
+ @Status Interoperable
+*/
 - (void)URLProtocol:(NSURLProtocol*)connection wasRedirectedToRequest:(NSURLRequest*)request redirectResponse:(NSURLResponse*)response {
     auto continuation = ^(NSURLRequest* sessionNewRequest) {
         @synchronized(self) {
@@ -307,5 +281,19 @@ static void onerrorCallback(void *ctx) {
 
     [_taskDelegate task:self willPerformHTTPRedirection:(NSHTTPURLResponse*)response newRequest:request completionHandler:continuation];
 };
+
+/**
+ @Status Interoperable
+*/
+- (void)URLProtocol:(NSURLProtocol*)connection didLoadData:(NSData*)data {
+    self.countOfBytesReceived = self.countOfBytesReceived + [data length];
+}
+
+/**
+ @Status Interoperable
+*/
+- (void)URLProtocolDidFinishLoading:(NSURLProtocol*)connection {
+    [self _signalCompletionInState:NSURLSessionTaskStateCompleted withError:nil];
+}
 
 @end

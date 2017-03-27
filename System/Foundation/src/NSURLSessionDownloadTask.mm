@@ -15,11 +15,7 @@
 //******************************************************************************
 
 #import <Foundation/Foundation.h>
-#import <Foundation/NSOutputStream.h>
-#import <Starboard.h>
 #import "NSURLSessionTask-Internal.h"
-
-#import <windows.h>
 
 NSString* const NSURLSessionDownloadTaskResumeData = @"NSURLSessionDownloadTaskResumeData";
 @interface NSURLSessionDownloadTask () {
@@ -100,7 +96,7 @@ dataTask:(NSURLSessionDataTask*)dataTask {
 */
 - (void)cancel {
     @synchronized(self) {
-        bool shouldClose;
+        bool shouldClose = false;
 
         if (self.state != NSURLSessionTaskStateCanceling) {
             shouldClose = true;

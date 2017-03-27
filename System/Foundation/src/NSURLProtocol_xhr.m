@@ -33,8 +33,24 @@ static void onloadCallback(void *ctx) {
     proto.readyState = newState;
 
     if(currentState < 2 && newState >= 2) {
-        NSHTTPURLResponse *response= __nsurl_createResponseFromXhr(xhr, proto.request);
-        [proto.client URLProtocol:proto didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+        NSURLRequest *request = proto.request;
+        NSHTTPURLResponse *response= __nsurl_createResponseFromXhr(xhr, request);
+        int statusCode = response.statusCode;
+        if(statusCode >= 300 && statusCode < 400) {
+            NSURL *currentUrl = proto.request.URL;
+            NSString *location = response.allHeaderFields[@"Location"];
+
+            // TODO return error
+            assert(location);
+
+            NSURL *nextUrl = [NSURL URLWithString:location relativeToURL:currentUrl];
+            NSMutableURLRequest *nextRequest = [request mutableCopy];
+            nextRequest.URL = nextUrl;
+            [proto.client URLProtocol:proto wasRedirectedToRequest:nextRequest redirectResponse:response];
+            return; // don't call didLoadData and didFinishLoading
+        } else {
+            [proto.client URLProtocol:proto didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+        }
     }
     if(currentState < 3 && newState >= 3) {
         // Return all data at once

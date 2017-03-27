@@ -23,12 +23,10 @@ const float NSURLSessionTaskPriorityHigh = 1.0f;
 const float NSURLSessionTaskPriorityDefault = 0.5f;
 const float NSURLSessionTaskPriorityLow = 0.0f;
 
-#pragma region HTTP Status Codes
 enum HttpStatus : int {
     PartialContent = 206,
     RangeNotSatisfiableError = 416,
 };
-#pragma endregion
 
 @interface NSURLSessionTask () {
     NSURLProtocol* _protocolConnection;
@@ -40,7 +38,7 @@ enum HttpStatus : int {
 @synthesize _taskDelegate = _taskDelegate;
 
 + (Class)_protocolClassForRequest:(NSURLRequest*)request {
-    return [NSURLProtocol _URLProtocolClassForRequest:request];
+    return [NSURLProtocol _protocolClassForRequest:request];
 }
 
 - (id)_initWithTaskDelegate:(id<_NSURLSessionTaskDelegate>)taskDelegate
@@ -48,7 +46,7 @@ enum HttpStatus : int {
               configuration:(NSURLSessionConfiguration*)configuration
                     request:(NSURLRequest*)request {
     if (self = [super init]) {
-        _taskDelegate = taskDelegate;
+        _taskDelegate = [taskDelegate retain];
         _configuration = [configuration retain];
 
         NSMutableURLRequest* newRequest = [request mutableCopy];
@@ -87,6 +85,7 @@ enum HttpStatus : int {
     [_originalRequest release];
     [_response release];
     [_error release];
+    [_taskDelegate release];
     [_configuration release];
     [_protocolConnection release];
     [super dealloc];
@@ -163,7 +162,7 @@ enum HttpStatus : int {
     }
 }
 
-- (void)__startLoadingThread {
+- (void)_startLoading {
     if (!_protocolConnection) {
         Class protocolClass = [[self class] _protocolClassForRequest:_currentRequest];
         if (!protocolClass || ![protocolClass canInitWithRequest:_currentRequest]) {
@@ -185,13 +184,6 @@ enum HttpStatus : int {
     [_protocolConnection startLoading];
 }
 
-- (void)_startLoading {
-    [self performSelector:@selector(__startLoadingThread)
-                 onThread:[reinterpret_cast<NSURLSession*>(_taskDelegate) _taskDispatchThread]
-               withObject:nil
-            waitUntilDone:NO];
-}
-
 /**
  @Status Interoperable
 */
@@ -206,16 +198,9 @@ enum HttpStatus : int {
     [self _signalCompletionInState:NSURLSessionTaskStateCanceling withError:nil];
 }
 
-- (void)__stopLoadingThread {
+- (void)_stopLoading {
     [_protocolConnection stopLoading];
     _protocolConnection = nil;
-}
-
-- (void)_stopLoading {
-    [self performSelector:@selector(__stopLoadingThread)
-                 onThread:[reinterpret_cast<NSURLSession*>(_taskDelegate) _taskDispatchThread]
-               withObject:nil
-            waitUntilDone:YES];
 }
 
 /**

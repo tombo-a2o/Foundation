@@ -980,7 +980,7 @@ pthread_t _CF_pthread_main_thread_np(void) {
 #endif
 
 #if DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD || DEPLOYMENT_TARGET_EMSCRIPTEN
-void __CFInitialize(void) __attribute__ ((constructor));
+void __CFInitialize(void) __attribute__ ((constructor(1010)));
 #endif
 #if DEPLOYMENT_TARGET_EMSCRIPTEN
 extern 

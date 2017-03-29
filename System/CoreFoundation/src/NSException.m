@@ -31,7 +31,7 @@ static NSException *__exceptionPreprocess(NSException *exception)
     return exception;
 }
 
-static void NSExceptionInitializer() __attribute__((constructor));
+static void NSExceptionInitializer() __attribute__((constructor(1030)));
 static void NSExceptionInitializer()
 {
     objc_setExceptionPreprocessor(&__exceptionPreprocess);

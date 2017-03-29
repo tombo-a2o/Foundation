@@ -32,7 +32,8 @@ static inline BOOL createBlockClass(const char *sup, const char *name, void *des
     return YES;
 }
 
-extern void NSBlockInitialize()
+static void NSBlockInitialize() __attribute__((constructor));
+static void NSBlockInitialize()
 {
     if (createBlockClass("__NSStackBlock", "__NSStackBlock__", &_NSConcreteStackBlock) == NO)
     {

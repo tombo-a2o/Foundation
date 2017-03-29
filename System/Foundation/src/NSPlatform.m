@@ -24,7 +24,8 @@ static void _enumerationMutationHandler(id object)
     [NSException raise:NSGenericException format:@"Illegal mutation while fast enumerating %@", object];
 }
 
-extern void NSPlatformInitialize()
+static void NSPlatformInitialize() __attribute__((constructor));
+static void NSPlatformInitialize()
 {
     emscripten_trace_enter_context("NSPlatformInitialize");
     __CFInitialize();

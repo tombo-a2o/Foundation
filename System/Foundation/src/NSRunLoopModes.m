@@ -17,7 +17,8 @@
 NSString *NSDefaultRunLoopMode = nil;
 NSString *NSRunLoopCommonModes = nil;
 
-extern void NSRunLoopModeFix(void)
+static void NSRunLoopModeFix(void) __attribute__((constructor));
+static void NSRunLoopModeFix(void)
 {
     NSDefaultRunLoopMode = (NSString *)kCFRunLoopDefaultMode;
     NSRunLoopCommonModes = (NSString *)kCFRunLoopCommonModes;

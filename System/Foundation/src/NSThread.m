@@ -128,7 +128,7 @@ static void NSThreadEnd(NSThread *thread)
 + (NSArray *)callStackSymbols
 {
     // Should parse new Error().stack
-    EM_ASM({console.log(new Error())});
+    //EM_ASM({console.log(new Error())});
     return [NSArray array];
 }
 

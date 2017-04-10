@@ -23,9 +23,9 @@ __HEADERS__ = $$(__PUBLIC_HEADERS__) $$(__PRIVATE_HEADERS__)
 __OBJECTS_DIR__ = $$(__BUILD_DIR__)/objects
 __STATIC_LIB__ = $$(__FRAMEWORK_NAME__).a
 __SHARED_LIB__ = $$(__FRAMEWORK_NAME__).so.js
-__SHARED_LIB_MSGFUNCS__ = $$(__FRAMEWORK_NAME__).so.js.msgfuncs
+__SHARED_LIB_EXTERNALS__ = $$(__FRAMEWORK_NAME__).so.js.externals
 __SHARED_WASM_LIB__ = $$(__FRAMEWORK_NAME__).wasm
-__SHARED_WASM_LIB_MSGFUNCS__ = $$(__FRAMEWORK_NAME__).wasm.msgfuncs
+__SHARED_WASM_LIB_EXTERNALS__ = $$(__FRAMEWORK_NAME__).wasm.externals
 __SHARED_WASM_SYM__ = $$(__FRAMEWORK_NAME__).wasm.symbols
 
 __OBJECTS__ = $$(patsubst %.m,%.o, \
@@ -70,10 +70,10 @@ $$(__BUILD_DIR__)/$$(__STATIC_LIB__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).b
 	llvm-ar rcs $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
 
 $$(__BUILD_DIR__)/$$(__SHARED_LIB__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
-	a2o $$(LFLAGS) $$(STYLE_LFLAGS) -o $$(__BUILD_DIR__)/$$(__SHARED_LIB__) -s SIDE_MODULE=1 -s EXPORT_OBJC_MSG_FUNCTION_NAMES=1 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+	a2o $$(LFLAGS) $$(STYLE_LFLAGS) -o $$(__BUILD_DIR__)/$$(__SHARED_LIB__) -s SIDE_MODULE=1 -s EXPORT_EXTERNAL_SYMBOL_NAMES=1 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
 
 $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
-	a2o $$(LFLAGS) $$(STYLE_LFLAGS) -o $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__) --emit-symbol-map -s SIDE_MODULE=1 -s EXPORT_OBJC_MSG_FUNCTION_NAMES=1 -s BINARYEN=1 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+	a2o $$(LFLAGS) $$(STYLE_LFLAGS) -o $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__) --emit-symbol-map -s SIDE_MODULE=1 -s EXPORT_EXTERNAL_SYMBOL_NAMES=1 -s BINARYEN=1 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
 
 framework_dir:
 	rm -rf $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework
@@ -87,9 +87,9 @@ framework_dir:
 	ln -sf Versions/Current/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__FRAMEWORK_NAME__)
 	ln -sf Versions/Current/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__STATIC_LIB__)
 	ln -sf Versions/Current/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_LIB__)
-	ln -sf Versions/Current/$$(__SHARED_LIB_MSGFUNCS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_LIB_MSGFUNCS__)
+	ln -sf Versions/Current/$$(__SHARED_LIB_EXTERNALS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_LIB_EXTERNALS__)
 	ln -sf Versions/Current/$$(__SHARED_WASM_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_WASM_LIB__)
-	ln -sf Versions/Current/$$(__SHARED_WASM_LIB_MSGFUNCS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_WASM_LIB_MSGFUNCS__)
+	ln -sf Versions/Current/$$(__SHARED_WASM_LIB_EXTERNALS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_WASM_LIB_EXTERNALS__)
 	ln -sf Versions/Current/$$(__SHARED_WASM_SYM__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_WASM_SYM__)
 
 header_only_framework: framework_dir
@@ -112,9 +112,9 @@ full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__
 	done
 	cp $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__STATIC_LIB__)
 	cp $$(__BUILD_DIR__)/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_LIB__)
-	cp $$(__BUILD_DIR__)/$$(__SHARED_LIB_MSGFUNCS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_LIB_MSGFUNCS__)
+	cp $$(__BUILD_DIR__)/$$(__SHARED_LIB_EXTERNALS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_LIB_EXTERNALS__)
 	cp $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_WASM_LIB__)
-	cp $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB_MSGFUNCS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_WASM_LIB_MSGFUNCS__)
+	cp $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB_EXTERNALS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_WASM_LIB_EXTERNALS__)
 	cp $$(__BUILD_DIR__)/$$(__SHARED_WASM_SYM__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_WASM_SYM__)
 	ln -sf $$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__FRAMEWORK_NAME__)
 

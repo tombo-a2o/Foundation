@@ -15,8 +15,7 @@
 #import <objc/runtime.h>
 //#import <libv/libv.h>
 #import <unistd.h>
-
-extern void objc_setUncaughtExceptionHandler(void (*handler)(id, void *));
+#import <objc/objc-exception.h>
 
 static NSUncaughtExceptionHandler *handler = nil;
 BOOL NSHangOnUncaughtException = NO;

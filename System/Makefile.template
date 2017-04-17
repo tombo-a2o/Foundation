@@ -23,6 +23,10 @@ __HEADERS__ = $$(__PUBLIC_HEADERS__) $$(__PRIVATE_HEADERS__)
 __OBJECTS_DIR__ = $$(__BUILD_DIR__)/objects
 __STATIC_LIB__ = $$(__FRAMEWORK_NAME__).a
 __SHARED_LIB__ = $$(__FRAMEWORK_NAME__).so.js
+__SHARED_LIB_EXTERNALS__ = $$(__FRAMEWORK_NAME__).so.js.externals
+__SHARED_WASM_LIB__ = $$(__FRAMEWORK_NAME__).wasm
+__SHARED_WASM_LIB_EXTERNALS__ = $$(__FRAMEWORK_NAME__).wasm.externals
+__SHARED_WASM_SYM__ = $$(__FRAMEWORK_NAME__).wasm.symbols
 
 __OBJECTS__ = $$(patsubst %.m,%.o, \
           $$(patsubst %.c,%.o, \
@@ -66,7 +70,10 @@ $$(__BUILD_DIR__)/$$(__STATIC_LIB__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).b
 	llvm-ar rcs $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
 
 $$(__BUILD_DIR__)/$$(__SHARED_LIB__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
-	a2o $$(LFLAGS) $$(STYLE_LFLAGS) -o $$(__BUILD_DIR__)/$$(__SHARED_LIB__) -s SIDE_MODULE=1 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+	a2o $$(LFLAGS) $$(STYLE_LFLAGS) -o $$(__BUILD_DIR__)/$$(__SHARED_LIB__) -s SIDE_MODULE=1 -s EXPORT_EXTERNAL_SYMBOL_NAMES=1 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+
+$$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
+	a2o $$(LFLAGS) $$(STYLE_LFLAGS) -o $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__) --emit-symbol-map -s SIDE_MODULE=1 -s EXPORT_EXTERNAL_SYMBOL_NAMES=1 -s BINARYEN=1 $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc
 
 framework_dir:
 	rm -rf $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework
@@ -80,6 +87,10 @@ framework_dir:
 	ln -sf Versions/Current/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__FRAMEWORK_NAME__)
 	ln -sf Versions/Current/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__STATIC_LIB__)
 	ln -sf Versions/Current/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_LIB__)
+	ln -sf Versions/Current/$$(__SHARED_LIB_EXTERNALS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_LIB_EXTERNALS__)
+	ln -sf Versions/Current/$$(__SHARED_WASM_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_WASM_LIB__)
+	ln -sf Versions/Current/$$(__SHARED_WASM_LIB_EXTERNALS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_WASM_LIB_EXTERNALS__)
+	ln -sf Versions/Current/$$(__SHARED_WASM_SYM__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_WASM_SYM__)
 
 header_only_framework: framework_dir
 	for file in $$(__PUBLIC_HEADERS__); do \
@@ -93,7 +104,7 @@ header_only_framework: framework_dir
 		cp $$$$file $$$$dest ;\
 	done
 
-full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__SHARED_LIB__)
+full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__)
 	[ "$$(__RESOURCE_DIR__)" = "" ] || for file in `find $$(__RESOURCE_DIR__) -type f -not -name ".*"` ; do \
 		dest=$$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources/`dirname $$$${file#*/}` ;\
 		mkdir -p $$$$dest ;\
@@ -101,6 +112,10 @@ full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__
 	done
 	cp $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__STATIC_LIB__)
 	cp $$(__BUILD_DIR__)/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_LIB__)
+	cp $$(__BUILD_DIR__)/$$(__SHARED_LIB_EXTERNALS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_LIB_EXTERNALS__)
+	cp $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_WASM_LIB__)
+	cp $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB_EXTERNALS__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_WASM_LIB_EXTERNALS__)
+	cp $$(__BUILD_DIR__)/$$(__SHARED_WASM_SYM__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__SHARED_WASM_SYM__)
 	ln -sf $$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/$$(__FRAMEWORK_NAME__)
 
 install_header_only: header_only_framework

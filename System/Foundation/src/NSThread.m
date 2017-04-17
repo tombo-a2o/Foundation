@@ -125,11 +125,17 @@ static void NSThreadEnd(NSThread *thread)
     assert(0);
 }
 
+extern int __getStackTrace(char** buffer);
 + (NSArray *)callStackSymbols
 {
-    // Should parse new Error().stack
-    EM_ASM({console.log(new Error())});
-    return [NSArray array];
+    char **buffer = NULL;
+    int num = __getStackTrace(&buffer);
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:num];
+    for(int i = 0; i < num; i++) {
+        NSString *str = [NSString stringWithUTF8String:buffer[i]];
+        [array addObject:str];
+    }
+    return array;
 }
 
 + (BOOL)isMainThread
@@ -210,7 +216,7 @@ static void NSThreadEnd(NSThread *thread)
     }
     _state = NSThreadStarted;
     [self retain];
-    
+
     _queue = dispatch_queue_create("thread", NULL);
     dispatch_queue_set_specific(_queue, NSThreadKey, self, NULL);
 
@@ -248,7 +254,7 @@ static void NSThreadEnd(NSThread *thread)
 
 + (void)performSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)waitUntilDone modes:(NSArray *)modes
 {
-    [self performSelector:aSelector onThread:[NSThread mainThread] withObject:arg waitUntilDone:waitUntilDone modes:modes];   
+    [self performSelector:aSelector onThread:[NSThread mainThread] withObject:arg waitUntilDone:waitUntilDone modes:modes];
 }
 
 - (void)performSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)waitUntilDone
@@ -258,7 +264,7 @@ static void NSThreadEnd(NSThread *thread)
 
 + (void)performSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)waitUntilDone
 {
-    [self performSelector:aSelector onThread:[NSThread mainThread] withObject:arg waitUntilDone:waitUntilDone modes:@[(id)kCFRunLoopCommonModes]];   
+    [self performSelector:aSelector onThread:[NSThread mainThread] withObject:arg waitUntilDone:waitUntilDone modes:@[(id)kCFRunLoopCommonModes]];
 }
 
 static void NSThreadPerform(id self, SEL aSelector, NSThread *thr, id arg, BOOL waitUntilDone, NSArray *modes)

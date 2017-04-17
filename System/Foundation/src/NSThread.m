@@ -134,6 +134,10 @@ extern int __getStackTrace(char** buffer);
     for(int i = 0; i < num; i++) {
         NSString *str = [NSString stringWithUTF8String:buffer[i]];
         [array addObject:str];
+        free(buffer[i]);
+    }
+    if(buffer) {
+        free(buffer);
     }
     return array;
 }

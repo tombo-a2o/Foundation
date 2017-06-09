@@ -103,6 +103,7 @@
 #import <Foundation/NSURLSession.h>
 #import <Foundation/NSURLSessionConfiguration.h>
 #import <Foundation/NSUUID.h>
+#import <Foundation/NSUserActivity.h>
 
 #endif
 

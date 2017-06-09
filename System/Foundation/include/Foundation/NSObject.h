@@ -1,36 +1,9 @@
 #import <Foundation/NSObjCRuntime.h>
 #import <Foundation/NSZone.h>
+#import <objc/NSObject.h>
 
 @class NSInvocation, NSMethodSignature, NSCoder, NSString, NSEnumerator;
 @class Protocol;
-
-@protocol NSObject
-
-- (BOOL)isEqual:(id)object;
-- (NSUInteger)hash;
-- (Class)superclass;
-- (Class)class;
-- (id)self;
-- (NSZone *)zone NS_AUTOMATED_REFCOUNT_UNAVAILABLE;
-- (id)performSelector:(SEL)sel;
-- (id)performSelector:(SEL)sel withObject:(id)object;
-- (id)performSelector:(SEL)sel withObject:(id)obj1 withObject:(id)obj2;
-- (BOOL)isProxy;
-- (BOOL)isKindOfClass:(Class)aClass;
-- (BOOL)isMemberOfClass:(Class)aClass;
-- (BOOL)conformsToProtocol:(Protocol *)aProtocol;
-- (BOOL)respondsToSelector:(SEL)sel;
-- (id)retain NS_AUTOMATED_REFCOUNT_UNAVAILABLE;
-- (oneway void)release NS_AUTOMATED_REFCOUNT_UNAVAILABLE;
-- (id)autorelease NS_AUTOMATED_REFCOUNT_UNAVAILABLE;
-- (NSUInteger)retainCount NS_AUTOMATED_REFCOUNT_UNAVAILABLE;
-- (NSString *)description;
-
-@optional
-
-- (NSString *)debugDescription;
-
-@end
 
 @protocol NSCopying
 
@@ -55,43 +28,6 @@
 @required
 
 + (BOOL)supportsSecureCoding;
-
-@end
-
-NS_ROOT_CLASS
-@interface NSObject <NSObject> {
-    Class isa;
-}
-
-+ (void)load;
-+ (void)initialize;
-+ (id)new;
-+ (id)allocWithZone:(NSZone *)zone;
-+ (id)alloc;
-+ (id)copyWithZone:(NSZone *)zone NS_AUTOMATED_REFCOUNT_UNAVAILABLE;
-+ (id)mutableCopyWithZone:(NSZone *)zone NS_AUTOMATED_REFCOUNT_UNAVAILABLE;
-+ (Class)superclass;
-+ (Class)class;
-+ (BOOL)instancesRespondToSelector:(SEL)sel;
-+ (BOOL)conformsToProtocol:(Protocol *)protocol;
-+ (IMP)instanceMethodForSelector:(SEL)sel;
-+ (NSMethodSignature *)instanceMethodSignatureForSelector:(SEL)sel;
-+ (NSString *)description;
-+ (BOOL)isSubclassOfClass:(Class)aClass;
-+ (BOOL)resolveClassMethod:(SEL)sel;
-+ (BOOL)resolveInstanceMethod:(SEL)sel;
-- (id)init;
-- (void)dealloc;
-- (void)finalize;
-- (id)copy;
-- (id)mutableCopy;
-- (IMP)methodForSelector:(SEL)sel;
-- (void)doesNotRecognizeSelector:(SEL)sel;
-- (id)forwardingTargetForSelector:(SEL)sel;
-- (void)forwardInvocation:(NSInvocation *)anInvocation;
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)sel;
-- (BOOL)allowsWeakReference NS_UNAVAILABLE;
-- (BOOL)retainWeakReference NS_UNAVAILABLE;
 
 @end
 

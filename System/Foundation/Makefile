@@ -13,8 +13,9 @@ SOURCES			= $(wildcard src/*.mm src/*.m src/*.c) src/NSPredicateLexer.m
 PUBLIC_HEADERS	= $(wildcard include/**/*.h private_include/**/*.h)
 PRIVATE_HEADERS	= $(wildcard include/**/*.h private_include/**/*.h)
 RESOURCE_DIR	= resource
+MODULE_MAP		= modules/module.modulemap
 
-$(eval $(call framework_build, Foundation, $(BUILD_DIR), $(INSTALL_DIR), $(SOURCES), $(PUBLIC_HEADERS), $(PRIVATE_HEADERS), $(RESOURCE_DIR)))
+$(eval $(call framework_build, Foundation, $(BUILD_DIR), $(INSTALL_DIR), $(SOURCES), $(PUBLIC_HEADERS), $(PRIVATE_HEADERS), $(RESOURCE_DIR), $(MODULE_MAP)))
 
 src/NSPredicateLexer.m: src/NSPredicateLexer.lm
 	lex -t $< > $@

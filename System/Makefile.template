@@ -5,6 +5,7 @@
 # 5: public header files
 # 6: private header files
 # 7: resources
+# 8: module map
 
 ifeq ($(EMSCRIPTEN),)
 $(error EMSCRIPTEN not defined)
@@ -19,6 +20,7 @@ __SOURCES__ = $(4)
 __PUBLIC_HEADERS__ = $(5)
 __PRIVATE_HEADERS__ = $(6)
 __RESOURCE_DIR__ = $(7)
+__MODULE_MAP__ = $(8)
 __HEADERS__ = $$(__PUBLIC_HEADERS__) $$(__PRIVATE_HEADERS__)
 __OBJECTS_DIR__ = $$(__BUILD_DIR__)/objects
 __STATIC_LIB__ = $$(__FRAMEWORK_NAME__).a
@@ -80,10 +82,12 @@ framework_dir:
 	mkdir -p $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Resources
 	mkdir -p $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Headers
 	mkdir -p $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/PrivateHeaders
+	mkdir -p $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Modules
 	ln -sf A $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/Current
 	ln -sf Versions/Current/Resources $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Resources
 	ln -sf Versions/Current/Headers $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Headers
 	ln -sf Versions/Current/PrivateHeaders $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/PrivateHeaders
+	ln -sf Versions/Current/Modules $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Modules
 	ln -sf Versions/Current/$$(__FRAMEWORK_NAME__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__FRAMEWORK_NAME__)
 	ln -sf Versions/Current/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__STATIC_LIB__)
 	ln -sf Versions/Current/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/$$(__SHARED_LIB__)
@@ -103,6 +107,7 @@ header_only_framework: framework_dir
 		mkdir -p $$$$dest ;\
 		cp $$$$file $$$$dest ;\
 	done
+	cp $$(__MODULE_MAP__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework/Versions/A/Modules/
 
 full_framework: header_only_framework $$(__BUILD_DIR__)/$$(__STATIC_LIB__) $$(__BUILD_DIR__)/$$(__SHARED_LIB__) $$(__BUILD_DIR__)/$$(__SHARED_WASM_LIB__)
 	[ "$$(__RESOURCE_DIR__)" = "" ] || for file in `find $$(__RESOURCE_DIR__) -type f -not -name ".*"` ; do \

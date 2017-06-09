@@ -1,0 +1,6 @@
+framework module Foundation {
+    umbrella header "Foundation.h"
+
+    export *
+    module * { export * }
+}

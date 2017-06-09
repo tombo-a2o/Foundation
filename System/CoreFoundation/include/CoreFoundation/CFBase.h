@@ -96,7 +96,7 @@
   #endif
 #endif
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
     #include <MacTypes.h>
     #include <sys/_types.h>
 #endif

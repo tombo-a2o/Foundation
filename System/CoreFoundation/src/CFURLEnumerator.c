@@ -11,6 +11,7 @@
 #include <CoreFoundation/CFNumber.h>
 #include <dirent.h>
 #include <errno.h>
+#include <limits.h>
 
 extern const CFStringRef NSURLErrorKey;
 extern const CFStringRef NSFilePathErrorKey;
@@ -119,7 +120,7 @@ static CFIndex CFURLEnumeratorPushURL(CFURLEnumeratorRef enumerator, CFURLRef ur
     char path[PATH_MAX] = { 0 };
     CFStringRef urlPath = CFURLCopyPath(url);
     Boolean success = CFStringGetFileSystemRepresentation(urlPath, path, PATH_MAX);
-    
+
     if (!success) {
         cocoaError(error, -1, url, urlPath);
         CFRelease(urlPath);
@@ -173,7 +174,7 @@ static CFDictionaryRef CFURLEnumeratorDequeueFileInfo(CFURLEnumeratorRef enumera
         }
     } else {
         return NULL;
-    } 
+    }
 }
 
 static CFIndex CFURLEnumeratorPopURL(CFURLEnumeratorRef enumerator) {
@@ -189,7 +190,7 @@ static CFIndex CFURLEnumeratorPopURL(CFURLEnumeratorRef enumerator) {
 
 static CFIndex CFURLEnumeratorPeek(CFURLEnumeratorRef enumerator, CFURLRef *url) {
     CFIndex count = CFArrayGetCount(enumerator->urlStack);
-    
+
     if (url != NULL) {
         *url = NULL;
     }
@@ -212,7 +213,7 @@ CFURLEnumeratorRef CFURLEnumeratorCreateForDirectoryURL(CFAllocatorRef alloc, CF
     }
     enumerator->urlStack = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
     enumerator->dirFileInfos = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-    
+
     if (CFURLEnumeratorPushURL(enumerator, directoryURL, NULL) <= 0) {
         CFRelease(enumerator);
         return NULL;
@@ -223,7 +224,7 @@ CFURLEnumeratorRef CFURLEnumeratorCreateForDirectoryURL(CFAllocatorRef alloc, CF
 
 CFURLEnumeratorResult CFURLEnumeratorGetNextURL(CFURLEnumeratorRef enumer, CFURLRef *url, CFErrorRef *error) {
     struct __CFURLEnumerator *enumerator = (struct __CFURLEnumerator *)enumer;
-    
+
     if (url != NULL) {
         *url = NULL;
     }
@@ -248,7 +249,7 @@ CFURLEnumeratorResult CFURLEnumeratorGetNextURL(CFURLEnumeratorRef enumer, CFURL
             count = 0;
         }
     } while (count > 0);
-    
+
     if (fileInfo == NULL || parent == NULL) { // the parent being null might be an error if it happens... it doesnt seem possible however
         return kCFURLEnumeratorEnd;
     }

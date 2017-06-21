@@ -10,8 +10,8 @@ LFLAGS =
 BUILD_DIR		?= build/debug
 INSTALL_DIR		= $(EMSCRIPTEN)/system/frameworks
 SOURCES			= $(wildcard src/*.mm src/*.m src/*.c) src/NSPredicateLexer.m
-PUBLIC_HEADERS	= $(wildcard include/**/*.h private_include/**/*.h)
-PRIVATE_HEADERS	= $(wildcard include/**/*.h private_include/**/*.h)
+PUBLIC_HEADERS	= $(wildcard include/**/*.h)
+PRIVATE_HEADERS	= $(wildcard private_include/**/*.h)
 RESOURCE_DIR	= resource
 MODULE_MAP		= modules/module.modulemap
 

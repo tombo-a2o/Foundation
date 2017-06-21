@@ -191,6 +191,7 @@ FOUNDATION_EXPORT NSString * const NSCharacterConversionException;
 - (BOOL)writeToFile:(NSString *)path atomically:(BOOL)useAuxiliaryFile encoding:(NSStringEncoding)enc error:(NSError **)error;
 - (BOOL)containsString:(NSString *)str;
 - (NSString *)stringByAddingPercentEncodingWithAllowedCharacters:(NSCharacterSet *)allowedCharacters;
+@property(readonly, copy) NSString *stringByRemovingPercentEncoding;
 @end
 
 @interface NSMutableString : NSString

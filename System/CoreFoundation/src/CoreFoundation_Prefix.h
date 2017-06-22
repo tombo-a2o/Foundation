@@ -425,7 +425,7 @@ CF_INLINE int popcountll(long long x) {
     return count;
 }
 
-CF_PRIVATE int asprintf(char **ret, const char *format, ...);
+//CF_PRIVATE int asprintf(char **ret, const char *format, ...);
 
 #endif
 

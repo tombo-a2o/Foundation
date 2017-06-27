@@ -14,6 +14,7 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSObjectInternal.h>
 #import <stdlib.h>
+#import "NSSystemDirectories.h"
 
 @implementation NSString (NSStringPathExtensions)
 
@@ -413,9 +414,6 @@ NSString *NSOpenStepRootDirectory(void)
 }
 
 typedef unsigned int NSSearchPathEnumerationState;
-
-extern NSSearchPathEnumerationState NSStartSearchPathEnumeration(NSSearchPathDirectory dir, NSSearchPathDomainMask domainMask);
-extern NSSearchPathEnumerationState NSGetNextSearchPathEnumeration(NSSearchPathEnumerationState state, char *path);
 
 NSArray *NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory directory, NSSearchPathDomainMask domainMask, BOOL expandTilde)
 {

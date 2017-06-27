@@ -82,7 +82,7 @@
 
 #import <Foundation/FoundationErrors.h>
 
-#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || TARGET_OS_EMSCRIPTEN
+#if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
 
 #import <Foundation/NSAttributedString.h>
 #import <Foundation/NSByteCountFormatter.h>

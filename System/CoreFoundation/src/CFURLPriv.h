@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -34,7 +34,7 @@
 #include <CoreFoundation/CFDictionary.h>
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CFURL.h>
-#if TARGET_OS_MAC
+#if TARGET_OS_MAC && !TARGET_OS_EMSCRIPTEN
 #include <sys/param.h>
 #include <sys/mount.h>
 #include <CoreFoundation/CFFileSecurity.h>
@@ -66,7 +66,7 @@ enum {
     kCFURLWriteVolumeReadOnlyError = 642,		   // Write error (readonly volume)
 } CF_ENUM_AVAILABLE(10_5, 2_0);
 
-#if TARGET_OS_MAC
+#if TARGET_OS_MAC && !TARGET_OS_EMSCRIPTEN
 
 /*
     Private File System Property Keys
@@ -302,7 +302,7 @@ typedef unsigned long long CFURLResourcePropertyFlags;
     _CFURLGetResourceFlags - Returns a bit array of resource flags in the "flags"
     output parameter. Only flags whose corresponding bits are set in the "mask" parameter
     are valid in the output bit array. Returns true on success, false if an error occurs.
-    Optional output error: the error is set to a valid CFErrorRef if and only if the function 
+    Optional output error: the error is set to a valid CFErrorRef if and only if the function
     returns false. A valid output error must be released by the caller.
  */
 CF_EXPORT
@@ -353,7 +353,7 @@ typedef struct _CFURLFilePropertyValues _CFURLFilePropertyValues;
     whenever possible. Returns a bit array of resource flags in the "flags"
     output parameter. Only flags whose corresponding bits are set in the "mask" parameter
     are valid in the output bit array. Returns true on success, false if an error occurs.
-    Optional output error: the error is set to a valid CFErrorRef if and only if the function 
+    Optional output error: the error is set to a valid CFErrorRef if and only if the function
     returns false. A valid output error must be released by the caller.
  */
 CF_EXPORT
@@ -400,7 +400,7 @@ typedef CF_OPTIONS(unsigned long long, CFURLVolumePropertyFlags) {
                                                         =	   0x1000000LL,
         kCFURLVolumeIsBeingUnmounted CF_ENUM_AVAILABLE_MAC(10_9)
                                                         =	   0x2000000LL,
-    
+
 // IMPORTANT: The values of the following flags must stay in sync with the
 // VolumeCapabilities flags in CarbonCore (FileIDTreeStorage.h)
 	kCFURLVolumeSupportsPersistentIDs		=        0x100000000LL,
@@ -438,9 +438,9 @@ typedef CF_OPTIONS(unsigned long long, CFURLVolumePropertyFlags) {
 
 /*
     _CFURLGetVolumePropertyFlags - Returns a bit array of volume properties.
-    Only flags whose corresponding bits are set in the "mask" parameter are valid 
+    Only flags whose corresponding bits are set in the "mask" parameter are valid
     in the output bit array. Returns true on success, false if an error occurs.
-    Optional output error: the error is set to a valid CFErrorRef if and only if the function 
+    Optional output error: the error is set to a valid CFErrorRef if and only if the function
     returns false. A valid output error must be released by the caller.
  */
 CF_EXPORT
@@ -475,7 +475,7 @@ CFDictionaryRef _CFURLCopyResourcePropertiesForKeysFromCache(CFURLRef url, CFArr
     If no errors occur, TRUE is returned. If an error occurs, FALSE is returned
     and the optional output error is set to a valid CFErrorRef (which must be
     released by the caller.
- 
+
     Only for use by DesktopServices!
  */
 CF_EXPORT
@@ -498,7 +498,7 @@ Boolean _CFURLCacheResourcePropertiesForKeys(CFURLRef url, CFArrayRef keys, CFEr
  except that file system properties are updated in the URL's file cache (if it has a valid cache)
  and dependant properties are not flushed. This means that values in the cache may not match what
  is on the file system (see <rdar://problem/8371295> for details).
- 
+
  Only for use by DesktopServices!
  */
 CF_EXPORT
@@ -523,7 +523,7 @@ Boolean _CFURLSetResourcePropertyForKeyAndUpdateFileCache(CFURLRef url, CFString
 	file://localhost/System/, and then file://localhost/
 
     Parameters:
-      
+
 	targetURL:
 	    The target URL.
 
@@ -547,10 +547,10 @@ CF_EXPORT
 Boolean _CFURLIsFileReferenceURL(CFURLRef url) CF_DEPRECATED(10_6, 10_9, 4_0, 7_0);
 
 /* For use by Core Services */
-CF_EXPORT 
+CF_EXPORT
 void *__CFURLResourceInfoPtr(CFURLRef url) CF_AVAILABLE(10_6, 4_0);
 
-CF_EXPORT 
+CF_EXPORT
 void __CFURLSetResourceInfoPtr(CFURLRef url, void *ptr) CF_AVAILABLE(10_6, 4_0);
 
 
@@ -571,16 +571,16 @@ enum {
     _CFURLItemReplacementWithoutDeletingBackupItem  = 1 << 4
 };
 
-CF_EXPORT 
+CF_EXPORT
 Boolean _CFURLReplaceObject( CFAllocatorRef allocator, CFURLRef originalItemURL, CFURLRef newItemURL, CFStringRef newName, CFStringRef backupItemName, CFOptionFlags options, CFURLRef *resultingURL, CFErrorRef *error ) CF_AVAILABLE(10_7, 5_0);
 
 
-#if (TARGET_OS_MAC) || CF_BUILDING_CF || NSBUILDINGFOUNDATION
+#if (TARGET_OS_MAC && !TARGET_OS_EMSCRIPTEN) || CF_BUILDING_CF || NSBUILDINGFOUNDATION
 CF_EXPORT
 CFURLEnumeratorResult _CFURLEnumeratorGetURLsBulk(CFURLEnumeratorRef enumerator, CFIndex maximumURLs, CFIndex *actualURLs, CFURLRef *urls, CFErrorRef *error) CF_AVAILABLE(10_6, 4_0);
 #endif
 
-#if TARGET_OS_MAC
+#if TARGET_OS_MAC && !TARGET_OS_EMSCRIPTEN
 
 enum {
     kCFBookmarkFileCreationWithoutOverwritingExistingFile   = ( 1UL << 8 ), // if destination file already exists don't overwrite it and return an error
@@ -630,4 +630,3 @@ extern const CFStringRef kCFURLBookmarkOriginalVolumeCreationDateKey CF_AVAILABL
 CF_EXTERN_C_END
 
 #endif /* ! __COREFOUNDATION_CFURLPRIV__ */
-

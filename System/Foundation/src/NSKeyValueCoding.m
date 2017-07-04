@@ -13,6 +13,7 @@
 #import <Foundation/NSString.h>
 #import <libkern/OSAtomic.h>
 #import <objc/runtime.h>
+#import <Foundation/NSNull.h>
 
 static int32_t NSKVOLock;
 
@@ -199,7 +200,8 @@ static NSString *const NSUnknownUserInfoKey = @"NSUnknownUserInfoKey";
     NSMutableDictionary *values = [[NSMutableDictionary alloc] init];
     for (NSString *key in keys)
     {
-        values[key] = [self valueForKey:key];
+        id value = [self valueForKey:key];
+        values[key] = value ? value : [NSNull null];
     }
     return [values autorelease];
 }

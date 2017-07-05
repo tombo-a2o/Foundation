@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -36,7 +36,7 @@
 
 #include <CoreFoundation/CFByteOrder.h>
 #include "CFInternal.h"
-#include <CoreFoundation/CFUniChar.h> 
+#include <CoreFoundation/CFUniChar.h>
 #include <CoreFoundation/CFStringEncodingConverterExt.h>
 #include <CoreFoundation/CFUnicodeDecomposition.h>
 #include "CFUniCharPriv.h"
@@ -109,7 +109,7 @@ static const void *__CFGetSectDataPtr(const char *segname, const char *sectname,
             return &unicode_data_section_start;
         }
     }
-    
+
     uint32_t idx, cnt = _dyld_image_count();
     for (idx = 0; idx < cnt; idx++) {
        void *mh = (void *)_dyld_get_image_header(idx);
@@ -157,12 +157,12 @@ CF_INLINE void __CFUniCharCharacterSetPath(wchar_t *wpath) {
 #if DEPLOYMENT_TARGET_WINDOWS
 #define MAX_BITMAP_STATE 512
 //
-//  If a string is placed into this array, then it has been previously 
+//  If a string is placed into this array, then it has been previously
 //  determined that the bitmap-file cannot be found.  Thus, we make
 //  the assumption it won't be there in future calls and we avoid
 //  hitting the disk un-necessarily.  This assumption isn't 100%
 //  correct, as bitmap-files can be added.  We would have to re-start
-//  the application in order to pick-up the new bitmap info.  
+//  the application in order to pick-up the new bitmap info.
 //
 //  We should probably re-visit this.
 //
@@ -206,7 +206,7 @@ static bool __CFUniCharLoadBytesFromFile(const wchar_t *fileName, const void **b
 #if DEPLOYMENT_TARGET_WINDOWS
     HANDLE bitmapFileHandle = NULL;
     HANDLE mappingHandle = NULL;
-    
+
     if (__GetBitmapStateForName(fileName)) {
         // The fileName has been tried in the past, so just return false
         // and move on.
@@ -433,6 +433,7 @@ static bool __CFUniCharLoadBitmapData(void) {
     __CFSpinLock(&__CFUniCharBitmapLock);
 
     if (__CFUniCharBitmapDataArray || !__CFUniCharLoadFile(CF_UNICHAR_BITMAP_FILE, &bytes, &fileSize) || !__CFSimpleFileSizeVerification(bytes, fileSize)) {
+        CFLog(kCFLogLevelError, CFSTR("********** Failed to load unicode character bitmap file(%s) **********"), CF_UNICHAR_BITMAP_FILE);
         __CFSpinUnlock(&__CFUniCharBitmapLock);
         return false;
     }
@@ -467,7 +468,7 @@ static bool __CFUniCharLoadBitmapData(void) {
             if (bitmapIndex == currentPlane) {
                 array[idx]._planes[bitmapIndex] = (const uint8_t *)bitmap;
                 bitmap = (uint8_t *)bitmap + (8 * 1024);
-#if defined (__cplusplus)				
+#if defined (__cplusplus)
 				currentPlane = *(((const uint8_t*&)bitmap)++);
 #else
 				currentPlane = *((const uint8_t *)bitmap++);
@@ -580,13 +581,13 @@ CF_PRIVATE uint8_t CFUniCharGetBitmapForPlane(uint32_t charset, uint32_t plane, 
 
         if (plane < data->_numPlanes && (src = data->_planes[plane])) {
             if (isInverted) {
-#if defined (__cplusplus)                
+#if defined (__cplusplus)
 				while (numBytes-- > 0) *(((uint8_t *&)bitmap)++) = *(src++);
 #else
 				while (numBytes-- > 0) *((uint8_t *)bitmap++) = *(src++);
 #endif
             } else {
-#if defined (__cplusplus)                
+#if defined (__cplusplus)
                 while (numBytes-- > 0) *(((uint8_t *&)bitmap)++) = ~(*(src++));
 #else
 				while (numBytes-- > 0) *((uint8_t *)bitmap++) = ~(*(src++));
@@ -604,7 +605,7 @@ CF_PRIVATE uint8_t CFUniCharGetBitmapForPlane(uint32_t charset, uint32_t plane, 
 			*((uint8_t *)bitmap++) = 0x02; // UE0001 LANGUAGE TAG
 #endif
             for (idx = 1;idx < numBytes;idx++) {
-#if defined (__cplusplus)                
+#if defined (__cplusplus)
 				*(((uint8_t *&)bitmap)++) = ((idx >= (0x20 / 8) && (idx < (0x80 / 8))) ? asciiRange : otherRange);
 #else
 				*((uint8_t *)bitmap++) = ((idx >= (0x20 / 8) && (idx < (0x80 / 8))) ? asciiRange : otherRange);
@@ -617,8 +618,8 @@ CF_PRIVATE uint8_t CFUniCharGetBitmapForPlane(uint32_t charset, uint32_t plane, 
 
             while (numBytes-- > 0) {
                 *((uint32_t *)bitmap) = value;
-#if defined (__cplusplus)                
-				bitmap = (uint8_t *)bitmap + sizeof(uint32_t);				
+#if defined (__cplusplus)
+				bitmap = (uint8_t *)bitmap + sizeof(uint32_t);
 #else
 				bitmap += sizeof(uint32_t);
 #endif
@@ -761,7 +762,7 @@ CF_PRIVATE const void *CFUniCharGetMappingData(uint32_t type) {
 #else
 		bytes += 4; // Skip Unicode version
 		headerSize = *((uint32_t *)bytes); bytes += sizeof(uint32_t);
-#endif    
+#endif
         headerSize -= (sizeof(uint32_t) * 2);
         bodyBase = (char *)bytes + headerSize;
 
@@ -770,7 +771,7 @@ CF_PRIVATE const void *CFUniCharGetMappingData(uint32_t type) {
         __CFUniCharMappingTables = (const void **)CFAllocatorAllocate(kCFAllocatorSystemDefault, sizeof(const void *) * count, 0);
 
         for (idx = 0;idx < count;idx++) {
-#if defined (__cplusplus)            
+#if defined (__cplusplus)
 			__CFUniCharMappingTables[idx] = (char *)bodyBase + *((uint32_t *)bytes); bytes = (uint8_t *)bytes + sizeof(uint32_t);
 #else
 			__CFUniCharMappingTables[idx] = (char *)bodyBase + *((uint32_t *)bytes); bytes += sizeof(uint32_t);
@@ -1268,6 +1269,8 @@ const void *CFUniCharGetUnicodePropertyDataForPlane(uint32_t propertyType, uint3
 	int64_t fileSize;
 
         if (!__CFUniCharLoadFile(PROP_DB_FILE, &bytes, &fileSize) || !__CFSimpleFileSizeVerification(bytes, fileSize)) {
+            CFLog(kCFLogLevelError, CFSTR("********** Failed to load unicode character property file(%s) **********"), PROP_DB_FILE);
+
             __CFSpinUnlock(&__CFUniCharPropTableLock);
             return NULL;
         }
@@ -1279,7 +1282,7 @@ const void *CFUniCharGetUnicodePropertyDataForPlane(uint32_t propertyType, uint3
 		bytes += 4; // Skip Unicode version
 		headerSize = CFSwapInt32BigToHost(*((uint32_t *)bytes)); bytes += sizeof(uint32_t);
 #endif
-		
+
         headerSize -= (sizeof(uint32_t) * 2);
         bodyBase = (char *)bytes + headerSize;
 
@@ -1296,7 +1299,7 @@ const void *CFUniCharGetUnicodePropertyDataForPlane(uint32_t propertyType, uint3
             for (planeIndex = 0;planeIndex < planeCount;planeIndex++) {
                 if ((planeSize = ((const uint8_t *)bodyBase)[planeIndex + 1])) {
                     table[idx]._planes[planeIndex] = (const uint8_t *)planeBase;
-#if defined (__cplusplus)   
+#if defined (__cplusplus)
 					planeBase = (char*)planeBase + (planeSize * 256);
 #else
 					planeBase += (planeSize * 256);
@@ -1307,7 +1310,7 @@ const void *CFUniCharGetUnicodePropertyDataForPlane(uint32_t propertyType, uint3
             }
 
             table[idx]._numPlanes = planeCount;
-#if defined (__cplusplus)   
+#if defined (__cplusplus)
 			bodyBase = (const uint8_t *)bodyBase + (CFSwapInt32BigToHost(*(uint32_t *)bytes));
 			((uint32_t *&)bytes) ++;
 #else
@@ -1345,9 +1348,9 @@ CF_PRIVATE uint32_t CFUniCharGetUnicodeProperty(UTF32Char character, uint32_t pr
 */
 /*
  * Copyright 2001 Unicode, Inc.
- * 
+ *
  * Disclaimer
- * 
+ *
  * This source code is provided as is by Unicode, Inc. No claims are
  * made as to fitness for any particular purpose. No warranties of any
  * kind are expressed or implied. The recipient agrees to determine
@@ -1355,9 +1358,9 @@ CF_PRIVATE uint32_t CFUniCharGetUnicodeProperty(UTF32Char character, uint32_t pr
  * purchased on magnetic or optical media from Unicode, Inc., the
  * sole remedy for any claim will be exchange of defective media
  * within 90 days of receipt.
- * 
+ *
  * Limitations on Rights to Redistribute This Code
- * 
+ *
  * Unicode, Inc. hereby grants the right to freely use the information
  * supplied in this file in the creation of products supporting the
  * Unicode Standard, and to make copies of this file in any form
@@ -1398,7 +1401,7 @@ bool CFUniCharFillDestinationBuffer(const UTF32Char *src, CFIndex srcLength, voi
         uint8_t *dstBuffer = (uint8_t *)*dst;
         uint16_t bytesToWrite = 0;
         const UTF32Char byteMask = 0xBF;
-        const UTF32Char byteMark = 0x80; 
+        const UTF32Char byteMark = 0x80;
         static const uint8_t firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
 
         while (srcLength-- > 0) {
@@ -1460,56 +1463,56 @@ bool CFUniCharFillDestinationBuffer(const UTF32Char *src, CFIndex srcLength, voi
 void __CFUniCharCleanup(void)
 {
     int	idx;
-    
+
     // cleanup memory allocated by __CFUniCharLoadBitmapData()
     __CFSpinLock(&__CFUniCharBitmapLock);
-    
+
     if (__CFUniCharBitmapDataArray != NULL) {
         for (idx = 0; idx < (int)__CFUniCharNumberOfBitmaps; idx++) {
             CFAllocatorDeallocate(kCFAllocatorSystemDefault, __CFUniCharBitmapDataArray[idx]._planes);
             __CFUniCharBitmapDataArray[idx]._planes = NULL;
         }
-        
+
         CFAllocatorDeallocate(kCFAllocatorSystemDefault, __CFUniCharBitmapDataArray);
         __CFUniCharBitmapDataArray = NULL;
         __CFUniCharNumberOfBitmaps = 0;
     }
-    
+
     __CFSpinUnlock(&__CFUniCharBitmapLock);
-    
+
     // cleanup memory allocated by CFUniCharGetMappingData()
     __CFSpinLock(&__CFUniCharMappingTableLock);
-    
+
     if (__CFUniCharMappingTables != NULL) {
         CFAllocatorDeallocate(kCFAllocatorSystemDefault, __CFUniCharMappingTables);
         __CFUniCharMappingTables = NULL;
     }
-    
+
     // cleanup memory allocated by __CFUniCharLoadCaseMappingTable()
     if (__CFUniCharCaseMappingTableCounts != NULL) {
         CFAllocatorDeallocate(kCFAllocatorSystemDefault, __CFUniCharCaseMappingTableCounts);
         __CFUniCharCaseMappingTableCounts = NULL;
-        
+
         __CFUniCharCaseMappingTable = NULL;
         __CFUniCharCaseMappingExtraTable = NULL;
     }
-    
+
     __CFSpinUnlock(&__CFUniCharMappingTableLock);
-    
+
     // cleanup memory allocated by CFUniCharGetUnicodePropertyDataForPlane()
     __CFSpinLock(&__CFUniCharPropTableLock);
-    
+
     if (__CFUniCharUnicodePropertyTable != NULL) {
         for (idx = 0; idx < __CFUniCharUnicodePropertyTableCount; idx++) {
             CFAllocatorDeallocate(kCFAllocatorSystemDefault, __CFUniCharUnicodePropertyTable[idx]._planes);
             __CFUniCharUnicodePropertyTable[idx]._planes = NULL;
         }
-        
+
         CFAllocatorDeallocate(kCFAllocatorSystemDefault, __CFUniCharUnicodePropertyTable);
         __CFUniCharUnicodePropertyTable = NULL;
         __CFUniCharUnicodePropertyTableCount = 0;
     }
-    
+
     __CFSpinUnlock(&__CFUniCharPropTableLock);
 }
 #endif

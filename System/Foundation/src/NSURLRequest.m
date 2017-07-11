@@ -262,11 +262,17 @@ static CFURLRequestRef _CFURLRequestMutableCopyFromNSURLRequest(NSURLRequest *se
     CFIndex idx = CFURLRequestFirstFieldIndex(req, (CFStringRef)field, 0);
     if (idx != kCFNotFound)
     {
-        CFURLRequestReplaceHTTPField(req, idx, (CFStringRef)value);
+        if(value) {
+            CFURLRequestReplaceHTTPField(req, idx, (CFStringRef)value);
+        } else {
+            CFURLRequestRemoveHTTPField(req, idx);
+        }
     }
     else
     {
-        CFURLRequestAddValueForHTTPField(req, (CFStringRef)field, (CFStringRef)value);
+        if(value) {
+            CFURLRequestAddValueForHTTPField(req, (CFStringRef)field, (CFStringRef)value);
+        }
     }
 }
 

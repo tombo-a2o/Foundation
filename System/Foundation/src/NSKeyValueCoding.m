@@ -63,7 +63,17 @@ static NSString *const NSUnknownUserInfoKey = @"NSUnknownUserInfoKey";
     return _NSGetUsingKeyValueGetter(self, getter);
 }
 
-// - (BOOL)validateValue:(inout id *)ioValue forKey:(NSString *)inKey error:(out NSError **)outError;
+- (BOOL)validateValue:(inout id *)ioValue forKey:(NSString *)inKey error:(out NSError **)outError
+{
+    NSLog(@"%s is not implemented %@ -> %@", __FUNCTION__, inKey, ioValue ? *ioValue : nil);
+    return YES;
+}
+
+- (BOOL)validateValue:(inout id *)ioValue forKeyPath:(NSString *)inKeyPath error:(out NSError **)outError
+{
+    NSLog(@"%s is not implemented %@ -> %@", __FUNCTION__, inKeyPath, ioValue ? *ioValue : nil);
+    return YES;
+}
 
 - (NSMutableArray *)mutableArrayValueForKey:(NSString *)key
 {

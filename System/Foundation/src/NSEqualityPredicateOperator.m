@@ -63,7 +63,7 @@ static NSString * const NSOptionsKey = @"NSOptions";
         ![rhs isNSString__])
     {
         SEL sel = [self selector];
-        BOOL eq = (BOOL)objc_msgSend(lhs, sel, rhs);
+        BOOL eq = [lhs performSelector:sel withObject:rhs];
         return _negate ^ eq;
     }
 

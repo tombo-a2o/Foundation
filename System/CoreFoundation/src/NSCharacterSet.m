@@ -115,6 +115,36 @@ CF_PRIVATE
     return [self characterSetWithBitmapRepresentation:[NSData dataWithContentsOfMappedFile:path]];
 }
 
++ (id)URLFragmentAllowedCharacterSet
+{
+    return [self characterSetWithCharactersInString:@"!$&'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"];
+}
+
++ (id)URLHostAllowedCharacterSet
+{
+    return [self characterSetWithCharactersInString:@"!$&'()*+,-.0123456789:;=ABCDEFGHIJKLMNOPQRSTUVWXYZ[]_abcdefghijklmnopqrstuvwxyz~"];
+}
+
++ (id)URLPasswordAllowedCharacterSet
+{
+    return [self characterSetWithCharactersInString:@"!$&'()*+,-.0123456789;=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"];
+}
+
++ (id)URLPathAllowedCharacterSet
+{
+    return [self characterSetWithCharactersInString:@"!$&'()*+,-./0123456789:=@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"];
+}
+
++ (id)URLQueryAllowedCharacterSet
+{
+    return [self characterSetWithCharactersInString:@"!$&'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"];
+}
+
++ (id)URLUserAllowedCharacterSet
+{
+    return [self characterSetWithCharactersInString:@"!$&'()*+,-.0123456789;=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"];
+}
+
 - (id)init
 {
     [self release];
@@ -351,7 +381,7 @@ CF_PRIVATE
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-    
+
 }
 
 - (Class)classForCoder

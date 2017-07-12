@@ -38,7 +38,12 @@ enum {
 - (BOOL)isSupersetOfSet:(NSCharacterSet *)other;
 - (BOOL)hasMemberInPlane:(uint8_t)plane;
 
+@property(class, readonly, copy) NSCharacterSet *URLFragmentAllowedCharacterSet;
+@property(class, readonly, copy) NSCharacterSet *URLHostAllowedCharacterSet;
+@property(class, readonly, copy) NSCharacterSet *URLPasswordAllowedCharacterSet;
+@property(class, readonly, copy) NSCharacterSet *URLPathAllowedCharacterSet;
 @property(class, readonly, copy) NSCharacterSet *URLQueryAllowedCharacterSet;
+@property(class, readonly, copy) NSCharacterSet *URLUserAllowedCharacterSet;
 @end
 
 @interface NSMutableCharacterSet : NSCharacterSet <NSCopying, NSMutableCopying>

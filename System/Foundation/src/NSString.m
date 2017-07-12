@@ -322,7 +322,7 @@ static NSStringEncoding __NSDefaultCStringEncoding()
     dispatch_once(&once, ^{
         base = class_getMethodImplementation([NSString class], @selector(substringWithRange:));
     });
-    
+
     NSString *substr = nil;
     if (class_getMethodImplementation([self class], @selector(substringWithRange:)) != base)
     {
@@ -338,7 +338,7 @@ static NSStringEncoding __NSDefaultCStringEncoding()
         }
         substr = [self _newSubstringWithRange:r zone:nil];
     }
-    
+
     return substr;
 }
 
@@ -1687,28 +1687,28 @@ static const char* bytesInEncoding(NSString *string, BOOL externalRep, NSStringE
     }
     NSUInteger stringLength = [string length];
     NSRange range = NSMakeRange(0, stringLength);
-    
+
     const int stackBufferSize = 1000;
     // 6 corresponds to the largest multiplier in CFStringGetMaximumSizeForEncoding
     if (stringLength < stackBufferSize / 6)
     {
         char buffer[stackBufferSize];
-        
+
         if ([string getBytes:buffer maxLength:sizeof(buffer) usedLength:&byteLength encoding:encoding options:options range:range remainingRange:NULL])
         {
             buffer[byteLength] = '\0';
-            
+
             CFDataRef data = CFDataCreate(NULL, buffer, byteLength+1);
             const char *bytes = CFDataGetBytePtr(data);
             CFBridgingRelease(data);
-            
+
             if (bytes)
             {
                 return bytes;
             }
         }
     }
-    
+
     if (![string getBytes:NULL maxLength:0 usedLength:&byteLength encoding:encoding options:options range:range remainingRange:NULL])
     {
         if (raiseOnError)
@@ -1718,7 +1718,7 @@ static const char* bytesInEncoding(NSString *string, BOOL externalRep, NSStringE
         }
         return NULL;
     }
-    
+
     NSUInteger usedLength = 0;
     NSMutableData *data = [NSMutableData dataWithLength:byteLength + 1];
     char *bytes = (char*)[data mutableBytes];
@@ -1729,7 +1729,7 @@ static const char* bytesInEncoding(NSString *string, BOOL externalRep, NSStringE
         [NSException raise:NSInternalInconsistencyException format:@"Unable to convert all of the characters expected"];
         return NULL;
     }
-    
+
     bytes[byteLength] = '\0';
     return [data bytes];
 }
@@ -2193,7 +2193,7 @@ static BOOL _NSScanStringValue(NSString *self, NSNumericValueType type, NSNumeri
     NSMutableString *trimmed = [self mutableCopy];
     CFStringTrimWhitespace ((CFMutableStringRef)trimmed);
     [trimmed autorelease];
-    
+
     // intValue caps value on underflow & overflow whereas this function just truncates.
     return [trimmed longLongValue];
 }
@@ -2376,7 +2376,7 @@ static BOOL _NSScanStringValue(NSString *self, NSNumericValueType type, NSNumeri
         [NSException raise:NSCharacterConversionException format:@"Could not covert \"%@\" to default C-string encoding", self];
         return;
     }
-    
+
     // bytes buffer is expected to be at least maxLength + 1 bytes long.
     bytes[filledLength] = '\0';
 }
@@ -2406,20 +2406,20 @@ static BOOL _NSScanStringValue(NSString *self, NSNumericValueType type, NSNumeri
         {
             *usedBufferCount = 0;
         }
-        
+
         if (leftover)
         {
             *leftover = range;
         }
-        
+
         return YES;
     }
-    
+
     CFIndex used;
     uint8_t lossByte = (options & NSStringEncodingConversionAllowLossy) ? '?' : 0;
     Boolean externalRep = (options & NSStringEncodingConversionExternalRepresentation) != 0;
     CFIndex numCharsProcessed = __CFStringEncodeByteStream((CFStringRef)self, range.location, range.length, externalRep, CFStringConvertNSStringEncodingToEncoding(encoding), lossByte, buffer, maxBufferCount, &used);
-    
+
     if (usedBufferCount != NULL)
     {
         *usedBufferCount = used;
@@ -2430,7 +2430,7 @@ static BOOL _NSScanStringValue(NSString *self, NSNumericValueType type, NSNumeri
         leftover->location = range.location + numCharsProcessed;
         leftover->length = range.length - numCharsProcessed;
     }
-    
+
     if (options & NSStringEncodingConversionFailOnPartial)
     {
         return numCharsProcessed == range.length;
@@ -2468,6 +2468,18 @@ static BOOL _NSScanStringValue(NSString *self, NSNumericValueType type, NSNumeri
     CFStringEncoding cfEnc = CFStringConvertNSStringEncodingToEncoding(enc);
     NSString *escapedStr = (NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL, (CFStringRef)self, (CFStringRef)@"", cfEnc);
     return [escapedStr autorelease];
+}
+
+- (NSString *)stringByAddingPercentEncodingWithAllowedCharacters:(NSCharacterSet *)allowedCharacters
+{
+    CFStringEncoding cfEnc = CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding);
+    NSString *escapedStr = (NSString *)CFStringCreateStringByAddingPercentEncodingWithAllowedCharacters(NULL, (CFStringRef)self, (CFCharacterSetRef)allowedCharacters, cfEnc);
+    return [escapedStr autorelease];
+}
+
+- (NSString *)stringByRemovingPercentEncoding
+{
+    return [self stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (BOOL)writeToFile:(NSString *)path atomically:(BOOL)atomically

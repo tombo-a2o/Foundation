@@ -654,6 +654,7 @@ CF_EXPORT CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void)
 CF_EXPORT const CFStringRef kCFNumberFormatterUsesCharacterDirection CF_AVAILABLE(10_9, 6_0);	// CFBoolean
 CF_EXPORT const CFStringRef kCFDateFormatterUsesCharacterDirection CF_AVAILABLE(10_9, 6_0);	// CFBoolean
 
+CF_EXPORT CFStringRef CFStringCreateStringByAddingPercentEncodingWithAllowedCharacters(CFAllocatorRef allocator, CFStringRef originalString, CFCharacterSetRef allowedCharacters, CFStringEncoding encoding);
 
 CF_EXTERN_C_END
 

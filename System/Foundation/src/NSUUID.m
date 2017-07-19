@@ -148,7 +148,7 @@ CF_PRIVATE
 
 - (id)description
 {
-    return [NSString stringWithFormat:@"<%s %p> %@", object_getClassName(self), self, [self UUIDString]];
+    return [self UUIDString];
 }
 
 - (CFUUIDBytes)_cfUUIDBytes

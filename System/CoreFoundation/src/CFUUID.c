@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -200,7 +200,7 @@ static CFUUIDRef __CFUUIDGetUniquedUUIDHasLock(const CFUUIDBytes *bytes) {
 
 static void __CFUUIDDeallocate(CFTypeRef cf) {
     if (kCFUseCollectableAllocator) return;
-    
+
     __CFUUID_t *uuid = (__CFUUID_t *)cf;
     LOCKED(^{
     __CFUUIDRemoveUniqueUUIDHasLock(uuid);
@@ -248,9 +248,9 @@ static CFUUIDRef __CFUUIDCreateWithBytesPrimitive(CFAllocatorRef allocator, CFUU
             size_t size;
             size = sizeof(__CFUUID_t) - sizeof(CFRuntimeBase);
             uuid = (__CFUUID_t *)_CFRuntimeCreateInstance(kCFUseCollectableAllocator ? kCFAllocatorSystemDefault : allocator, __kCFUUIDTypeID, size, NULL);
-            
+
             if (!uuid) return;
-            
+
             uuid->_bytes = bytes;
             __CFUUIDAddUniqueUUIDHasLock(uuid);
         } else if (!isConst) {
@@ -263,7 +263,7 @@ static CFUUIDRef __CFUUIDCreateWithBytesPrimitive(CFAllocatorRef allocator, CFUU
 
 #if DEPLOYMENT_TARGET_WINDOWS
 #include <Rpc.h>
-#elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED
+#elif DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <uuid/uuid.h>
 #endif
 
@@ -271,7 +271,7 @@ CFUUIDRef CFUUIDCreate(CFAllocatorRef alloc) {
     /* Create a new bytes struct and then call the primitive. */
     __block CFUUIDBytes bytes;
     __block uint32_t retval = 0;
-    
+
     LOCKED(^{
 #if DEPLOYMENT_TARGET_WINDOWS
         UUID u;
@@ -289,6 +289,10 @@ CFUUIDRef CFUUIDCreate(CFAllocatorRef alloc) {
             checked = true;
         }
         if (useV1UUIDs) uuid_generate_time(uuid); else uuid_generate_random(uuid);
+        memcpy((void *)&bytes, uuid, sizeof(uuid));
+#elif DEPLOYMENT_TARGET_EMSCRIPTEN
+        uuid_t uuid;
+        uuid_generate(uuid);
         memcpy((void *)&bytes, uuid, sizeof(uuid));
 #else
         retval = 1;
@@ -355,7 +359,7 @@ static uint8_t _byteFromHexChars(UniChar *in) {
         }
         result = (result << 4) | d;
     }
-    
+
     return result;
 }
 
@@ -374,7 +378,7 @@ CFUUIDRef CFUUIDCreateFromString(CFAllocatorRef alloc, CFStringRef uuidStr) {
     UniChar chars[100];
     CFIndex len;
     CFIndex i = 0;
-    
+
     if (uuidStr == NULL) return NULL;
 
     len = CFStringGetLength(uuidStr);
@@ -491,4 +495,3 @@ CF_EXPORT CFUUIDRef CFUUIDCreateFromUUIDBytes(CFAllocatorRef alloc, CFUUIDBytes 
 }
 
 #undef READ_A_BYTE
-

@@ -15,11 +15,11 @@ int __nsurl_xhrCreateAndOpen(NSURLRequest *request, BOOL async) {
 
     int xhr = _xhr_create();
     _xhr_open(xhr, [method UTF8String], [url.absoluteString UTF8String], async ? 1 : 0, [url.user UTF8String], [url.password UTF8String]);
+    setDefaultUserAgent(xhr);
     for(NSString *key in [headers allKeys]) {
         NSString *value = [headers objectForKey:key];
         _xhr_set_request_header(xhr, [key UTF8String], [value UTF8String]);
     }
-    setDefaultUserAgent(xhr);
     return xhr;
 }
 

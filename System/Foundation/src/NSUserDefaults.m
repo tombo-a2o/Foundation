@@ -39,7 +39,6 @@ static dispatch_queue_t synchronizeQueue;
         standardDefaults = [[NSUserDefaults alloc] initWithUser:NSUserName()];
         _startSynchronizeTimer(standardDefaults);
         [standardDefaults setObject:[NSLocale preferredLanguages] forKey:@"AppleLanguages"];
-        [standardDefaults setObject:[[NSLocale systemLocale] localeIdentifier] forKey:@"AppleLocale"];
     }
     pthread_mutex_unlock(&defaultsLock);
     return standardDefaults;

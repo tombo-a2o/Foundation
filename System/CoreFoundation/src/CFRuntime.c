@@ -1272,10 +1272,7 @@ void __CFInitialize(void) {
         __CFProphylacticAutofsAccess = false;
         __CFInitializing = 0;
 
-#if defined(EMSCRIPTEN)
-        __CFPreferencesDomainInitialize();
-#endif
-#if defined(APPORTABLE)
+#if defined(APPORTABLE) || DEPLOYMENT_TARGET_EMSCRIPTEN
         __CFPreferencesDomainInitialize();
         #define LANG_MAX 100
         char *strtokSavePtr;

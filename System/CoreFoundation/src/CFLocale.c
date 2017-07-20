@@ -315,7 +315,7 @@ static CFLocaleRef _CFLocaleCopyCurrentGuts(CFStringRef name, Boolean useCache, 
     // things which call this function thousands or millions of times in
     // a short period.
     if (!name) {
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
         name = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("AppleLocale"), kCFPreferencesCurrentApplication);
 #endif
     } else {
@@ -553,7 +553,7 @@ CFStringRef CFLocaleCopyDisplayNameForPropertyValue(CFLocaleRef displayLocale, C
             langPref = (CFArrayRef)CFDictionaryGetValue(displayLocale->_prefs, CFSTR("AppleLanguages"));
             if (langPref) CFRetain(langPref);
         } else {
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
             langPref = (CFArrayRef)CFPreferencesCopyAppValue(CFSTR("AppleLanguages"), kCFPreferencesCurrentApplication);
 #endif
         }
@@ -749,7 +749,7 @@ CFLocaleLanguageDirection CFLocaleGetLanguageLineDirection(CFStringRef isoLangCo
 
 CFArrayRef CFLocaleCopyPreferredLanguages(void) {
     CFMutableArrayRef newArray = CFArrayCreateMutable(kCFAllocatorSystemDefault, 0, &kCFTypeArrayCallBacks);
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_EMSCRIPTEN
     CFArrayRef languagesArray = (CFArrayRef)CFPreferencesCopyAppValue(CFSTR("AppleLanguages"), kCFPreferencesCurrentApplication);
     if (languagesArray && (CFArrayGetTypeID() == CFGetTypeID(languagesArray))) {
         for (CFIndex idx = 0, cnt = CFArrayGetCount(languagesArray); idx < cnt; idx++) {
@@ -762,9 +762,6 @@ CFArrayRef CFLocaleCopyPreferredLanguages(void) {
         }
     }
     if (languagesArray)	CFRelease(languagesArray);
-#elif DEPLOYMENT_TARGET_EMSCRIPTEN
-    // TODO: use navigator.language
-    CFArrayAppendValue(newArray, CFSTR("ja"));
 #endif
     return newArray;
 }
@@ -775,12 +772,10 @@ CFArrayRef CFLocaleCopyPreferredLanguages(void) {
 // In the Copy case, this is failure to fill the *cf out parameter, and that out parameter is
 // returned by reference WITH a retain on it.
 static bool __CFLocaleSetNOP(CFMutableLocaleRef locale, CFTypeRef cf, CFStringRef context) {
-    printf("%s\n", __FUNCTION__);
     return false;
 }
 
 static bool __CFLocaleCopyLocaleID(CFLocaleRef locale, bool user, CFTypeRef *cf, CFStringRef context) {
-    printf("%s %p\n", __FUNCTION__, locale->_identifier);
     *cf = CFRetain(locale->_identifier);
     return true;
 }
@@ -1235,7 +1230,6 @@ static bool __CFLocaleICUCurrencyName(const char *locale, const char *value, UCu
 #endif
 
 static bool __CFLocaleFullName(const char *locale, const char *value, CFStringRef *out) {
-    printf("%s\n", __FUNCTION__);
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
     UErrorCode icuStatus = U_ZERO_ERROR;
     int32_t size;

@@ -535,6 +535,8 @@ static bool dispatchDelegateOptional(NSOperationQueue* queue, id object, SEL cmd
         NSMutableArray* downloadTasks = [NSMutableArray array];
 
         for (NSURLSessionTask* task in _allTasks) {
+            if(task.state == NSURLSessionTaskStateRunning) continue;
+
             if ([task isKindOfClass:[NSURLSessionDataTask class]]) {
                 [dataTasks addObject:task];
             } else if ([task isKindOfClass:[NSURLSessionDownloadTask class]]) {

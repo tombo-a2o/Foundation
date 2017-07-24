@@ -111,7 +111,7 @@ static CFArrayCallBacks _NSKVOPendingNotificationArrayCallbacks;
         NSInteger pendingCount = CFArrayGetCount(kvoTSD->pendingNotifications);
         if (pendingCount > 0)
         {
-            NSKVOPopNotificationResult result = { 
+            NSKVOPopNotificationResult result = {
                 .pendingNotifications = kvoTSD->pendingNotifications,
                 .pendingNotificationCount = pendingCount,
                 .relevantNotification = NULL,
@@ -136,12 +136,12 @@ static CFArrayCallBacks _NSKVOPendingNotificationArrayCallbacks;
         {
             threadSpecificKVOStruct->pendingNotifications = CFArrayCreateMutable(NULL, 0, &_NSKVOPendingNotificationArrayCallbacks);
         }
-        
+
         NSKeyValueChangeByOrderedToManyMutation change = {
             ._changeKind = changeKind,
             ._indexes = indexes
         };
-        
+
         NSKeyValueObservingTSD tsdCopy = *threadSpecificKVOStruct;
         tsdCopy.nextIsObservationInfo = YES;
         tsdCopy.implicitObservanceAdditionInfoOrObservationInfo.observationInfo = observationInfo;
@@ -186,12 +186,12 @@ static CFArrayCallBacks _NSKVOPendingNotificationArrayCallbacks;
         {
             threadSpecificKVOStruct->pendingNotifications = CFArrayCreateMutable(NULL, 0, &_NSKVOPendingNotificationArrayCallbacks);
         }
-        
+
         NSKeyValueChangeBySetMutation change = {
             ._mutationKind = mutationKind,
             ._objects = objects
         };
-        
+
         NSKeyValueObservingTSD tsdCopy = *threadSpecificKVOStruct;
         tsdCopy.nextIsObservationInfo = YES;
         tsdCopy.implicitObservanceAdditionInfoOrObservationInfo.observationInfo = observationInfo;
@@ -332,7 +332,7 @@ Class _NSKVONotifyingNotifyingClassForIsa(Class isa)
 static NSKeyValueContainerClass *__NSKeyValueContainerClassForIsa(Class isa)
 {
     static Class isaCacheKey = NULL;
-    static NSKeyValueContainerClass *cachedContainerClass = NULL; //a 1-item cache. 
+    static NSKeyValueContainerClass *cachedContainerClass = NULL; //a 1-item cache.
     if (isa == isaCacheKey)
     {
         return cachedContainerClass;
@@ -439,7 +439,7 @@ static NSKeyValueProperty *_NSKeyValuePropertyForIsaAndKeyPath(Class isa, NSStri
     {
         return TRUE;
     }
-    Class firstClass = object_getClass((id)value1); 
+    Class firstClass = object_getClass((id)value1);
     if (firstClass == _NSKeyValueShareableObservationInfoKeyIsa || object_getClass((id)value2) == _NSKeyValueShareableObservationInfoKeyIsa)
     {
         if (firstClass == _NSKeyValueShareableObservationInfoKeyIsa)
@@ -509,13 +509,13 @@ id __NSKeyValueRetainedObservationInfoForObject(NSObject *object, NSKeyValueCont
         [__NSKeyValueObserverRegisterationLock lock];
     }
     OSSpinLockLock(&_NSKeyValueObservationInfoCreationSpinLock);
-    NSKeyValueObservationInfo *observationInfo = __NSKeyValueRetainedObservationInfoForObject(self, property.containerClass); 
+    NSKeyValueObservationInfo *observationInfo = __NSKeyValueRetainedObservationInfoForObject(self, property.containerClass);
     if (observationInfo == nil)
     {
         observationInfo = [[NSKeyValueObservationInfo alloc] init];
     }
     id targetObject = nil;
-    if (options & NSKeyValueObservingOptionNestedChain) 
+    if (options & NSKeyValueObservingOptionNestedChain)
     {
         NSKeyValueImplicitObservanceAdditionInfo *additionInfoPtr = _NSKeyValueGetImplicitObservanceAdditionInfo();
         if (additionInfoPtr != NULL)
@@ -552,7 +552,7 @@ static void _NSKeyValueNotifyObserver(NSObject *observer, NSObject *observable, 
 
 - (void)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context
 {
-    dispatch_once(&__NSKeyValueObserverRegistrationLockCreationToken, 
+    dispatch_once(&__NSKeyValueObserverRegistrationLockCreationToken,
     ^{
         __NSKeyValueObserverRegisterationLock = [[NSRecursiveLock alloc] init];
     });
@@ -567,32 +567,32 @@ static void _NSKeyValueNotifyObserver(NSObject *observer, NSObject *observable, 
 
 static void NSKeyValueRaiseUnregistered(NSObject *receiver, NSObject *observer, NSString *keyPath, void *context)
 {
-    [[NSException exceptionWithName:NSRangeException 
-                             reason:[NSString stringWithFormat:@"Cannot remove an observer %@ for the key path %@ from %@ because it is not registered as an observer in %@context %p.", 
-                                                               observer, 
-                                                               keyPath, 
-                                                               receiver, 
-                                                               (context == @"any ") ? context : @"", 
-                                                               context] 
+    [[NSException exceptionWithName:NSRangeException
+                             reason:[NSString stringWithFormat:@"Cannot remove an observer %@ for the key path %@ from %@ because it is not registered as an observer in %@context %p.",
+                                                               observer,
+                                                               keyPath,
+                                                               receiver,
+                                                               (context == @"any ") ? context : @"",
+                                                               context]
                             userInfo:nil] raise];
 }
 
 //Another option would be to
 //push the enumeration of the observances down a couple of levels for the purposes of better reuse of observationInfos and
-//observances, at the expense of using a TSD to store the context (I can't tell at the moment how that method works at all in some cases*). 
-//To reduce complexity while not sacrificing too much speed, I am getting the observance early, and then passing it here, optionally. 
+//observances, at the expense of using a TSD to store the context (I can't tell at the moment how that method works at all in some cases*).
+//To reduce complexity while not sacrificing too much speed, I am getting the observance early, and then passing it here, optionally.
 //the behavior should be unchanged from -removeObserver:forProprerty: if you pass nil for the optionalObservance.
 //a previous version of the implementations of -removeObserver:forKeyPath: and -removeObserver:forKeyPath:context: did the same work
 //without a -_removeObserver:forProperty:, and while it was tempting to leave that as is, this way we can call the property's -object:didRemoveObservance:
 //which may be necessary for the nested and computed properties, or differently for index-affecting observations.
-//If this proves to not be the case, consider pushing the everything back into those two methods and removing 
-//-_removeObserver:forProperty:optionalObservance: entirely. 
+//If this proves to not be the case, consider pushing the everything back into those two methods and removing
+//-_removeObserver:forProperty:optionalObservance: entirely.
 
 // *the hack uses the same CFGetTSD key as the thread-local storage used for storing the observance-value dictionary in -willChangeValueForKey:.
 // so it APPEARS that if there has been a -willChangeValueForKey: without a corresponding -didChangeValueForKey: (and that assumes that the implementation of
 // -didChangeValueForKey: releases the dictionary and frees and nulls the TSD -- not sure whether that actually happens in any implementation) then
 // calling -removeObserver:forKeyPath:context: should remove an arbitrary observance (FIFO) rather than the one with the correct context.
-// Additional tests will be needed to confirm this behavior. If this IS the case, we should file a radar, and (ugh) attempt to duplicate the bug. 
+// Additional tests will be needed to confirm this behavior. If this IS the case, we should file a radar, and (ugh) attempt to duplicate the bug.
 - (void)_removeObserver:(NSObject *)observer forProperty:(NSKeyValueProperty *)property optionalObservance:(NSKeyValueObservance *)observance
 {
     NSKeyValueContainerClass *containerClass = property.containerClass;
@@ -641,7 +641,7 @@ static void NSKeyValueRaiseUnregistered(NSObject *receiver, NSObject *observer, 
     {
         if ([ob.property isEqual:property] && [ob.observer isEqual:observer] && ob.context == context)
         {
-            observance = ob;  
+            observance = ob;
             break;
         }
     }
@@ -725,7 +725,7 @@ static void NSKVODeallocate(id self, SEL _cmd)
     NSArray *observances = [[observationInfo observances] retain];
     struct objc_super super = {self, class_getSuperclass(object_getClass(self))};
     const char *name = object_getClassName(self);
-    (void)(void (*)(id, SEL))objc_msgSendSuper(&super, _cmd);
+    ((void (*)(struct objc_super*, SEL))objc_msgSendSuper)(&super, _cmd);
     if (observances.count > 0)
     {
         NSKVODeallocateBreak(self, name);
@@ -737,7 +737,7 @@ static void NSKVODeallocate(id self, SEL _cmd)
 
 #pragma mark Collection KVO categories
 
-@implementation NSArray (NSKeyValueObserving) // This is ugly, having this here, but perhaps not as ugly as exposing global variables. 
+@implementation NSArray (NSKeyValueObserving) // This is ugly, having this here, but perhaps not as ugly as exposing global variables.
 
 - (void)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context
 {
@@ -754,7 +754,7 @@ static void NSKVODeallocate(id self, SEL _cmd)
 
 - (void)addObserver:(NSObject *)observer toObjectsAtIndexes:(NSIndexSet *)indexes forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context
 {
-    dispatch_once(&__NSKeyValueObserverRegistrationLockCreationToken, 
+    dispatch_once(&__NSKeyValueObserverRegistrationLockCreationToken,
     ^{
         __NSKeyValueObserverRegisterationLock = [[NSRecursiveLock alloc] init];
     });
@@ -784,8 +784,8 @@ static void NSKVODeallocate(id self, SEL _cmd)
     while (index != NSNotFound)
     {
         NSKeyValueProperty *property = _NSKeyValuePropertyForIsaAndKeyPath(object_getClass(self[index]), keyPath);
-        [self[index] _removeObserver:observer forProperty:property optionalObservance:nil]; 
-        index = [indexes indexGreaterThanIndex:index];  // for some reason, this deregisters in the same order as it registers, instead of reverse order. 
+        [self[index] _removeObserver:observer forProperty:property optionalObservance:nil];
+        index = [indexes indexGreaterThanIndex:index];  // for some reason, this deregisters in the same order as it registers, instead of reverse order.
     }
     [__NSKeyValueObserverRegisterationLock unlock];
 }
@@ -872,12 +872,12 @@ static void NSKVODeallocate(id self, SEL _cmd)
     NSString *methodName = [[NSString alloc] initWithFormat:@"%@%@%@", methodPrefix, firstChar, [key substringFromIndex:1]];
     SEL notifiesSelector = NSSelectorFromString(methodName);
     [methodName release];
-    
+
     if ([self respondsToSelector:notifiesSelector])
     {
         return ((BOOL (*)(id, SEL))objc_msgSend)(self, notifiesSelector);
     }
-    
+
     return YES;
 }
 
@@ -897,10 +897,10 @@ static CFMutableDictionaryRef _NSKeyValueGlobalObservationInfo = NULL;
     static dispatch_once_t once;
     if (_NSKeyValueGlobalObservationInfo == NULL)
     {
-        dispatch_once(&once, 
+        dispatch_once(&once,
         ^{
             _NSKeyValueGlobalObservationInfo = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
-        });        
+        });
     }
     NSKeyValueObservationInfo *realInfoPtr = (NSKeyValueObservationInfo *)observationInfo;
     if (observationInfo == nil)
@@ -954,7 +954,7 @@ NSKVONotifyingInfo *_NSKVONotifyingCreateInfoWithOriginalClass(Class cls)
     void *indexedIvars = object_getIndexedIvars(newClass); // interesting.
     NSKVONotifyingInfo notifyingInfo;
     notifyingInfo._originalClass = cls;
-    notifyingInfo._notifyingClass = newClass; 
+    notifyingInfo._notifyingClass = newClass;
     notifyingInfo._field3 = CFSetCreateMutable(NULL, 0, &kCFCopyStringSetCallBacks);
     notifyingInfo._cachedKeys = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     *(NSKVONotifyingInfo *)indexedIvars = notifyingInfo;
@@ -1022,7 +1022,7 @@ void _NSKVONotifyingEnableForInfoAndKey(NSKVONotifyingInfo *notifyingInfo, NSStr
                             replacementSetter = (IMP)&__NSSetCharValueAndNotify;
                             break;
                         case _C_INT:
-                            replacementSetter = (IMP)&__NSSetIntValueAndNotify; 
+                            replacementSetter = (IMP)&__NSSetIntValueAndNotify;
                             break;
                         case _C_SHT:
                             replacementSetter = (IMP)&__NSSetShortValueAndNotify;
@@ -1225,7 +1225,7 @@ void _NSKeyValueWillChangeBySetting(NSKeyValueChangeDetails *changeDetails, id s
     changeDetails->extraData = nil;
     if (reatinedDetails)
     {
-        *reatinedDetails = YES; 
+        *reatinedDetails = YES;
     }
 }
 
@@ -1236,11 +1236,11 @@ void _NSKeyValueWillChangeByOrderedToManyMutation(NSKeyValueChangeDetails *chang
         _NSKeyValueWillChangeBySetting(changeDetails, self, keyPath, NO, options, NULL, forwardingValues, reatinedDetails);
         return;
     }
-    
+
     NSKeyValueChangeByOrderedToManyMutation *change = (NSKeyValueChangeByOrderedToManyMutation*)reserved;
     NSKeyValueChange kind = change->_changeKind;
     NSIndexSet *indexes = change->_indexes;
-    
+
     id oldValue = nil;
     if (options & NSKeyValueObservingOptionOld)
     {
@@ -1254,7 +1254,7 @@ void _NSKeyValueWillChangeByOrderedToManyMutation(NSKeyValueChangeDetails *chang
             oldValue = [[container objectsAtIndexes:indexes] retain];
         }
     }
-    
+
     changeDetails->kind = kind;
     changeDetails->oldValue = oldValue;
     changeDetails->newValue = nil;
@@ -1273,19 +1273,19 @@ void _NSKeyValueWillChangeBySetMutation(NSKeyValueChangeDetails *changeDetails, 
         _NSKeyValueWillChangeBySetting(changeDetails, self, keyPath, NO, options, NULL, forwardingValues, reatinedDetails);
         return;
     }
-    
+
     NSKeyValueChangeBySetMutation *change = (NSKeyValueChangeBySetMutation*)reserved;
     NSKeyValueSetMutationKind mutationKind = change->_mutationKind;
     NSSet *objects = change->_objects;
-    
+
     NSKeyValueChange kind = NSKeyValueChangeReplacement;
     id newValue = nil;
     id oldValue = nil;
-    
+
     if (mutationKind == NSKeyValueUnionSetMutation)
     {
         kind = NSKeyValueChangeInsertion;
-        
+
         if (options & NSKeyValueObservingOptionNew)
         {
             NSSet *currentSet = [self valueForKeyPath:keyPath];
@@ -1296,7 +1296,7 @@ void _NSKeyValueWillChangeBySetMutation(NSKeyValueChangeDetails *changeDetails, 
     else if (mutationKind == NSKeyValueMinusSetMutation)
     {
         kind = NSKeyValueChangeRemoval;
-        
+
         if (options & NSKeyValueObservingOptionOld)
         {
             NSSet *currentSet = [self valueForKeyPath:keyPath];
@@ -1307,7 +1307,7 @@ void _NSKeyValueWillChangeBySetMutation(NSKeyValueChangeDetails *changeDetails, 
     else if (mutationKind == NSKeyValueIntersectSetMutation)
     {
         kind = NSKeyValueChangeRemoval;
-        
+
         if (options & NSKeyValueObservingOptionOld)
         {
             NSSet *currentSet = [self valueForKeyPath:keyPath];
@@ -1318,14 +1318,14 @@ void _NSKeyValueWillChangeBySetMutation(NSKeyValueChangeDetails *changeDetails, 
     else if (mutationKind == NSKeyValueSetSetMutation)
     {
         kind = NSKeyValueChangeReplacement;
-        
+
         if (options & NSKeyValueObservingOptionNew)
         {
             NSSet *currentSet = [self valueForKeyPath:keyPath];
             newValue = [objects mutableCopy];
             [newValue minusSet:currentSet];
         }
-        
+
         if (options & NSKeyValueObservingOptionOld)
         {
             NSSet *currentSet = [self valueForKeyPath:keyPath];
@@ -1333,7 +1333,7 @@ void _NSKeyValueWillChangeBySetMutation(NSKeyValueChangeDetails *changeDetails, 
             [oldValue minusSet:objects];
         }
     }
-    
+
     changeDetails->kind = kind;
     changeDetails->oldValue = oldValue;
     changeDetails->newValue = newValue;
@@ -1433,7 +1433,7 @@ void _NSKeyValuePushPendingNotificationsPerThread(NSObject *originalObservable, 
     pendingNotification->retainCount = 1;
     pendingNotification->originalObservable = [originalObservable retain];
     pendingNotification->observer = [observance.observer retain];
-    pendingNotification->keyOrKeys = [keyOrKeys copy]; //even if it is a set we want to avoid it being mutated out from under us, so copy. 
+    pendingNotification->keyOrKeys = [keyOrKeys copy]; //even if it is a set we want to avoid it being mutated out from under us, so copy.
     pendingNotification->reserved = kvoTSD->nextIsObservationInfo;
     pendingNotification->observance = [observance retain];
     pendingNotification->observationInfo = [kvoTSD->implicitObservanceAdditionInfoOrObservationInfo.observationInfo retain];
@@ -1464,7 +1464,7 @@ void _NSKeyValueDidChange(NSObject *observable, id keyOrKeys, BOOL keyOrKeysIsAS
         {
             isDifferent = !CFEqual(keyPath, outKeyOrKeys);
         }
-        NSKeyValueChangeDetails appliedDetails = {0}; // possibly the wrong struct here. 
+        NSKeyValueChangeDetails appliedDetails = {0}; // possibly the wrong struct here.
         apply(&appliedDetails, observable, keyPath, isDifferent, outObservance.options, fillDetails);
         _NSKeyValueNotifyObserver(outObservance.observer, observable, outObservance.originalObservable, keyPath, appliedDetails, outObservance.context, NO);
     }
@@ -1534,13 +1534,13 @@ BOOL _NSKeyValuePopPendingNotificationPerThread(NSObject *observable, NSString *
         }
         if ([pendingNotification->keyOrKeys isEqual:key] && (result->observance == nil || pendingNotification->observance == result->observance))
         {
-            if (result->relevantNotificationIndex == 0 || __NSKeyValueCheckObservationInfoForPendingNotification(pendingNotification->originalObservable, pendingNotification->observance, result->relevantNotificationIndex)) 
+            if (result->relevantNotificationIndex == 0 || __NSKeyValueCheckObservationInfoForPendingNotification(pendingNotification->originalObservable, pendingNotification->observance, result->relevantNotificationIndex))
             { // TODO: make sure the last parameter above is not supposed to be pendingNotification-> reserved2
                 *outObservance = pendingNotification->observance;
                 *outChangeDetails = pendingNotification->changeDetails;
                 *outKeyOrKeys = key;
                 *outForwardingValues = pendingNotification->forwardingValues;
-                result->relevantNotification = pendingNotification; //this seems unlikely. 
+                result->relevantNotification = pendingNotification; //this seems unlikely.
                 result->relevantNotificationIndex = cursor;
                 success = YES;
                 break;
@@ -1582,9 +1582,9 @@ void _NSKeyValueDidChangeByOrderedToManyMutation(NSKeyValueChangeDetails *outDet
         _NSKeyValueDidChangeBySetting(outDetails, observable, keyPath, hasDependentKeys, options, inDetails);
         return;
     }
-    
+
     NSKeyValueChange kind = inDetails.kind;
-    
+
 #warning TODO: This function should validate which indexes have actually been changed.
     id newValue = nil;
     if (options & NSKeyValueObservingOptionNew)
@@ -1610,7 +1610,7 @@ void _NSKeyValueDidChangeBySetMutation(NSKeyValueChangeDetails *outDetails, NSOb
         _NSKeyValueDidChangeBySetting(outDetails, observable, keyPath, hasDependentKeys, options, inDetails);
         return;
     }
-    
+
     *outDetails = inDetails;
 }
 

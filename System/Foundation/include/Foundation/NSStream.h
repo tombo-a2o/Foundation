@@ -55,8 +55,7 @@ typedef NS_OPTIONS(NSUInteger, NSStreamEvent) {
 
 - (void)open;
 - (void)close;
-- (id <NSStreamDelegate>)delegate;
-- (void)setDelegate:(id <NSStreamDelegate>)delegate;
+@property (nullable, assign) id <NSStreamDelegate> delegate;
 - (id)propertyForKey:(NSString *)key;
 - (BOOL)setProperty:(id)property forKey:(NSString *)key;
 - (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode;

@@ -1,4 +1,4 @@
-[*]
+[*.{m,mm,c,cpp,h}]
 charset = utf-8
 indent_size = 4
 end_of_line = lf

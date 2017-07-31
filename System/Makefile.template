@@ -21,6 +21,7 @@ __PUBLIC_HEADERS__ = $(5)
 __PRIVATE_HEADERS__ = $(6)
 __RESOURCE_DIR__ = $(7)
 __MODULE_MAP__ = $(8)
+__TEST_SOURCES__ = $(9)
 __HEADERS__ = $$(__PUBLIC_HEADERS__) $$(__PRIVATE_HEADERS__)
 __OBJECTS_DIR__ = $$(__BUILD_DIR__)/objects
 __STATIC_LIB__ = $$(__FRAMEWORK_NAME__).a
@@ -29,6 +30,8 @@ __SHARED_LIB_EXTERNALS__ = $$(__FRAMEWORK_NAME__).so.js.externals
 __SHARED_WASM_LIB__ = $$(__FRAMEWORK_NAME__).wasm
 __SHARED_WASM_LIB_EXTERNALS__ = $$(__FRAMEWORK_NAME__).wasm.externals
 __SHARED_WASM_SYM__ = $$(__FRAMEWORK_NAME__).wasm.symbols
+__TEST_DIR__ = $$(__BUILD_DIR__)/tests
+__TEST_APP__ = test.html
 
 __OBJECTS__ = $$(patsubst %.m,%.o, \
           $$(patsubst %.c,%.o, \
@@ -36,10 +39,16 @@ __OBJECTS__ = $$(patsubst %.m,%.o, \
           $$(patsubst %.cpp,%.o, \
 		  $$(addprefix $$(__OBJECTS_DIR__)/, $$(__SOURCES__))))))
 
-__DEPS__ = $$(patsubst %.o,%.d, $$(__OBJECTS__))
+__TEST_OBJECTS__ = $$(patsubst %.m,%.o, \
+          $$(patsubst %.c,%.o, \
+          $$(patsubst %.mm,%.o, \
+          $$(patsubst %.cpp,%.o, \
+		  $$(addprefix $$(__OBJECTS_DIR__)/, $$(__TEST_SOURCES__))))))
+
+__DEPS__ = $$(patsubst %.o,%.d, $$(__OBJECTS__) $$(__TEST_OBJECTS__))
 
 .SUFFIX:
-.PHONY: default clean framework_dir header_only_framework full_framework install_header install
+.PHONY: default clean framework_dir header_only_framework full_framework install_header install build_test test
 
 default: full_framework
 
@@ -131,5 +140,14 @@ install: full_framework
 	rm -rf $$(__INSTALL_DIR__)/$$(__FRAMEWORK_NAME__).framework
 	cp -R $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).framework $$(__INSTALL_DIR__)
 	@echo "\033[1;43m==== Installing done. The framework is in $$(__INSTALL_DIR__) ====\033[m"
+
+build_test: $$(__TEST_DIR__)/$$(__TEST_APP__)
+
+$$(__TEST_DIR__)/$$(__TEST_APP__): $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc $$(__TEST_OBJECTS__)
+	mkdir -p $$(__TEST_DIR__)
+	a2o $$(TEST_LFLAGS) -o $$(__TEST_DIR__)/$$(__TEST_APP__) $$(__BUILD_DIR__)/$$(__FRAMEWORK_NAME__).bc $$(__TEST_OBJECTS__)
+
+test:
+	emrun --browser chrome_canary $$(__TEST_DIR__)/$$(__TEST_APP__)
 
 endef

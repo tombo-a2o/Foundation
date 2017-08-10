@@ -4,7 +4,7 @@
 
 @interface NSUUID : NSObject <NSCopying, NSSecureCoding>
 
-+ (id)UUID;
++ (instancetype)UUID;
 - (id)init;
 - (id)initWithUUIDString:(NSString *)string;
 - (id)initWithUUIDBytes:(const uuid_t)bytes;

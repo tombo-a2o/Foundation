@@ -260,7 +260,7 @@ static void _encodeObject(NSKeyedArchiver *archiver, id object, NSString *key)
                 // This class has already been encoded
                 uidIndex = (int)mapObject;
                 inContainer = YES;
-            } 
+            }
             else
             {
                 if (CFDictionaryGetValueIfPresent(archiver->_conditionals, object, (const void **)&mapObject))
@@ -288,7 +288,7 @@ static void _encodeObject(NSKeyedArchiver *archiver, id object, NSString *key)
                 {
                     CFArrayAppendValue((CFMutableArrayRef)classes, NSStringFromClass(class));
                     class = [class superclass];
-                } 
+                }
                 while (class != nil);
 
                 encodeFinalValue(archiver, classes, @"$classes");
@@ -419,28 +419,10 @@ static void encodeDouble(NSKeyedArchiver *archiver, double d, NSString *key)
 
 + (BOOL)archiveRootObject:(id)rootObject toFile:(NSString *)path
 {
-    BOOL success = NO;
     @autoreleasepool {
-        NSString *tempPath = nil;
-        NSString *tempDir = nil;
-        if (_NSTempFileCreate(path, &tempPath, &tempDir, NULL))
-        {
-            NSURL *url = [NSURL fileURLWithPath:tempPath isDirectory:NO];
-            CFWriteStreamRef writeStream = CFWriteStreamCreateWithFile(kCFAllocatorDefault, (CFURLRef)url);
-            if (CFWriteStreamOpen(writeStream))
-            {
-                NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] _initWithOutput:(NSOutputStream *)writeStream];
-                [archiver encodeObject:rootObject forKey:@"root"];
-                [archiver finishEncoding];
-                CFWriteStreamClose(writeStream);
-                [archiver release];
-            }
-            success = _NSTempFileSwap(tempPath, path);
-            _NSTempCleanup(tempDir);
-            CFRelease(writeStream);
-        }
+        NSData *data = [self archivedDataWithRootObject:rootObject];
+        return [data writeToFile:path atomically:YES];
     }
-    return success;
 }
 
 + (NSData *)archivedDataWithRootObject:(id)rootObject

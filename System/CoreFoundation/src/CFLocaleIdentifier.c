@@ -2,14 +2,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -25,7 +25,7 @@
     CFLocaleIdentifier.c
 	Copyright (c) 2002-2013, Apple Inc. All rights reserved.
     Responsibility: David Smith
-    
+
     CFLocaleIdentifier.c defines
     - enum value kLocaleIdentifierCStringMax
     - structs KeyStringToResultString, SpecialCaseUpdates
@@ -62,12 +62,12 @@
         map locale string initial part  localeStringPrefixToDefaults[n].key
         to default substrings to delete localeStringPrefixToDefaults[n].result
         for n = 0..kNumLocaleStringPrefixToDefaults-1
-    
+
     8. static const KeyStringToResultString appleLocaleToLanguageString[]; enum kNumAppleLocaleToLanguageString;
         map Apple locale string         appleLocaleToLanguageString[].key
         to equivalent language string   appleLocaleToLanguageString[].result
         for n = 0..kNumAppleLocaleToLanguageString-1
-    
+
 */
 
 #include <CoreFoundation/CFString.h>
@@ -76,7 +76,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 #include <unicode/uloc.h>
 #else
 #define ULOC_KEYWORD_SEPARATOR '@'
@@ -1020,7 +1020,7 @@ static const KeyStringToResultString localeStringPrefixToDefaults[] = {
     { "kw-",    "-Latn"         },  // Cornish
     { "ky-",    "-Cyrl"         },  // Kirghiz
     { "la-",    "-Latn"         },  // Latin
-    { "lag-",   "-Latn"         },  // Langi    
+    { "lag-",   "-Latn"         },  // Langi
     { "lb-",    "-Latn"         },  // Luxembourgish
     { "lg-",    "-Latn"         },  // Ganda
     { "ln-",    "-Latn"         },  // Lingala
@@ -1353,7 +1353,7 @@ enum {
 /*
 	For reference here is a list of ICU locales with variants and how some
 	of them are canonicalized with the ICU function uloc_canonicalize:
-	
+
 	ICU 3.0 has:
 		en_US_POSIX			x	no change
 		hy_AM_REVISED		x	no change
@@ -1379,14 +1379,14 @@ enum {
 		fr_LU_PREEURO
 		ga_IE_PREEURO
 		gl_ES_PREEURO
-		hi__DIRECT			->	hi@collation=direct  
+		hi__DIRECT			->	hi@collation=direct
 		it_IT_PREEURO
 		nl_BE_PREEURO
 		nl_NL_PREEURO
 		pt_PT_PREEURO
 		zh__PINYIN			->	zh@collation=pinyin
 		zh_TW_STROKE		->	zh_TW@collation=stroke
-	
+
 */
 
 // _CompareTestEntryToTableEntryKey
@@ -1403,7 +1403,7 @@ static int _CompareTestEntryToTableEntryKey(const void *testEntryPtr, const void
 static int _CompareTestEntryPrefixToTableEntryKey(const void *testEntryPtr, const void *tableEntryKeyPtr) {
     const char *    testPtr = ((const KeyStringToResultString *)testEntryPtr)->key;
     const char *    tablePtr = ((const KeyStringToResultString *)tableEntryKeyPtr)->key;
-    
+
     while ( *testPtr == *tablePtr && *tablePtr != 0 ) {
         testPtr++; tablePtr++;
     }
@@ -1423,7 +1423,7 @@ static int _CompareLowerTestEntryPrefixToTableEntryKey(const void *testEntryPtr,
     const char *    testPtr = ((const KeyStringToResultString *)testEntryPtr)->key;
     const char *    tablePtr = ((const KeyStringToResultString *)tableEntryKeyPtr)->key;
     char            lowerTestChar;
-    
+
     while ( (lowerTestChar = tolower(*testPtr)) == *tablePtr && *tablePtr != 0 && lowerTestChar != '_' ) {  // <1.9>
         testPtr++; tablePtr++;
     }
@@ -1469,19 +1469,19 @@ static Boolean _CheckForTag(const char *localeStringPtr, const char *tagPtr, int
 static void _ReplacePrefix(char locString[], int locStringMaxLen, int oldPrefixLen, const char *newPrefix) {
     int newPrefixLen = strlen(newPrefix);
     int lengthDelta = newPrefixLen - oldPrefixLen;
-    
+
     if (lengthDelta < 0) {
         // replacement is shorter, delete chars by shifting tail of string
         _DeleteCharsAtPointer(locString + newPrefixLen, -lengthDelta);
     } else if (lengthDelta > 0) {
         // replacement is longer...
         int stringLen = strlen(locString);
-        
+
         if (stringLen + lengthDelta < locStringMaxLen) {
             // make room by shifting tail of string
             char *  tailShiftPtr = locString + stringLen;
             char *  tailStartPtr = locString + oldPrefixLen;    // pointer to tail of string to shift
-            
+
             while (tailShiftPtr >= tailStartPtr) {
                 tailShiftPtr[lengthDelta] = *tailShiftPtr;
                 tailShiftPtr--;
@@ -1491,7 +1491,7 @@ static void _ReplacePrefix(char locString[], int locStringMaxLen, int oldPrefixL
             newPrefix = NULL;
         }
     }
-    
+
     if (newPrefix) {
         // do the substitution
         _CopyReplacementAtPointer(locString, newPrefix);
@@ -1517,10 +1517,10 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
     char *      regionTag = NULL;
     char *		variantTag = NULL;
     Boolean     subtagHasDigits, pastPrimarySubtag, hadRegion;
-    
+
     // 1. First replace any non-canonical prefix (case insensitive) with canonical
     // (change 3-letter ISO 639 code to 2-letter, update obsolete ISO 639 codes & RFC 3066 tags, etc.)
-    
+
     testEntry.key = inLocaleString;
     foundEntry = (KeyStringToResultString *)bsearch( &testEntry, localeStringPrefixToCanonical, kNumLocaleStringPrefixToCanonical,
                                                     sizeof(KeyStringToResultString), _CompareLowerTestEntryPrefixToTableEntryKey );
@@ -1528,15 +1528,15 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
         // replace key (at beginning of string) with result
         _ReplacePrefix(inLocaleString, locStringMaxLen, strlen(foundEntry->key), foundEntry->result);   // <1.10>
     }
-    
+
     // 2. Walk through input string, normalizing case & marking use of ISO 3166 codes
-    
+
     inLocalePtr = inLocaleString;
     subtagPtr = inLocaleString;
     subtagHasDigits = false;
     pastPrimarySubtag = false;
     hadRegion = false;
-    
+
     while ( true ) {
         if ( isalpha(*inLocalePtr) ) {
             // if not past a region tag, then lowercase, else uppercase
@@ -1544,7 +1544,7 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
         } else if ( isdigit(*inLocalePtr) ) {
             subtagHasDigits = true;
         } else {
-            
+
             if (!pastPrimarySubtag) {
                 // may have a NULL primary subtag
                 if (subtagHasDigits) {
@@ -1555,7 +1555,7 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
                 // We are after any primary language subtag, but not past any region tag.
                 // This subtag is preceded by '-' or '_'.
                 int subtagLength = inLocalePtr - subtagPtr; // includes leading '-' or '_'
-                
+
 				if (subtagLength == 3 && !subtagHasDigits) {
 					// potential ISO 3166 code for region or language variant; if so, needs uppercasing
 					if (*subtagPtr == '_') {
@@ -1582,7 +1582,7 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
 				} else if (subtagLength == 1 && *subtagPtr == '_') {						// <1.17>
 					hadRegion = true;
 				}
-                
+
                 if (!hadRegion) {
                     // convert improper '_' to '-'
                     *subtagPtr = '-';
@@ -1590,7 +1590,7 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
             } else {
             	variantTag = subtagPtr;															// <1.17>
             }
-            
+
             if (*inLocalePtr == '-' || *inLocalePtr == '_') {
                 subtagPtr = inLocalePtr;
                 subtagHasDigits = false;
@@ -1598,25 +1598,25 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
                 break;
             }
         }
-    
+
         inLocalePtr++;
     }
-    
+
     // 3 If there is a variant tag, see if ICU canonicalizes it to keywords.					// <1.17> [3577669]
     // If so, copy the keywords to varKeyValueString and delete the variant tag
     // from the original string (but don't otherwise use the ICU canonicalization).
     varKeyValueString[0] = 0;
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
     if (variantTag) {
 		UErrorCode	icuStatus;
 		int			icuCanonStringLen;
 		char * 		varKeyValueStringPtr = varKeyValueString;
-		
+
 		icuStatus = U_ZERO_ERROR;
 		icuCanonStringLen = uloc_canonicalize( inLocaleString, varKeyValueString, locStringMaxLen, &icuStatus );
 		if ( U_SUCCESS(icuStatus) ) {
 			char *	icuCanonStringPtr = varKeyValueString;
-			
+
 			if (icuCanonStringLen >= locStringMaxLen)
 				icuCanonStringLen = locStringMaxLen - 1;
 			varKeyValueString[icuCanonStringLen] = 0;
@@ -1636,14 +1636,14 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
 		}
     }
 #endif
-    
+
     // 4. Handle special cases of updating region codes, or updating language codes based on
     // region code.
     for (specialCasePtr = specialCases; specialCasePtr->reg1 != NULL; specialCasePtr++) {
         if ( specialCasePtr->lang == NULL || _CheckForTag(inLocaleString, specialCasePtr->lang, 2) ) {
             // OK, we matched any language specified. Now what needs updating?
             char * foundTag;
-            
+
             if ( isupper(specialCasePtr->update1[0]) ) {
                 // updating a region code
                 if ( ( foundTag = strstr(inLocaleString, specialCasePtr->reg1) ) && !isalnum(foundTag[3]) ) {
@@ -1652,7 +1652,7 @@ static void _UpdateFullLocaleString(char inLocaleString[], int locStringMaxLen,
                 if ( regionTag && _CheckForTag(regionTag+1, specialCasePtr->reg1 + 1, 2) ) {
                     _CopyReplacementAtPointer(regionTag+1, specialCasePtr->update1);
                 }
-                
+
             } else {
                 // updating the language, there will be two choices based on region
                 if        ( ( regionTag && _CheckForTag(regionTag+1, specialCasePtr->reg1 + 1, 2) ) ||
@@ -1713,13 +1713,13 @@ static void _RemoveSubstringsIfPresent(char *localeString, const char *substring
 
 static void _GetKeyValueString(char inLocaleString[], char keyValueString[]) {
     char *  inLocalePtr = inLocaleString;
-    
+
     while (*inLocalePtr != 0 && *inLocalePtr != ULOC_KEYWORD_SEPARATOR) {
         inLocalePtr++;
     }
     if (*inLocalePtr != 0) {    // we found a key-value section
         char *  keyValuePtr = keyValueString;
-        
+
         *keyValuePtr = *inLocalePtr;
         *inLocalePtr = 0;
         do {
@@ -1733,7 +1733,7 @@ static void _GetKeyValueString(char inLocaleString[], char keyValueString[]) {
 }
 
 static void _AppendKeyValueString(char inLocaleString[], int locStringMaxLen, char keyValueString[]) {
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 	if (keyValueString[0] != 0) {
 		UErrorCode		uerr = U_ZERO_ERROR;
 		UEnumeration *	uenum = uloc_openKeywords(keyValueString, &uerr);
@@ -1760,7 +1760,7 @@ static void _AppendKeyValueString(char inLocaleString[], int locStringMaxLen, ch
 CFStringRef CFLocaleCreateCanonicalLanguageIdentifierFromString(CFAllocatorRef allocator, CFStringRef localeIdentifier) {
     char            inLocaleString[kLocaleIdentifierCStringMax];
     CFStringRef     outStringRef = NULL;
-    
+
     if ( localeIdentifier && CFStringGetCString(localeIdentifier, inLocaleString,  sizeof(inLocaleString), kCFStringEncodingASCII) ) {
         KeyStringToResultString     testEntry;
         KeyStringToResultString *   foundEntry;
@@ -1769,13 +1769,13 @@ CFStringRef CFLocaleCreateCanonicalLanguageIdentifierFromString(CFAllocatorRef a
 
         _GetKeyValueString(inLocaleString, keyValueString);								// <1.10>
         testEntry.result = NULL;
-        
+
         // A. Special case aa_SAAHO, no_BOKMAL, and no_NYNORSK since they are legacy identifiers that don't follow the normal rules (http://unicode.org/cldr/trac/browser/trunk/common/supplemental/supplementalMetadata.xml)
-        
+
         testEntry.key = inLocaleString;
         KeyStringToResultString specialCase = testEntry;
         foundEntry = &specialCase;
-        
+
         if (strncmp("aa_SAAHO", testEntry.key, strlen("aa_SAAHO")) == 0) {
             foundEntry->result = "ssy";
         } else if (strncmp("no_BOKMAL", testEntry.key, strlen("no_BOKMAL")) == 0) {
@@ -1798,14 +1798,14 @@ CFStringRef CFLocaleCreateCanonicalLanguageIdentifierFromString(CFAllocatorRef a
 
             // C. No match with an old-style string, use input string but update codes, normalize case, etc.
             _UpdateFullLocaleString(inLocaleString, sizeof(inLocaleString), &langRegSubtag, &regionTag, varKeyValueString);   // <1.10><1.17><1.19>
-            
+
             // if the language part already includes a regional variant, then delete any region tag. <1.19>
             if (langRegSubtag && regionTag)
             	*regionTag = 0;
         }
-        
+
         // D. Now we have an up-to-date locale string, but we need to strip defaults and turn it into a language string
-        
+
         // 1. Strip defaults in input string based on initial part of locale string
         // (mainly to strip default script tag for a language)
         testEntry.key = inLocaleString;
@@ -1814,9 +1814,9 @@ CFStringRef CFLocaleCreateCanonicalLanguageIdentifierFromString(CFAllocatorRef a
         if (foundEntry) {
             // The input string begins with a character sequence for which
             // there are default substrings which should be stripped if present
-            _RemoveSubstringsIfPresent(inLocaleString, foundEntry->result);         
+            _RemoveSubstringsIfPresent(inLocaleString, foundEntry->result);
         }
-        
+
         // 2. If the string matches a locale string used by Apple as a language string, turn it into a language string
         testEntry.key = inLocaleString;
         foundEntry = (KeyStringToResultString *)bsearch( &testEntry, appleLocaleToLanguageString, kNumAppleLocaleToLanguageString,
@@ -1849,11 +1849,11 @@ CFStringRef CFLocaleCreateCanonicalLanguageIdentifierFromString(CFAllocatorRef a
              // anything else at/after '_' just gets deleted
             *inLocalePtr = 0;
         }
-        
+
         // E. Re-append any key-value strings, now canonical										// <1.10><1.17>
 		_AppendKeyValueString( inLocaleString, sizeof(inLocaleString), varKeyValueString );
 		_AppendKeyValueString( inLocaleString, sizeof(inLocaleString), keyValueString );
-        
+
         // All done, return what we came up with.
         outStringRef = CFStringCreateWithCString(allocator, inLocaleString, kCFStringEncodingASCII);
     }
@@ -1865,7 +1865,7 @@ CFStringRef CFLocaleCreateCanonicalLanguageIdentifierFromString(CFAllocatorRef a
 CFStringRef CFLocaleCreateCanonicalLocaleIdentifierFromString(CFAllocatorRef allocator, CFStringRef localeIdentifier) {
     char            inLocaleString[kLocaleIdentifierCStringMax];
     CFStringRef     outStringRef = NULL;
-    
+
     if ( localeIdentifier && CFStringGetCString(localeIdentifier, inLocaleString,  sizeof(inLocaleString), kCFStringEncodingASCII) ) {
         KeyStringToResultString     testEntry;
         KeyStringToResultString *   foundEntry;
@@ -1874,7 +1874,7 @@ CFStringRef CFLocaleCreateCanonicalLocaleIdentifierFromString(CFAllocatorRef all
 
         _GetKeyValueString(inLocaleString, keyValueString);								// <1.10>
         testEntry.result = NULL;
-        
+
         // A. First check if input string matches an old-style Apple string that has a replacement
         // (do this before case normalization)
         testEntry.key = inLocaleString;
@@ -1909,7 +1909,7 @@ CFStringRef CFLocaleCreateCanonicalLocaleIdentifierFromString(CFAllocatorRef all
                     _RemoveSubstringsIfPresent(inLocaleString, foundEntry->result);
                 }
             }
-            
+
             // 3. Strip defaults in input string based on initial part of locale string
             // (mainly to strip default script tag for a language)
             testEntry.key = inLocaleString;
@@ -1918,14 +1918,14 @@ CFStringRef CFLocaleCreateCanonicalLocaleIdentifierFromString(CFAllocatorRef all
             if (foundEntry) {
                 // The input string begins with a character sequence for which
                 // there are default substrings which should be stripped if present
-                _RemoveSubstringsIfPresent(inLocaleString, foundEntry->result);         
+                _RemoveSubstringsIfPresent(inLocaleString, foundEntry->result);
             }
         }
 
         // D. Re-append any key-value strings, now canonical								// <1.10><1.17>
 		_AppendKeyValueString( inLocaleString, sizeof(inLocaleString), varKeyValueString );
 		_AppendKeyValueString( inLocaleString, sizeof(inLocaleString), keyValueString );
-        
+
         // Now create the CFString (even if empty!)
         outStringRef = CFStringCreateWithCString(allocator, inLocaleString, kCFStringEncodingASCII);
     }
@@ -1965,12 +1965,12 @@ SPI:  CFLocaleGetLanguageRegionEncodingForLocaleIdentifier gets the appropriate 
  preferred localization in the current context (this function returns NO for a NULL localeIdentifier); and in this function
  langCode, regCode, and scriptCode are all SInt16* (not SInt32* like the equivalent parameters in CFBundleGetLocalizationInfoForLocalization).
 */
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 static int CompareLocaleToLegacyCodesEntries( const void *entry1, const void *entry2 );
 #endif
 
 Boolean CFLocaleGetLanguageRegionEncodingForLocaleIdentifier(CFStringRef localeIdentifier, LangCode *langCode, RegionCode *regCode, ScriptCode *scriptCode, CFStringEncoding *stringEncoding) {
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 	Boolean		returnValue = false;
 	CFStringRef	canonicalIdentifier = CFLocaleCreateCanonicalLocaleIdentifierFromString(NULL, localeIdentifier);
 	if (canonicalIdentifier) {
@@ -1979,7 +1979,7 @@ Boolean CFLocaleGetLanguageRegionEncodingForLocaleIdentifier(CFStringRef localeI
 			UErrorCode	icuStatus = U_ZERO_ERROR;
 			int32_t		languagelength;
 			char		searchString[ULOC_LANG_CAPACITY + ULOC_FULLNAME_CAPACITY];
-			
+
 			languagelength = uloc_getLanguage( localeCString, searchString, ULOC_LANG_CAPACITY, &icuStatus );
 			if ( U_SUCCESS(icuStatus) && languagelength > 0 ) {
 				// OK, here we have at least a language code, check for other components in order
@@ -1987,7 +1987,7 @@ Boolean CFLocaleGetLanguageRegionEncodingForLocaleIdentifier(CFStringRef localeI
 				const LocaleToLegacyCodes *	foundEntryPtr;
 				int32_t						componentLength;
 				char						componentString[ULOC_FULLNAME_CAPACITY];
-				
+
 				languagelength = strlen(searchString);	// in case it got truncated
 				icuStatus = U_ZERO_ERROR;
 				componentLength = uloc_getScript( localeCString, componentString, sizeof(componentString), &icuStatus );
@@ -2002,13 +2002,13 @@ Boolean CFLocaleGetLanguageRegionEncodingForLocaleIdentifier(CFStringRef localeI
 						}
 					}
 				}
-				
+
 				// Append whichever other component we first found
 				if (componentLength > 0) {
 					strlcat(searchString, "_", sizeof(searchString));
 					strlcat(searchString, componentString, sizeof(searchString));
 				}
-				
+
 				// Search
 				foundEntryPtr = (const LocaleToLegacyCodes *)bsearch( &searchEntry, localeToLegacyCodes, kNumLocaleToLegacyCodes, sizeof(LocaleToLegacyCodes), CompareLocaleToLegacyCodesEntries );
 				if (foundEntryPtr == NULL && (int32_t) strlen(searchString) > languagelength) {
@@ -2048,7 +2048,7 @@ Boolean CFLocaleGetLanguageRegionEncodingForLocaleIdentifier(CFStringRef localeI
 #endif
 }
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
 static int CompareLocaleToLegacyCodesEntries( const void *entry1, const void *entry2 ) {
 	const char *	localeString1 = ((const LocaleToLegacyCodes *)entry1)->locale;
 	const char *	localeString2 = ((const LocaleToLegacyCodes *)entry2)->locale;
@@ -2058,7 +2058,7 @@ static int CompareLocaleToLegacyCodesEntries( const void *entry1, const void *en
 
 CFDictionaryRef CFLocaleCreateComponentsFromLocaleIdentifier(CFAllocatorRef allocator, CFStringRef localeID) {
     CFMutableDictionaryRef working = CFDictionaryCreateMutable(allocator, 10, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
     char cLocaleID[ULOC_FULLNAME_CAPACITY+ULOC_KEYWORD_AND_VALUES_CAPACITY];
     char buffer[ULOC_FULLNAME_CAPACITY+ULOC_KEYWORD_AND_VALUES_CAPACITY];
 
@@ -2081,7 +2081,7 @@ CFDictionaryRef CFLocaleCreateComponentsFromLocaleIdentifier(CFAllocatorRef allo
         CFRelease(string);
     }
     icuStatus = U_ZERO_ERROR;
-    
+
     length = uloc_getScript(cLocaleID, buffer, sizeof(buffer)/sizeof(char), &icuStatus);
     if (U_SUCCESS(icuStatus) && length > 0)
     {
@@ -2090,7 +2090,7 @@ CFDictionaryRef CFLocaleCreateComponentsFromLocaleIdentifier(CFAllocatorRef allo
         CFRelease(string);
     }
     icuStatus = U_ZERO_ERROR;
-    
+
     length = uloc_getCountry(cLocaleID, buffer, sizeof(buffer)/sizeof(char), &icuStatus);
     if (U_SUCCESS(icuStatus) && length > 0)
     {
@@ -2099,7 +2099,7 @@ CFDictionaryRef CFLocaleCreateComponentsFromLocaleIdentifier(CFAllocatorRef allo
         CFRelease(string);
     }
     icuStatus = U_ZERO_ERROR;
-    
+
     length = uloc_getVariant(cLocaleID, buffer, sizeof(buffer)/sizeof(char), &icuStatus);
     if (U_SUCCESS(icuStatus) && length > 0)
     {
@@ -2108,7 +2108,7 @@ CFDictionaryRef CFLocaleCreateComponentsFromLocaleIdentifier(CFAllocatorRef allo
         CFRelease(string);
     }
     icuStatus = U_ZERO_ERROR;
-    
+
     // Now get the keywords; open an enumerator on them
     UEnumeration *iter = uloc_openKeywords(cLocaleID, &icuStatus);
     const char *locKey = NULL;
@@ -2116,7 +2116,7 @@ CFDictionaryRef CFLocaleCreateComponentsFromLocaleIdentifier(CFAllocatorRef allo
     while ((locKey = uenum_next(iter, &locKeyLen, &icuStatus)) && U_SUCCESS(icuStatus))
     {
         char locValue[ULOC_KEYWORD_AND_VALUES_CAPACITY];
-    
+
         // Get the value for this keyword
         if (uloc_getKeywordValue(cLocaleID, locKey, locValue, sizeof(locValue)/sizeof(char), &icuStatus) > 0
             && U_SUCCESS(icuStatus))
@@ -2132,7 +2132,7 @@ CFDictionaryRef CFLocaleCreateComponentsFromLocaleIdentifier(CFAllocatorRef allo
         }
     }
     uenum_close(iter);
-    
+
     out:;
 #endif
     // Convert to an immutable dictionary and return
@@ -2188,7 +2188,7 @@ CFStringRef CFLocaleCreateLocaleIdentifierFromComponents(CFAllocatorRef allocato
     free(variant);
     free(buf1);
 
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_EMSCRIPTEN
     for (CFIndex idx = 0; idx < cnt; idx++) {
 	if (keys[idx]) {
 	    char *key = __CStringFromString(keys[idx]);
@@ -2213,7 +2213,6 @@ CFStringRef CFLocaleCreateLocaleIdentifierFromComponents(CFAllocatorRef allocato
 	}
     }
 #endif
-    
+
     return CFStringCreateWithCString(allocator, cLocaleID, kCFStringEncodingASCII);
 }
-

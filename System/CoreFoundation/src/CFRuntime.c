@@ -983,7 +983,7 @@ pthread_t _CF_pthread_main_thread_np(void) {
 void __CFInitialize(void) __attribute__ ((constructor(1010)));
 #endif
 #if DEPLOYMENT_TARGET_EMSCRIPTEN
-extern 
+extern
 #endif
 #if DEPLOYMENT_TARGET_WINDOWS
 CF_EXPORT
@@ -1006,7 +1006,7 @@ void __CFInitialize(void) {
         char *icuData = (char*)malloc(icuDataLen);
         read(icuDataFd, icuData, icuDataLen);
         close(icuDataFd);
-        
+
         udata_setCommonData(icuData, &err);
         if (err != 0)
         {
@@ -1300,9 +1300,11 @@ void __CFInitialize(void) {
         free(languages);
 
         char *locale = (char *)__CFgetenv("LOCALE");
-        CFStringRef localeString = CFStringCreateWithBytes(kCFAllocatorDefault, locale, strlen(locale), kCFStringEncodingUTF8, false);
-        CFPreferencesSetAppValue(CFSTR("AppleLocale"), localeString, kCFPreferencesCurrentApplication);
-        CFRelease(localeString);
+        if(locale) {
+            CFStringRef localeString = CFStringCreateWithBytes(kCFAllocatorDefault, locale, strlen(locale), kCFStringEncodingUTF8, false);
+            CFPreferencesSetAppValue(CFSTR("AppleLocale"), localeString, kCFPreferencesCurrentApplication);
+            CFRelease(localeString);
+        }
 #endif
         __CFInitialized = 1;
 

@@ -15,7 +15,6 @@ int __nsurl_xhrCreateAndOpen(NSURLRequest *request, BOOL async) {
 
     int xhr = _xhr_create();
     _xhr_open(xhr, [method UTF8String], [url.absoluteString UTF8String], async ? 1 : 0, [url.user UTF8String], [url.password UTF8String]);
-    _xhr_set_timeout(xhr, 3000);
     setDefaultUserAgent(xhr);
     for(NSString *key in [headers allKeys]) {
         NSString *value = [headers objectForKey:key];

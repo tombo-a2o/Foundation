@@ -1,10 +1,24 @@
-//
-//  NSDecimalNumber.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSDecimalNumber.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import <pthread.h>
 #import <Foundation/NSDecimalNumber.h>
@@ -61,7 +75,7 @@ static NSString *NSDecimalNumberBehaviors = @"NSDecimalNumberBehaviors";
     dispatch_once(&once, ^{
         numberHandler = [NSDecimalNumberHandler new];
     });
-    
+
     NSMutableDictionary *tls = [[NSThread currentThread] threadDictionary];
     id<NSDecimalNumberBehaviors> defaultBehavior = [tls objectForKey:NSDecimalNumberBehaviors];
     if (defaultBehavior == nil)
@@ -245,7 +259,7 @@ static NSString *NSDecimalNumberBehaviors = @"NSDecimalNumberBehaviors";
             }
         }
     }
-    
+
     return _isNegative ? -result : result;
 }
 
@@ -502,7 +516,7 @@ static NSString *NSDecimalNumberBehaviors = @"NSDecimalNumberBehaviors";
     {
         return YES;
     }
-    else if ([object isNSNumber__]) 
+    else if ([object isNSNumber__])
     {
         return [self compare:object] == NSOrderedSame;
     }
@@ -563,29 +577,29 @@ static NSString *NSDecimalNumberBehaviors = @"NSDecimalNumberBehaviors";
         decimal._isNegative = [coder decodeBoolForKey:KEY_NEGATIVE];
         decimal._isCompact = [coder decodeBoolForKey:KEY_COMPACT];
         decimal._reserved = [coder decodeInt32ForKey:KEY_RESERVED];
-        
+
         NSUInteger length;
         const uint8_t *bytes = [coder decodeBytesForKey:KEY_MANTISSA returnedLength:&length];
-        
+
         if (length > (NSDecimalMaxSize * sizeof(decimal._mantissa[0])))
         {
             [NSException raise:NSInvalidUnarchiveOperationException format:@"%@", @"data encoded in mantissa is too large"];
         }
-        
+
         if (length)
         {
             memcpy(&decimal._mantissa, bytes, length);
         }
-        
+
         number = [self initWithDecimal:decimal];
     }
 
-    else 
+    else
     {
         DEBUG_LOG("%s not supported with a coder that disallows keyed coding", __PRETTY_FUNCTION__);
         DEBUG_BREAK();
     }
-    
+
     return (id)number;
 }
 
@@ -612,13 +626,13 @@ static NSString *NSDecimalNumberBehaviors = @"NSDecimalNumberBehaviors";
     NSDecimalCompact(&dcm);
     NSDecimalNumber *number = (NSDecimalNumber *)NSAllocateObject(objc_getClass("NSDecimalNumber"), dcm._length * sizeof(dcm._mantissa[0]), NULL);
     NSDecimalCopy((NSDecimal *)((char *)number + sizeof(Class)), &dcm);
-    
+
     return (id)number;
 }
 
 - (id)initWithMantissa:(unsigned long long)mantissa exponent:(short)exponent isNegative:(BOOL)flag
 {
-    NSDecimal dcm = {0};   
+    NSDecimal dcm = {0};
 
     dcm._exponent = exponent;
     dcm._isNegative = flag ? 1 : 0;
@@ -706,7 +720,7 @@ static NSString *NSDecimalNumberBehaviors = @"NSDecimalNumberBehaviors";
 }
 
 - (id)initWithDouble:(double)value
-{   
+{
     NSDecimalNumber *number = nil;
     if (isnan(value))
     {
@@ -715,7 +729,7 @@ static NSString *NSDecimalNumberBehaviors = @"NSDecimalNumberBehaviors";
     else
     {
         double result = fabs(value);
-        
+
         if (result < 1.0e-110 || result  == ULONG_LONG_MAX) // weird ass edge case
         {
             number = [self initWithMantissa:0x0 exponent:0x0 isNegative:0x0];
@@ -738,12 +752,12 @@ static NSString *NSDecimalNumberBehaviors = @"NSDecimalNumberBehaviors";
                 {
                     result /= 10.0;
                 }
-                
+
                 number = [self initWithMantissa:(unsigned long long)result exponent:i isNegative:value < 0.0];
             }
         }
     }
- 
+
     return (id)number;
 }
 
@@ -781,7 +795,7 @@ SINGLETON_RR()
         [[NSException exceptionWithName:NSDecimalNumberDivideByZeroException
                                  reason:@"NSDecimalNumber divide by zero exception" userInfo:@{}] raise];
     }
-    
+
     return nil;
 }
 

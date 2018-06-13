@@ -1,10 +1,24 @@
-//
-//  NSDecimal.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSDecimal.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import <Foundation/NSDecimal.h>
 #import <Foundation/NSDecimalNumber.h>
@@ -1000,7 +1014,7 @@ NSCalculationError NSDecimalDivide(NSDecimal *result, const NSDecimal *left, con
     if (right->_mantissa[0] == 1)
     {
         isRightPowerOfTen = YES; // Tentative, confirm below
-        
+
         for (int mi = 1; mi < right->_length; ++mi)
         {
             if (right->_mantissa[mi] != 0)
@@ -1010,16 +1024,16 @@ NSCalculationError NSDecimalDivide(NSDecimal *result, const NSDecimal *left, con
             }
         }
     }
-    
+
     if (isRightPowerOfTen)
     {
         NSDecimal resultDecimal = {0};
-        
+
         // Divide by the power-of-ten exponent
         NSCalculationError err = NSDecimalMultiplyByPowerOf10(&resultDecimal, left, -1 * right->_exponent, roundingMode);
 
         NSDecimalCopy(result, &resultDecimal);
-        
+
         return err;
     }
     else
@@ -1130,7 +1144,7 @@ NSString *NSDecimalString(const NSDecimal *dcm, id locale)
     {
         return @"NaN";
     }
-    
+
 #warning NSDecimalString using lossy unsigned long long version is no better than primitive number stringizing
     unsigned long long resultNum = 0ULL;
     unsigned int dmc_length = dcm->_length;
@@ -1139,15 +1153,15 @@ NSString *NSDecimalString(const NSDecimal *dcm, id locale)
         // stamp successive unsigned shorts into place inside result
         resultNum |= (unsigned long long)dcm->_mantissa[i] << (i * 16);
     }
-    
+
     NSString *sign = dcm->_isNegative ? @"-" : @"";
-    
+
     NSString *decimalString = [NSString stringWithFormat:@"%llu",resultNum];
-    
+
     if (dcm->_exponent > 0)
     {
         NSUInteger padLength = [decimalString length] + dcm->_exponent;
-        
+
         decimalString = [decimalString stringByPaddingToLength:padLength withString:@"0" startingAtIndex:0];
     }
     else if (dcm->_exponent < 0)
@@ -1162,17 +1176,17 @@ NSString *NSDecimalString(const NSDecimal *dcm, id locale)
         {
             left = [decimalString substringToIndex:leftLength];
         }
-        
+
         NSString *right = [decimalString substringFromIndex:leftLength];
-        
+
         NSString *separator = [locale objectForKey:NSLocaleDecimalSeparator] ?: @".";
-        
+
         decimalString = [NSString stringWithFormat:@"%@%@%@", left, separator, right];
     }
-    
+
     NSString *result = [NSString stringWithFormat:@"%@%@",
                         sign,
                         decimalString];
-    
+
     return result;
 }

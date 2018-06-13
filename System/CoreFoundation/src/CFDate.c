@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -89,10 +89,10 @@ CF_PRIVATE uint64_t __CFTSRToNanoseconds(uint64_t tsr) {
 
 CF_PRIVATE dispatch_time_t __CFTSRToDispatchTime(uint64_t tsr) {
     uint64_t tsrInNanoseconds = __CFTSRToNanoseconds(tsr);
-    
+
     // It's important to clamp this value to INT64_MAX or it will become interpreted by dispatch_time as a relative value instead of absolute time
     if (tsrInNanoseconds > INT64_MAX - 1) tsrInNanoseconds = INT64_MAX - 1;
-    
+
     // 2nd argument of dispatch_time is a value in nanoseconds, but tsr does not equal nanoseconds on all platforms.
     return dispatch_time(1, (int64_t)tsrInNanoseconds);
 }
@@ -196,8 +196,8 @@ CFTimeInterval CFDateGetTimeIntervalSinceDate(CFDateRef date, CFDateRef otherDat
     __CFGenericValidateType(date, CFDateGetTypeID());
     __CFGenericValidateType(otherDate, CFDateGetTypeID());
     return date->_time - otherDate->_time;
-}   
-    
+}
+
 CFComparisonResult CFDateCompare(CFDateRef date, CFDateRef otherDate, void *context) {
     CF_OBJC_FUNCDISPATCHV(CFDateGetTypeID(), CFComparisonResult, (NSDate *)date, compare:(NSDate *)otherDate);
     __CFGenericValidateType(date, CFDateGetTypeID());
@@ -360,7 +360,7 @@ CFAbsoluteTime CFAbsoluteTimeAddGregorianUnits(CFAbsoluteTime at, CFTimeZoneRef 
 	__CFGenericValidateType(tz, CFTimeZoneGetTypeID());
     }
 #endif
-    
+
     /* Most people seem to expect years, then months, then days, etc.
 	to be added in that order.  Thus, 27 April + (4 days, 1 month)
 	= 31 May, and not 1 June. This is also relatively predictable.

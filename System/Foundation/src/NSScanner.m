@@ -1,10 +1,24 @@
-//
-//  NSScanner.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSScanner.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import <Foundation/NSScanner.h>
 #import "NSConcreteScanner.h"
@@ -446,12 +460,12 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
     }
     BOOL sawDecimal = NO;
     BOOL valueIsNonZero = NO;
-    
+
     int exponent = 0; // Both location of decimal separator, and explicit 'e'
     int valueDigitsScanned = 0;
     int totalDigitsScanned = 0;
     int exponentDigitsScanned = 0;
-    
+
     // Go through the entire string in a first pass
     // to get the real start and end, as well as the
     // exponent. A second pass actually loads the mantissa.
@@ -467,7 +481,7 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
             totalDigitsScanned++;
             continue;
         }
-        
+
         if (*ptr < '0' || *ptr > '9')
         {
             // Sub-scan: Scan for an explicit exponent
@@ -475,16 +489,16 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
             {
                 ptr++;
                 exponentDigitsScanned++;
-                
+
                 int explicitExponent = 0;
                 int explicitExponentSign = +1;
                 BOOL sawExponentSign = NO;
                 BOOL sawExponentValue = NO;
-                
+
                 for (;*ptr != '\0'; ptr++)
                 {
                     exponentDigitsScanned++;
-                    
+
                     // Collect exponent sign
                     if (*ptr == '+' || *ptr == '-')
                     {
@@ -493,7 +507,7 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
                             break;
                         }
                         sawExponentSign = YES;
-                        
+
                         if (*ptr == '-' )
                         {
                             explicitExponentSign = -1;
@@ -511,7 +525,7 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
                     {
                         break; // Unrecognized character
                     }
-                    
+
                     // Check for overflow
                     int tmpExponent = explicitExponentSign * explicitExponent + exponent;
                     if (tmpExponent < MIN_EXPONENT || tmpExponent > MAX_EXPONENT)
@@ -520,30 +534,30 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
                         break;
                     }
                 }
-                
+
                 exponent += explicitExponentSign * explicitExponent;
             }
-            
+
             break; // Unrecognized character, or exponent parsed
         }
         else
         {
-            
+
             if (exponent <= MIN_EXPONENT)
             {
                 totalDigitsScanned++;
                 continue; // Scan but don't store any subsequent digits. Reached maximum precision.
             }
-            
+
             sawValue = YES;
             valueDigitsScanned++;
             totalDigitsScanned++;
-            
+
             if (*ptr - '0')
             {
                 valueIsNonZero = YES;
             }
-            
+
             // if we saw the decimal point, track the exponent that the
             // value will have.
             if (sawDecimal)
@@ -552,7 +566,7 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
             }
         }
     }
-    
+
     if (sawValue)
     {
         [self setScanLocation:location + (ptr - buf)];
@@ -566,10 +580,10 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
             // short of the mantissa, and only added if
             // non zero.
             tempDcm._length = 1;
-            
+
             // restore ptr to the start of the number
             ptr = ptr - totalDigitsScanned - exponentDigitsScanned;
-            
+
             for (int i = 0; i < totalDigitsScanned; i++)
             {
                 unichar cDigit = ptr[i];
@@ -577,13 +591,13 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
                 {
                     continue;
                 }
-                
+
                 // read in and append the digit to value
                 tempDcm._mantissa[0] = (cDigit - '0');
                 // store the 10's digit place - should be zero at the rightmost value
                 tempDcm._exponent = valueDigitsScanned - (secondValueDigitsScanned + 1);
                 secondValueDigitsScanned++;
-                
+
                 if (tempDcm._mantissa[0])
                 {
                     NSDecimalAdd(dcm, dcm, &tempDcm, NSRoundPlain);
@@ -595,7 +609,7 @@ static inline NSUInteger skipSkipSet(NSScanner *self, NSString *s)
             dcm->_isNegative = (valueIsNonZero && isNegative);
         }
     }
-    
+
     free(buf);
     return sawValue;
 }

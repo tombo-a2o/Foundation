@@ -1,10 +1,25 @@
-//
-//  NSXMLParser.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSXMLParser.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
 #if 1
 @implementation NSXMLParser
 @end
@@ -138,9 +153,9 @@ static inline NSString *NSStringFromXML(_NSXMLParserInfo *parserInfo, const xmlC
         };
         parserInfo->slowStringmap = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &keyCallbacks, &kCFTypeDictionaryValueCallBacks);
     }
-    
+
     NSString *string = CFDictionaryGetValue(parserInfo->slowStringmap, str);
-    
+
     if (string == nil)
     {
         string = [[NSString alloc] initWithCString:(const char *)str encoding:NSUTF8StringEncoding];
@@ -178,7 +193,7 @@ static void NSXMLParserEntityDecl(void *ctx, const xmlChar *name, int type, cons
                 [parser->_delegate parser:parser foundInternalEntityDeclarationWithName:nameStr value:contentStr];
             }
         }
-        else if ([parser shouldResolveExternalEntities] && 
+        else if ([parser shouldResolveExternalEntities] &&
                  (parser->_info->parserFlags & NSXMLParserDelegateFoundExternalEntityDeclarationWithNamePublicIDSystemID) != 0)
         {
                 NSString *publicIDStr = NSStringFromXML(parser->_info, publicId);
@@ -195,7 +210,7 @@ static void NSXMLParserNotationDecl(void *ctx, const xmlChar *name, const xmlCha
     if ((parser->_info->parserFlags & NSXMLParserDelegateFoundNotationDeclarationWithNamePublicIDSystemID) != 0)
     {
         [parser->_delegate                           parser:parser
-                           foundNotationDeclarationWithName:NSStringFromXML(parser->_info, name) 
+                           foundNotationDeclarationWithName:NSStringFromXML(parser->_info, name)
                                                    publicID:NSStringFromXML(parser->_info, publicId)
                                                    systemID:NSStringFromXML(parser->_info, systemId)];
     }
@@ -222,8 +237,8 @@ static void NSXMLParserAttributeDecl(void *ctx, const xmlChar *elem, const xmlCh
                 typeName = @""; // valid? or should this be nil
         }
         [parser->_delegate parser:parser foundAttributeDeclarationWithName:NSStringFromXML(parser->_info, fullname)
-                                                                forElement:NSStringFromXML(parser->_info, elem) 
-                                                                      type:typeName 
+                                                                forElement:NSStringFromXML(parser->_info, elem)
+                                                                      type:typeName
                                                               defaultValue:NSStringFromXML(parser->_info, defaultValue)];
     }
 }
@@ -243,9 +258,9 @@ static void NSXMLParserUnparsedEntityDecl(void *ctx, const xmlChar *name, const 
     NSXMLParser *parser = (NSXMLParser *)ctx;
     if ((parser->_info->parserFlags & NSXMLParserDelegateFoundUnparsedEntityDeclarationWithNamePublicIDSystemIDNotationName) != 0)
     {
-        [parser->_delegate parser:parser foundUnparsedEntityDeclarationWithName:NSStringFromXML(parser->_info, name) 
-                         publicID:NSStringFromXML(parser->_info, publicId) 
-                         systemID:NSStringFromXML(parser->_info, systemId) 
+        [parser->_delegate parser:parser foundUnparsedEntityDeclarationWithName:NSStringFromXML(parser->_info, name)
+                         publicID:NSStringFromXML(parser->_info, publicId)
+                         systemID:NSStringFromXML(parser->_info, systemId)
                      notationName:NSStringFromXML(parser->_info, notationName)];
     }
 }
@@ -467,7 +482,7 @@ static void NSXMLParserEndElementNs(void *ctx, const xmlChar *localname, const x
         {
             fullName = [qualName retain];
         }
-        
+
         if ([parser shouldProcessNamespaces])
         {
             if (uriStr == nil)
@@ -475,14 +490,14 @@ static void NSXMLParserEndElementNs(void *ctx, const xmlChar *localname, const x
                 uriStr = @"";
             }
 
-            [parser->_delegate parser:parser 
+            [parser->_delegate parser:parser
                         didEndElement:fullName
                          namespaceURI:uriStr
                         qualifiedName:qualName];
         }
         else
         {
-            [parser->_delegate parser:parser 
+            [parser->_delegate parser:parser
                         didEndElement:fullName
                          namespaceURI:nil
                         qualifiedName:nil];
@@ -527,7 +542,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
     {
         if ([delegate respondsToSelector:@selector(parserDidStartDocument:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateDidStartDocument; 
+            _info->parserFlags |= NSXMLParserDelegateDidStartDocument;
         }
         else
         {
@@ -536,7 +551,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parserDidEndDocument:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateDidEndDocument;   
+            _info->parserFlags |= NSXMLParserDelegateDidEndDocument;
         }
         else
         {
@@ -545,7 +560,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundNotationDeclarationWithName:publicID:systemID:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundNotationDeclarationWithNamePublicIDSystemID; 
+            _info->parserFlags |= NSXMLParserDelegateFoundNotationDeclarationWithNamePublicIDSystemID;
         }
         else
         {
@@ -554,7 +569,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundUnparsedEntityDeclarationWithName:publicID:systemID:notationName:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundUnparsedEntityDeclarationWithNamePublicIDSystemIDNotationName;   
+            _info->parserFlags |= NSXMLParserDelegateFoundUnparsedEntityDeclarationWithNamePublicIDSystemIDNotationName;
         }
         else
         {
@@ -563,7 +578,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundAttributeDeclarationWithName:forElement:type:defaultValue:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundAttributeDeclarationWithNameForElementTypeDefaultValue;  
+            _info->parserFlags |= NSXMLParserDelegateFoundAttributeDeclarationWithNameForElementTypeDefaultValue;
         }
         else
         {
@@ -572,7 +587,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundElementDeclarationWithName:model:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundElementDeclarationWithNameModel; 
+            _info->parserFlags |= NSXMLParserDelegateFoundElementDeclarationWithNameModel;
         }
         else
         {
@@ -581,7 +596,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundInternalEntityDeclarationWithName:value:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundInternalEntityDeclarationWithNameValue;  
+            _info->parserFlags |= NSXMLParserDelegateFoundInternalEntityDeclarationWithNameValue;
         }
         else
         {
@@ -590,7 +605,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundExternalEntityDeclarationWithName:publicID:systemID:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundExternalEntityDeclarationWithNamePublicIDSystemID;   
+            _info->parserFlags |= NSXMLParserDelegateFoundExternalEntityDeclarationWithNamePublicIDSystemID;
         }
         else
         {
@@ -599,7 +614,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:didStartElement:namespaceURI:qualifiedName:attributes:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateDidStartElementNamespaceURIQualifiedNameAttributes;   
+            _info->parserFlags |= NSXMLParserDelegateDidStartElementNamespaceURIQualifiedNameAttributes;
         }
         else
         {
@@ -608,7 +623,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:didEndElement:namespaceURI:qualifiedName:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateDidEndElementNamespaceURIQualifiedName;   
+            _info->parserFlags |= NSXMLParserDelegateDidEndElementNamespaceURIQualifiedName;
         }
         else
         {
@@ -617,7 +632,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:didStartMappingPrefix:toURI:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateDidStartMappingPrefixToURI;   
+            _info->parserFlags |= NSXMLParserDelegateDidStartMappingPrefixToURI;
         }
         else
         {
@@ -626,7 +641,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:didEndMappingPrefix:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateDidEndMappingPrefix;  
+            _info->parserFlags |= NSXMLParserDelegateDidEndMappingPrefix;
         }
         else
         {
@@ -635,7 +650,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundCharacters:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundCharacters;  
+            _info->parserFlags |= NSXMLParserDelegateFoundCharacters;
         }
         else
         {
@@ -644,7 +659,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundIgnorableWhitespace:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundIgnorableWhitespace; 
+            _info->parserFlags |= NSXMLParserDelegateFoundIgnorableWhitespace;
         }
         else
         {
@@ -653,7 +668,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundProcessingInstructionWithTarget:data:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundProcessingInstructionWithTargetData; 
+            _info->parserFlags |= NSXMLParserDelegateFoundProcessingInstructionWithTargetData;
         }
         else
         {
@@ -662,7 +677,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundComment:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundComment; 
+            _info->parserFlags |= NSXMLParserDelegateFoundComment;
         }
         else
         {
@@ -671,7 +686,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:foundCDATA:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateFoundCDATA;   
+            _info->parserFlags |= NSXMLParserDelegateFoundCDATA;
         }
         else
         {
@@ -680,7 +695,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:resolveExternalEntityName:systemID:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateResolveExternalEntityNameSystemID;    
+            _info->parserFlags |= NSXMLParserDelegateResolveExternalEntityNameSystemID;
         }
         else
         {
@@ -689,7 +704,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:parseErrorOccurred:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateParseErrorOccurred;   
+            _info->parserFlags |= NSXMLParserDelegateParseErrorOccurred;
         }
         else
         {
@@ -698,7 +713,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
         if ([delegate respondsToSelector:@selector(parser:validationErrorOccurred:)])
         {
-            _info->parserFlags |= NSXMLParserDelegateValidationErrorOccurred;  
+            _info->parserFlags |= NSXMLParserDelegateValidationErrorOccurred;
         }
         else
         {
@@ -834,7 +849,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 - (id)initWithStream:(NSInputStream *)stream
 {
     NSMutableData *data = [[NSMutableData alloc] init];
-        
+
     while ([stream hasBytesAvailable])
     {
         uint8_t *buffer = NULL;
@@ -866,7 +881,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
 
     self = [self initWithData:data];
     [data release];
-    
+
     if (self != nil)
     {
         _stream = stream;
@@ -883,7 +898,7 @@ static void NSXMLParserXmlStructuredError(void *ctx, xmlErrorPtr error)
     const void *bytes = [_data bytes];
 
     _info->parserContext = xmlCreatePushParserCtxt(_info->saxHandler, self, bytes, [_data length], NULL);
-        
+
     int options = XML_PARSE_RECOVER | XML_PARSE_NOENT | XML_PARSE_DTDLOAD;
 
     xmlCtxtUseOptions(_info->parserContext, options);

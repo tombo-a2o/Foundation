@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -133,12 +133,12 @@ static UniChar getSlashedChar(_CFStringsFileParseInfo *pInfo) {
     pInfo->curr ++;
     switch (ch) {
 	case '0':
-	case '1':	
-	case '2':	
-	case '3':	
-	case '4':	
-	case '5':	
-	case '6':	
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
 	case '7':  {
             uint8_t num = ch - '0';
             UniChar result;
@@ -158,7 +158,7 @@ static UniChar getSlashedChar(_CFStringsFileParseInfo *pInfo) {
 	case 'U': {
 	    unsigned num = 0, numDigits = 4;	/* Parse four digits */
 	    while (pInfo->curr < pInfo->end && numDigits--) {
-                if (((ch = *(pInfo->curr)) < 128) && isxdigit(ch)) { 
+                if (((ch = *(pInfo->curr)) < 128) && isxdigit(ch)) {
                     pInfo->curr ++;
 		    num = (num << 4) + ((ch <= '9') ? (ch - '0') : ((ch <= 'F') ? (ch - 'A' + 10) : (ch - 'a' + 10)));
 		}
@@ -373,7 +373,7 @@ static CFDictionaryRef parsePlistDictContent(_CFStringsFileParseInfo *pInfo) {
             pInfo->error = __CFPropertyListCreateError(kCFPropertyListReadCorruptError, CFSTR("Missing ';' on line %d"), line);
             break;
         }
-	
+
 	if (*pInfo->curr == ';') {
 	    /* This is a strings file using the shortcut format */
 	    /* although this check here really applies to all plists. */
@@ -406,7 +406,7 @@ static CFDictionaryRef parsePlistDictContent(_CFStringsFileParseInfo *pInfo) {
 	    pInfo->error = __CFPropertyListCreateError(kCFPropertyListReadCorruptError, CFSTR("Missing ';' on line %d"), line);
 	}
     }
-    
+
     if (failedParse) {
         __CFPListRelease(key, pInfo->allocator);
         __CFPListRelease(dict, pInfo->allocator);
@@ -469,7 +469,7 @@ static int getDataBytes(_CFStringsFileParseInfo *pInfo, unsigned char *bytes, in
 #define numBytes 400
 static CFTypeRef parsePlistData(_CFStringsFileParseInfo *pInfo) {
     CFMutableDataRef result = CFDataCreateMutable(pInfo->allocator, 0);
-    
+
     // Read hex bytes and append them to result
     while (1) {
 	unsigned char bytes[numBytes];
@@ -477,10 +477,10 @@ static CFTypeRef parsePlistData(_CFStringsFileParseInfo *pInfo) {
 	if (numBytesRead < 0) {
 	    __CFPListRelease(result, pInfo->allocator);
             switch (numBytesRead) {
-                case -2: 
+                case -2:
                     pInfo->error = __CFPropertyListCreateError(kCFPropertyListReadCorruptError, CFSTR("Malformed data byte group at line %d; uneven length"), lineNumberStrings(pInfo));
                     break;
-                default: 
+                default:
                     pInfo->error = __CFPropertyListCreateError(kCFPropertyListReadCorruptError, CFSTR("Malformed data byte group at line %d; invalid hex"), lineNumberStrings(pInfo));
                     break;
             }
@@ -489,12 +489,12 @@ static CFTypeRef parsePlistData(_CFStringsFileParseInfo *pInfo) {
 	if (numBytesRead == 0) break;
 	CFDataAppendBytes(result, bytes, numBytesRead);
     }
-    
+
     if (pInfo->error) {
         CFRelease(pInfo->error);
         pInfo->error = NULL;
     }
-    
+
     if (*(pInfo->curr) == '>') {
         pInfo->curr ++; // Move past '>'
         return result;
@@ -541,7 +541,7 @@ static CFTypeRef parsePlistObject(_CFStringsFileParseInfo *pInfo, bool requireOb
 // CFAllocatorRef allocator, CFDataRef xmlData, CFStringRef originalString, CFStringEncoding guessedEncoding, CFOptionFlags option, CFErrorRef *outError, Boolean allowNewTypes, CFPropertyListFormat *format, CFSetRef keyPaths
 
 CF_PRIVATE CFTypeRef __CFCreateOldStylePropertyListOrStringsFile(CFAllocatorRef allocator, CFDataRef xmlData, CFStringRef originalString, CFStringEncoding guessedEncoding, CFOptionFlags option, CFErrorRef *outError,CFPropertyListFormat *format) {
-    
+
     // Convert the string to UTF16 for parsing old-style
     if (originalString) {
         // Ensure that originalString is not collected while we are using it
@@ -554,7 +554,7 @@ CF_PRIVATE CFTypeRef __CFCreateOldStylePropertyListOrStringsFile(CFAllocatorRef 
             return NULL;
         }
     }
-        
+
     UInt32 length;
     Boolean createdBuffer = false;
     length = CFStringGetLength(originalString);
@@ -562,7 +562,7 @@ CF_PRIVATE CFTypeRef __CFCreateOldStylePropertyListOrStringsFile(CFAllocatorRef 
         if (outError) *outError = __CFPropertyListCreateError(kCFPropertyListReadCorruptError, CFSTR("Conversion of string failed. The string is empty."));
         return NULL;
     }
-    
+
     UniChar *buf = (UniChar *)CFStringGetCharactersPtr(originalString);
     if (!buf) {
         buf = (UniChar *)CFAllocatorAllocate(allocator, length * sizeof(UniChar), 0);
@@ -573,7 +573,7 @@ CF_PRIVATE CFTypeRef __CFCreateOldStylePropertyListOrStringsFile(CFAllocatorRef 
         CFStringGetCharacters(originalString, CFRangeMake(0, length), buf);
         createdBuffer = true;
     }
-    
+
     _CFStringsFileParseInfo stringsPInfo;
     stringsPInfo.begin = buf;
     stringsPInfo.end = buf+length;
@@ -582,7 +582,7 @@ CF_PRIVATE CFTypeRef __CFCreateOldStylePropertyListOrStringsFile(CFAllocatorRef 
     stringsPInfo.mutabilityOption = option;
     stringsPInfo.stringSet = CFSetCreateMutable(allocator, 0, &kCFTypeSetCallBacks);
     stringsPInfo.error = NULL;
-    
+
     const UniChar *begin = stringsPInfo.curr;
     CFTypeRef result = NULL;
     Boolean foundChar = advanceToNonSpace(&stringsPInfo);
@@ -604,7 +604,7 @@ CF_PRIVATE CFTypeRef __CFCreateOldStylePropertyListOrStringsFile(CFAllocatorRef 
                     __CFPListRelease(result, allocator);
                     if (stringsPInfo.error) CFRelease(stringsPInfo.error);
                     stringsPInfo.error = NULL;
-                    
+
                     // Check for a strings file (looks like a dictionary without the opening/closing curly braces)
                     stringsPInfo.curr = begin;
                     result = parsePlistDictContent(&stringsPInfo);
@@ -612,7 +612,7 @@ CF_PRIVATE CFTypeRef __CFCreateOldStylePropertyListOrStringsFile(CFAllocatorRef 
             }
         }
     }
-    
+
     if (!result) {
         // Must return some kind of error if requested
         if (outError) {
@@ -627,9 +627,9 @@ CF_PRIVATE CFTypeRef __CFCreateOldStylePropertyListOrStringsFile(CFAllocatorRef 
             CFRelease(stringsPInfo.error);
         }
     }
-    
+
     if (result && format) *format = kCFPropertyListOpenStepFormat;
-    
+
     if (createdBuffer && !(0)) CFAllocatorDeallocate(allocator, buf);
     CFRelease(stringsPInfo.stringSet);
     CFRelease(originalString);

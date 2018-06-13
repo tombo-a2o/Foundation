@@ -1,3 +1,14 @@
+/*
+ *  CFURLEnumerator.h
+ *  CoreFoundation
+ *
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 #if (TARGET_OS_MAC || TARGET_OS_EMBEDDED || TARGET_OS_IPHONE) || CF_BUILDING_CF || NSBUILDINGFOUNDATION
 #if !defined(__COREFOUNDATION_CFURLENUMERATOR__)
 #define __COREFOUNDATION_CFURLENUMERATOR__ 1

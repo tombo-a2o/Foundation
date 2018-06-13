@@ -1,10 +1,24 @@
-//
-//  NSFileManager.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSFileManager.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import <dispatch/dispatch.h>
 #import <dirent.h>
@@ -173,7 +187,7 @@ static void initializeDirectories(NSMutableSet *paths, NSSearchPathDirectory dir
     if (defaultManager == nil)
     {
         defaultManager = [[NSFileManager alloc] init];
-        
+
     }
     pthread_mutex_unlock(&lock);
     return (NSFileManager *)defaultManager;
@@ -290,7 +304,7 @@ static inline BOOL _NSFileAccessibleForMode(NSString *path, int mode)
 - (NSArray *)directoryContentsAtPath:(NSString *)path matchingExtension:(NSString *)extension options:(NSDirectoryEnumerationOptions)options keepExtension:(BOOL)keepExtension error:(NSError **)error
 {
     NSMutableArray *files = [NSMutableArray array];
-    [self _directoryContentsAtPath:path 
+    [self _directoryContentsAtPath:path
                 matchingExtension:extension
                 options:options
                 keepExtension:keepExtension
@@ -359,7 +373,7 @@ static inline BOOL _NSFileAccessibleForMode(NSString *path, int mode)
         // should NSDirectoryEnumerationSkipsPackageDescendants be checked somehow here?
         if (dp->d_type == DT_DIR && (options & NSDirectoryEnumerationRecursive) != 0)
         {
-            [self _directoryContentsAtPath:[path stringByAppendingPathComponent:item] 
+            [self _directoryContentsAtPath:[path stringByAppendingPathComponent:item]
                                             matchingExtension:extension
                                                       options:options
                                                 keepExtension:keepExtension
@@ -379,9 +393,9 @@ static inline BOOL _NSFileAccessibleForMode(NSString *path, int mode)
 - (NSArray *)contentsOfDirectoryAtURL:(NSURL *)directoryUrl includingPropertiesForKeys:(NSArray *)keys options:(NSDirectoryEnumerationOptions)mask error:(NSError **)error
 {
     NSArray *urls = [self directoryContentsAtPath:[directoryUrl path]
-                                matchingExtension:nil 
-                                          options:mask | NSDirectoryEnumerationGenerateURLs 
-                                    keepExtension:YES 
+                                matchingExtension:nil
+                                          options:mask | NSDirectoryEnumerationGenerateURLs
+                                    keepExtension:YES
                                             error:error];
     // TODO: refactor this... it is rather ineffecient
     for (NSURL *url in urls)
@@ -646,12 +660,12 @@ static inline BOOL _NSFileAccessibleForMode(NSString *path, int mode)
     if (data == nil) {
         data = [NSData data];
     }
-    
+
     if (![data writeToFile:path atomically:YES])
     {
         return NO;
     }
-    
+
     if (attr)
     {
         [self setAttributes:attr ofItemAtPath:path error:nil];
@@ -693,14 +707,14 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
     NSString *pathKey = [path isKindOfClass:[NSURL class]] ? NSURLErrorKey : NSFilePathErrorKey;
     NSString *underlyingError = [NSString stringWithFormat:@"Error Domain=NSPOSIXErrorDomain Code=%d \"%s\"", code, strerror(code)];
     NSDictionary *userInfo = @{ pathKey: path, NSUnderlyingErrorKey: underlyingError };
-    
+
     return [NSError errorWithDomain:NSPOSIXErrorDomain code:code userInfo:userInfo];
 }
 
 - (BOOL)setAttributes:(NSDictionary *)attributes ofItemAtPath:(NSString *)path error:(NSError **)error
 {
     char buffer[BUG_COMPLIANT_PATH_MAX];
-    
+
     if ([self getFileSystemRepresentation:buffer maxLength:BUG_COMPLIANT_PATH_MAX withPath:path])
     {
         NSNumber *posixPermissions = [attributes objectForKey:NSFilePosixPermissions];
@@ -715,19 +729,19 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
                 return NO;
             }
         }
-        
+
         NSDate *creationDate = [attributes objectForKey:NSFileCreationDate];
         if (creationDate)
         {
             // Creation time is not stored by most Linux file systems.
             DEBUG_LOG("Setting file creation date is not supported (path: %s)", buffer);
         }
-        
+
         NSDate *modificationDate = [attributes objectForKey:NSFileModificationDate];
         if (modificationDate)
         {
             NSTimeInterval modification = [modificationDate timeIntervalSince1970];
-        
+
             struct timeval times[2];
             double wholeSeconds, fractionalSeconds = modf(modification, &wholeSeconds);
             times[0].tv_sec = wholeSeconds;
@@ -742,7 +756,7 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
                 return NO;
             }
         }
-        
+
         return YES;
     }
     else
@@ -789,7 +803,7 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
         }
         return nil;
     }
-    
+
     struct statfs statbuf;
     if (statfs(pathbuf, &statbuf) != 0)
     {
@@ -801,9 +815,9 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
         }
         return nil;
     }
-    
+
     const int numAttributes = 5;
-    
+
     NSString *keys[numAttributes] = {
         NSFileSystemNumber,
         NSFileSystemSize,
@@ -811,11 +825,11 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
         NSFileSystemNodes,
         NSFileSystemFreeNodes
     };
-    
+
     unsigned long long blocksize = statbuf.f_bsize;
     long fsnumber;
     memcpy(&fsnumber, &statbuf.f_fsid, sizeof(fsnumber));
-    
+
     NSNumber *objects[numAttributes] = {
         [NSNumber numberWithUnsignedLong:fsnumber],
         [NSNumber numberWithUnsignedLongLong:blocksize * (unsigned long long)statbuf.f_blocks],
@@ -823,12 +837,12 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
         [NSNumber numberWithLong:statbuf.f_files],
         [NSNumber numberWithLong:statbuf.f_ffree],
     };
-    
+
     if (error)
     {
         *error = nil;
     }
-    
+
     return [NSDictionary dictionaryWithObjects:objects forKeys:keys count:numAttributes];
 }
 
@@ -947,7 +961,7 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
     {
         *error = nil;
     }
-    
+
     int srcFd = open([srcPath fileSystemRepresentation], O_RDONLY);
     if(srcFd < 0) {
         goto out_error;
@@ -956,10 +970,10 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
     if(dstFd < 0) {
         goto out_error;
     }
-    
+
     char buf[4096];
     ssize_t nread;
-    
+
     while ((nread = read(srcFd, buf, sizeof(buf))) > 0)
     {
         char *out_ptr = buf;
@@ -992,7 +1006,7 @@ static NSError *_NSErrorWithFilePathAndErrno(id path, int code)
         /* Success! */
         return YES;
     }
-    
+
     int saved_errno;
  out_error:
     saved_errno = errno;

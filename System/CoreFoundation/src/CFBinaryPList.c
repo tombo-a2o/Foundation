@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -628,16 +628,16 @@ CFIndex __CFBinaryPlistWrite(CFPropertyListRef plist, CFTypeRef stream, uint64_t
     uint64_t *offsets, length_so_far;
     int64_t idx, cnt;
     __CFBinaryPlistWriteBuffer *buf;
-    
+
     initStatics();
 
     const CFDictionaryKeyCallBacks dictKeyCallbacks = {0, __CFTypeCollectionRetain, __CFTypeCollectionRelease, 0, 0, 0};
     objtable = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 0, &dictKeyCallbacks, NULL);
-    
+
     const CFArrayCallBacks arrayCallbacks = {0, __CFTypeCollectionRetain, __CFTypeCollectionRelease, 0, 0};
     objlist = CFArrayCreateMutable(kCFAllocatorSystemDefault, 0, &arrayCallbacks);
-    
-    
+
+
     const CFSetCallBacks setCallbacks = {0, __CFTypeCollectionRetain, __CFTypeCollectionRelease, 0, 0, 0};
     uniquingset = CFSetCreateMutable(kCFAllocatorSystemDefault, 0, &setCallbacks);
 
@@ -650,7 +650,7 @@ CFIndex __CFBinaryPlistWrite(CFPropertyListRef plist, CFTypeRef stream, uint64_t
     _flattenPlist(plist, objlist, objtable, uniquingset);
 
     CFRelease(uniquingset);
-    
+
     cnt = CFArrayGetCount(objlist);
     offsets = (uint64_t *)CFAllocatorAllocate(kCFAllocatorSystemDefault, (CFIndex)(cnt * sizeof(*offsets)), 0);
 
@@ -667,7 +667,7 @@ CFIndex __CFBinaryPlistWrite(CFPropertyListRef plist, CFTypeRef stream, uint64_t
     memset(&trailer, 0, sizeof(trailer));
     trailer._numObjects = CFSwapInt64HostToBig(cnt);
     trailer._topObject = 0;	// true for this implementation
-    trailer._objectRefSize = _byteCount(cnt);    
+    trailer._objectRefSize = _byteCount(cnt);
     for (idx = 0; idx < cnt; idx++) {
 	offsets[idx] = buf->written + buf->used;
 	CFPropertyListRef obj = CFArrayGetValueAtIndex(objlist, (CFIndex)idx);
@@ -689,11 +689,11 @@ CFIndex __CFBinaryPlistWrite(CFPropertyListRef plist, CFTypeRef stream, uint64_t
     }
     CFRelease(objtable);
     CFRelease(objlist);
-    
+
     length_so_far = buf->written + buf->used;
     trailer._offsetTableOffset = CFSwapInt64HostToBig(length_so_far);
     trailer._offsetIntSize = _byteCount(length_so_far);
-    
+
     for (idx = 0; idx < cnt; idx++) {
 	uint64_t swapped = CFSwapInt64HostToBig(offsets[idx]);
 	uint8_t *source = (uint8_t *)&swapped;
@@ -760,7 +760,7 @@ CF_INLINE uint64_t _getSizedInt(const uint8_t *data, uint8_t valSize) {
         return CFSwapInt64BigToHost(val);
     }
 #endif
-    // Compatability with existing archives, including anything with a non-power-of-2 
+    // Compatability with existing archives, including anything with a non-power-of-2
     // size and 16-byte values, and architectures that don't support unaligned access
     uint64_t res = 0;
     for (CFIndex idx = 0; idx < valSize; idx++) {
@@ -787,54 +787,54 @@ bool __CFBinaryPlistGetTopLevelInfo(const uint8_t *databytes, uint64_t datalen, 
     trail._numObjects = CFSwapInt64BigToHost(trail._numObjects);
     trail._topObject = CFSwapInt64BigToHost(trail._topObject);
     trail._offsetTableOffset = CFSwapInt64BigToHost(trail._offsetTableOffset);
-    
+
     // Don't overflow on the number of objects or offset of the table
     if (LONG_MAX < trail._numObjects) FAIL_FALSE;
     if (LONG_MAX < trail._offsetTableOffset) FAIL_FALSE;
-    
+
     //  Must be a minimum of 1 object
     if (trail._numObjects < 1) FAIL_FALSE;
-    
+
     // The ref to the top object must be a value in the range of 1 to the total number of objects
     if (trail._numObjects <= trail._topObject) FAIL_FALSE;
-    
+
     // The offset table must be after at least 9 bytes of other data ('bplist??' + 1 byte of object table data).
     if (trail._offsetTableOffset < 9) FAIL_FALSE;
-    
+
     // The trailer must point to a value before itself in the data.
     if (datalen - sizeof(trail) <= trail._offsetTableOffset) FAIL_FALSE;
-    
+
     // Minimum of 1 byte for the size of integers and references in the data
     if (trail._offsetIntSize < 1) FAIL_FALSE;
     if (trail._objectRefSize < 1) FAIL_FALSE;
-    
+
     int32_t err = CF_NO_ERROR;
-    
+
     // The total size of the offset table (number of objects * size of each int in the table) must not overflow
     uint64_t offsetIntSize = trail._offsetIntSize;
     uint64_t offsetTableSize = __check_uint64_mul_unsigned_unsigned(trail._numObjects, offsetIntSize, &err);
     if (CF_NO_ERROR!= err) FAIL_FALSE;
-    
+
     // The offset table must have at least 1 entry
     if (offsetTableSize < 1) FAIL_FALSE;
-    
+
     // Make sure the size of the offset table and data sections do not overflow
     uint64_t objectDataSize = trail._offsetTableOffset - 8;
     uint64_t tmpSum = __check_uint64_add_unsigned_unsigned(8, objectDataSize, &err);
     tmpSum = __check_uint64_add_unsigned_unsigned(tmpSum, offsetTableSize, &err);
     tmpSum = __check_uint64_add_unsigned_unsigned(tmpSum, sizeof(trail), &err);
     if (CF_NO_ERROR != err) FAIL_FALSE;
-    
+
     // The total size of the data should be equal to the sum of offsetTableOffset + sizeof(trailer)
     if (datalen != tmpSum) FAIL_FALSE;
-    
+
     // The object refs must be the right size to point into the offset table. That is, if the count of objects is 260, but only 1 byte is used to store references (max value 255), something is wrong.
     if (trail._objectRefSize < 8 && (1ULL << (8 * trail._objectRefSize)) <= trail._numObjects) FAIL_FALSE;
-    
+
     // The integers used for pointers in the offset table must be able to reach as far as the start of the offset table.
     if (trail._offsetIntSize < 8 && (1ULL << (8 * trail._offsetIntSize)) <= trail._offsetTableOffset) FAIL_FALSE;
-    
-    
+
+
     (void)check_ptr_add(databytes, 8, &err);
     if (CF_NO_ERROR != err) FAIL_FALSE;
     const uint8_t *offsetsFirstByte = check_ptr_add(databytes, trail._offsetTableOffset, &err);
@@ -938,21 +938,21 @@ bool __CFBinaryPlistGetOffsetForValueFromArray2(const uint8_t *databytes, uint64
  @return True if the key was found, false otherwise.
 */
 bool __CFBinaryPlistGetOffsetForValueFromDictionary3(const uint8_t *databytes, uint64_t datalen, uint64_t startOffset, const CFBinaryPlistTrailer *trailer, CFTypeRef key, uint64_t *koffset, uint64_t *voffset, Boolean unused, CFMutableDictionaryRef objects) {
-    
+
     // Require a key that is a plist primitive
     if (!key || !_plistIsPrimitive(key)) FAIL_FALSE;
-    
+
     // Require that startOffset is in the range of the object table
     uint64_t objectsRangeStart = 8, objectsRangeEnd = trailer->_offsetTableOffset - 1;
     if (startOffset < objectsRangeStart || objectsRangeEnd < startOffset) FAIL_FALSE;
-    
+
     // ptr is the start of the dictionary we are reading
     const uint8_t *ptr = databytes + startOffset;
-    
+
     // Check that the data pointer actually points to a dictionary
     uint8_t marker = *ptr;
     if ((marker & 0xf0) != kCFBinaryPlistMarkerDict) FAIL_FALSE;
-    
+
     // Get the number of objects in this dictionary
     int32_t err = CF_NO_ERROR;
     ptr = check_ptr_add(ptr, 1, &err);
@@ -964,38 +964,38 @@ bool __CFBinaryPlistGetOffsetForValueFromDictionary3(const uint8_t *databytes, u
 	if (LONG_MAX < bigint) FAIL_FALSE;
 	cnt = bigint;
     }
-    
+
     // Total number of objects (keys + values) is cnt * 2
     cnt = check_size_t_mul(cnt, 2, &err);
     if (CF_NO_ERROR != err) FAIL_FALSE;
     size_t byte_cnt = check_size_t_mul(cnt, trailer->_objectRefSize, &err);
     if (CF_NO_ERROR != err) FAIL_FALSE;
-    
+
     // Find the end of the dictionary
     const uint8_t *extent = check_ptr_add(ptr, byte_cnt, &err) - 1;
     if (CF_NO_ERROR != err) FAIL_FALSE;
-    
+
     // Check that we didn't overflow the size of the dictionary
     if (databytes + objectsRangeEnd < extent) FAIL_FALSE;
-    
+
     // For short keys (15 bytes or less) in ASCII form, we can do a quick comparison check
     // We get the pointer or copy the buffer here, outside of the loop
     CFIndex stringKeyLen = -1;
     if (CFGetTypeID(key) == stringtype) {
 	stringKeyLen = CFStringGetLength((CFStringRef)key);
     }
-    
+
     // Find the object in the dictionary with this key
     cnt = cnt / 2;
     uint64_t totalKeySize = cnt * trailer->_objectRefSize;
     uint64_t off;
     Boolean match = false;
     CFPropertyListRef keyInData = NULL;
-    
-#define KEY_BUFF_SIZE 16    
+
+#define KEY_BUFF_SIZE 16
     char keyBuffer[KEY_BUFF_SIZE];
     const char *keyBufferPtr = NULL;
-    
+
     // If we have a string for the key, then we will grab the ASCII encoded version of it, if possible, and do a memcmp on it
     if (stringKeyLen != -1) {
 	// Since we will only be comparing ASCII strings, we can attempt to get a pointer using MacRoman encoding
@@ -1006,7 +1006,7 @@ bool __CFBinaryPlistGetOffsetForValueFromDictionary3(const uint8_t *databytes, u
 	    keyBufferPtr = keyBuffer;
 	}
     }
-    
+
     // Perform linear search of the keys
     for (CFIndex idx = 0; idx < cnt; idx++) {
 	off = _getOffsetOfRefAt(databytes, ptr, trailer);
@@ -1019,7 +1019,7 @@ bool __CFBinaryPlistGetOffsetForValueFromDictionary3(const uint8_t *databytes, u
 	    err = CF_NO_ERROR;
 	    ptr2 = check_ptr_add(ptr2, 1, &err);
 	    if (CF_NO_ERROR != err) FAIL_FALSE;
-	    
+
 	    // If the key's length is large, and the length we are querying is also large, then we have to read it in. If stringKeyLen is less than 0xf, then len will never be equal to it if it was encoded as large.
 	    if (0xf == len && stringKeyLen >= 0xf) {
 		uint64_t bigint = 0;
@@ -1027,14 +1027,14 @@ bool __CFBinaryPlistGetOffsetForValueFromDictionary3(const uint8_t *databytes, u
 		if (LONG_MAX < bigint) FAIL_FALSE;
 		len = (CFIndex)bigint;
 	    }
-	    
-	    if (len == stringKeyLen) {                
+
+	    if (len == stringKeyLen) {
 		err = CF_NO_ERROR;
 		extent = check_ptr_add(ptr2, len, &err);
 		if (CF_NO_ERROR != err) FAIL_FALSE;
-		
+
 		if (databytes + trailer->_offsetTableOffset <= extent) FAIL_FALSE;
-		
+
 		// Compare the key to this potential match
 		if (memcmp(ptr2, keyBufferPtr, stringKeyLen) == 0) {
 		    match = true;
@@ -1049,20 +1049,20 @@ bool __CFBinaryPlistGetOffsetForValueFromDictionary3(const uint8_t *databytes, u
 		if (keyInData) CFRelease(keyInData);
 		FAIL_FALSE;
 	    }
-	    
-	    match = CFEqual(key, keyInData);            
+
+	    match = CFEqual(key, keyInData);
             CFRelease(keyInData);
-	}            
-	
+	}
+
 	if (match) {
 	    if (koffset) *koffset = off;
 	    if (voffset) *voffset = _getOffsetOfRefAt(databytes, ptr + totalKeySize, trailer);
 	    return true;
 	}
-	
+
 	ptr += trailer->_objectRefSize;
     }
-    
+
     FAIL_FALSE;
 }
 
@@ -1336,13 +1336,13 @@ CF_PRIVATE bool __CFBinaryPlistCreateObjectFiltered(const uint8_t *databytes, ui
 	    set = CFSetCreateMutable(kCFAllocatorSystemDefault, 0, NULL);
 	    madeSet = set ? true : false;
 	}
-        
+
         if (set) CFSetAddValue(set, (const void *)(uintptr_t)startOffset);
         if ((marker & 0xf0) == kCFBinaryPlistMarkerArray && keyPaths) {
             // Only get a subset of this array
             CFSetRef theseKeys, nextKeys;
             __CFPropertyListCreateSplitKeypaths(kCFAllocatorSystemDefault, keyPaths, &theseKeys, &nextKeys);
-                        
+
             Boolean success = true;
             CFMutableArrayRef array = CFArrayCreateMutable(allocator, CFSetGetCount(theseKeys), &kCFTypeArrayCallBacks);
             if (theseKeys) {
@@ -1368,12 +1368,12 @@ CF_PRIVATE bool __CFBinaryPlistCreateObjectFiltered(const uint8_t *databytes, ui
                         }
                     }
                 }
-                
+
                 free(keys);
                 CFRelease(theseKeys);
             }
             if (nextKeys) CFRelease(nextKeys);
-            
+
             if (success) {
                 if (!(mutabilityOption == kCFPropertyListMutableContainers || mutabilityOption == kCFPropertyListMutableContainersAndLeaves)) {
                     // make immutable
@@ -1385,20 +1385,20 @@ CF_PRIVATE bool __CFBinaryPlistCreateObjectFiltered(const uint8_t *databytes, ui
             } else if (array) {
                 CFRelease(array);
             }
-        } else {            
-            for (CFIndex idx = 0; idx < arrayCount; idx++) {            
+        } else {
+            for (CFIndex idx = 0; idx < arrayCount; idx++) {
                 CFPropertyListRef pl;
                 off = _getOffsetOfRefAt(databytes, ptr, trailer);
                 if (!__CFBinaryPlistCreateObjectFiltered(databytes, datalen, off, trailer, allocator, mutabilityOption, objects, set, curDepth + 1, NULL, &pl)) {
                     while (idx--) {
                         CFRelease(list[idx]);
-                    }	    
+                    }
                     if (list != buffer) CFAllocatorDeallocate(kCFAllocatorSystemDefault, list);
                     FAIL_FALSE;
                 }
                 __CFAssignWithWriteBarrier((void **)list + idx, (void *)pl);
                 ptr += trailer->_objectRefSize;
-            }            
+            }
             if ((marker & 0xf0) == kCFBinaryPlistMarkerArray) {
                 if (mutabilityOption != kCFPropertyListImmutable) {
                     *plist = CFArrayCreateMutable(allocator, 0, &kCFTypeArrayCallBacks);
@@ -1476,13 +1476,13 @@ CF_PRIVATE bool __CFBinaryPlistCreateObjectFiltered(const uint8_t *databytes, ui
 	    set = CFSetCreateMutable(kCFAllocatorSystemDefault, 0, NULL);
 	    madeSet = set ? true : false;
 	}
-        
+
         if (set) CFSetAddValue(set, (const void *)(uintptr_t)startOffset);
         if (keyPaths) {
             // Only get a subset of this dictionary
             CFSetRef theseKeys, nextKeys;
             __CFPropertyListCreateSplitKeypaths(kCFAllocatorSystemDefault, keyPaths, &theseKeys, &nextKeys);
-            
+
             Boolean success = true;
             CFMutableDictionaryRef dict = CFDictionaryCreateMutable(allocator, CFSetGetCount(theseKeys), &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
             if (theseKeys) {
@@ -1503,12 +1503,12 @@ CF_PRIVATE bool __CFBinaryPlistCreateObjectFiltered(const uint8_t *databytes, ui
                         }
                     }
                 }
-                
+
                 free(keys);
                 CFRelease(theseKeys);
             }
             if (nextKeys) CFRelease(nextKeys);
-            
+
             if (success) {
                 if (!(mutabilityOption == kCFPropertyListMutableContainers || mutabilityOption == kCFPropertyListMutableContainersAndLeaves)) {
                     // make immutable
@@ -1534,7 +1534,7 @@ CF_PRIVATE bool __CFBinaryPlistCreateObjectFiltered(const uint8_t *databytes, ui
                 }
                 __CFAssignWithWriteBarrier((void **)list + idx, (void *)pl);
                 ptr += trailer->_objectRefSize;
-            }            
+            }
             if (mutabilityOption != kCFPropertyListImmutable) {
                 *plist = CFDictionaryCreateMutable(allocator, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
                 for (CFIndex idx = 0; idx < dictionaryCount / 2; idx++) {
@@ -1575,7 +1575,7 @@ bool __CFBinaryPlistCreateObject(const uint8_t *databytes, uint64_t datalen, uin
 }
 
 CF_PRIVATE bool __CFTryParseBinaryPlist(CFAllocatorRef allocator, CFDataRef data, CFOptionFlags option, CFPropertyListRef *plist, CFStringRef *errorString) {
-    uint8_t marker;    
+    uint8_t marker;
     CFBinaryPlistTrailer trailer;
     uint64_t offset;
     const uint8_t *databytes = CFDataGetBytePtr(data);

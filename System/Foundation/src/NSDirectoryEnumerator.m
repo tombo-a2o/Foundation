@@ -1,10 +1,24 @@
-//
-//  NSDirectoryEnumerator.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSDirectoryEnumerator.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import "NSDirectoryEnumerator.h"
 #import <Foundation/NSObjectInternal.h>
@@ -47,14 +61,14 @@
 {
     NSAllDescendantPathsEnumerator *enumerator = [[NSAllDescendantPathsEnumerator alloc] init];
     NSFileManager *fm = [NSFileManager defaultManager];
-    
+
     enumerator->contents = [[fm contentsOfDirectoryAtPath:path error:NULL] copy];
     enumerator->path = [path copy];
     enumerator->prepend = [prefix copy];
     enumerator->cross = cross;
     enumerator->depth = depth;
     enumerator->directoryAttributes = nil;
-    
+
     return enumerator;
 }
 
@@ -114,7 +128,7 @@
             under = nil;
         }
     }
-    
+
     if ([contents count] > idx && item == nil)
     {
         item = contents[idx];
@@ -127,7 +141,7 @@
         }
         idx++;
     }
-    
+
     if (prepend != nil && item != nil)
     {
         return [NSString stringWithFormat:@"%@/%@", prepend, item];
@@ -147,7 +161,7 @@ static CFURLEnumeratorOptions CFURLEnumeratorOptionsFromNSDirectoryEnumeration(N
     {
         options |= kCFURLEnumeratorDescendRecursively;
     }
-    
+
     if ((opts & NSDirectoryEnumerationSkipsHiddenFiles) != 0)
     {
         options |= kCFURLEnumeratorSkipInvisibles;
@@ -179,7 +193,7 @@ static CFURLEnumeratorOptions CFURLEnumeratorOptionsFromNSDirectoryEnumeration(N
         }
 
         _enumerator = CFURLEnumeratorCreateForDirectoryURL(kCFAllocatorDefault, (CFURLRef)[url standardizedURL], CFURLEnumeratorOptionsFromNSDirectoryEnumeration(options), (CFArrayRef)properties);
-        if (_enumerator) 
+        if (_enumerator)
         {
             self.errorHandler = handler;
             shouldContinue = YES;

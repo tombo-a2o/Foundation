@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,14 +25,14 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
 /*	CFString.c
 	Copyright (c) 1998-2013, Apple Inc. All rights reserved.
 	Responsibility: Ali Ozer
-        
+
 !!! For performance reasons, it's important that all functions marked CF_INLINE in this file are inlined.
 */
 
@@ -82,9 +82,9 @@ CF_PRIVATE const CFStringRef __kCFLocaleCollatorID;
 
 static void __CFRecordStringAllocationEvent(const char *encoding, const char *bytes, CFIndex byteCount) {
     static CFSpinLock_t lock = CFSpinLockInit;
-    
+
     if (memchr(bytes, '\n', byteCount)) return; //never record string allocation events for strings with newlines, because those confuse our parser and because they'll never go into the ROM
-    
+
     __CFSpinLock(&lock);
     static int fd;
     if (! fd) {
@@ -182,7 +182,7 @@ struct __CFString {
         } inline1;                                      // Bytes follow the length
 	struct __notInlineImmutable1 {
 	    void *buffer;                               // Note that the buffer is in the same place for all non-inline variants of CFString
-	    CFIndex length;                             
+	    CFIndex length;
 	    CFAllocatorRef contentsDeallocator;		// Optional; just the dealloc func is used
 	} notInlineImmutable1;                          // This is the usual not-inline immutable CFString
 	struct __notInlineImmutable2 {
@@ -193,7 +193,7 @@ struct __CFString {
     } variants;
 };
 
-/* 
+/*
 I = is immutable
 E = not inline contents
 U = is Unicode
@@ -294,7 +294,7 @@ static CFAllocatorRef *__CFStrContentsDeallocatorPtr(CFStringRef str) {
 
 // Assumption: Called with immutable strings only, and on strings that are known to have a contentsDeallocator
 CF_INLINE CFAllocatorRef __CFStrContentsDeallocator(CFStringRef str) {
-    return *__CFStrContentsDeallocatorPtr(str); 
+    return *__CFStrContentsDeallocatorPtr(str);
 }
 
 // Assumption: Called with immutable strings only, and on strings that are known to have a contentsDeallocator
@@ -447,7 +447,7 @@ CFStringEncoding __CFDefaultEightBitStringEncoding = kCFStringEncodingInvalidId;
 
 CFStringEncoding CFStringGetSystemEncoding(void) {
     if (__CFDefaultSystemEncoding == kCFStringEncodingInvalidId) {
-        __CFDefaultSystemEncoding = __defaultEncoding; 
+        __CFDefaultSystemEncoding = __defaultEncoding;
         const CFStringEncodingConverter *converter = CFStringEncodingGetConverter(__CFDefaultSystemEncoding);
         __CFSetCharToUniCharFunc(converter->encodingClass == kCFStringEncodingConverterCheapEightBit ? (UNI_CHAR_FUNC)converter->toUnicode : NULL);
     }
@@ -532,7 +532,7 @@ CFStringEncoding __CFStringComputeEightBitStringEncoding(void) {
     static Boolean __CFStringIsBeingInitialized2 = false;
     if (__CFStringIsBeingInitialized2) return kCFStringEncodingASCII;
     __CFStringIsBeingInitialized2 = true;
-    
+
     Boolean useAscii = true;
     __CFStringIsBeingInitialized2 = false;
     if (useAscii) {
@@ -605,7 +605,7 @@ CF_INLINE Boolean __CFBytesInASCII(const uint8_t *bytes, CFIndex len) {
     return true;
 }
 
-/* Returns whether the provided 8-bit string in the specified encoding can be stored in an 8-bit CFString. 
+/* Returns whether the provided 8-bit string in the specified encoding can be stored in an 8-bit CFString.
 */
 CF_INLINE Boolean __CFCanUseEightBitCFStringForBytes(const uint8_t *bytes, CFIndex len, CFStringEncoding encoding) {
     // If the encoding is the same as the 8-bit CFString encoding, we can just use the bytes as-is.
@@ -619,7 +619,7 @@ CF_INLINE Boolean __CFCanUseEightBitCFStringForBytes(const uint8_t *bytes, CFInd
 /* Returns whether a length byte can be tacked on to a string of the indicated length.
 */
 CF_INLINE Boolean __CFCanUseLengthByte(CFIndex len) {
-#define __kCFMaxPascalStrLen 255	
+#define __kCFMaxPascalStrLen 255
     return (len <= __kCFMaxPascalStrLen) ? true : false;
 }
 
@@ -728,11 +728,11 @@ CF_INLINE void push (CFStringStackInfo *si, const CFStringDeferredRange *newRang
 }
 
 static void rearrangeBlocks(
-	uint8_t *buffer, 
-	CFIndex numBlocks, 
+	uint8_t *buffer,
+	CFIndex numBlocks,
 	CFIndex blockSize,
-	const CFRange *ranges, 
-	CFIndex numRanges, 
+	const CFRange *ranges,
+	CFIndex numRanges,
 	CFIndex insertLength) {
 
 #define origStackSize 10
@@ -741,9 +741,9 @@ static void rearrangeBlocks(
     CFStringDeferredRange currentNonRange = {0, 0, 0};
     CFIndex currentRange = 0;
     CFIndex amountShifted = 0;
-    
+
     // must have at least 1 range left.
-    
+
     while (currentRange < numRanges) {
         currentNonRange.beginning = (ranges[currentRange].location + ranges[currentRange].length) * blockSize;
         if ((numRanges - currentRange) == 1) {
@@ -759,7 +759,7 @@ static void rearrangeBlocks(
             // process current item and rest of stack
             if (currentNonRange.shift && currentNonRange.length) memmove (&buffer[currentNonRange.beginning + currentNonRange.shift], &buffer[currentNonRange.beginning], currentNonRange.length);
             while (si.count > 0) {
-                pop (&si, &currentNonRange);  // currentNonRange now equals the top element of the stack.	
+                pop (&si, &currentNonRange);  // currentNonRange now equals the top element of the stack.
                 if (currentNonRange.shift && currentNonRange.length) memmove (&buffer[currentNonRange.beginning + currentNonRange.shift], &buffer[currentNonRange.beginning], currentNonRange.length);
             }
         } else {
@@ -768,11 +768,11 @@ static void rearrangeBlocks(
         }
         currentRange++;
     }
-    
+
     // no more ranges.  if anything is on the stack, process.
 
     while (si.count > 0) {
-        pop (&si, &currentNonRange);  // currentNonRange now equals the top element of the stack.	
+        pop (&si, &currentNonRange);  // currentNonRange now equals the top element of the stack.
         if (currentNonRange.shift && currentNonRange.length) memmove (&buffer[currentNonRange.beginning + currentNonRange.shift], &buffer[currentNonRange.beginning], currentNonRange.length);
     }
     if (si.hasMalloced) CFAllocatorDeallocate (kCFAllocatorSystemDefault, si.stack);
@@ -781,22 +781,22 @@ static void rearrangeBlocks(
 /* See comments for rearrangeBlocks(); this is the same, but the string is assembled in another buffer (dstBuffer), so the algorithm is much easier. We also take care of the case where the source is not-Unicode but destination is. (The reverse case is not supported.)
 */
 static void copyBlocks(
-	const uint8_t *srcBuffer, 
+	const uint8_t *srcBuffer,
         uint8_t *dstBuffer,
-	CFIndex srcLength, 
+	CFIndex srcLength,
         Boolean srcIsUnicode,
         Boolean dstIsUnicode,
-	const CFRange *ranges, 
-	CFIndex numRanges, 
+	const CFRange *ranges,
+	CFIndex numRanges,
 	CFIndex insertLength) {
-        
+
     CFIndex srcLocationInBytes = 0;	// in order to avoid multiplying all the time, this is in terms of bytes, not blocks
     CFIndex dstLocationInBytes = 0;	// ditto
     CFIndex srcBlockSize = srcIsUnicode ? sizeof(UniChar) : sizeof(uint8_t);
     CFIndex insertLengthInBytes = insertLength * (dstIsUnicode ? sizeof(UniChar) : sizeof(uint8_t));
     CFIndex rangeIndex = 0;
     CFIndex srcToDstMultiplier = (srcIsUnicode == dstIsUnicode) ? 1 : (sizeof(UniChar) / sizeof(uint8_t));
-        
+
     // Loop over the ranges, copying the range to be preserved (right before each range)
     while (rangeIndex < numRanges) {
         CFIndex srcLengthInBytes = ranges[rangeIndex].location * srcBlockSize - srcLocationInBytes;	// srcLengthInBytes is in terms of bytes, not blocks; represents length of region to be preserved
@@ -837,7 +837,7 @@ static void __CFStringChangeSizeMultiple(CFMutableStringRef str, const CFRange *
     const uint8_t *curContents = (uint8_t *)__CFStrContents(str);
     CFIndex curLength = curContents ? __CFStrLength2(str, curContents) : 0;
     unsigned long newLength;	// We use unsigned to better keep track of overflow
-    
+
     // Compute new length of the string
     if (numDeleteRanges == 1) {
         newLength = curLength + insertLength - deleteRanges[0].length;
@@ -868,7 +868,7 @@ static void __CFStringChangeSizeMultiple(CFMutableStringRef str, const CFRange *
         } else {
             if (!__CFStrIsExternalMutable(str)) {
                 __CFStrClearUnicode(str);
-                if (curCapacity >= (int)(sizeof(uint8_t) * 2)) {	// If there's room 
+                if (curCapacity >= (int)(sizeof(uint8_t) * 2)) {	// If there's room
                     __CFStrSetHasLengthAndNullBytes(str);
                     ((uint8_t *)curContents)[0] = ((uint8_t *)curContents)[1] = 0;
                 } else {
@@ -903,13 +903,13 @@ static void __CFStringChangeSizeMultiple(CFMutableStringRef str, const CFRange *
 	}
 
         Boolean hasLengthAndNullBytes = __CFStrHasLengthByte(str);
-    
+
         CFAssert1(hasLengthAndNullBytes == __CFStrHasNullByte(str), __kCFLogAssertion, "%s(): Invalid state in 8-bit string", __PRETTY_FUNCTION__);
-    
+
         // Calculate pointers to the actual string content (skipping over the length byte, if present).  Note that keeping a reference to the base is needed for newContents under GC, since the copy may take a long time.
         const uint8_t *curContentsBody = hasLengthAndNullBytes ? (curContents+1) : curContents;
         uint8_t *newContentsBody = useLengthAndNullBytes ? (newContents+1) : newContents;
-        
+
         if (curContents) {
             if (oldIsUnicode == newIsUnicode) {
                 if (newContentsBody == curContentsBody) {
@@ -922,7 +922,7 @@ static void __CFStringChangeSizeMultiple(CFMutableStringRef str, const CFRange *
             }
             if (allocNewBuffer && __CFStrFreeContentsWhenDone(str)) __CFStrDeallocateMutableContents(str, (void *)curContents);
         }
-        
+
         if (!newIsUnicode) {
             if (useLengthAndNullBytes) {
                 newContentsBody[newLength] = 0;	/* Always have null byte, if not unicode */
@@ -937,7 +937,7 @@ static void __CFStringChangeSizeMultiple(CFMutableStringRef str, const CFRange *
             if (hasLengthAndNullBytes) __CFStrClearHasLengthAndNullBytes(str);
         }
         __CFStrSetExplicitLength(str, newLength);
-        
+
         if (allocNewBuffer) {
             __CFStrSetCapacity(str, newCapacity);
             __CFStrClearCapacityProvidedExternally(str);
@@ -1035,19 +1035,19 @@ static Boolean __CFStringEqual(CFTypeRef cf1, CFTypeRef cf2) {
 
 
 /* String hashing: Should give the same results whatever the encoding; so we hash UniChars.
-If the length is less than or equal to 96, then the hash function is simply the 
+If the length is less than or equal to 96, then the hash function is simply the
 following (n is the nth UniChar character, starting from 0):
-   
+
   hash(-1) = length
   hash(n) = hash(n-1) * 257 + unichar(n);
   Hash = hash(length-1) * ((length & 31) + 1)
 
-If the length is greater than 96, then the above algorithm applies to 
+If the length is greater than 96, then the above algorithm applies to
 characters 0..31, (length/2)-16..(length/2)+15, and length-32..length-1, inclusive;
 thus the first, middle, and last 32 characters.
 
 Note that the loops below are unrolled; and: 257^2 = 66049; 257^3 = 16974593; 257^4 = 4362470401;  67503105 is 257^4 - 256^4
-If hashcode is changed from UInt32 to something else, this last piece needs to be readjusted.  
+If hashcode is changed from UInt32 to something else, this last piece needs to be readjusted.
 !!! We haven't updated for LP64 yet
 
 NOTE: The hash algorithm used to be duplicated in CF and Foundation; but now it should only be in the four functions below.
@@ -1164,7 +1164,7 @@ CFHashCode CFStringHashNSString(CFStringRef str) {
     UniChar buffer[HashEverythingLimit];
     CFIndex bufLen;		// Number of characters in the buffer for hashing
     CFIndex len = 0;	// Actual length of the string
-    
+
     len = CF_OBJC_CALLV((NSString *)str, length);
     if (len <= HashEverythingLimit) {
         (void)CF_OBJC_CALLV((NSString *)str, getCharacters:buffer range:NSMakeRange(0, len));
@@ -1244,7 +1244,7 @@ static Boolean CFStrIsUnicode(CFStringRef str) {
    hasLengthByte, hasNullByte: refers to bytes; used only if encoding != Unicode
    possiblyExternalFormat indicates that the bytes might have BOM and be swapped
    tryToReduceUnicode means that the Unicode should be checked to see if it contains just ASCII (and reduce it if so)
-   numBytes contains the actual number of bytes in "bytes", including Length byte, 
+   numBytes contains the actual number of bytes in "bytes", including Length byte,
 	BUT not the NULL byte at the end
    bytes should not contain BOM characters
    !!! Various flags should be combined to reduce number of arguments, if possible
@@ -1253,7 +1253,7 @@ CF_PRIVATE CFStringRef __CFStringCreateImmutableFunnel3(
                         CFAllocatorRef alloc, const void *bytes, CFIndex numBytes, CFStringEncoding encoding,
                         Boolean possiblyExternalFormat, Boolean tryToReduceUnicode, Boolean hasLengthByte, Boolean hasNullByte, Boolean noCopy,
                         CFAllocatorRef contentsDeallocator, UInt32 converterFlags) {
-    
+
     CFMutableStringRef str;
     CFVarWidthCharBuffer vBuf;
     CFIndex size;
@@ -1284,7 +1284,7 @@ CF_PRIVATE CFStringRef __CFStringCreateImmutableFunnel3(
 
     if ((NULL != kCFEmptyString) && (numBytes == 0) && _CFAllocatorIsSystemDefault(alloc)) {	// If we are using the system default allocator, and the string is empty, then use the empty string!
 	if (noCopy && (contentsDeallocator != kCFAllocatorNull)) {	// See 2365208... This change was done after Sonata; before we didn't free the bytes at all (leak).
-	    CFAllocatorDeallocate(contentsDeallocator, (void *)bytes); 
+	    CFAllocatorDeallocate(contentsDeallocator, (void *)bytes);
 	}
 	return (CFStringRef)CFRetain(kCFEmptyString);	// Quick exit; won't catch all empty strings, but most
     }
@@ -1295,7 +1295,7 @@ CF_PRIVATE CFStringRef __CFStringCreateImmutableFunnel3(
 
     // Record whether we're starting out with an ASCII-superset string, because we need to know this later for the string ROM; this may get changed later if we successfully convert down from Unicode.  We only record this once because __CFCanUseEightBitCFStringForBytes() can be expensive.
     Boolean stringSupportsEightBitCFRepresentation = encoding != kCFStringEncodingUnicode && __CFCanUseEightBitCFStringForBytes((const uint8_t *)bytes, numBytes, encoding);
-    
+
     // We may also change noCopy within this function if we have to decode the string into an external buffer.  We do not want to avoid the use of the string ROM merely because we tried to be efficient and reuse the decoded buffer for the CFString's external storage.  Therefore, we use this variable to track whether we actually can ignore the noCopy flag (which may or may not be set anyways).
     Boolean stringROMShouldIgnoreNoCopy = false;
 
@@ -1316,10 +1316,10 @@ CF_PRIVATE CFStringRef __CFStringCreateImmutableFunnel3(
 	}
 
         encoding = vBuf.isASCII ? kCFStringEncodingASCII : kCFStringEncodingUnicode;
-	
+
 	// Update our flag according to whether the decoded buffer is ASCII
 	stringSupportsEightBitCFRepresentation = vBuf.isASCII;
-	
+
         if (!usingPassedInMemory) {
 
 	    // Because __CFStringDecodeByteStream3() allocated our buffer, it's OK for us to free it if we can get the string from the ROM.
@@ -1437,11 +1437,11 @@ CF_PRIVATE CFStringRef __CFStringCreateImmutableFunnel3(
 	if (noCopy && (contentsDeallocator != kCFAllocatorNull)) {
 	    CFAllocatorDeallocate(contentsDeallocator, (void *)bytes);
 	}
-	
+
 	/* these don't get used again, but clear them for consistency */
 	noCopy = false;
 	bytes = NULL;
-	
+
 	/* set our result to the ROM result which is not really mutable, of course, but that's OK because we don't try to modify it. */
 	str = (CFMutableStringRef)romResult;
     }
@@ -1472,7 +1472,7 @@ CF_PRIVATE CFStringRef __CFStringCreateImmutableFunnel3(
 		if (!hasLengthByte) size += 1;
 	    } else {
 		size += sizeof(CFIndex);	// Explicit length
-	    }	    
+	    }
 	    if (hasNullByte || encoding != kCFStringEncodingUnicode) {
 		useNullByte = true;
 		size += 1;
@@ -1490,7 +1490,7 @@ CF_PRIVATE CFStringRef __CFStringCreateImmutableFunnel3(
 	    int i; for (i = 0; i < 256; i++) printf("%03d: %5d%s", i, sizes[i], ((i % 8) == 7) ? "\n" : " ");
 	}
 #endif
-     
+
 	// Finally, allocate!
 
 	str = (CFMutableStringRef)_CFRuntimeCreateInstance(alloc, __kCFStringTypeID, size, NULL);
@@ -1517,11 +1517,11 @@ CF_PRIVATE CFStringRef __CFStringCreateImmutableFunnel3(
 		if (useNullByte) contents[numBytes] = 0;
 	    } else {
 		__CFStrSetContentPtr(str, bytes);
-		if (__CFStrHasContentsDeallocator(str)) __CFStrSetContentsDeallocator(str, contentsDeallocator); 
+		if (__CFStrHasContentsDeallocator(str)) __CFStrSetContentsDeallocator(str, contentsDeallocator);
 	    }
 	} else {
 	    if (noCopy && (contentsDeallocator != kCFAllocatorNull)) {
-		CFAllocatorDeallocate(contentsDeallocator, (void *)bytes); 
+		CFAllocatorDeallocate(contentsDeallocator, (void *)bytes);
 	    }
 	}
     }
@@ -1680,7 +1680,7 @@ static Boolean __cStrEqual(const void *ptr1, const void *ptr2) {
 }
 
 static CFHashCode __cStrHash(const void *ptr) {
-    // It doesn't quite matter if we convert to Unicode correctly, as long as we do it consistently    
+    // It doesn't quite matter if we convert to Unicode correctly, as long as we do it consistently
     const char *cStr = (const char *)ptr;
     CFIndex len = strlen(cStr);
     CFHashCode result = 0;
@@ -1694,14 +1694,14 @@ static CFHashCode __cStrHash(const void *ptr) {
         result += (result << 8) + cStr[len-1];
     }
     result += (result << (len & 31));
-    return result;    
+    return result;
 }
 
 
 CFStringRef __CFStringMakeConstantString(const char *cStr) {
     CFStringRef result;
 #if defined(DEBUG)
-    // StringTest checks that we share kCFEmptyString, which is defeated by constantStringAllocatorForDebugging 
+    // StringTest checks that we share kCFEmptyString, which is defeated by constantStringAllocatorForDebugging
     if ('\0' == *cStr) return kCFEmptyString;
 #endif
     if (constantStringTable == NULL) {
@@ -1750,7 +1750,7 @@ CFStringRef __CFStringMakeConstantString(const char *cStr) {
 	    HALT;
 	}
 	if (__CFOASafe) __CFSetLastAllocationEventName((void *)result, "CFString (CFSTR)");
-	if (__CFStrIsEightBit(result)) {	
+	if (__CFStrIsEightBit(result)) {
 	    key = (char *)__CFStrContents(result) + __CFStrSkipAnyLengthByte(result);
 	} else {	// For some reason the string is not 8-bit!
 	    CFIndex keySize = strlen(cStr) + 1;
@@ -1804,7 +1804,7 @@ void __CFStringCleanup (void) {
     	__CFConstantStringTableBeingFreed = true;
         CFRelease(constantStringTable);
         __CFConstantStringTableBeingFreed = false;
-#else 
+#else
         CFRelease(constantStringTable);
 #endif
         constantStringTable = NULL;
@@ -1914,7 +1914,7 @@ CFMutableStringRef CFStringCreateMutableWithExternalCharactersNoCopy(CFAllocator
     }
     return string;
 }
- 
+
 CFMutableStringRef CFStringCreateMutable(CFAllocatorRef alloc, CFIndex maxLength) {
     return __CFStringCreateMutableFunnel(alloc, maxLength, __kCFNotInlineContentsDefaultFree);
 }
@@ -2071,7 +2071,7 @@ const char * CFStringGetCStringPtr(CFStringRef str, CFStringEncoding encoding) {
     // ??? Also check for encoding = SystemEncoding and perhaps bytes are all ASCII?
 
     if (str == NULL) return NULL;   // Should really just crash, but for compatibility... see <rdar://problem/12340248>
-    
+
     CF_OBJC_FUNCDISPATCHV(__kCFStringTypeID, const char *, (NSString *)str, _fastCStringContents:true);
 
     __CFAssertIsString(str);
@@ -2102,7 +2102,7 @@ const char * CFStringGetCStringPtr(CFStringRef str, CFStringEncoding encoding) {
 const UniChar *CFStringGetCharactersPtr(CFStringRef str) {
 
     CF_OBJC_FUNCDISPATCHV(__kCFStringTypeID, const UniChar *, (NSString *)str, _fastCharacterContents);
-    
+
     __CFAssertIsString(str);
     if (__CFStrIsUnicode(str)) return (const UniChar *)__CFStrContents(str);
     return NULL;
@@ -2152,7 +2152,7 @@ Boolean CFStringGetPascalString(CFStringRef str, Str255 buffer, CFIndex bufferSi
     *buffer = (unsigned char)usedLen;
     return true;
 }
-                                   
+
 Boolean CFStringGetCString(CFStringRef str, char *buffer, CFIndex bufferSize, CFStringEncoding encoding) {
     const uint8_t *contents;
     CFIndex len;
@@ -2221,17 +2221,17 @@ static const char *_CFStrGetLanguageIdentifierForLocale(CFLocaleRef locale, bool
         const void *contents = __CFStrContents(localeID);
         const char *string;
         char buffer[2];
-        
+
         if (__CFStrIsEightBit(localeID)) {
             string = ((const char *)contents) + __CFStrSkipAnyLengthByte(localeID);
         } else {
             const UTF16Char *characters = (const UTF16Char *)contents;
-            
+
             buffer[0] = (char)*(characters++);
             buffer[1] = (char)*characters;
             string = buffer;
         }
-        
+
         if (!strncmp(string, "az", 2)) { // Azerbaijani
             langID = "az";
         } else if (!strncmp(string, "lt", 2)) { // Lithuanian
@@ -2294,7 +2294,7 @@ static CFIndex __CFStringFoldCharacterClusterAtIndex(UTF32Char character, CFStri
         }
 
         ++currentIndex;
-        
+
         if ((character < 0x0080) && ((NULL == langCode) || (character != 'I'))) { // ASCII
             if ((flags & kCFCompareCaseInsensitive) && (character >= 'A') && (character <= 'Z')) {
                 character += ('a' - 'A');
@@ -2339,7 +2339,7 @@ static CFIndex __CFStringFoldCharacterClusterAtIndex(UTF32Char character, CFStri
                 bool filterNonBase = (((flags & kCFCompareDiacriticInsensitive) && (character < 0x0510)) ? true : false);
                 static const uint8_t *lowerBMP = NULL;
                 static const uint8_t *caseFoldBMP = NULL;
-                
+
                 if (NULL == lowerBMP) {
                     lowerBMP = CFUniCharGetBitmapPtrForPlane(kCFUniCharHasNonSelfLowercaseCharacterSet, 0);
                     caseFoldBMP = CFUniCharGetBitmapPtrForPlane(kCFUniCharHasNonSelfCaseFoldingCharacterSet, 0);
@@ -2364,15 +2364,15 @@ static CFIndex __CFStringFoldCharacterClusterAtIndex(UTF32Char character, CFStri
                     const UTF16Char *bufferP = caseFoldBuffer, *bufferLimit;
                     UTF32Char *outCharactersP = outCharacters;
                     uint32_t bufferLength = CFUniCharMapCaseTo(character, caseFoldBuffer, MAX_CASE_MAPPING_BUF, kCFUniCharCaseFold, 0, langCode);
-                    
+
                     bufferLimit = bufferP + bufferLength;
-                    
+
                     if (filledLength > 0) --filledLength; // decrement filledLength (will add back later)
 
                     // make space for casefold characters
                     if ((filledLength > 0) && (bufferLength > 1)) {
                         CFIndex totalScalerLength = 0;
-                        
+
                         while (bufferP < bufferLimit) {
                             if (CFUniCharIsSurrogateHighCharacter(*(bufferP++)) && (bufferP < bufferLimit) && CFUniCharIsSurrogateLowCharacter(*bufferP)) ++bufferP;
                             ++totalScalerLength;
@@ -2408,10 +2408,10 @@ static CFIndex __CFStringFoldCharacterClusterAtIndex(UTF32Char character, CFStri
 
             if (0 == filledLength) {
                 *outCharacters = character; // filledLength will be updated below on demand
-                
+
                 if (doFill) { // check if really needs to fill
                     UTF32Char nonBaseCharacter = CFStringGetCharacterFromInlineBuffer(buffer, currentIndex);
-                    
+
                     if (CFUniCharIsSurrogateHighCharacter(nonBaseCharacter) && CFUniCharIsSurrogateLowCharacter((lowSurrogate = CFStringGetCharacterFromInlineBuffer(buffer, currentIndex + 1)))) {
                         nonBaseCharacter = CFUniCharGetLongCharacterForSurrogatePair(nonBaseCharacter, lowSurrogate);
                         nonBaseBitmap = CFUniCharGetBitmapPtrForPlane(kCFUniCharGraphemeExtendCharacterSet, (nonBaseCharacter >> 16));
@@ -2420,10 +2420,10 @@ static CFIndex __CFStringFoldCharacterClusterAtIndex(UTF32Char character, CFStri
                         nonBaseBitmap = graphemeBMP;
                         decompBitmap = decompBMP;
                     }
-                    
+
                     if (CFUniCharIsMemberOfBitmap(nonBaseCharacter, nonBaseBitmap)) {
                         filledLength = 1; // For the base character
-                        
+
                         if ((0 == (flags & kCFCompareDiacriticInsensitive)) || (nonBaseCharacter > 0x050F)) {
                             if (CFUniCharIsMemberOfBitmap(nonBaseCharacter, decompBitmap)) {
                                 filledLength += CFUniCharDecomposeCharacter(nonBaseCharacter, &(outCharacters[filledLength]), maxBufferLength - filledLength);
@@ -2437,10 +2437,10 @@ static CFIndex __CFStringFoldCharacterClusterAtIndex(UTF32Char character, CFStri
                     }
                 }
             }
-            
+
             while (filledLength < maxBufferLength) { // do the rest
                 character = CFStringGetCharacterFromInlineBuffer(buffer, currentIndex);
-                
+
                 if (CFUniCharIsSurrogateHighCharacter(character) && CFUniCharIsSurrogateLowCharacter((lowSurrogate = CFStringGetCharacterFromInlineBuffer(buffer, currentIndex + 1)))) {
                     character = CFUniCharGetLongCharacterForSurrogatePair(character, lowSurrogate);
                     nonBaseBitmap = CFUniCharGetBitmapPtrForPlane(kCFUniCharGraphemeExtendCharacterSet, (character >> 16));
@@ -2455,9 +2455,9 @@ static CFIndex __CFStringFoldCharacterClusterAtIndex(UTF32Char character, CFStri
                     if (doFill) {
                         if (CFUniCharIsMemberOfBitmap(character, decompBitmap)) {
                             CFIndex currentLength = CFUniCharDecomposeCharacter(character, &(outCharacters[filledLength]), maxBufferLength - filledLength);
-                            
+
                             if (0 == currentLength) break; // didn't fit
-                            
+
                             filledLength += currentLength;
                         } else {
                             outCharacters[filledLength++] = character;
@@ -2481,9 +2481,9 @@ static CFIndex __CFStringFoldCharacterClusterAtIndex(UTF32Char character, CFStri
             }
         }
     }
-    
+
     if ((filledLength > 0) && (NULL != consumedLength)) *consumedLength = (currentIndex - index);
-    
+
     return filledLength;
 }
 
@@ -2556,9 +2556,9 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
             if ((kCFStringEncodingASCII == eightBitEncoding) && (false == forceOrdering)) {
                 if (caseInsensitive) {
                     int cmpResult = strncasecmp_l((const char *)str1Bytes + rangeToCompare.location, (const char *)str2Bytes, __CFMin(rangeToCompare.length, str2Len), NULL);
-                    
+
                     if (0 == cmpResult) cmpResult = rangeToCompare.length - str2Len;
-                    
+
                     return ((0 == cmpResult) ? kCFCompareEqualTo : ((cmpResult < 0) ? kCFCompareLessThan : kCFCompareGreaterThan));
                 }
             } else if (caseInsensitive || diacriticsInsensitive) {
@@ -2588,10 +2588,10 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
                 }
 
                 str2Index = str1Index;
-                
+
                 if (str1Index == limitLength) {
                     int cmpResult = rangeToCompare.length - str2Len;
-                    
+
                     return ((0 == cmpResult) ? compareResult : ((cmpResult < 0) ? kCFCompareLessThan : kCFCompareGreaterThan));
                 }
             }
@@ -2609,16 +2609,16 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
                 while ((0 == cmpResult) && (str1 < str1Limit)) cmpResult = (CFIndex)*(str1++) - (CFIndex)*(str2++);
 
                 if (0 == cmpResult) cmpResult = rangeToCompare.length - str2Len;
-                
+
                 return ((0 == cmpResult) ? kCFCompareEqualTo : ((cmpResult < 0) ? kCFCompareLessThan : kCFCompareGreaterThan));
             }
 #endif /* __LITTLE_ENDIAN__ */
         }
         if ((NULL != str1Bytes) && (NULL != str2Bytes)) {
             int cmpResult = memcmp(str1Bytes + (rangeToCompare.location * factor), str2Bytes, __CFMin(rangeToCompare.length, str2Len) * factor);
-            
+
             if (0 == cmpResult) cmpResult = rangeToCompare.length - str2Len;
-            
+
             return ((0 == cmpResult) ? kCFCompareEqualTo : ((cmpResult < 0) ? kCFCompareLessThan : kCFCompareGreaterThan));
         }
     }
@@ -2723,12 +2723,12 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
                 str1Char = CFUniCharGetLongCharacterForSurrogatePair(str1Char, otherChar);
                 str1UsedLen = 2;
             }
-            
+
             if (CFUniCharIsSurrogateHighCharacter(str2Char) && CFUniCharIsSurrogateLowCharacter((otherChar = CFStringGetCharacterFromInlineBuffer(&inlineBuf2, str2Index + 1)))) {
                 str2Char = CFUniCharGetLongCharacterForSurrogatePair(str2Char, otherChar);
                 str2UsedLen = 2;
             }
-            
+
 	    if (NULL != ignoredChars) {
 		if (CFCharacterSetInlineBufferIsLongCharacterMember(ignoredChars, str1Char)) {
 		    if ((strBuf1Len > 0) && (strBuf1Index == strBuf1Len)) strBuf1Len = 0;
@@ -2741,13 +2741,13 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
 		    if (strBuf2Len == 0) str2Index += str2UsedLen;
 		    if (strBuf1Len > 0) -- strBuf1Index;
 		    continue;
-		}	    
+		}
 	    }
-	    
+
             if (diacriticsInsensitive && (str1Index > 0)) {
                 bool str1Skip = false;
                 bool str2Skip = false;
-                
+
                 if ((0 == strBuf1Len) && CFUniCharIsMemberOfBitmap(str1Char, ((str1Char < 0x10000) ? graphemeBMP : CFUniCharGetBitmapPtrForPlane(kCFUniCharGraphemeExtendCharacterSet, (str1Char >> 16))))) {
                     str1Char = str2Char;
                     str1Skip = true;
@@ -2756,7 +2756,7 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
                     str2Char = str1Char;
                     str2Skip = true;
                 }
-                
+
                 if (str1Skip != str2Skip) {
                     if (str1Skip) str2Index -= str2UsedLen;
                     if (str2Skip) str1Index -= str1UsedLen;
@@ -2771,7 +2771,7 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
                         strBuf1Index = 1;
                     }
                 }
-                
+
                 if ((0 == strBuf1Len) && (0 < strBuf2Len)) {
 		    compareResult =  ((NULL == locale) ? ((str1Char < str2Char) ? kCFCompareLessThan : kCFCompareGreaterThan) : _CFCompareStringsWithLocale(&inlineBuf1, CFRangeMake(str1LocalizedIndex, rangeToCompare.length - str1LocalizedIndex), &inlineBuf2, CFRangeMake(str2LocalizedIndex, str2Len - str2LocalizedIndex), compareOptions, locale));
 		    if (freeLocale && locale) {
@@ -2779,7 +2779,7 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
 		    }
 		    return compareResult;
 		}
-                
+
                 if ((0 == strBuf2Len) && ((0 == strBuf1Len) || (str1Char != str2Char))) {
                     strBuf2Len = __CFStringFoldCharacterClusterAtIndex(str2Char, &inlineBuf2, str2Index, compareOptions, langCode, strBuf2, kCFStringStackBufferLength, &str2UsedLen);
                     if (strBuf2Len > 0) {
@@ -2795,7 +2795,7 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
 		    }
                 }
             }
-            
+
             if ((strBuf1Len > 0) && (strBuf2Len > 0)) {
                 while ((strBuf1Index < strBuf1Len) && (strBuf2Index < strBuf2Len)) {
                     if (strBuf1[strBuf1Index] != strBuf2[strBuf2Index]) break;
@@ -2810,10 +2810,10 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
 		}
             }
         }
-        
+
         if ((strBuf1Len > 0) && (strBuf1Index == strBuf1Len)) strBuf1Len = 0;
         if ((strBuf2Len > 0) && (strBuf2Index == strBuf2Len)) strBuf2Len = 0;
-        
+
         if (strBuf1Len == 0) str1Index += str1UsedLen;
         if (strBuf2Len == 0) str2Index += str2UsedLen;
 	if ((strBuf1Len == 0) && (strBuf2Len == 0)) {
@@ -2837,7 +2837,7 @@ CFComparisonResult CFStringCompareWithOptionsAndLocale(CFStringRef string, CFStr
         while (str2Index < str2Len) {
             str2Char = CFStringGetCharacterFromInlineBuffer(&inlineBuf2, str2Index);
             if ((str2Char < 0x80) && (NULL == ignoredChars)) break; // found ASCII
-                
+
             if (CFUniCharIsSurrogateHighCharacter(str2Char) && CFUniCharIsSurrogateLowCharacter((otherChar = CFStringGetCharacterFromInlineBuffer(&inlineBuf2, str2Index + 1)))) str2Char = CFUniCharGetLongCharacterForSurrogatePair(str2Char, otherChar);
 
             if ((!diacriticsInsensitive || !CFUniCharIsMemberOfBitmap(str2Char, ((str2Char < 0x10000) ? graphemeBMP : CFUniCharGetBitmapPtrForPlane(kCFUniCharGraphemeExtendCharacterSet, (str2Char >> 16))))) && ((NULL == ignoredChars) || !CFCharacterSetInlineBufferIsLongCharacterMember(ignoredChars, str2Char))) break;
@@ -2915,7 +2915,7 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
             fromLoc = rangeToSearch.location;
             toLoc = ((compareOptions & kCFCompareAnchored) ? fromLoc : rangeToSearch.location + rangeToSearch.length - (lengthVariants ? 1 : findStrLen));
         }
-        
+
         delta = ((fromLoc <= toLoc) ? 1 : -1);
 
         if ((NULL != str1Bytes) && (NULL != str2Bytes)) {
@@ -2991,12 +2991,12 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
                                     if (characters < charactersLimit) break;
                                 } else if (strBuf2Len < strBuf1Len) {
                                     delta = strBuf1Len - strBuf2Len;
-                                    
+
                                     if ((str2Index + strBuf2Len + delta) > findStrLen) break;
-                                    
+
                                     characters = &(strBuf1[strBuf2Len]);
                                     charactersLimit = characters + delta;
-                                    
+
                                     while (characters < charactersLimit) {
                                         strBuf2Len = __CFStringFoldCharacterClusterAtIndex(CFStringGetCharacterFromInlineBuffer(&inlineBuf2, str1Index + 1), &inlineBuf2, str2Index + 1, compareOptions, langCode, strBuf2, kCFStringStackBufferLength, NULL);
                                         if ((strBuf2Len > 0) || (*characters != *strBuf2)) break;
@@ -3025,7 +3025,7 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
 		    if ((NULL != ignoredChars) && backwardAnchor && (str1Index < maxStr1Index)) { // Process the anchor tail
 			while (str1Index < maxStr1Index) {
 			    str1Char = CFStringGetCharacterFromInlineBuffer(&inlineBuf1, str1Index);
-			    
+
 			    if (!CFCharacterSetInlineBufferIsLongCharacterMember(ignoredChars, str1Char)) break;
 			    ++str1Index;
 			}
@@ -3095,9 +3095,9 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
 				if (strBuf2Len == 0) str2Index += str2UsedLen;
 				if (strBuf1Len > 0) -- strBuf1Index;
 				continue;
-			    }	    
+			    }
 			}
-			
+
                         if (diacriticsInsensitive && (str1Index > fromLoc)) {
                             bool str1Skip = false;
                             bool str2Skip = false;
@@ -3143,7 +3143,7 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
                             if ((strBuf1Index < strBuf1Len) && (strBuf2Index < strBuf2Len)) break;
                         }
                     }
-                    
+
                     if ((strBuf1Len > 0) && (strBuf1Index == strBuf1Len)) strBuf1Len = 0;
                     if ((strBuf2Len > 0) && (strBuf2Index == strBuf2Len)) strBuf2Len = 0;
 
@@ -3185,7 +3185,7 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
                         const uint8_t *nonBaseBitmap;
 
                         str1Char = CFStringGetCharacterFromInlineBuffer(&inlineBuf1, str1Index);
-                        
+
                         if (CFUniCharIsSurrogateHighCharacter(str1Char) && CFUniCharIsSurrogateLowCharacter((otherChar = CFStringGetCharacterFromInlineBuffer(&inlineBuf1, str1Index + 1)))) {
                             str1Char = CFUniCharGetLongCharacterForSurrogatePair(str1Char, otherChar);
                             nonBaseBitmap = CFUniCharGetBitmapPtrForPlane(kCFUniCharGraphemeExtendCharacterSet, (str1Char >> 16));
@@ -3211,11 +3211,11 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
                             }
                         } else if (!diacriticsInsensitive) {
                             otherChar = CFStringGetCharacterFromInlineBuffer(&inlineBuf1, str1Index - 1);
-                            
+
                             // this is assuming viramas are only in BMP ???
                             if ((str1Char == COMBINING_GRAPHEME_JOINER) || (otherChar == COMBINING_GRAPHEME_JOINER) || (otherChar == ZERO_WIDTH_JOINER) || ((otherChar >= HANGUL_CHOSEONG_START) && (otherChar <= HANGUL_JONGSEONG_END)) || (CFUniCharGetCombiningPropertyForCharacter(otherChar, combClassBMP) == 9)) {
                                 CFRange clusterRange = CFStringGetRangeOfCharacterClusterAtIndex(string, str1Index - 1, kCFStringGraphemeCluster);
-                                
+
                                 if (str1Index < (clusterRange.location + clusterRange.length)) match = false;
                             }
                         }
@@ -3240,7 +3240,7 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
                         break;
                     }
                 }
-                
+
                 if (fromLoc == toLoc) break;
                 fromLoc += delta;
             }
@@ -3248,19 +3248,19 @@ Boolean CFStringFindWithOptionsAndLocale(CFStringRef string, CFStringRef stringT
             while (1) {
                 str1Index = fromLoc;
                 str2Index = 0;
-                
+
                 while (str2Index < findStrLen) {
                     if (CFStringGetCharacterFromInlineBuffer(&inlineBuf1, str1Index) != CFStringGetCharacterFromInlineBuffer(&inlineBuf2, str2Index)) break;
 
                     ++str1Index; ++str2Index;
                 }
-                
+
                 if (str2Index == findStrLen) {
                     didFind = true;
                     if (NULL != result) *result = CFRangeMake(fromLoc, findStrLen);
                     break;
                 }
-                
+
                 if (fromLoc == toLoc) break;
                 fromLoc += delta;
             }
@@ -3304,7 +3304,7 @@ CFArrayRef CFStringCreateArrayWithFindResults(CFAllocatorRef alloc, CFStringRef 
     uint8_t *rangeStorageBytes = NULL;
     CFIndex foundCount = 0;
     CFIndex capacity = 0;		// Number of CFRange, CFDataRef element slots in rangeStorage
-    
+
     if (alloc == NULL) alloc = __CFGetDefaultAllocator();
 
     while ((rangeToSearch.length > 0) && CFStringFindWithOptions(string, stringToFind, rangeToSearch, compareOptions, &foundRange)) {
@@ -3316,7 +3316,7 @@ CFArrayRef CFStringCreateArrayWithFindResults(CFAllocatorRef alloc, CFStringRef 
             rangeToSearch.length = endIndex - rangeToSearch.location;
         }
 
-	// If necessary, grow the data and squirrel away the found range 
+	// If necessary, grow the data and squirrel away the found range
 	if (foundCount >= capacity) {
 	    if (rangeStorage == NULL) rangeStorage = CFDataCreateMutable(alloc, 0);
 	    capacity = (capacity + 4) * 2;
@@ -3422,9 +3422,9 @@ static CFRange _CFStringInlineBufferGetComposedRange(CFStringInlineBuffer *buffe
             }
 
             if (!CFUniCharIsMemberOfBitmap(character, bitmap) && (character != 0xFF9E) && (character != 0xFF9F) && ((character & 0x1FFFF0) != 0xF870)) break;
-    
+
             --start;
-    
+
             character = CFStringGetCharacterFromInlineBuffer(buffer, start);
         }
     }
@@ -3516,7 +3516,7 @@ static CFRange _CFStringInlineBufferGetComposedRange(CFStringInlineBuffer *buffe
     // Extend forward
     while ((character = CFStringGetCharacterFromInlineBuffer(buffer, end)) > 0) {
         if ((type == kCFStringBackwardDeletionCluster) && (character >= 0x0530) && (character < 0x1950)) break;
-    
+
         if (CFUniCharIsSurrogateHighCharacter(character) && CFUniCharIsSurrogateLowCharacter((otherSurrogate = CFStringGetCharacterFromInlineBuffer(buffer, end + 1)))) {
             character = CFUniCharGetLongCharacterForSurrogatePair(character, otherSurrogate);
             bitmap = CFUniCharGetBitmapPtrForPlane(csetType, (character >> 16));
@@ -3529,7 +3529,7 @@ static CFRange _CFStringInlineBufferGetComposedRange(CFStringInlineBuffer *buffe
         if (!CFUniCharIsMemberOfBitmap(character, bitmap) && (character != 0xFF9E) && (character != 0xFF9F) && ((character & 0x1FFFF0) != 0xF870)) break;
 
         end += step;
-    } 
+    }
 
     return CFRangeMake(start, end - start);
 }
@@ -3585,18 +3585,18 @@ CFRange CFStringGetRangeOfCharacterClusterAtIndex(CFStringRef string, CFIndex ch
 
             while (currentIndex > 1) {
                 character = CFStringGetCharacterFromInlineBuffer(&stringBuffer, --currentIndex);
-    
+
                 // ??? We're assuming viramas only in BMP
                 if ((_CFStringIsVirama(character, combClassBMP) || ((character == ZERO_WIDTH_JOINER) && _CFStringIsVirama(CFStringGetCharacterFromInlineBuffer(&stringBuffer, --currentIndex), combClassBMP))) && (currentIndex > 0)) {
-                    --currentIndex;                
+                    --currentIndex;
                 } else {
                     break;
                 }
 
                 currentIndex = _CFStringInlineBufferGetComposedRange(&stringBuffer, currentIndex, type, bmpBitmap, csetType).location;
-    
+
                 character = CFStringGetCharacterFromInlineBuffer(&stringBuffer, currentIndex);
-    
+
                 if (CFUniCharIsSurrogateLowCharacter(character) && CFUniCharIsSurrogateHighCharacter((otherSurrogate = CFStringGetCharacterFromInlineBuffer(&stringBuffer, currentIndex - 1)))) {
                     character = CFUniCharGetLongCharacterForSurrogatePair(character, otherSurrogate);
                     letter = CFUniCharGetBitmapPtrForPlane(kCFUniCharLetterCharacterSet, (character >> 16));
@@ -3632,7 +3632,7 @@ CFRange CFStringGetRangeOfCharacterClusterAtIndex(CFStringRef string, CFIndex ch
                     } else {
                         letter = letterBMP;
                     }
-        
+
                     // We only conjoin letters
                     if (!CFUniCharIsMemberOfBitmap(character, letter)) break;
                     otherRange = _CFStringInlineBufferGetComposedRange(&stringBuffer, currentIndex, type, bmpBitmap, csetType);
@@ -3645,13 +3645,13 @@ CFRange CFStringGetRangeOfCharacterClusterAtIndex(CFStringRef string, CFIndex ch
 
     // Check if we're part of prefix transcoding hints
     CFIndex otherIndex;
-    
+
     currentIndex = (range.location + range.length) - (MAX_TRANSCODING_LENGTH + 1);
     if (currentIndex < 0) currentIndex = 0;
-    
+
     while (currentIndex <= range.location) {
         character = CFStringGetCharacterFromInlineBuffer(&stringBuffer, currentIndex);
-        
+
         if ((character & 0x1FFFF0) == 0xF860) { // transcoding hint
             otherIndex = currentIndex + __CFTranscodingHintLength[(character - 0xF860)] + 1;
             if (otherIndex >= (range.location + range.length)) {
@@ -3664,7 +3664,7 @@ CFRange CFStringGetRangeOfCharacterClusterAtIndex(CFStringRef string, CFIndex ch
         }
         ++currentIndex;
     }
-    
+
     return range;
 }
 
@@ -3718,7 +3718,7 @@ CF_EXPORT Boolean CFStringFindCharacterFromSet(CFStringRef theString, CFCharacte
     if (searchOptions & kCFCompareBackwards) {
         fromLoc = rangeToSearch.location + rangeToSearch.length - 1;
         toLoc = rangeToSearch.location;
-    } else {       
+    } else {
         fromLoc = rangeToSearch.location;
         toLoc = rangeToSearch.location + rangeToSearch.length - 1;
     }
@@ -3728,7 +3728,7 @@ CF_EXPORT Boolean CFStringFindCharacterFromSet(CFStringRef theString, CFCharacte
 
     step = (fromLoc <= toLoc) ? 1 : -1;
     cnt = fromLoc;
-    
+
     CFStringInitInlineBuffer(theString, &stringBuffer, rangeToSearch);
     CFCharacterSetInitInlineBuffer(theSet, &csetBuffer);
 
@@ -3877,7 +3877,7 @@ CFStringRef CFStringCreateByCombiningStrings(CFAllocatorRef alloc, CFArrayRef ar
     CFIndex numChars;
     CFIndex separatorNumByte;
     CFIndex stringCount = CFArrayGetCount(array);
-    Boolean isSepCFString = !CF_IS_OBJC(__kCFStringTypeID, separatorString); 
+    Boolean isSepCFString = !CF_IS_OBJC(__kCFStringTypeID, separatorString);
     Boolean canBeEightbit = isSepCFString && __CFStrIsEightBit(separatorString);
     CFIndex idx;
     CFStringRef otherString;
@@ -3915,7 +3915,7 @@ CFStringRef CFStringCreateByCombiningStrings(CFAllocatorRef alloc, CFArrayRef ar
                     CFStringGetCharacters(separatorString, CFRangeMake(0, CFStringGetLength(separatorString)), (UniChar *)bufPtr);
                 } else if (canBeEightbit) {
                     memmove(bufPtr, (const uint8_t *)__CFStrContents(separatorString) + __CFStrSkipAnyLengthByte(separatorString), separatorNumByte);
-                } else {	
+                } else {
                     __CFStrConvertBytesToUnicode((uint8_t *)__CFStrContents(separatorString) + __CFStrSkipAnyLengthByte(separatorString), (UniChar *)bufPtr, __CFStrLength(separatorString));
                 }
                 separatorContents = bufPtr;
@@ -3942,8 +3942,8 @@ CFStringRef CFStringCreateByCombiningStrings(CFAllocatorRef alloc, CFArrayRef ar
     }
     if (canBeEightbit) *bufPtr = 0; // NULL byte;
 
-    return canBeEightbit ? 
-		CFStringCreateWithCStringNoCopy(alloc, (const char*)buffer, __CFStringGetEightBitStringEncoding(), alloc) : 
+    return canBeEightbit ?
+		CFStringCreateWithCStringNoCopy(alloc, (const char*)buffer, __CFStringGetEightBitStringEncoding(), alloc) :
 		CFStringCreateWithCharactersNoCopy(alloc, (UniChar *)buffer, numChars, alloc);
 }
 
@@ -3976,7 +3976,7 @@ CFArrayRef CFStringCreateArrayBySeparatingStrings(CFAllocatorRef alloc, CFString
         CFRelease(substring);
 
 	CFRelease(separatorRanges);
-        
+
         return array;
     }
 }
@@ -4279,7 +4279,7 @@ CFIndex CFStringFindAndReplace(CFMutableStringRef string, CFStringRef stringToFi
             rangeToSearch.length = endIndex - rangeToSearch.location;
         }
 
-	// If necessary, grow the array 
+	// If necessary, grow the array
 	if (foundCount >= capacity) {
             bool firstAlloc = (ranges == rangeBuffer) ? true : false;
             capacity = (capacity + 4) * 2;
@@ -4306,7 +4306,7 @@ CFIndex CFStringFindAndReplace(CFMutableStringRef string, CFStringRef stringToFi
         __CFStringReplaceMultiple(string, ranges, foundCount, replacementString);
         if (ranges != rangeBuffer) CFAllocatorDeallocate(kCFAllocatorSystemDefault, ranges);
     }
-    
+
     return foundCount;
 }
 
@@ -4338,10 +4338,10 @@ Boolean __CFStringNoteErrors(void) {
 
 void CFStringPad(CFMutableStringRef string, CFStringRef padString, CFIndex length, CFIndex indexIntoPad) {
     CFIndex originalLength;
-    
+
     __CFAssertIsNotNegative(length);
     __CFAssertIsNotNegative(indexIntoPad);
- 
+
     CF_OBJC_FUNCDISPATCHV(__kCFStringTypeID, void, (NSMutableString *)string, _cfPad:padString length:(uint32_t)length padIndex:(uint32_t)indexIntoPad);
 
     __CFAssertIsStringAndMutable(string);
@@ -4356,7 +4356,7 @@ void CFStringPad(CFMutableStringRef string, CFStringRef padString, CFIndex lengt
         CFIndex padStringLength;
         CFIndex padLength;
         CFIndex padRemaining = length - originalLength;
-        
+
         if (CF_IS_OBJC(__kCFStringTypeID, padString)) {	/* ??? Hope the compiler optimizes this away if OBJC_MAPPINGS is not on */
             padStringLength = CFStringGetLength(padString);
             isUnicode = true;	/* !!! Bad for now */
@@ -4367,7 +4367,7 @@ void CFStringPad(CFMutableStringRef string, CFStringRef padString, CFIndex lengt
         }
 
         charSize = isUnicode ? sizeof(UniChar) : sizeof(uint8_t);
-        
+
         __CFStringChangeSize(string, CFRangeMake(originalLength, 0), padRemaining, isUnicode);
 
         contents = (uint8_t *)__CFStrContents(string) + charSize * originalLength + __CFStrSkipAnyLengthByte(string);
@@ -5104,7 +5104,7 @@ void CFStringFold(CFMutableStringRef theString, CFStringCompareFlags theFlags, C
     }
 
     theFlags &= (kCFCompareCaseInsensitive|kCFCompareDiacriticInsensitive|kCFCompareWidthInsensitive);
-    
+
     if ((0 == theFlags) || (0 == length)) goto bail; // nothing to do
 
     langCode = ((NULL == theLocale) ? NULL : (const uint8_t *)_CFStrGetLanguageIdentifierForLocale(theLocale, true));
@@ -5120,7 +5120,7 @@ void CFStringFold(CFMutableStringRef theString, CFStringCompareFlags theFlags, C
         const uint8_t *cStringPtr = cString;
         const uint8_t *cStringLimit = cString + length;
         uint8_t *cStringContents = (isObjc ? NULL : (uint8_t *)__CFStrContents(theString) + __CFStrSkipAnyLengthByte(theString));
-        
+
         while (cStringPtr < cStringLimit) {
             if ((*cStringPtr < 0x80) && (NULL == langCode)) {
                 if (caseInsensitive && (*cStringPtr >= 'A') && (*cStringPtr <= 'Z')) {
@@ -5138,7 +5138,7 @@ void CFStringFold(CFMutableStringRef theString, CFStringCompareFlags theFlags, C
             }
             ++cStringPtr;
         }
-        
+
         currentIndex = cStringPtr - cString;
     }
 
@@ -5292,7 +5292,7 @@ enum {
     CFFormatSizePointer = CFFormatSize4
 #endif
 };
-        
+
 enum {
     CFFormatStyleDecimal = (1 << 0),
     CFFormatStyleScientific = (1 << 1),
@@ -5325,14 +5325,14 @@ static Boolean __CFStringFormatLocalizedNumber(CFMutableStringRef output, CFLoca
     static CFNumberFormatterRef gFormatter = NULL;  // for %g
     static SInt32 groupingSize = 0;
     static SInt32 secondaryGroupingSize = 0;
-    
+
     // !!! This code should be removed before shipping
     static char disableLocalizedFormatting = -1;
     if (disableLocalizedFormatting == -1) disableLocalizedFormatting = (getenv("CFStringDisableLocalizedNumberFormatting") != NULL) ? 1 : 0;
     if (disableLocalizedFormatting) return false;
 
     CFNumberFormatterRef formatter;
-    
+
     __CFSpinLock(&formatterLock);   // We use the formatter from one thread at one time; if this proves to be a bottleneck we need to get fancier
 
     switch (spec->numericFormatStyle) {
@@ -5369,9 +5369,9 @@ static Boolean __CFStringFormatLocalizedNumber(CFMutableStringRef output, CFLoca
                 formatter = gFormatter;
                 break;
     }
-    
+
     SInt32 prec = hasPrecision ? precision : ((spec->type == CFFormatLongType) ? 0 : 6); // default precision of printf is 6
-    
+
     // pattern must be set before setting width and padding
     // otherwise, the pattern will take over those settings
     if (spec->numericFormatStyle == CFFormatStyleDecimalOrScientific) {
@@ -5397,12 +5397,12 @@ static Boolean __CFStringFormatLocalizedNumber(CFMutableStringRef output, CFLoca
         CFNumberFormatterSetFormat(formatter, pattern);
         CFRelease(pattern);
     }
-    
+
     // clear the padding, we will add it later if we need it
     const SInt32 z = 0;
     CFNumberRef zero = CFNumberCreate(NULL, kCFNumberSInt32Type, &z);
     CFNumberFormatterSetProperty(formatter, kCFNumberFormatterFormatWidthKey, zero);
-    
+
     CFNumberRef tmp = CFNumberCreate(NULL, kCFNumberSInt32Type, &prec);
     CFNumberFormatterSetProperty(formatter, kCFNumberFormatterMaxFractionDigitsKey, tmp);
     if (spec->type == CFFormatDoubleType) {
@@ -5420,15 +5420,15 @@ static Boolean __CFStringFormatLocalizedNumber(CFMutableStringRef output, CFLoca
         padZero = true;
     }
     CFNumberFormatterSetProperty(formatter, kCFNumberFormatterPaddingCharacterKey, padZero ? CFSTR("0") : CFSTR(" "));
-    
-        
+
+
     // Left (default) or right padding
     SInt32 p = (spec->flags & kCFStringFormatMinusFlag) ? kCFNumberFormatterPadAfterSuffix : (padZero ? kCFNumberFormatterPadAfterPrefix : kCFNumberFormatterPadBeforePrefix);
     if (hasPrecision && spec->type == CFFormatLongType) {
         SInt32 tmpP = kCFNumberFormatterPadAfterPrefix;
         tmp = CFNumberCreate(NULL, kCFNumberSInt32Type, &tmpP);
     } else {
-        tmp = CFNumberCreate(NULL, kCFNumberSInt32Type, &p); 
+        tmp = CFNumberCreate(NULL, kCFNumberSInt32Type, &p);
     }
     CFNumberFormatterSetProperty(formatter, kCFNumberFormatterPaddingPositionKey, tmp);
     CFRelease(tmp);
@@ -5467,7 +5467,7 @@ static Boolean __CFStringFormatLocalizedNumber(CFMutableStringRef output, CFLoca
     if (hasPrecision && spec->type == CFFormatLongType) { // if we have precision and %d or %u, we pad 0 according to precision first
         tmp = CFNumberCreate(NULL, kCFNumberSInt32Type, &prec);
     } else {
-        tmp = CFNumberCreate(NULL, kCFNumberSInt32Type, &width); 
+        tmp = CFNumberCreate(NULL, kCFNumberSInt32Type, &width);
     }
     CFNumberFormatterSetProperty(formatter, kCFNumberFormatterFormatWidthKey, tmp);
     CFRelease(tmp);
@@ -5479,7 +5479,7 @@ static Boolean __CFStringFormatLocalizedNumber(CFMutableStringRef output, CFLoca
         CFNumberFormatterSetProperty(formatter, kCFNumberFormatterMaxSignificantDigitsKey, tmp);
         CFRelease(tmp);
     }
-    
+
     CFStringRef localizedNumberString = NULL;
     switch (spec->type) {
         case CFFormatLongType:
@@ -5500,7 +5500,7 @@ static Boolean __CFStringFormatLocalizedNumber(CFMutableStringRef output, CFLoca
         }
     }
     __CFSpinUnlock(&formatterLock);
-    
+
     if (localizedNumberString) {
         // we need to pad space if we have %d or %u
         if (spec->type == CFFormatLongType && hasPrecision && CFStringGetLength(localizedNumberString) < width) {
@@ -5615,7 +5615,7 @@ reswtch:switch (ch) {
 	    spec->size = CFFormatSizeLong;  // 4 or 8 depending on LP64
 	    break;
 	case 'j':
-	    spec->size = CFFormatSize8; 
+	    spec->size = CFFormatSize8;
 	    break;
 	case 'c':
 	    spec->type = CFFormatLongType;
@@ -5649,7 +5649,7 @@ reswtch:switch (ch) {
 	    spec->type = 1 ? CFFormatDummyPointerType : CFFormatPointerType;
 	    spec->size = CFFormatSizePointer;  // 4 or 8 depending on LP64
 	    return;
-	case 'p':	
+	case 'p':
 	    spec->type = CFFormatPointerType;
 	    spec->size = CFFormatSizePointer;  // 4 or 8 depending on LP64
 	    return;
@@ -5724,7 +5724,7 @@ reswtch:switch (ch) {
 void CFStringAppendFormatAndArguments(CFMutableStringRef outputString, CFDictionaryRef formatOptions, CFStringRef formatString, va_list args) {
     __CFStringAppendFormatCore(outputString, NULL, formatOptions, NULL, formatString, 0, NULL, 0, args);
 }
-        
+
 // Length of the buffer to call sprintf() with
 #define BUFFER_LEN 512
 
@@ -5772,7 +5772,7 @@ static void __CFStringAppendFormatCore(CFMutableStringRef outputString, CFString
     const UniChar *uformat = NULL;
     UniChar *formatChars = NULL;
     UniChar localFormatBuffer[FORMAT_BUFFER_LEN];
-    
+
 #define VPRINTF_BUFFER_LEN 61
     CFFormatSpec localSpecsBuffer[VPRINTF_BUFFER_LEN];
     CFFormatSpec *specs;
@@ -5805,7 +5805,7 @@ static void __CFStringAppendFormatCore(CFMutableStringRef outputString, CFString
         }
     }
     if (!cformat && !uformat) {
-        formatChars = (formatLen > FORMAT_BUFFER_LEN) ? (UniChar *)CFAllocatorAllocate(tmpAlloc = __CFGetDefaultAllocator(), formatLen * sizeof(UniChar), 0) : localFormatBuffer; 
+        formatChars = (formatLen > FORMAT_BUFFER_LEN) ? (UniChar *)CFAllocatorAllocate(tmpAlloc = __CFGetDefaultAllocator(), formatLen * sizeof(UniChar), 0) : localFormatBuffer;
 	if (formatChars != localFormatBuffer && __CFOASafe) __CFSetLastAllocationEventName(formatChars, "CFString (temp)");
         CFStringGetCharacters(formatString, CFRangeMake(0, formatLen), formatChars);
         uformat = formatChars;
@@ -5948,7 +5948,7 @@ static void __CFStringAppendFormatCore(CFMutableStringRef outputString, CFString
 #if LONG_DOUBLE_SUPPORT
 	    if (CFFormatSize16 == values[argNum].size) {
 		values[argNum].value.longDoubleValue = va_arg(args, long double);
-	    } else 
+	    } else
 #endif
 	    {
 		values[argNum].value.doubleValue = va_arg(args, double);
@@ -6064,7 +6064,7 @@ static void __CFStringAppendFormatCore(CFMutableStringRef outputString, CFString
 #if LONG_DOUBLE_SUPPORT
                         if (CFFormatSize16 == specs[curSpec].size) {
 			    SNPRINTF(long double, values[specs[curSpec].mainArgNum].value.longDoubleValue)
-			} else 
+			} else
 #endif
 			{
 			    SNPRINTF(double, values[specs[curSpec].mainArgNum].value.doubleValue)
@@ -6090,7 +6090,7 @@ static void __CFStringAppendFormatCore(CFMutableStringRef outputString, CFString
                         }
                         break;
                 }
-                if (!appended) CFStringAppendCString(outputString, (const char *)buffer, __CFStringGetEightBitStringEncoding());            
+                if (!appended) CFStringAppendCString(outputString, (const char *)buffer, __CFStringGetEightBitStringEncoding());
 #if !defined(__GNUC__)
                 if (dynamicBuffer) {
                         CFAllocatorDeallocate(kCFAllocatorSystemDefault, dynamicBuffer);
@@ -6187,7 +6187,7 @@ static void __CFStringAppendFormatCore(CFMutableStringRef outputString, CFString
 		    case CFFormatLongType:
 			object = CFNumberCreate(tmpAlloc, kCFNumberSInt64Type, &(values[specs[curSpec].mainArgNum].value.int64Value));
 			break;
-			
+
 		    case CFFormatDoubleType:
 #if LONG_DOUBLE_SUPPORT
 			if (CFFormatSize16 == values[specs[curSpec].mainArgNum].size) {
@@ -6315,7 +6315,7 @@ static void __CFStringAppendFormatCore(CFMutableStringRef outputString, CFString
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI || DEPLOYMENT_TARGET_LINUX || DEPLOYMENT_TARGET_FREEBSD
     // va_copy is a C99 extension. No support on Windows
     if (numConfigs > 0) va_end(copiedArgs);
-#endif 
+#endif
     if (specs != localSpecsBuffer) CFAllocatorDeallocate(tmpAlloc, specs);
     if (values != localValuesBuffer) CFAllocatorDeallocate(tmpAlloc, values);
     if (formatChars && (formatChars != localFormatBuffer)) CFAllocatorDeallocate(tmpAlloc, formatChars);

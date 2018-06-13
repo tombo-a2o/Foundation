@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -87,7 +87,7 @@ CF_PRIVATE CFAllocatorRef __CFPreferencesAllocator(void) {
     return _preferencesAllocator;
 }
 
-// declaration for telling the 
+// declaration for telling the
 void _CFApplicationPreferencesDomainHasChanged(CFPreferencesDomainRef);
 
 #if DEBUG_PREFERENCES_MEMORY
@@ -113,29 +113,29 @@ int gethostuuid(unsigned char *uuid_buf, const struct timespec *timeoutp);
 
 CF_PRIVATE CFStringRef _CFGetHostUUIDString(void) {
     static CFStringRef __hostUUIDString = NULL;
-    
+
     if (!__hostUUIDString) {
         CFUUIDBytes uuidBytes;
         int getuuidErr = 0;
         struct timespec timeout = {0, 0};   // Infinite timeout for gethostuuid()
-        
+
         getuuidErr = gethostuuid((unsigned char *)&uuidBytes, &timeout);
         if (getuuidErr == -1) {
             // An error has occurred trying to get the host UUID string. There's nothing we can do here, so we should just return NULL.
             CFLog(kCFLogLevelWarning, CFSTR("_CFGetHostUUIDString: unable to determine UUID for host. Error: %d"), errno);
             return NULL;
         }
-        
+
         CFUUIDRef uuidRef = CFUUIDCreateFromUUIDBytes(kCFAllocatorSystemDefault, uuidBytes);
         CFStringRef uuidAsString = CFUUIDCreateString(kCFAllocatorSystemDefault, uuidRef);
-        
+
         if (!OSAtomicCompareAndSwapPtrBarrier(NULL, (void *)uuidAsString, (void *)&__hostUUIDString)) {
             CFRelease(uuidAsString);    // someone else made the assignment, so just release the extra string.
         }
-        
+
         CFRelease(uuidRef);
     }
-    
+
     return __hostUUIDString;
 }
 
@@ -151,11 +151,11 @@ CF_PRIVATE CFStringRef _CFPreferencesGetByHostIdentifierString(void) {
                 CFMutableStringRef tmpstr = CFStringCreateMutableCopy(kCFAllocatorSystemDefault, 0, lastField);
                 CFStringLowercase(tmpstr, NULL);
                 CFStringRef downcasedField = CFStringCreateCopy(kCFAllocatorSystemDefault, tmpstr);
-                
+
                 if (!OSAtomicCompareAndSwapPtrBarrier(NULL, (void *)downcasedField, (void *)&__byHostIdentifierString)) {
                     CFRelease(downcasedField);
                 }
-                
+
                 CFRelease(tmpstr);
                 CFRelease(lastField);
             } else {
@@ -166,7 +166,7 @@ CF_PRIVATE CFStringRef _CFPreferencesGetByHostIdentifierString(void) {
             __byHostIdentifierString = CFSTR("UnknownHostID");
         }
     }
-    
+
     return __byHostIdentifierString;
 }
 
@@ -206,7 +206,7 @@ static CFURLRef _preferencesDirectoryForUserHostSafetyLevel(CFStringRef userName
 		url = CFCopyHomeDirectoryURLForUser((userName == kCFPreferencesCurrentUser) ? NULL : userName);
 
 	return url;
- 
+
 #else
     CFURLRef  home = NULL;
     CFURLRef  url;
@@ -261,7 +261,7 @@ CFTypeRef  CFPreferencesCopyValue(CFStringRef  key, CFStringRef  appName, CFStri
     CFPreferencesDomainRef domain;
     CFAssert1(appName != NULL && user != NULL && host != NULL, __kCFLogAssertion, "%s(): Cannot access preferences for a NULL application name, user, or host", __PRETTY_FUNCTION__);
     CFAssert1(key != NULL, __kCFLogAssertion, "%s(): Cannot access preferences with a NULL key", __PRETTY_FUNCTION__);
-    
+
     domain = _CFPreferencesStandardDomain(appName, user, host);
     if (domain) {
         return _CFPreferencesDomainCreateValueForKey(domain, key);
@@ -329,12 +329,12 @@ void CFPreferencesSetMultiple(CFDictionaryRef keysToSet, CFArrayRef keysToRemove
     CFTypeRef *keys = NULL;
     CFTypeRef *values;
     CFIndex numOfKeysToSet = 0;
-    
+
     domain = _CFPreferencesStandardDomain(appName, user, host);
     if (!domain) return;
 
     CFAllocatorRef alloc = CFGetAllocator(domain);
-    
+
     if (keysToSet && (count = CFDictionaryGetCount(keysToSet))) {
         numOfKeysToSet = count;
         keys = (CFTypeRef *)CFAllocatorAllocate(alloc, 2*count*sizeof(CFTypeRef), 0);
@@ -355,7 +355,7 @@ void CFPreferencesSetMultiple(CFDictionaryRef keysToSet, CFArrayRef keysToRemove
 
 
     _CFApplicationPreferencesDomainHasChanged(domain);
-    
+
     if(keys) CFAllocatorDeallocate(alloc, keys);
 }
 
@@ -365,7 +365,7 @@ Boolean CFPreferencesSynchronize(CFStringRef  appName, CFStringRef  user, CFStri
 
     domain = _CFPreferencesStandardDomain(appName, user, host);
     if(domain) _CFApplicationPreferencesDomainHasChanged(domain);
-    
+
     return domain ? _CFPreferencesDomainSynchronize(domain) : false;
 }
 
@@ -428,7 +428,7 @@ static const CFRuntimeClass __CFPreferencesDomainClass = {
     __CFPreferencesDomainDeallocate,
     NULL,
     NULL,
-    NULL,      // 
+    NULL,      //
     __CFPreferencesDomainCopyDescription
 };
 
@@ -465,7 +465,7 @@ static CFStringRef  _CFPreferencesCachePrefixForUserHost(CFStringRef  userName, 
 static CFStringRef  _CFPreferencesStandardDomainCacheKey(CFStringRef  domainName, CFStringRef  userName, CFStringRef  hostName) {
     CFStringRef  prefix = _CFPreferencesCachePrefixForUserHost(userName, hostName);
     CFStringRef  result = NULL;
-    
+
     if (prefix) {
         result = CFStringCreateWithFormat(__CFPreferencesAllocator(), NULL, CFSTR("%@%@"), prefix, domainName);
         CFRelease(prefix);
@@ -481,7 +481,7 @@ static CFURLRef _CFPreferencesURLForStandardDomainWithSafetyLevel(CFStringRef do
     CFStringRef  appName;
     CFStringRef  fileName;
     Boolean mustFreeAppName = false;
-    
+
     if (!prefDir) return NULL;
     if (domainName == kCFPreferencesAnyApplication) {
         appName = CFSTR(".GlobalPreferences");
@@ -568,7 +568,7 @@ CFPreferencesDomainRef _CFPreferencesStandardDomain(CFStringRef  domainName, CFS
                 domain = checkDomain;	// repoint it at the domain picked up out of the cache.
             } else {
                 // We must not have found the domain in the cache, so it's ok for us to put this in.
-                CFDictionarySetValue(domainCache, domainKey, domain);                
+                CFDictionarySetValue(domainCache, domainKey, domain);
             }
             if(shouldReleaseDomain) CFRelease(domain);
         }
@@ -614,7 +614,7 @@ CF_PRIVATE CFArrayRef  _CFPreferencesCreateDomainList(CFStringRef  userName, CFS
     CFStringRef  suffix;
     UInt32 suffixLen;
     CFURLRef prefDir = _preferencesDirectoryForUserHost(userName, hostName);
-    
+
     if (!prefDir) {
         return NULL;
     }
@@ -627,7 +627,7 @@ CF_PRIVATE CFArrayRef  _CFPreferencesCreateDomainList(CFStringRef  userName, CFS
         suffix = CFStringCreateWithFormat(prefAlloc, NULL, CFSTR(".%@.plist"), hostName);   // sketchy - this allows someone to create a domain list for an arbitrary hostname.
     }
     suffixLen = CFStringGetLength(suffix);
-    
+
     domains = (CFArrayRef)CFURLCreatePropertyFromResource(prefAlloc, prefDir, kCFURLFileDirectoryContents, NULL);
     CFRelease(prefDir);
     if (domains){
@@ -653,7 +653,7 @@ CF_PRIVATE CFArrayRef  _CFPreferencesCreateDomainList(CFStringRef  userName, CFS
         CFRelease(string);
     }
     CFRelease(suffix);
-    
+
     // Now add any domains added in the cache; delete any that have been deleted in the cache
     __CFSpinLock(&domainCacheLock);
     if (!domainCache) {
@@ -667,13 +667,13 @@ CF_PRIVATE CFArrayRef  _CFPreferencesCreateDomainList(CFStringRef  userName, CFS
     __CFSpinUnlock(&domainCacheLock);
     suffix = _CFPreferencesCachePrefixForUserHost(userName, hostName);
     suffixLen = CFStringGetLength(suffix);
-    
+
     for (idx = 0; idx < cnt; idx ++) {
         CFStringRef  domainKey = cachedDomainKeys[idx];
         CFPreferencesDomainRef domain = cachedDomains[idx];
         CFStringRef  domainName;
         CFIndex keyCount = 0;
-        
+
         if (!CFStringHasPrefix(domainKey, suffix)) continue;
         domainName = CFStringCreateWithSubstring(prefAlloc, domainKey, CFRangeMake(suffixLen, CFStringGetLength(domainKey) - suffixLen));
         if (CFEqual(domainName, CFSTR("*"))) {
@@ -839,7 +839,7 @@ static void getVolatileKeysAndValues(CFAllocatorRef alloc, CFTypeRef context, vo
 
 static CFDictionaryRef copyVolatileDomainDictionary(CFTypeRef context, void *volatileDomain) {
     CFMutableDictionaryRef dict = (CFMutableDictionaryRef)volatileDomain;
-    
+
     CFDictionaryRef result = (CFDictionaryRef)CFPropertyListCreateDeepCopy(__CFPreferencesAllocator(), dict, kCFPropertyListImmutable);
     return result;
 }

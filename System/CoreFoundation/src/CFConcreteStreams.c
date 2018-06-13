@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -69,7 +69,7 @@ typedef struct {
 #else
     uint16_t scheduled;	// ref count of how many times we've been scheduled
 #endif
-    CFOptionFlags flags;    
+    CFOptionFlags flags;
     off_t offset;
 } _CFFileStreamContext;
 
@@ -97,7 +97,7 @@ static void constructCFFD(_CFFileStreamContext *fileStream, Boolean forRead, str
         }
         CFRelease(fileStream->rlInfo.rlArray);
         CFRelease(src);
-    }    
+    }
     fileStream->rlInfo.cffd = cffd;
 }
 #endif
@@ -121,7 +121,7 @@ static Boolean constructFD(_CFFileStreamContext *fileStream, CFStreamError *erro
         flags |= O_APPEND;
         flags &= ~O_TRUNC;
     }
-    
+
     do {
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
         fileStream->fd = open((const char *)path, flags, 0666);
@@ -130,7 +130,7 @@ static Boolean constructFD(_CFFileStreamContext *fileStream, CFStreamError *erro
 #endif
         if (fileStream->fd < 0)
             break;
-        
+
         if ((fileStream->offset != -1) && (lseek(fileStream->fd, fileStream->offset, SEEK_SET) == -1))
             break;
 
@@ -354,7 +354,7 @@ static void fileSchedule(struct _CFStream *stream, CFRunLoopRef runLoop, CFStrin
     Boolean isReadStream = (CFGetTypeID(stream) == CFReadStreamGetTypeID());
     CFStreamStatus status = isReadStream ? CFReadStreamGetStatus((CFReadStreamRef)stream) : CFWriteStreamGetStatus((CFWriteStreamRef)stream);
     if (fileStream->fd < 0 && status != kCFStreamStatusNotOpen) {
-        // Stream's already closed or error-ed out 
+        // Stream's already closed or error-ed out
         return;
     }
 #ifdef REAL_FILE_SCHEDULING
@@ -427,19 +427,19 @@ static void fileUnschedule(struct _CFStream *stream, CFRunLoopRef runLoop, CFStr
 }
 
 static CFTypeRef fileCopyProperty(struct _CFStream *stream, CFStringRef propertyName, void *info) {
-    
+
     CFTypeRef result = NULL;
     _CFFileStreamContext *fileStream = (_CFFileStreamContext *)info;
 
     if (CFEqual(propertyName, kCFStreamPropertyFileCurrentOffset)) {
-        
+
         // NOTE that this does a lseek of 0 from the current location in
         // order to populate the offset field which will then be used to
         // create the resulting value.
         if (!__CFBitIsSet(fileStream->flags, APPEND) && fileStream->fd != -1) {
             fileStream->offset = lseek(fileStream->fd, 0, SEEK_CUR);
         }
-        
+
         if (fileStream->offset != -1) {
             result = CFNumberCreate(CFGetAllocator((CFTypeRef)stream), kCFNumberSInt64Type, &(fileStream->offset));
         }
@@ -456,7 +456,7 @@ static CFTypeRef fileCopyProperty(struct _CFStream *stream, CFStringRef property
 }
 
 static Boolean fileSetProperty(struct _CFStream *stream, CFStringRef prop, CFTypeRef val, void *info) {
-    
+
     Boolean result = FALSE;
     _CFFileStreamContext *fileStream = (_CFFileStreamContext *)info;
 
@@ -471,19 +471,19 @@ static Boolean fileSetProperty(struct _CFStream *stream, CFStringRef prop, CFTyp
         }
         result = TRUE;
     }
-    
+
     else if (CFEqual(prop, kCFStreamPropertyFileCurrentOffset)) {
-        
+
         if (!__CFBitIsSet(fileStream->flags, APPEND))
         {
             result = CFNumberGetValue((CFNumberRef)val, kCFNumberSInt64Type, &(fileStream->offset));
         }
-        
+
         if ((fileStream->fd != -1) && (lseek(fileStream->fd, fileStream->offset, SEEK_SET) == -1)) {
             result = FALSE;
         }
     }
-    
+
     return result;
 }
 
@@ -511,7 +511,7 @@ static void	fileFinalize(struct _CFStream *stream, void *info) {
     if (ctxt->fd > 0) {
 #ifdef REAL_FILE_SCHEDULING
         if (ctxt->rlInfo.cffd) {
-            CFFileDescriptorInvalidate(ctxt->rlInfo.cffd); 
+            CFFileDescriptorInvalidate(ctxt->rlInfo.cffd);
             CFRelease(ctxt->rlInfo.cffd);
             ctxt->rlInfo.cffd = NULL;
         }
@@ -859,7 +859,7 @@ CF_EXPORT CFReadStreamRef CFReadStreamCreateWithBytesNoCopy(CFAllocatorRef alloc
 CF_EXPORT CFReadStreamRef CFReadStreamCreateWithData(CFAllocatorRef alloc, CFDataRef data) {
     _CFReadDataStreamContext ctxt;
     CFReadStreamRef result = NULL;
-    
+
     ctxt.data = (CFDataRef)CFRetain(data);
     result = (CFReadStreamRef)_CFStreamCreateWithConstantCallbacks(alloc, &ctxt, (struct _CFStreamCallBacks *)(&readDataCallBacks), TRUE);
     CFRelease(data);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2005 Apple Computer, Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 /*
@@ -146,7 +146,7 @@ CF_EXPORT CFAbsoluteTime _CFAbsoluteTimeFromFileTime(FILETIME* ftime);
 // Returns the path to the CF DLL, which we can then use to find resources
 static const char *_CFDLLPath(void) {
     static TCHAR cachedPath[MAX_PATH+1] = "";
-    
+
     if ('\0' == cachedPath[0]) {
 #if defined(DEBUG)
         char *DLLFileName = "CFNetwork_debug";
@@ -157,11 +157,11 @@ static const char *_CFDLLPath(void) {
 #endif
         HMODULE ourModule = GetModuleHandle(DLLFileName);
         assert(ourModule);      // GetModuleHandle failed to find our own DLL
-        
+
         DWORD wResult = GetModuleFileName(ourModule, cachedPath, MAX_PATH+1);
         assert(wResult > 0);            // GetModuleFileName failure
         assert(wResult < MAX_PATH+1);   // GetModuleFileName result truncated
-		
+
         // strip off last component, the DLL name
         CFIndex idx;
         for (idx = wResult - 1; idx; idx--) {
@@ -197,13 +197,13 @@ static void _JSSetEnvironmentForPAC(CFAllocatorRef alloc, CFURLRef url, CFAbsolu
 #endif /* PROXY_PAC_SUPPORT */
 
 /*
- ** Determine whether a given "enabled" entry ("HTTPEnable", "HTTPSEnable", ...) means 
+ ** Determine whether a given "enabled" entry ("HTTPEnable", "HTTPSEnable", ...) means
  ** that the described proxy should be enabled.
  **
  ** Although this seems wrong, a NULL entry means the proxy SHOULD be enabled.  The
  ** idea is that a developer could create their own proxy dictionary which would be
- ** missing the "enable" flag.  In this case, the lack of the "enable" flag should 
- ** be interpreted as enabled if the other relevant proxy information is available 
+ ** missing the "enable" flag.  In this case, the lack of the "enable" flag should
+ ** be interpreted as enabled if the other relevant proxy information is available
  ** (e.g. the proxy host name).
  **
  ** Also, because SysConfig does little to no checking of its values, we must be prepared
@@ -224,18 +224,18 @@ static inline Boolean _proxyEnabled(CFTypeRef enabledEntry) {
 #if 0
 /* extern */ Boolean
 _CFNetworkCFHostDoesNeedProxy(CFHostRef host, CFArrayRef bypasses, CFBooleanRef localBypass) {
-    
+
     CFArrayRef names = CFHostGetNames(host, NULL);
-	
+
 	localBypass = _proxyEnabled(localBypass) ? kCFBooleanTrue : kCFBooleanFalse;
-    
+
     if (names && CFArrayGetCount(names)) {
         return _CFNetworkDoesNeedProxy((CFStringRef)CFArrayGetValueAtIndex(names, 0), bypasses, localBypass);
     }
-    
+
     names = CFHostGetAddressing(host, NULL);
     if (names && CFArrayGetCount(names)) {
-        
+
         CFDataRef saData = (CFDataRef)CFArrayGetValueAtIndex(names, 0);
         CFStringRef name = stringFromAddr((const struct sockaddr*)CFDataGetBytePtr(saData), CFDataGetLength(saData));
         if (name) {
@@ -245,7 +245,7 @@ _CFNetworkCFHostDoesNeedProxy(CFHostRef host, CFArrayRef bypasses, CFBooleanRef 
         }
         return FALSE;
     }
-    
+
     return TRUE;
 }
 #endif
@@ -253,26 +253,26 @@ _CFNetworkCFHostDoesNeedProxy(CFHostRef host, CFArrayRef bypasses, CFBooleanRef 
 
 /* extern */ Boolean
 _CFNetworkDoesNeedProxy(CFStringRef hostname, CFArrayRef bypasses, CFBooleanRef localBypass) {
-	
+
     Boolean result = TRUE;
-	
+
     CFIndex i, hostnc, count, length;
     CFArrayRef hostnodes;
-	
+
 	struct in_addr ip;
 	Boolean is_ip = FALSE;
-    
+
     if (!hostname) return TRUE;
-	
+
 	localBypass = _proxyEnabled(localBypass) ? kCFBooleanTrue : kCFBooleanFalse;
-    
+
     if (CFStringCompare(hostname, _kProxySupportLocalhost, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
         return FALSE;
     if (CFStringCompare(hostname, _kProxySupportIPv4Loopback, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
         return FALSE;
     if (CFStringCompare(hostname, _kProxySupportIPv6Loopback, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
         return FALSE;
-	
+
 	length = CFStringGetLength(hostname);
 
 	/* Uncomment the following code to bypass .local. addresses by default */
@@ -280,109 +280,109 @@ _CFNetworkDoesNeedProxy(CFStringRef hostname, CFArrayRef bypasses, CFBooleanRef 
 	if ((length > 7) && CFStringCompareWithOptions(hostname, CFSTR(".local."), CFRangeMake(length - 7, 7), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 		return FALSE;
 	*/
-	
+
     if (localBypass && CFEqual(localBypass, kCFBooleanTrue) && CFStringFind(hostname, _kProxySupportDot, 0).location == kCFNotFound)
         return FALSE;
-        
+
     count = bypasses ? CFArrayGetCount(bypasses) : 0;
     if (!count) return result;
-    
+
     hostnodes = CFStringCreateArrayBySeparatingStrings(NULL, hostname, _kProxySupportDot);
     hostnc = hostnodes ? CFArrayGetCount(hostnodes) : 0;
     if (!hostnc) {
         CFRelease(hostnodes);
         hostnodes = NULL;
     }
-    
-	if (((hostnc == 4) || ((hostnc == 5) && (CFStringGetLength((CFStringRef)CFArrayGetValueAtIndex(hostnodes, 4)) == 0))) && 
+
+	if (((hostnc == 4) || ((hostnc == 5) && (CFStringGetLength((CFStringRef)CFArrayGetValueAtIndex(hostnodes, 4)) == 0))) &&
 		(length <= 16))
 	{
 		UInt8 stack_buffer[32];
 		UInt8* buffer = stack_buffer;
 		CFIndex bufferLength = sizeof(stack_buffer);
 		CFAllocatorRef allocator = CFGetAllocator(hostname);
-		
+
 		buffer = _CFStringGetOrCreateCString(allocator, hostname, buffer, &bufferLength, kCFStringEncodingASCII);
-		
+
 		if (inet_pton(AF_INET, (const char*)buffer, &ip) == 1)
 			is_ip = TRUE;
-			
+
 		if (buffer != stack_buffer)
 			CFAllocatorDeallocate(allocator, buffer);
 	}
-	
+
     for (i = 0; result && (i < count); i++) {
-		
+
         CFStringRef bypass = (CFStringRef)CFArrayGetValueAtIndex(bypasses, i);
-        
+
         // Explicitely listed hosts gets bypassed
         if (CFStringCompare(hostname, bypass, kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
             result = FALSE;
         }
-        
+
 		else if (is_ip && CFStringFindWithOptions(bypass, _kProxySupportSlash, CFRangeMake(0, CFStringGetLength(bypass)), 0, FALSE)) {
-		
+
             CFArrayRef pieces = CFStringCreateArrayBySeparatingStrings(NULL, bypass, _kProxySupportSlash);
-			
+
 			if (pieces && (CFArrayGetCount(pieces) == 2)) {
-				
+
 				SInt32 cidr = CFStringGetIntValue((CFStringRef)CFArrayGetValueAtIndex(pieces, 1));
 				if ((cidr > 0) && (cidr < 33)) {
-				
+
 					CFArrayRef bypassnodes = CFStringCreateArrayBySeparatingStrings(NULL,
 																					(CFStringRef)CFArrayGetValueAtIndex(pieces, 0),
 																					_kProxySupportDot);
-																					
+
 					if (bypassnodes) {
-					
+
 						CFIndex bypassnc = CFArrayGetCount(bypassnodes);
 						if (bypassnc <= 4) {
-							
+
 							CFIndex n;
 							CFMutableStringRef cp = CFStringCreateMutableCopy(CFGetAllocator(hostname),
 																			  0,
 																			  (CFStringRef)CFArrayGetValueAtIndex(bypassnodes, 0));
-																			  
+
 							for (n = 1; n < 4; n++) {
-								
+
 								if (n >= bypassnc)
 									CFStringAppend(cp, _kProxySupportDotZero);
-									
+
 								else {
-									
+
 									CFStringRef piece = (CFStringRef)CFArrayGetValueAtIndex(bypassnodes, n);
-									
+
 									if (CFStringGetLength(piece))
 										CFStringAppendFormat(cp, NULL, _kProxySupportDotFormat, piece);
 									else
 										CFStringAppend(cp, _kProxySupportDotZero);
 								}
 							}
-							
+
 							n = CFStringGetLength(cp);
-							
+
 							if (n <= 16) {
 								UInt8 stack_buffer[32];
 								UInt8* buffer = stack_buffer;
 								CFIndex bufferLength = sizeof(stack_buffer);
 								CFAllocatorRef allocator = CFGetAllocator(hostname);
 								struct in_addr bypassip;
-								
+
 								buffer = _CFStringGetOrCreateCString(allocator, cp, buffer, &bufferLength, kCFStringEncodingASCII);
-								
+
 								if ((inet_pton(AF_INET, (const char*)buffer, &bypassip) == 1) &&
 									(((((1 << cidr) - 1) << (32 - cidr)) & ntohl(*((uint32_t*)(&ip)))) == ntohl(*((uint32_t*)(&bypassip)))))
 								{
 									result = FALSE;
 								}
-									
+
 								if (buffer != stack_buffer)
 									CFAllocatorDeallocate(allocator, buffer);
 							}
-							
+
 							CFRelease(cp);
 						}
-					
+
 						CFRelease(bypassnodes);
 					}
 				}
@@ -391,28 +391,28 @@ _CFNetworkDoesNeedProxy(CFStringRef hostname, CFArrayRef bypasses, CFBooleanRef 
 			if (pieces)
 				CFRelease(pieces);
 		}
-		
+
         else if (hostnodes) {
-        
+
             CFIndex bypassnc;
             CFArrayRef bypassnodes = CFStringCreateArrayBySeparatingStrings(NULL, bypass, _kProxySupportDot);
-            
+
             if (!bypassnodes) continue;
-            
+
             bypassnc = CFArrayGetCount(bypassnodes);
             if (bypassnc > 1) {
-            
+
                 CFIndex j = hostnc - 1;
                 CFIndex k = bypassnc - 1;
-                
+
                 while ((j >= 0) && (k >= 0)) {
-                
+
                     CFStringRef hostnode = (CFStringRef)CFArrayGetValueAtIndex(hostnodes, j);
                     CFStringRef bypassnode = (CFStringRef)CFArrayGetValueAtIndex(bypassnodes, k);
-                    
+
 					if ((k == 0) && (CFStringGetLength(bypassnode) == 0))
 						bypassnode = _kProxySupportStar;
-					
+
                     if (CFStringCompare(hostnode, bypassnode, kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
                         if (!j && !k) {
                             result = FALSE;
@@ -422,9 +422,9 @@ _CFNetworkDoesNeedProxy(CFStringRef hostname, CFArrayRef bypasses, CFBooleanRef 
                             j--, k--;
                         }
                     }
-                    
+
                     else if (CFStringCompare(bypassnode, _kProxySupportStar, kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
-                        
+
                         while (k >= 0) {
                             bypassnode = (CFStringRef)CFArrayGetValueAtIndex(bypassnodes, k);
 
@@ -435,39 +435,39 @@ _CFNetworkDoesNeedProxy(CFStringRef hostname, CFArrayRef bypasses, CFBooleanRef 
                                 break;
                             k--;
                         }
-                        
+
                         if (k < 0) {
                             result = FALSE;
                             break;
                         }
-                        
+
                         else {
-                            
+
                             while (j >= 0) {
-                                
+
                                 hostnode = (CFStringRef)CFArrayGetValueAtIndex(hostnodes, j);
                                 if (CFStringCompare(bypassnode, hostnode, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
                                     break;
                                 j--;
                             }
-                            
+
                             if (j < 0)
                                 break;
                         }
                     }
-                    
+
                     else
                         break;
                 }
             }
-            
+
             CFRelease(bypassnodes);
         }
-    }	
+    }
 
     if (hostnodes)
     CFRelease(hostnodes);
-	
+
     return result;
 }
 
@@ -480,10 +480,10 @@ static CFURLRef _URLForProxyEntry(CFAllocatorRef alloc, CFStringRef entry, CFInd
     CFStringRef host;
     CFStringRef portString;
     Boolean hasPort = TRUE;
-    
+
     CFMutableStringRef urlString;
     CFURLRef url;
-    
+
     if (colonRange.location == kCFNotFound) {
         colonRange.location = len;
         hasPort = FALSE;
@@ -498,7 +498,7 @@ static CFURLRef _URLForProxyEntry(CFAllocatorRef alloc, CFStringRef entry, CFInd
 
     if (hasPort) {
         portString = CFStringCreateWithSubstring(CFGetAllocator(entry), entry, CFRangeMake(colonRange.location + 1, len - colonRange.location - 1));
-    } else if (CFStringCompare(scheme, _kProxySupportHTTPScheme, kCFCompareCaseInsensitive) == kCFCompareEqualTo || 
+    } else if (CFStringCompare(scheme, _kProxySupportHTTPScheme, kCFCompareCaseInsensitive) == kCFCompareEqualTo ||
         CFStringCompare(scheme, _kProxySupportHTTPSScheme, kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
         portString = _kProxySupportHTTPPort;
         CFRetain(portString);
@@ -512,7 +512,7 @@ static CFURLRef _URLForProxyEntry(CFAllocatorRef alloc, CFStringRef entry, CFInd
         CFRelease(host);
         return NULL;
     }
-    
+
     urlString = CFStringCreateMutable(alloc, CFStringGetLength(scheme) + CFStringGetLength(host) + CFStringGetLength(portString) + 4);
     CFStringAppend(urlString, scheme);
     CFStringAppendCString(urlString, "://", kCFStringEncodingASCII);
@@ -533,18 +533,18 @@ static void _appendProxiesFromPACResponse(CFAllocatorRef alloc, CFMutableArrayRe
 
     if (!pacResponse) return;
 
-    entries = CFStringCreateArrayBySeparatingStrings(alloc, pacResponse, _kProxySupportSemiColon);                            
+    entries = CFStringCreateArrayBySeparatingStrings(alloc, pacResponse, _kProxySupportSemiColon);
     c = CFArrayGetCount(entries);
     Boolean isFTP = (CFStringCompare(scheme, _kProxySupportFTPScheme, kCFCompareCaseInsensitive) == kCFCompareEqualTo);
-        
+
     for (i = 0; i < c; i++) {
-            
+
         CFURLRef to_add = NULL;
         CFStringRef untrimmedEntry = (CFStringRef)CFArrayGetValueAtIndex(entries, i);
         CFMutableStringRef entry = untrimmedEntry ? CFStringCreateMutableCopy(alloc, CFStringGetLength(untrimmedEntry), untrimmedEntry) : NULL;
         CFIndex entryLength;
         CFRange range;
-        
+
         if (!entry)  continue;
         CFStringTrimWhitespace(entry);
         entryLength = CFStringGetLength(entry);
@@ -556,7 +556,7 @@ static void _appendProxiesFromPACResponse(CFAllocatorRef alloc, CFMutableArrayRe
         else if (entryLength >= 5 && CFStringFindWithOptions(entry, _kProxySupportPROXY, CFRangeMake(0, 5), kCFCompareCaseInsensitive, &range)) {
             CFIndex urlStart = 5;
             to_add = _URLForProxyEntry(CFGetAllocator(proxyList), entry, urlStart, scheme);
-            
+
             // In the case of FTP, dump an extra entry to try FTP over HTTP.
             if (to_add && isFTP) {
                 CFURLRef extra = _URLForProxyEntry(CFGetAllocator(proxyList), entry, urlStart, _kProxySupportHTTPScheme);
@@ -566,11 +566,11 @@ static void _appendProxiesFromPACResponse(CFAllocatorRef alloc, CFMutableArrayRe
                 }
             }
         }
-        
+
         else if (entryLength >= 5 && CFStringFindWithOptions(entry, _kProxySupportSOCKS, CFRangeMake(0, 5), kCFCompareCaseInsensitive, &range)) {
             to_add = _URLForProxyEntry(CFGetAllocator(proxyList), entry, 5, _kProxySupportSOCKS5Scheme);
         }
-        
+
         if (to_add) {
             CFArrayAppendValue(proxyList, to_add);
             CFRelease(to_add);
@@ -583,7 +583,7 @@ static void _appendProxiesFromPACResponse(CFAllocatorRef alloc, CFMutableArrayRe
 static CFURLRef proxyURLForComponents(CFAllocatorRef alloc, CFStringRef scheme, CFStringRef host, SInt32 port, CFStringRef user, CFStringRef password) {
     CFStringRef urlString;
     CFURLRef url;
-    
+
     if (user) {
         urlString = CFStringCreateWithFormat(alloc, NULL, _kProxySupportURLLongFormat, scheme, user, password, host, port);
     } else {
@@ -607,12 +607,12 @@ _CFNetworkFindProxyForURLAsync(CFStringRef scheme, CFURLRef url, CFStringRef hos
 
     CFAllocatorRef alloc = url ? CFGetAllocator(url) : host ? CFGetAllocator(host) : proxies ? CFGetAllocator(proxies) : kCFAllocatorDefault;
     CFMutableArrayRef result = CFArrayCreateMutable(alloc, 0, &kCFTypeArrayCallBacks);
-	
+
     if (!proxies) {
         CFArrayAppendValue(result, kCFNull);
         return result;
     }
-    
+
     if (host) {
         CFRetain(host);
     } else {
@@ -644,7 +644,7 @@ _CFNetworkFindProxyForURLAsync(CFStringRef scheme, CFURLRef url, CFStringRef hos
         CFTypeRef enabled = NULL;
         CFArrayRef bypass = (CFArrayRef)CFDictionaryGetValue(proxies, _kProxySupportExceptionsList);
         CFBooleanRef localBypass = _proxyEnabled(CFDictionaryGetValue(proxies, kCFStreamPropertyProxyLocalBypass)) ? kCFBooleanTrue : kCFBooleanFalse;
-        
+
         if (bypass && CFGetTypeID(bypass) != CFArrayGetTypeID()) {
             bypass = NULL;
         }
@@ -729,7 +729,7 @@ _CFNetworkFindProxyForURLAsync(CFStringRef scheme, CFURLRef url, CFStringRef hos
 #endif
                 default_port = 990;
             }
-            
+
             if (proxy_key) {
 #if defined(__MACH__)
                 enabled = CFDictionaryGetValue(proxies, enable_key);
@@ -773,14 +773,14 @@ _CFNetworkFindProxyForURLAsync(CFStringRef scheme, CFURLRef url, CFStringRef hos
             CFStringRef user = (CFStringRef)CFDictionaryGetValue(proxies, kCFStreamPropertySOCKSUser);
             CFStringRef pass = (CFStringRef)CFDictionaryGetValue(proxies, kCFStreamPropertySOCKSPassword);
             CFStringRef version = (CFStringRef)CFDictionaryGetValue(proxies, kCFStreamPropertySOCKSVersion);
-            
+
             proxy = (CFStringRef)CFDictionaryGetValue(proxies, kCFStreamPropertySOCKSProxyHost);
 
             if (proxy && CFGetTypeID(proxy) == CFStringGetTypeID() && (!bypass || !host || _CFNetworkDoesNeedProxy(host, bypass, localBypass))) {
                 CFStringRef socksScheme;
                 SInt32 portNum;
                 CFURLRef to_add;
-				
+
                 port = (CFNumberRef)CFDictionaryGetValue(proxies, kCFStreamPropertySOCKSProxyPort);
                 if (!port || CFGetTypeID(port) != CFNumberGetTypeID() || !CFNumberGetValue(port, kCFNumberSInt32Type, &portNum)) {
                     portNum = 1080;
@@ -862,11 +862,11 @@ _LoadStreamIntoData(CFReadStreamRef stream, CFMutableDataRef contents, CFTimeInt
             CFStreamStatus status = CFReadStreamGetStatus(stream);
             if (status == kCFStreamStatusAtEnd || status == kCFStreamStatusError)
                 break;
-            
+
             CFRunLoopRunInMode(_kProxySupportLoadingPacPrivateMode, 1e+20, TRUE);
-            
+
         } while (!timedout);
-        
+
         if (t) {
             CFRunLoopRemoveTimer(rl, t, _kProxySupportLoadingPacPrivateMode);
             CFRelease(t);
@@ -883,7 +883,7 @@ _LoadStreamIntoData(CFReadStreamRef stream, CFMutableDataRef contents, CFTimeInt
             result.domain = kCFStreamErrorDomainCustom;
             result.error = -1;
         }
-        
+
         CFReadStreamClose(stream);
     }
 
@@ -897,7 +897,7 @@ _LoadStreamIntoData(CFReadStreamRef stream, CFMutableDataRef contents, CFTimeInt
 
 /* static */ CFStringRef
 _loadJSSupportFile(void) {
-    
+
     static CFURLRef _JSRuntimeFunctionsLocation = NULL;
     static CFStringRef _JSRuntimeFunctions = NULL;
 
@@ -916,15 +916,15 @@ _loadJSSupportFile(void) {
 
         CFReadStreamRef stream = CFReadStreamCreateWithFile(NULL, _JSRuntimeFunctionsLocation);
         if (stream) {
-        
+
             CFMutableDataRef contents = CFDataCreateMutable(NULL, 0);
-        
+
             // NOTE that the result value is not taken here since this is the load
             // of the local support file.  If that fails, DIRECT should not be
             // the fallback as will happen with the actual PAC file.
             _LoadStreamIntoData(stream, contents, PAC_STREAM_LOAD_TIMEOUT, TRUE);
             CFRelease(stream);
-            
+
             CFIndex bytesRead = CFDataGetLength(contents);
             // Check to see if read until the end of the file.
             if (bytesRead) {
@@ -946,7 +946,7 @@ static CFReadStreamRef _streamForPACFile(CFAllocatorRef alloc, CFURLRef pac, Boo
         stream = CFReadStreamCreateWithFile(alloc, pac);
         *isFile = TRUE;
     }
-    
+
     else if ((CFStringCompare(scheme, _kProxySupportHTTPScheme, kCFCompareCaseInsensitive) == kCFCompareEqualTo) ||
              (CFStringCompare(scheme, _kProxySupportHTTPSScheme, kCFCompareCaseInsensitive) == kCFCompareEqualTo))
     {
@@ -958,7 +958,7 @@ static CFReadStreamRef _streamForPACFile(CFAllocatorRef alloc, CFURLRef pac, Boo
             CFRelease(msg);
         }
     }
-    
+
     else if ((CFStringCompare(scheme, _kProxySupportFTPScheme, kCFCompareCaseInsensitive) == kCFCompareEqualTo) ||
              (CFStringCompare(scheme, _kProxySupportFTPSScheme, kCFCompareCaseInsensitive) == kCFCompareEqualTo))
     {
@@ -974,21 +974,21 @@ CFStringRef _stringFromLoadedPACStream(CFAllocatorRef alloc, CFMutableDataRef co
     *expires = now > 1 ? now - 1 : now; // Just some number that's less than now.
 
     if (msg) {
-		
+
         UInt32 code = CFHTTPMessageGetResponseStatusCode(msg);
-        
+
         if (code > 299) {
             CFDataSetLength(contents, 0);
         }
-        
+
         else {
-            
+
             CFStringRef expiryString = CFHTTPMessageCopyHeaderFieldValue(msg, _kProxySupportExpiresHeader);
-            
+
             if (expiryString) {
                 CFGregorianDate expiryDate;
                 CFTimeZoneRef expiryTZ = NULL;
-                
+
                 if (_CFGregorianDateCreateWithString(alloc, expiryString, &expiryDate, &expiryTZ)) {
                     CFStringRef nowString = CFHTTPMessageCopyHeaderFieldValue(msg, _kProxySupportNowHeader);
 		    if (nowString) {
@@ -1008,10 +1008,10 @@ CFStringRef _stringFromLoadedPACStream(CFAllocatorRef alloc, CFMutableDataRef co
                 CFRelease(expiryString);
             }
         }
-        
+
         CFRelease(msg);
     }
-    
+
     if (*expires < now) {
         *expires = now + (24 * 60 * 60);
     }
@@ -1046,7 +1046,7 @@ _loadPACFile(CFAllocatorRef alloc, CFURLRef pac, CFAbsoluteTime *expires, CFStre
     if (stream) {
         CFMutableDataRef contents = CFDataCreateMutable(alloc, 0);
         *err = _LoadStreamIntoData(stream, contents, PAC_STREAM_LOAD_TIMEOUT, isFile);
-        
+
         if (err->domain == 0) {
             result = _stringFromLoadedPACStream(alloc, contents, stream, expires);
         }
@@ -1068,47 +1068,47 @@ _createJSRuntime(CFAllocatorRef alloc, CFStringRef js_support, CFStringRef js_pa
         runtime = JSRunCreate(allCode, 0);
         JSUnlockInterpreter();
     }
-    
+
     if (!JSRunCheckSyntax(runtime)) {
         JSRelease(runtime);
         runtime = NULL;
     }
-    
+
     if (runtime) {
-        
+
         JSObjectRef g = JSRunCopyGlobalObject(runtime);
         JSObjectCallBacks c = {NULL, NULL, NULL, NULL,  NULL, NULL, NULL};
-        
+
         if (g) {
-            
+
             JSObjectRef func;
-            
+
             c.callFunction = (JSObjectCallFunctionProcPtr)_JSDnsResolveFunction;
             JSLockInterpreter();
             func = JSObjectCreate(NULL, &c);
-            
+
             if (func) {
                 JSObjectSetProperty(g, CFSTR("__dnsResolve"), func);
                 JSRelease(func);
             }
-            
+
             c.callFunction = (JSObjectCallFunctionProcPtr)_JSPrimaryIpv4AddressesFunction;
             func = JSObjectCreate(NULL, &c);
-            
+
             if (func) {
                 JSObjectSetProperty(g, CFSTR("__primaryIPv4Addresses"), func);
                 JSRelease(func);
             }
-            
+
             JSObjectRef strObj = JSObjectCreateWithCFType(CFSTR("MACH"));
             JSObjectSetProperty(g, CFSTR("__platformName"), strObj);
             JSRelease(strObj);
-            
+
             JSUnlockInterpreter();
-            
+
             JSRelease(g);
         }
-        
+
         g = JSRunEvaluate(runtime);
         if (g) JSRelease(g);
     }
@@ -1129,28 +1129,28 @@ _callPACFunction(CFAllocatorRef alloc, JSRunRef runtime, CFURLRef url, CFStringR
     CFStringRef result = NULL;
     JSObjectRef g = runtime ? JSRunCopyGlobalObject(runtime) : NULL;
     JSObjectRef func = g ? JSObjectCopyProperty(g, CFSTR("__Apple_FindProxyForURL")) : NULL;
-    
+
     if (func) {
         CFArrayRef cfArgs = NULL;
         CFMutableArrayRef jsArgs;
         CFTypeRef args[2];
         CFURLRef absURL = CFURLCopyAbsoluteURL(url);
-        
+
         args[0] = CFURLGetString(absURL);
         args[1] = host;
-        
+
         cfArgs = CFArrayCreate(alloc, args, 2, &kCFTypeArrayCallBacks);
         CFRelease(absURL);
-        
+
         JSLockInterpreter();
         jsArgs = JSCreateJSArrayFromCFArray(cfArgs);
         CFRelease(cfArgs);
-        
+
         jsResult = JSObjectCallFunction(func, g, jsArgs);
         JSUnlockInterpreter();
         JSRelease(func);
         CFRelease(jsArgs);
-        
+
         if (jsResult) {
             result = (CFStringRef)JSObjectCopyCFValue(jsResult);
             JSRelease(jsResult);
@@ -1160,7 +1160,7 @@ _callPACFunction(CFAllocatorRef alloc, JSRunRef runtime, CFURLRef url, CFStringR
             }
         }
     }
-    
+
     if (g) JSRelease(g);
 
     //CFLog(0, CFSTR("FindProxyForURL returned: %@"), result);
@@ -1177,24 +1177,24 @@ _callPACFunction(CFAllocatorRef alloc, JSRunRef runtime, CFURLRef url, CFStringR
      http://msdn.microsoft.com/library/en-us/automat/htm/chap5_78v9.asp
  Doc on passing arrays though IDispatch:
      http://msdn.microsoft.com/library/en-us/automat/htm/chap7_5dyr.asp
- 
+
  COM code is cobbled together from the following samples:
      http://www.microsoft.com/msj/1099/visualprog/visualprog1099.aspx
      http://www.codeproject.com/com/mfcscripthost.asp
      http://www.microsoft.com/mind/0297/activescripting.asp
      MSDN KB 183698: http://support.microsoft.com:80/support/kb/articles/q183/6/98.asp
- 
+
  Info on doing COM in C vs C++
      http://msdn.microsoft.com/library/en-us/dncomg/html/msdn_com_co.asp
- 
+
  COM memory management rules, for items pass by reference and interfaces
      http://msdn.microsoft.com/library/en-us/com/htm/com_3rub.asp
      http://msdn.microsoft.com/library/en-us/com/htm/com_1vxv.asp
- 
+
  Big scripting FAQ, including how to reuse a script engine with cloning - we don't do this yet
  but maybe it would be an interesting optimization.
      http://www.mindspring.com/~mark_baker/
- 
+
  I found mixed info as to how compatible GCC's vtables are with COM.  I didn't try a C++ implementation
  yet, but there is some chance that it work work with GCC.
 */
@@ -1401,7 +1401,7 @@ DispatchInvoke(IDispatch *disp, DISPID dispIdMember, REFIID riid, LCID lcid, WOR
             puArgErr = 0;
             return DISP_E_TYPEMISMATCH;
         }
-        
+
         // Convert COM arg from BSTR to CFString, call our C code
         BSTR bstrNameParam = pDispParams->rgvarg[0].bstrVal;
         COM_LOG("DispatchInvoke - DNSResolveDISPID - input=%ls\n", pDispParams->rgvarg[0].bstrVal);
@@ -1426,7 +1426,7 @@ DispatchInvoke(IDispatch *disp, DISPID dispIdMember, REFIID riid, LCID lcid, WOR
         if (cfAddrList) CFRelease(cfAddrList);
         return S_OK;
     }
-    
+
     else if (dispIdMember == PlatformNameDISPID) {
         COM_LOG("DispatchInvoke - PlatformNameDISPID, wFlags=%d\n", wFlags);
         assert(wFlags == DISPATCH_PROPERTYGET);
@@ -1434,13 +1434,13 @@ DispatchInvoke(IDispatch *disp, DISPID dispIdMember, REFIID riid, LCID lcid, WOR
             return DISP_E_BADPARAMCOUNT;
         if (pDispParams->cNamedArgs != 0)
             return DISP_E_NONAMEDARGS;
-        
+
         VariantInit(pVarResult);
         pVarResult->vt = VT_BSTR;
         pVarResult->bstrVal = SysAllocString(OLESTR("Win32"));
         return S_OK;
     }
-    
+
     else {
         COM_LOG("DispatchInvoke - UNKNOWN MEMBER REQUESTED\n");
         return DISP_E_MEMBERNOTFOUND;
@@ -1540,7 +1540,7 @@ SiteGetLCID(IActiveScriptSite *site, LCID *plcid) {
 }
 
 static HRESULT STDMETHODCALLTYPE
-SiteGetItemInfo(IActiveScriptSite *site, 
+SiteGetItemInfo(IActiveScriptSite *site,
             LPCOLESTR pstrName,             // address of item name
             DWORD dwReturnMask,             // bit mask for information retrieval
             IUnknown **ppunkItem,           // address of pointer to item's IUnknown
@@ -1582,7 +1582,7 @@ SiteGetDocVersionString(IActiveScriptSite *site, BSTR *pbstrVersionString) {
 }
 
 static HRESULT STDMETHODCALLTYPE
-SiteOnScriptTerminate(IActiveScriptSite *site, 
+SiteOnScriptTerminate(IActiveScriptSite *site,
                       const VARIANT *pvarResult,      // address of script results
                       const EXCEPINFO *pexcepinfo)    // address of structure with exception information
 {
@@ -1592,7 +1592,7 @@ SiteOnScriptTerminate(IActiveScriptSite *site,
 
 static HRESULT STDMETHODCALLTYPE
 SiteOnStateChange(IActiveScriptSite *site, SCRIPTSTATE ssScriptState) {
-    
+
     COM_LOG("SiteOnStateChange: %d\n", ssScriptState);
     return S_OK;
 }
@@ -1642,7 +1642,7 @@ SiteOnLeaveScript(IActiveScriptSite *site) {
 // Feed a piece of code to the script engine
 /* static */ HRESULT
 _parseCodeChunk(CFStringRef code, JSRunRef runtime) {
-    
+
     // convert from CFString to unicode buffer
     CFIndex len = CFStringGetLength(code);
     UniChar stackBuffer[12*1024];
@@ -1694,25 +1694,25 @@ _createJSRuntime(CFAllocatorRef alloc, CFStringRef js_support, CFStringRef js_pa
 
         hResult = IActiveScript_QueryInterface(runtime->pActiveScript, &IID_IActiveScriptParse, (void **)&(runtime->pActiveScriptParse));
         CHECK_HRESULT(hResult, "QueryInterface:IID_IActiveScriptParse");
-        
+
         hResult = IActiveScript_SetScriptSite(runtime->pActiveScript, &(newSite->iSite));
         CHECK_HRESULT(hResult, "IActiveScript_SetScriptSite");
-        
+
         hResult = IActiveScriptParse_InitNew(runtime->pActiveScriptParse);
         CHECK_HRESULT(hResult, "IActiveScriptParse_InitNew");
-        
+
         hResult = IActiveScript_AddNamedItem(runtime->pActiveScript, ITEM_NAME_ADDED_TO_JS, SCRIPTITEM_GLOBALMEMBERS|SCRIPTITEM_ISVISIBLE);
         CHECK_HRESULT(hResult, "IActiveScript_AddNamedItem");
-        
+
         hResult = IActiveScript_SetScriptState(runtime->pActiveScript, SCRIPTSTATE_STARTED);
         CHECK_HRESULT(hResult, "IActiveScript_SetScriptState");
-        
+
         hResult = _parseCodeChunk(js_support, runtime);
         CHECK_HRESULT(hResult, "IActiveScriptParse_ParseScriptText - js_support");
-        
+
         hResult = _parseCodeChunk(js_pac, runtime);
         CHECK_HRESULT(hResult, "IActiveScriptParse_ParseScriptText - js_pac");
-        
+
     } while (0);
 
     SiteRelease(&(newSite->iSite));
@@ -1728,7 +1728,7 @@ _createJSRuntime(CFAllocatorRef alloc, CFStringRef js_support, CFStringRef js_pa
 
 /* static */ void
 _freeJSRuntime(JSRunRef runtime) {
-    
+
     do {
         if (runtime->pActiveScript) {
             HRESULT hResult = IActiveScript_Close(runtime->pActiveScript);
@@ -1740,7 +1740,7 @@ _freeJSRuntime(JSRunRef runtime) {
         // Print out current refCounts.  Both should be 2 at this point.  From experimenting,
         // it appears that when you Release either pActiveScript or pActiveScriptParse both end
         // losing one ref, so by releasing each one once, they both will go away.
-        
+
         // In addition, another good test is to grep the log output for "DispatchAddRef" and
         // "DispatchRelease".  After this routine runs there should be an equal number (23 as of
         // this writing).
@@ -1774,7 +1774,7 @@ _freeJSRuntime(JSRunRef runtime) {
 // Prepare a CFString for passing as a param via IDispatch to a COM method
 /* static */ void
 _prepareStringParam(CFStringRef str, VARIANTARG *variant) {
-    
+
     VariantInit(variant);
     variant->vt = VT_BSTR;
     CFIndex len = CFStringGetLength(str);
@@ -1823,7 +1823,7 @@ _prepareStringArrayReturnValue(CFArrayRef cfArray, VARIANT *pVarResult) {
         HRESULT hResult = SafeArrayPutElement(pVarResult->parray, &i, &variant);
         CHECK_HRESULT(hResult, "SafeArrayPutElement");
         SysFreeString(bstrValue);
-    }    
+    }
 }
 
 
@@ -1839,7 +1839,7 @@ _callPACFunction(CFAllocatorRef alloc, JSRunRef runtime, CFURLRef url, CFStringR
         // get the iDispatch interface we can use to call JS
         hResult = IActiveScript_GetScriptDispatch(runtime->pActiveScript, NULL, &pDisp);
         CHECK_HRESULT(hResult, "IActiveScript_GetScriptDispatch");
-        
+
         // find the dispid (a cookie) for the function we want to call
         LPOLESTR funcName = OLESTR("__Apple_FindProxyForURL");
         DISPID dispid;
@@ -1917,9 +1917,9 @@ static CFURLRef _JSPacFileLocation = NULL;
 static CFAbsoluteTime _JSPacFileExpiration = 0;
 static JSRunRef _JSRuntime = NULL;
 
-/* Must be called while holding the _JSLock.  It is the caller's responsibility to verify that expires is a valid 
+/* Must be called while holding the _JSLock.  It is the caller's responsibility to verify that expires is a valid
    value; bad values can cause problems.  In general, the caller should make sure to successfully go through
-   _stringFromLoadedPACStream to produce the expiry value. */ 
+   _stringFromLoadedPACStream to produce the expiry value. */
 static void _JSSetEnvironmentForPAC(CFAllocatorRef alloc, CFURLRef url, CFAbsoluteTime expires, CFStringRef pacString) {
 
     if (_JSRuntime) {
@@ -1933,7 +1933,7 @@ static void _JSSetEnvironmentForPAC(CFAllocatorRef alloc, CFURLRef url, CFAbsolu
         CFRelease(_JSPacFileLocation);
         _JSPacFileLocation = NULL;
     }
-    
+
     CFStringRef js_support = _loadJSSupportFile();
     if (js_support) {
         _JSRuntime = _createJSRuntime(alloc, js_support, pacString);
@@ -1955,7 +1955,7 @@ _JSFindProxyForURL(CFURLRef pac, CFURLRef url, CFStringRef host) {
     if (!host) {
         return CFRetain(_kProxySupportDIRECT);
     }
-    
+
     __CFSpinLock(&_JSLock);
 
     if (!_JSRuntime ||
@@ -1995,14 +1995,14 @@ static CFStringRef
 _JSFindProxyForURLAsync(CFURLRef pac, CFURLRef url, CFStringRef host, Boolean *mustBlock) {
     CFStringRef result = NULL;
     CFAllocatorRef alloc = CFGetAllocator(pac);
-    
+
     if (!host) {
         return CFRetain(_kProxySupportDIRECT);
     }
-    
+
      __CFSpinLock(&_JSLock);
 
-    if (!_JSRuntime || !_JSPacFileExpiration || 
+    if (!_JSRuntime || !_JSPacFileExpiration ||
         (CFAbsoluteTimeGetCurrent() > _JSPacFileExpiration) ||
         !_JSPacFileLocation || !CFEqual(pac, _JSPacFileLocation)) {
         *mustBlock = TRUE;
@@ -2018,23 +2018,23 @@ _JSFindProxyForURLAsync(CFURLRef pac, CFURLRef url, CFStringRef host, Boolean *m
 // Platform independent piece of the DnsResolve callbacks
 static CFArrayRef
 _resolveDNSName(CFStringRef name) {
-    
+
     CFStreamError error;
     CFMutableArrayRef list = NULL;
     CFHostRef lookup = CFHostCreateWithName(kCFAllocatorDefault, name);
-    
+
     if (lookup && CFHostStartInfoResolution(lookup, kCFHostAddresses, &error) && !error.error) {
-        
+
         CFArrayRef addrs = CFHostGetAddressing(lookup, NULL);
         CFIndex count = addrs ? CFArrayGetCount(addrs) : 0;
-        
+
         if (count) {
-            
+
             list = CFArrayCreateMutable(kCFAllocatorDefault, count, &kCFTypeArrayCallBacks);
             if (list) {
                 CFIndex i;
                 for (i = 0; i < count; i++) {
-                    
+
                     CFDataRef saData = (CFDataRef)CFArrayGetValueAtIndex(addrs, i);
 					CFStringRef str = _CFNetworkCFStringCreateWithCFDataAddress(kCFAllocatorDefault, saData);
                     if (str) {
@@ -2042,19 +2042,19 @@ _resolveDNSName(CFStringRef name) {
                         CFRelease(str);
                     }
                 }
-                
+
                 if (!CFArrayGetCount(list)) {
                     CFRelease(list);
                     list = NULL;
                 }
             }
-            
+
         }
-        
+
     }
-    
+
     if (lookup) CFRelease(lookup);
-    
+
     return list;
 }
 
@@ -2064,22 +2064,22 @@ static JSObjectRef
 _JSDnsResolveFunction(void* context, JSObjectRef ctxt, CFArrayRef args) {
 
     JSObjectRef result = NULL;
-    
+
     if (args && CFArrayGetCount(args) == 1) {
-        
+
         CFTypeRef name = JSObjectCopyCFValue((JSObjectRef)CFArrayGetValueAtIndex(args, 0));
         if (name && CFGetTypeID(name) == CFStringGetTypeID()) {
-            
+
             CFArrayRef list = _resolveDNSName((CFStringRef)name);
             if (list) {
                 result = JSObjectCreateWithCFType(list);
                 CFRelease(list);
             }
         }
-        
+
         if (name) CFRelease(name);
     }
-    
+
     return result;
 }
 
@@ -2088,37 +2088,37 @@ _JSDnsResolveFunction(void* context, JSObjectRef ctxt, CFArrayRef args) {
 _JSPrimaryIpv4AddressesFunction(void* context, JSObjectRef ctxt, CFArrayRef args) {
 
     JSObjectRef result = NULL;
-    
+
     do {
         CFStringRef key = NULL;
         CFDictionaryRef value = NULL;
         CFStringRef interface = NULL;
         SCDynamicStoreRef store = SCDynamicStoreCreate(kCFAllocatorDefault, CFSTR("JSEvaluator"), NULL, NULL);
-        
+
         if (!store)
             break;
-        
+
         key = SCDynamicStoreKeyCreateNetworkGlobalEntity(kCFAllocatorDefault, kSCDynamicStoreDomainState, kSCEntNetIPv4);
         if (!key) {
             CFRelease(store);
             break;
         }
-        
+
         value = SCDynamicStoreCopyValue(store, key);
         CFRelease(key);
-        
+
         if (!value) {
             CFRelease(store);
             break;
         }
-        
+
         interface = CFDictionaryGetValue(value, kSCDynamicStorePropNetPrimaryInterface);
         if (!interface) {
             CFRelease(value);
             CFRelease(store);
             break;
         }
-        
+
         key = SCDynamicStoreKeyCreateNetworkInterfaceEntity(kCFAllocatorDefault, kSCDynamicStoreDomainState, interface, kSCEntNetIPv4);
         CFRelease(value);
 
@@ -2126,9 +2126,9 @@ _JSPrimaryIpv4AddressesFunction(void* context, JSObjectRef ctxt, CFArrayRef args
             CFRelease(store);
             break;
         }
-        
+
         value = SCDynamicStoreCopyValue(store, key);
-        
+
         CFRelease(store);
 
         if (!value) {
@@ -2138,9 +2138,9 @@ _JSPrimaryIpv4AddressesFunction(void* context, JSObjectRef ctxt, CFArrayRef args
         result = JSObjectCreateWithCFType(value);
         CFRelease(value);
         CFRelease(key);
-        
+
     } while (0);
-    
+
     return result;
 }
 
@@ -2154,7 +2154,7 @@ typedef struct {
     CFURLRef targetURL;
     CFStringRef targetScheme;
     CFStringRef targetHost;
-    
+
     CFMutableDataRef data;
     void *clientInfo;
     _CFProxyStreamCallBack cb;
@@ -2182,7 +2182,7 @@ static void readBytesFromProxyStream(CFReadStreamRef proxyStream, _PACStreamCont
 static void proxyStreamCallback(CFReadStreamRef proxyStream, CFStreamEventType type, void *clientCallBackInfo) {
     _PACStreamContext *ctxt = (_PACStreamContext *)clientCallBackInfo;
     switch (type) {
-    case kCFStreamEventHasBytesAvailable: 
+    case kCFStreamEventHasBytesAvailable:
         readBytesFromProxyStream(proxyStream, ctxt);
         break;
     case kCFStreamEventEndEncountered:
@@ -2208,7 +2208,7 @@ static CFReadStreamRef BuildStreamForPACURL(CFAllocatorRef alloc, CFURLRef pacUR
         pacContext->targetScheme = targetScheme;
         CFRetain(targetHost);
         pacContext->targetHost = targetHost;
-        
+
         pacContext->data = CFDataCreateMutable(alloc, 0);
         pacContext->clientInfo = clientInfo;
         pacContext->cb = callback;
@@ -2219,7 +2219,7 @@ static CFReadStreamRef BuildStreamForPACURL(CFAllocatorRef alloc, CFURLRef pacUR
         streamContext.retain = NULL;
         streamContext.release = releasePACStreamContext;
         streamContext.copyDescription = NULL;
-        
+
         CFReadStreamSetClient(stream, kCFStreamEventHasBytesAvailable | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered, proxyStreamCallback, &streamContext);
         CFReadStreamOpen(stream);
     }

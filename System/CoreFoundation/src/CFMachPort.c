@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -190,7 +190,7 @@ static void __CFMachPortDeallocate(CFTypeRef cf) {
         }
         source = mp->_source;
         mp->_source = NULL;
-    }    
+    }
     if (wasReady) {
         __CFMachPortInvalidateLocked(source, mp);
     }
@@ -302,7 +302,7 @@ static const CFRuntimeClass __CFMachPortClass = {
     __CFMachPortDeallocate,
     __CFMachPortEqual,
     __CFMachPortHash,
-    NULL,      // 
+    NULL,      //
     __CFMachPortCopyDescription
 };
 
@@ -354,7 +354,7 @@ CFMachPortRef _CFMachPortCreateWithPort2(CFAllocatorRef allocator, mach_port_t p
             break;
         }
     }
-#else                
+#else
     for (CFIndex idx = 0, cnt = __CFAllMachPorts ? [__CFAllMachPorts count] : 0; idx < cnt; idx++) {
         CFMachPortRef p = (CFMachPortRef)[__CFAllMachPorts pointerAtIndex:idx];
         if (p && p->_port == port) {
@@ -365,7 +365,7 @@ CFMachPortRef _CFMachPortCreateWithPort2(CFAllocatorRef allocator, mach_port_t p
     }
 #endif
     __CFSpinUnlock(&__CFAllMachPortsLock);
-    
+
     if (!mp) {
         CFIndex size = sizeof(struct __CFMachPort) - sizeof(CFRuntimeBase);
         CFMachPortRef memory = (CFMachPortRef)_CFRuntimeCreateInstance(allocator, CFMachPortGetTypeID(), size, NULL);
@@ -418,7 +418,7 @@ CFMachPortRef _CFMachPortCreateWithPort2(CFAllocatorRef allocator, mach_port_t p
 	    }
         }
     }
-    
+
     if (mp && !CFMachPortIsValid(mp)) { // must do this outside lock to avoid deadlock
         CFRelease(mp);
         mp = NULL;
@@ -481,7 +481,7 @@ void CFMachPortInvalidate(CFMachPortRef mp) {
                 break;
             }
         }
-#endif        
+#endif
         if (mp->_dsrc) {
             dispatch_source_cancel(mp->_dsrc);
             mp->_dsrc = NULL;
@@ -558,7 +558,7 @@ void CFMachPortSetInvalidationCallBack(CFMachPortRef mp, CFMachPortInvalidationC
 }
 
 /* Returns the number of messages queued for a receive port. */
-CFIndex CFMachPortGetQueuedMessageCount(CFMachPortRef mp) {  
+CFIndex CFMachPortGetQueuedMessageCount(CFMachPortRef mp) {
     CHECK_FOR_FORK_RET(0);
     __CFGenericValidateType(mp, CFMachPortGetTypeID());
     mach_port_status_t status;

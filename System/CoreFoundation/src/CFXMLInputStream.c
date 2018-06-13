@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -48,7 +48,7 @@ static Boolean determineEncoding(_CFXMLInputStream *stream) {
     const uint8_t *base = 0L;
     char quote = ' ';
     Boolean useUTF8 = false;
-    
+
     // Check for the byte order mark first
     if (length > 2) {
         // This clause checks for the unicode byte order mark, or a Unicode sequence lacking the BOM; technically an error, but this check is recommended by the XML spec
@@ -172,7 +172,7 @@ CF_PRIVATE void _initializeInputStream(_CFXMLInputStream *stream, CFAllocatorRef
     stream->url = dataSource ? (CFURLRef)CFRetain(dataSource) : NULL;
     stream->encoding = kCFStringEncodingInvalidId;
     stream->currentByte = NULL;
-    
+
     stream->allocator = (CFAllocatorRef)CFRetain(alloc);
     stream->charBuffer = NULL;
     stream->currentChar = NULL;
@@ -180,7 +180,7 @@ CF_PRIVATE void _initializeInputStream(_CFXMLInputStream *stream, CFAllocatorRef
     stream->parserMark = NULL;
     stream->bufferLength = 0;
     stream->bufferCapacity = 0;
-    
+
     stream->charIndex = 1;
     stream->lineNum = 1;
 
@@ -488,7 +488,7 @@ CF_PRIVATE Boolean _inputStreamReturnCharacter(_CFXMLInputStream *stream, UniCha
         }
         if (stream->parserMark) {
             stream->parserMark ++;
-        } 
+        }
     } else if (stream->currentByte > CFDataGetBytePtr(stream->data)) {
         // We have no character buffer available, so that means one of two things - either we've never needed a character buffer because all the characters could come directly out of the byte stream, or we've not yet processed the first character.  The former means we can just back up the byte pointer; the latter means Bad Things have happened.
         if (stream->flags & ENCODING_MATCHES_ASCII) {

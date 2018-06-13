@@ -1,10 +1,24 @@
-//
-//  NSKeyedUnarchiver.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSKeyedUnarchiver.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import <Foundation/NSKeyedArchiver.h>
 #import <Foundation/NSArchiver.h>
@@ -166,7 +180,7 @@ static BOOL raiseIfFinished(NSKeyedUnarchiver *unarchiver)
     return NO;
 }
 
-// get int value and update buffer pointer 
+// get int value and update buffer pointer
 static int64_t _getInt(uint8_t **ptrptr)
 {
     uint8_t *ptr = *ptrptr;
@@ -202,7 +216,7 @@ static int64_t _getInt(uint8_t **ptrptr)
 
 static BOOL _getOffsetForNestedValueWrap(NSKeyedUnarchiver *unarchiver, NSString *key, uint64_t offset, uint64_t *offsetPtr)
 {
-    return __CFBinaryPlistGetOffsetForValueFromDictionary3(unarchiver->_bytes, unarchiver->_len, offset, 
+    return __CFBinaryPlistGetOffsetForValueFromDictionary3(unarchiver->_bytes, unarchiver->_len, offset,
         &unarchiver->_offsetData->trailer, key, NULL, offsetPtr, NO, unarchiver->_reservedDictionary);
 }
 
@@ -424,7 +438,7 @@ static uint64_t _getSizedInt(const uint8_t *data, uint8_t valSize) {
         return CFSwapInt64BigToHost(val);
     }
 #endif
-    // Compatability with existing archives, including anything with a non-power-of-2 
+    // Compatability with existing archives, including anything with a non-power-of-2
     // size and 16-byte values, and architectures that don't support unaligned access
     uint64_t res = 0;
     for (CFIndex idx = 0; idx < valSize; idx++) {
@@ -442,7 +456,7 @@ static BOOL _getUIDFromData(uint8_t *ptr, NSUInteger *returnVal)
     NSUInteger cnt = (*ptr & 0xf) + 1;
 
     uint64_t bigint = _getSizedInt(++ptr, cnt);
-    if (UINT32_MAX < bigint) 
+    if (UINT32_MAX < bigint)
     {
         return NO;
     }
@@ -509,7 +523,7 @@ static id _decodeObjectBinary(NSKeyedUnarchiver *unarchiver, NSUInteger uid1) NS
         }
         else if (markerTag != kCFBinaryPlistMarkerDict)
         {
-            RELEASE_LOG("Unimplemented marker 0x%x", markerTag);  // TODO https://code.google.com/p/apportable/issues/detail?id=153 
+            RELEASE_LOG("Unimplemented marker 0x%x", markerTag);  // TODO https://code.google.com/p/apportable/issues/detail?id=153
             return nil;
         }
         uint64_t doffset;
@@ -573,7 +587,7 @@ static id _decodeObjectBinary(NSKeyedUnarchiver *unarchiver, NSUInteger uid1) NS
         }
         if (className != nil)
         {
-            CFRelease(className); 
+            CFRelease(className);
         }
         if ([unarchiver requiresSecureCoding])
         {
@@ -682,7 +696,7 @@ static id _decodeObjectXML(NSKeyedUnarchiver *unarchiver, NSString *key)
     {
 #warning TODO implement classForClassNames https://code.google.com/p/apportable/issues/detail?id=153
         // TODO
-    } 
+    }
     else if ((class = [[unarchiver class] classForClassName:className]))
     {
         // TODO
@@ -923,7 +937,7 @@ static void setClassForClassName(Class cls, NSString *codedName)
         [self release];
         return nil;
     }
-    
+
     self = [super init];
     if (self)
     {
@@ -989,7 +1003,7 @@ static void setClassForClassName(Class cls, NSString *codedName)
                 [self release];
                 return nil;
             }
-            
+
             CFRetain(top);
             CFArrayAppendValue(_containers, top);
 
@@ -1098,7 +1112,7 @@ static void setClassForClassName(Class cls, NSString *codedName)
 
 - (NSInteger)versionForClassName:(NSString *)className
 {
-#warning TODO implement versionForClassName: // TODO https://code.google.com/p/apportable/issues/detail?id=153 
+#warning TODO implement versionForClassName: // TODO https://code.google.com/p/apportable/issues/detail?id=153
     DEBUG_BREAK();
     return 0;
 }
@@ -1453,7 +1467,7 @@ static void setClassForClassName(Class cls, NSString *codedName)
                 return nil;
             }
         }
-        
+
         CFRetain(array);
         CFArrayAppendValue(_containers, array);
 
@@ -1737,7 +1751,7 @@ static void setClassForClassName(Class cls, NSString *codedName)
 - (Class)classForClassName:(NSString *)className
 {
     Class cls = CFDictionaryGetValue(_nameClassMap, className);
-    
+
     if (cls == Nil)
     {
         cls = [NSKeyedUnarchiver classForClassName:className];

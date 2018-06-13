@@ -1,10 +1,24 @@
-//
-//  NSKeyValueCollectionProxies.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSKeyValueCollectionProxies.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import "NSKeyValueCollectionProxies.h"
 
@@ -124,15 +138,15 @@ static id _NSGetProxyValueWithGetterNoLock(id obj, NSKeyValueProxyGetter* getter
 {
     Class proxyClass = [getter proxyClass];
     NSHashTable *proxyShare = [proxyClass _proxyShare];
-    
+
     if (_NSKeyValueProxyShareKey == nil)
     {
         _NSKeyValueProxyShareKey = [[NSKeyValueProxyShareKey alloc] init];
     }
-    
+
     _NSKeyValueProxyShareKey->_container = obj;
     _NSKeyValueProxyShareKey->_key = [getter key];
-    
+
     id proxy = [proxyShare member:_NSKeyValueProxyShareKey];
     if (proxy)
     {
@@ -143,7 +157,7 @@ static id _NSGetProxyValueWithGetterNoLock(id obj, NSKeyValueProxyGetter* getter
         proxy = [[proxyClass alloc] _proxyInitWithContainer:obj getter:(id)getter];
         [proxyShare addObject:proxy];
     }
-    
+
     [proxy autorelease];
     return proxy;
 }
@@ -367,7 +381,7 @@ static id _NSGetProxyValueWithGetter(id obj, SEL sel, NSKeyValueProxyGetter* get
 - (void)dealloc
 {
     [_mutableCollectionGetter release];
-    
+
     [super dealloc];
 }
 
@@ -477,7 +491,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
     }
     OSSpinLockUnlock(&_NSKeyValueProxySpinlock);
  */
-    
+
     return dealloced;
 }
 
@@ -1279,7 +1293,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
         [copy insertObjects:objects atIndexes:indexes];
     }
 
-    
+
     _NSSetUsingKeyValueSetter(_container, _valueSetter, copy);
     [copy release];
 }
@@ -1458,7 +1472,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
             return;
         }
     }
-    
+
     NSSet *emptySet = [[NSSet alloc] init];
     _NSSetUsingKeyValueSetter(_container, _valueSetter, emptySet);
     [emptySet release];
@@ -2389,7 +2403,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableArray **mutableArrayIvar = (NSMutableArray**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableArray *mutableArray = *mutableArrayIvar;
-    
+
     if (mutableArray)
     {
         [mutableArray addObject:object];
@@ -2416,7 +2430,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableArray **mutableArrayIvar = (NSMutableArray**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableArray *mutableArray = *mutableArrayIvar;
-    
+
     if (mutableArray)
     {
         [mutableArray insertObject:object atIndex:idx];
@@ -2428,7 +2442,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
             [self _raiseNilValueExceptionWithSelector:_cmd];
             return;
         }
-        
+
         *mutableArrayIvar = [[NSMutableArray alloc] initWithObjects:&object count:1];
     }
 }
@@ -2437,7 +2451,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableArray **mutableArrayIvar = (NSMutableArray**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableArray *mutableArray = *mutableArrayIvar;
-    
+
     if (mutableArray)
     {
         [mutableArray insertObjects:objects atIndexes:indexes];
@@ -2569,7 +2583,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableOrderedSet **mutableOrderedSetIvar = (NSMutableOrderedSet**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableOrderedSet *mutableOrderedSet = *mutableOrderedSetIvar;
-    
+
     if (mutableOrderedSet)
     {
         [mutableOrderedSet insertObject:object atIndex:idx];
@@ -2581,7 +2595,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
             [self _raiseNilValueExceptionWithSelector:_cmd];
             return;
         }
-        
+
         *mutableOrderedSetIvar = [[NSMutableOrderedSet alloc] initWithObjects:&object count:1];
     }
 }
@@ -2590,7 +2604,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableOrderedSet **mutableOrderedSetIvar = (NSMutableOrderedSet**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableOrderedSet *mutableOrderedSet = *mutableOrderedSetIvar;
-    
+
     if (mutableOrderedSet)
     {
         [mutableOrderedSet insertObjects:objects atIndexes:indexes];
@@ -2678,7 +2692,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableSet **mutableSetIvar = (NSMutableSet**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableSet *mutableSet = *mutableSetIvar;
-    
+
     if (mutableSet)
     {
         [mutableSet addObject:object];
@@ -2693,7 +2707,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableSet **mutableSetIvar = (NSMutableSet**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableSet *mutableSet = *mutableSetIvar;
-    
+
     if (mutableSet)
     {
         [mutableSet addObjectsFromArray:array];
@@ -2757,7 +2771,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableSet **mutableSetIvar = (NSMutableSet**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableSet *mutableSet = *mutableSetIvar;
-    
+
     if (mutableSet)
     {
         [mutableSet setSet:set];
@@ -2772,7 +2786,7 @@ static BOOL _NSKeyValueProxyDeallocate(id <NSKeyValueProxyCaching>proxy)
 {
     NSMutableSet **mutableSetIvar = (NSMutableSet**)((char*)_container + ivar_getOffset(_ivar));
     NSMutableSet *mutableSet = *mutableSetIvar;
-    
+
     if (mutableSet)
     {
         [mutableSet unionSet:set];

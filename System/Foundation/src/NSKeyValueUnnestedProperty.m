@@ -1,10 +1,24 @@
-//
-//  NSKeyValueUnnestedProperty.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSKeyValueUnnestedProperty.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import "NSKeyValueUnnestedProperty.h"
 #import "NSKeyValueContainerClass.h"
@@ -145,7 +159,7 @@
 }
 - (BOOL)object:(NSObject *)object withObservance:(NSKeyValueObservance *)observance willChangeValueForKeyOrKeys:(id)keyOrKeys recurse:(BOOL)shouldRecurse forwardingValues:(NSKeyValueForwardingValues *)forwardingValues
 {
-    //TODO: double check this is right. 
+    //TODO: double check this is right.
     NSMutableDictionary *dict = nil;
     if (shouldRecurse)
     {
@@ -174,7 +188,7 @@
                         else
                         {
                             [dict setObject:forwardingValues->_field1 forKey:relevantKeyPath]; //This in particular looks a bit suspicious. TODO: cross-check it with the nested version.
-                            // In the only case we've ever seen of this being used, _field1 is an observance, and the key is the nested observable. 
+                            // In the only case we've ever seen of this being used, _field1 is an observance, and the key is the nested observable.
                         }
                     }
                     if (forwardingValues->recursedMutableDictionary != nil)
@@ -194,7 +208,7 @@
     }
     forwardingValues->_field1 = nil;
     forwardingValues->recursedMutableDictionary = dict;
-    //the lack of retain/release mangagement here is because the ownership of these objects is managed by NSKVOPendingNotificationInfo. 
+    //the lack of retain/release mangagement here is because the ownership of these objects is managed by NSKVOPendingNotificationInfo.
     return YES;
 }
 
@@ -204,8 +218,8 @@
     for (NSString *key in forwardingValues.recursedMutableDictionary)
     {
         NSKeyValueProperty *value = forwardingValues.recursedMutableDictionary[key];
-        NSKeyValueForwardingValues newValues = { ._field1 = value, .recursedMutableDictionary = nil}; // this makes no sense except in the context of the leaf of a nested key path depended on by an unnested key. Yeesh. 
-                                                                                                      // there has GOT to be a more elegant way to do this. 
+        NSKeyValueForwardingValues newValues = { ._field1 = value, .recursedMutableDictionary = nil}; // this makes no sense except in the context of the leaf of a nested key path depended on by an unnested key. Yeesh.
+                                                                                                      // there has GOT to be a more elegant way to do this.
         [value object:object withObservance:observance didChangeValueForKeyOrKeys:keyOrKeys recurse:NO forwardingValues:newValues];
     }
 }
@@ -222,7 +236,7 @@
         keyPath = [(NSKeyValueUnnestedProperty *)affectingProperty _keyPathIfAffectedByValueForMemberOfKeys:keys]; // silence spurious may not respond to selector warning
         if (keyPath != nil)
         {
-            return self.keyPath; // could just return keyPath in the unnested case, dunno about the others. 
+            return self.keyPath; // could just return keyPath in the unnested case, dunno about the others.
         }
     }
     return nil;
@@ -242,7 +256,7 @@
     }
     for (NSKeyValueProperty *affectingProperty in self.affectingProperties)
     {
-        keyPath = [(NSKeyValueUnnestedProperty *)affectingProperty _keyPathIfAffectedByValueForKey:key exactMatch:NULL]; //probably not unnested, but nothing concrete fails to respond to it. 
+        keyPath = [(NSKeyValueUnnestedProperty *)affectingProperty _keyPathIfAffectedByValueForKey:key exactMatch:NULL]; //probably not unnested, but nothing concrete fails to respond to it.
         if (keyPath != nil)
         {
             if (exactMatch != NULL)

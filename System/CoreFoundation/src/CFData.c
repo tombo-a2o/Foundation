@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -73,15 +73,15 @@ struct __CFData {
     uint8_t *_bytes;	/* compaction: direct access to _bytes is only valid when data is not inline */
 };
 
-/*  
+/*
  Bit 0 = is mutable
  Bit 1 = growable
  Bit 2 = bytes inline
  Bit 3 = use given CFAllocator
  Bit 5 = allocate collectable memory
- 
+
  Bits 1-0 are used for mutability variation
- 
+
  Bit 6 = not all bytes have been zeroed yet (mutable)
  */
 
@@ -122,7 +122,7 @@ CF_INLINE UInt32 __CFMutableVarietyFromFlags(UInt32 flags) {
 
 #define __CFGenericValidateMutabilityFlags(flags) \
     CFAssert2(__CFMutableVarietyFromFlags(flags) != 0x2, __kCFLogAssertion, "%s(): flags 0x%x do not correctly specify the mutable variety", __PRETTY_FUNCTION__, flags);
-    
+
 CF_INLINE void __CFDataSetInline(CFDataRef data, Boolean flag) {
     __CFBitfieldSetValue(((CFRuntimeBase *)data)->_cfinfo[CF_INFO_BITS], 2, 2, (flag ? 1 : 0));
 }
@@ -268,7 +268,7 @@ static CFStringRef __CFDataCopyDescription(CFTypeRef cf) {
 static void *__CFDataInlineBytesPtr(CFDataRef data) {
     return (void *)((uintptr_t)((int8_t *)data + sizeof(struct __CFData) + 15) & ~0xF);	// 16-byte align
 }
-    
+
 static Boolean __CFDataShouldAllocateCleared(CFDataRef data, CFIndex size) {
     Boolean result;
     if (__CFDataUseAllocator(data)) {
@@ -287,7 +287,7 @@ static Boolean __CFDataShouldAllocateCleared(CFDataRef data, CFIndex size) {
     return result;
 }
 
-    
+
 // Check __CFDataShouldAllocateCleared before passing true.
 static void *__CFDataAllocate(CFDataRef data, CFIndex size, Boolean clear) {
     void *bytes = NULL;
@@ -338,7 +338,7 @@ static const CFRuntimeClass __CFDataClass = {
     __CFDataDeallocate,
     __CFDataEqual,
     __CFDataHash,
-    NULL,	// 
+    NULL,	//
     __CFDataCopyDescription
 };
 
@@ -367,7 +367,7 @@ static CFMutableDataRef __CFDataInit(CFAllocatorRef allocator, CFOptionFlags fla
     Boolean allocateInline = !isGrowable && !noCopy && capacity < INLINE_BYTES_THRESHOLD;
     allocator = (allocator == NULL) ? __CFGetDefaultAllocator() : allocator;
     Boolean useAllocator = (allocator != kCFAllocatorSystemDefault && allocator != kCFAllocatorMalloc && allocator != kCFAllocatorMallocZone);
-    
+
     CFIndex size = sizeof(struct __CFData) - sizeof(CFRuntimeBase);
     if (allocateInline) {
 	size += sizeof(uint8_t) * __CFDataNumBytesForCapacity(capacity) + sizeof(uint8_t) * 15;	// for 16-byte alignment fixup
@@ -379,10 +379,10 @@ static CFMutableDataRef __CFDataInit(CFAllocatorRef allocator, CFOptionFlags fla
     __CFDataSetNumBytesUsed(memory, 0);
     __CFDataSetLength(memory, 0);
     __CFDataSetInfoBits(memory,
-			(allocateInline ? __kCFBytesInline : 0) | 
+			(allocateInline ? __kCFBytesInline : 0) |
 			(useAllocator ? __kCFUseAllocator : 0) |
 			(collectableMemory ? __kCFAllocatesCollectable : 0));
-    
+
     BOOL finalize = YES;
     BOOL scan = YES;
     if (collectableMemory) {
@@ -598,13 +598,13 @@ void CFDataIncreaseLength(CFMutableDataRef data, CFIndex extraLength) {
 void CFDataAppendBytes(CFMutableDataRef data, const uint8_t *bytes, CFIndex length) {
     CF_OBJC_FUNCDISPATCHV(__kCFDataTypeID, void, (NSMutableData *)data, appendBytes:(const void *)bytes length:(NSUInteger)length);
     CFAssert1(__CFDataIsMutable(data), __kCFLogAssertion, "%s(): data is immutable", __PRETTY_FUNCTION__);
-    CFDataReplaceBytes(data, CFRangeMake(__CFDataLength(data), 0), bytes, length); 
+    CFDataReplaceBytes(data, CFRangeMake(__CFDataLength(data), 0), bytes, length);
 }
 
 void CFDataDeleteBytes(CFMutableDataRef data, CFRange range) {
     CF_OBJC_FUNCDISPATCHV(__kCFDataTypeID, void, (NSMutableData *)data, replaceBytesInRange:NSMakeRange(range.location, range.length) withBytes:NULL length:0);
     CFAssert1(__CFDataIsMutable(data), __kCFLogAssertion, "%s(): data is immutable", __PRETTY_FUNCTION__);
-    CFDataReplaceBytes(data, range, NULL, 0); 
+    CFDataReplaceBytes(data, range, NULL, 0);
 }
 
 void CFDataReplaceBytes(CFMutableDataRef data, CFRange range, const uint8_t *newBytes, CFIndex newLength) {
@@ -660,9 +660,9 @@ void CFDataReplaceBytes(CFMutableDataRef data, CFRange range, const uint8_t *new
 
 static void _computeGoodSubstringShift(const uint8_t *needle, int needleLength, unsigned long shift[], unsigned long suff[]) {
     int f, g, i, j;
-    
+
     // Compute suffix lengths
-    
+
     suff[needleLength - 1] = needleLength;
     f = g = needleLength - 1;
     for (i = needleLength - 2; i >= 0; --i) {
@@ -677,9 +677,9 @@ static void _computeGoodSubstringShift(const uint8_t *needle, int needleLength, 
             suff[i] = f - g;
         }
     }
-    
+
     // Compute shift table
-    
+
     for (i = 0; i < needleLength; ++i)
         shift[i] = needleLength;
     j = 0;
@@ -704,14 +704,14 @@ static const uint8_t * __CFDataSearchBoyerMoore(const CFDataRef data, const uint
     if (!goodSubstringShift || !suffixLengths) {
 	__CFDataHandleOutOfMemory(data, needleLength * sizeof(unsigned long));
     }
-    
+
     if(backwards) {
 	for (int i = 0; i < sizeof(badCharacterShift) / sizeof(*badCharacterShift); i++)
 	    badCharacterShift[i] = needleLength;
-	
+
 	for (int i = needleLength - 1; i >= 0; i--)
 	    badCharacterShift[needle[i]] = i;
-	
+
 	// To get the correct shift table for backwards search reverse the needle, compute the forwards shift table, and then reverse the result.
 	uint8_t *needleCopy = (uint8_t *)malloc(needleLength * sizeof(uint8_t));
 	if (!needleCopy) {
@@ -725,13 +725,13 @@ static const uint8_t * __CFDataSearchBoyerMoore(const CFDataRef data, const uint
     } else {
 	for (int i = 0; i < sizeof(badCharacterShift) / sizeof(*badCharacterShift); i++)
 	    badCharacterShift[i] = needleLength;
-	
+
 	for (int i = 0; i < needleLength; i++)
 	    badCharacterShift[needle[i]] = needleLength - i- 1;
-	
+
 	_computeGoodSubstringShift(needle, needleLength, goodSubstringShift, suffixLengths);
     }
-    
+
     const uint8_t *scan_needle;
     const uint8_t *scan_haystack;
     const uint8_t *result = NULL;
@@ -768,10 +768,10 @@ static const uint8_t * __CFDataSearchBoyerMoore(const CFDataRef data, const uint
 	    result = (scan_haystack + 1);
 	}
     }
-    
+
     free(goodSubstringShift);
     free(suffixLengths);
-    
+
     return result;
 }
 
@@ -780,7 +780,7 @@ CFRange _CFDataFindBytes(CFDataRef data, CFDataRef dataToFind, CFRange searchRan
     const uint8_t *needle = CFDataGetBytePtr(dataToFind);
     unsigned long fullHaystackLength = CFDataGetLength(data);
     unsigned long needleLength = CFDataGetLength(dataToFind);
-    
+
     if(compareOptions & kCFDataSearchAnchored) {
 	if(searchRange.length > needleLength) {
 	    if(compareOptions & kCFDataSearchBackwards) {
@@ -792,15 +792,15 @@ CFRange _CFDataFindBytes(CFDataRef data, CFDataRef dataToFind, CFRange searchRan
     if(searchRange.length > fullHaystackLength - searchRange.location) {
 	searchRange.length = fullHaystackLength - searchRange.location;
     }
-    
+
     if(searchRange.length < needleLength || fullHaystackLength == 0 || needleLength == 0) {
 	return CFRangeMake(kCFNotFound, 0);
     }
-	
+
     const uint8_t *haystack = fullHaystack + searchRange.location;
     const uint8_t *searchResult = __CFDataSearchBoyerMoore(data, haystack, searchRange.length, needle, needleLength, (compareOptions & kCFDataSearchBackwards) != 0);
     CFIndex resultLocation = (searchResult == NULL) ? kCFNotFound : searchRange.location + (searchResult - haystack);
-    
+
     return CFRangeMake(resultLocation, resultLocation == kCFNotFound ? 0: needleLength);
 }
 
@@ -809,7 +809,7 @@ CFRange CFDataFind(CFDataRef data, CFDataRef dataToFind, CFRange searchRange, CF
     __CFGenericValidateType(data, __kCFDataTypeID);
     __CFGenericValidateType(dataToFind, __kCFDataTypeID);
     __CFDataValidateRange(data, searchRange, __PRETTY_FUNCTION__);
-    
+
     return _CFDataFindBytes(data, dataToFind, searchRange, compareOptions);
 }
 

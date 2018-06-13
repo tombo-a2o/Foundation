@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -66,16 +66,16 @@
 static int pwrite(int fd, const void *buf, size_t nbyte, off_t offset) {
     // Get where we are
     long pos = _tell(fd);
-    
+
     // Move to new offset
     _lseek(fd, offset, SEEK_SET);
-    
+
     // Write data
     int res = _write(fd, buf, nbyte);
-    
+
     // Return to previous offset
     _lseek(fd, pos, SEEK_SET);
-    
+
     return res;
 }
 
@@ -107,14 +107,14 @@ static int pwrite(int fd, const void *buf, size_t nbyte, off_t offset) {
 #define SetPayload(pointer, value) do { if (pointer) *pointer = value; } while (0)
 
 enum { Nothing = 0, TrieKind = 1, ListKind = 2, CompactTrieKind = 3 };
-typedef enum { FailedInsert = 0, NewTerm = 1, ExistingTerm = 2 } CFBTInsertCode; 
+typedef enum { FailedInsert = 0, NewTerm = 1, ExistingTerm = 2 } CFBTInsertCode;
 
 #pragma pack (1)
 typedef uintptr_t NextTrie;
 
 typedef struct _TrieLevel {
     NextTrie slots[CHARACTER_SET_SIZE];
-    uint32_t weight;        
+    uint32_t weight;
     uint32_t payload;
 } TrieLevel;
 typedef TrieLevel *TrieLevelRef;
@@ -160,9 +160,9 @@ typedef struct _PageEntry {
 
 typedef struct _TrieHeader {
     uint32_t signature;
-    uint32_t rootOffset; 
-    uint32_t count; 
-    uint32_t size; 
+    uint32_t rootOffset;
+    uint32_t count;
+    uint32_t size;
     uint32_t flags;
     uint64_t reserved[16];
 } TrieHeader;
@@ -197,7 +197,7 @@ typedef struct _CompactMapCursor {
     // For example, if the trie contains "ab" and "abc", where "a" is stored on an array level,
     // while "b" and "bc" are stored on a page level. If we creat a cursor for string "a", this cursor
     // will point at the beginning of the page, but not at any particular key. The both entryOffsetInPage and
-    // offsetInEntry fields of the cursor are set to 0 in this case. Now if we add "a" to the 
+    // offsetInEntry fields of the cursor are set to 0 in this case. Now if we add "a" to the
     // trie. the page level will actually contains three entries. The first entry corresponds to string "a".
     // That entry has 0 strlen value. If we creat a cursor for string "a" again, this cursor will
     // point at the first entry on the page. But the entryOffsetInPage and offsetInEntry fields are still
@@ -220,14 +220,14 @@ typedef struct _CFBurstTrieCursor {
 // ** Legacy
 typedef struct _DiskTrieLevel {
     uint32_t slots[CHARACTER_SET_SIZE];
-    uint32_t weight;        
+    uint32_t weight;
     uint32_t payload;
 } DiskTrieLevel;
 typedef DiskTrieLevel *DiskTrieLevelRef;
 
 typedef struct _CompactDiskTrieLevel {
-    uint64_t bitmap[CHARACTER_SET_SIZE / 64]; // CHARACTER_SET_SIZE / 64bits per word 
-    uint32_t weight;        
+    uint64_t bitmap[CHARACTER_SET_SIZE / 64]; // CHARACTER_SET_SIZE / 64bits per word
+    uint32_t weight;
     uint32_t payload;
     uint32_t slots[];
 } CompactDiskTrieLevel;
@@ -253,9 +253,9 @@ typedef struct _StringPageEntry {
 
 typedef struct _fileHeader {
     uint32_t signature;
-    uint32_t rootOffset; 
-    uint32_t count; 
-    uint32_t size; 
+    uint32_t rootOffset;
+    uint32_t count;
+    uint32_t size;
     uint32_t flags;
 } fileHeader;
 // **
@@ -266,7 +266,7 @@ struct _CFBurstTrie {
         TrieLevel root;
         DiskTrieLevel diskRoot;
         MapTrieLevel maproot;
-    };    
+    };
     char *mapBase;
     uint32_t mapSize;
     uint32_t mapOffset;
@@ -320,7 +320,7 @@ static Boolean burstTrieCompactTrieMappedFind(CompactDiskTrieLevelRef trie, char
 
 static void destroyCFBurstTrie(CFBurstTrieRef trie);
 static void finalizeCFBurstTrie(TrieLevelRef trie);
-static void finalizeCFBurstTrieList(ListNodeRef node); 
+static void finalizeCFBurstTrieList(ListNodeRef node);
 
 static int nodeWeightCompare(const void *a, const void *b);
 static int nodeStringCompare(const void *a, const void *b);
@@ -369,36 +369,36 @@ CFBurstTrieRef CFBurstTrieCreateFromFile(CFStringRef path) {
     struct statinfo sb;
     char filename[PATH_MAX];
     int fd;
-    
+
     /* Check valid path name */
     if (!CFStringGetCString(path, filename, PATH_MAX, kCFStringEncodingUTF8)) return NULL;
-    
+
     /* Check if file exists */
     if (stat(filename, &sb) != 0) return NULL;
 
     /* Check if file can be opened */
     if ((fd=open(filename, CF_OPENFLGS|O_RDONLY)) < 0) return NULL;
-    
+
 #if DEPLOYMENT_TARGET_WINDOWS
-    HANDLE mappedFileHandle = (HANDLE)_get_osfhandle(fd);   
+    HANDLE mappedFileHandle = (HANDLE)_get_osfhandle(fd);
     if (!mappedFileHandle) return NULL;
-    
+
     HANDLE mapHandle = CreateFileMapping(mappedFileHandle, NULL, PAGE_READONLY, 0, 0, NULL);
     if (!mapHandle) return NULL;
-    
+
     char *map = (char *)MapViewOfFile(mapHandle, FILE_MAP_READ, 0, 0, sb.st_size);
     if (!map) return NULL;
-#else            
+#else
     char *map = mmap(0, sb.st_size, PROT_READ, MAP_FILE|MAP_SHARED, fd, 0);
 #endif
-    
+
     CFBurstTrieRef trie = NULL;
     TrieHeader *header = (TrieHeader *)map;
 
     if (((uint32_t*)map)[0] == 0xbabeface) {
         trie = (CFBurstTrieRef) calloc(1, sizeof(struct _CFBurstTrie));
         trie->mapBase = map;
-        trie->mapSize = CFSwapInt32LittleToHost(sb.st_size); 
+        trie->mapSize = CFSwapInt32LittleToHost(sb.st_size);
         trie->mapOffset = CFSwapInt32LittleToHost(((fileHeader*)trie->mapBase)->rootOffset);
         trie->cflags = CFSwapInt32LittleToHost(((fileHeader*)trie->mapBase)->flags);
         trie->count = CFSwapInt32LittleToHost(((fileHeader*)trie->mapBase)->count);
@@ -413,7 +413,7 @@ CFBurstTrieRef CFBurstTrieCreateFromFile(CFStringRef path) {
     } else if (header->signature == 0xcafebabe || header->signature == 0x0ddba11) {
         trie = (CFBurstTrieRef) calloc(1, sizeof(struct _CFBurstTrie));
         trie->mapBase = map;
-        trie->mapSize = CFSwapInt32LittleToHost(sb.st_size); 
+        trie->mapSize = CFSwapInt32LittleToHost(sb.st_size);
         trie->cflags = CFSwapInt32LittleToHost(header->flags);
         trie->count = CFSwapInt32LittleToHost(header->count);
         trie->retain = 1;
@@ -488,12 +488,12 @@ Boolean CFBurstTrieAddWithWeight(CFBurstTrieRef trie, CFStringRef term, CFRange 
         UInt8 buffer[MAX_STRING_ALLOCATION_SIZE + 1];
         UInt8 *key = buffer;
         if (bytesize >= size) {
-            size = bytesize; 
+            size = bytesize;
             key = (UInt8 *) malloc(sizeof(UInt8) * size + 1);
         }
         CFStringGetBytes(term, termRange, kCFStringEncodingUTF8, (UInt8)'-', (Boolean)0, key, size, &length);
         key[length] = 0;
-        
+
         success = CFBurstTrieAddUTF8StringWithWeight(trie, key, length, weight, payload);
         if (buffer != key) free(key);
     }
@@ -513,12 +513,12 @@ Boolean CFBurstTrieAddCharactersWithWeight(CFBurstTrieRef trie, UniChar *chars, 
         UInt8 buffer[MAX_STRING_ALLOCATION_SIZE + 1];
         UInt8 *key = buffer;
         if (bytesize >= size) {
-            size = bytesize; 
+            size = bytesize;
             key = (UInt8 *) malloc(sizeof(UInt8) * size + 1);
         }
         length = burstTrieConvertCharactersToUTF8(chars, numChars, key);
         key[length] = 0;
-        
+
         success = CFBurstTrieAddUTF8StringWithWeight(trie, key, length, weight, payload);
         if (buffer != key) free(key);
     }
@@ -531,7 +531,7 @@ Boolean CFBurstTrieInsertUTF8StringWithWeight(CFBurstTrieRef trie, UInt8 *chars,
 
 Boolean CFBurstTrieAddUTF8StringWithWeight(CFBurstTrieRef trie, UInt8 *chars, CFIndex numChars, uint32_t weight, uint32_t payload) {
     CFBTInsertCode code = FailedInsert;
-    
+
     if (!trie->mapBase && numChars < MAX_STRING_SIZE*4 && payload > 0) {
         code = addCFBurstTrieLevel(trie, &trie->root, chars, numChars, weight, payload);
         if (code == NewTerm) trie->count++;
@@ -562,7 +562,7 @@ Boolean CFBurstTrieContains(CFBurstTrieRef trie, CFStringRef term, CFRange termR
         }
         CFStringGetBytes(term, termRange, kCFStringEncodingUTF8, (UInt8)'-', (Boolean)0, key, size, &length);
         key[length] = 0;
-        
+
         success = CFBurstTrieContainsUTF8String(trie, key, length, payload);
         if (buffer != key) free(key);
     }
@@ -592,7 +592,7 @@ Boolean CFBurstTrieContainsCharacters(CFBurstTrieRef trie, UniChar *chars, CFInd
         }
         length = burstTrieConvertCharactersToUTF8(chars, numChars, key);
         key[length] = 0;
-        
+
         success = CFBurstTrieContainsUTF8String(trie, key, length, payload);
         if (buffer != key) free(key);
     }
@@ -630,22 +630,22 @@ Boolean CFBurstTrieContainsUTF8String(CFBurstTrieRef trie, UInt8 *key, CFIndex l
     return success;
 }
 
-Boolean CFBurstTrieSerialize(CFBurstTrieRef trie, CFStringRef path, CFBurstTrieOpts opts) {    
-    Boolean success = false;    
+Boolean CFBurstTrieSerialize(CFBurstTrieRef trie, CFStringRef path, CFBurstTrieOpts opts) {
+    Boolean success = false;
     if (trie->mapBase) {
         return success;
     } else {
         int fd;
         char filename[PATH_MAX];
-        
+
         /* Check valid path name */
         if (!CFStringGetCString(path, filename, PATH_MAX, kCFStringEncodingUTF8)) return success;
-        
+
         /* Check if file can be opened */
         if ((fd=open(filename, CF_OPENFLGS|O_RDWR|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR)) < 0) return success;
-        
+
         if (CFBurstTrieSerializeWithFileDescriptor(trie, fd, opts)) success = true;
-        
+
         close(fd);
     }
     return success;
@@ -658,7 +658,7 @@ Boolean CFBurstTrieSerializeWithFileDescriptor(CFBurstTrieRef trie, int fd, CFBu
 
         trie->cflags = opts;
         trie->mapSize = serializeCFBurstTrie(trie, start_offset, fd);
-        
+
 #if DEPLOYMENT_TARGET_WINDOWS
         HANDLE mappedFileHandle = (HANDLE)_get_osfhandle(fd);
         // We need to make sure we have our own handle to keep this file open as long as the mmap lasts
@@ -675,7 +675,7 @@ Boolean CFBurstTrieSerializeWithFileDescriptor(CFBurstTrieRef trie, int fd, CFBu
 #endif
         success = true;
     }
-    
+
     return success;
 }
 
@@ -868,7 +868,7 @@ static void addCFBurstTrieBurstLevel(CFBurstTrieRef trie, TrieLevelRef root, con
         next = (uintptr_t) newNode;
         NextTrie_SetKind(next, ListKind);
         root->slots[*key] = next;
-    } else { 
+    } else {
         // ** Handle payload.
         root->weight = weight;
         root->payload = payload;
@@ -890,7 +890,7 @@ static CFBTInsertCode addCFBurstTrieListNode(CFBurstTrieRef trie, ListNodeRef li
 {
     CFBTInsertCode code = FailedInsert;
     uint32_t count = 1;
-    
+
     ListNodeRef last = list;
     while (list) {
         if (list->length == keylen && memcmp(key, list->string, keylen) == 0) {
@@ -904,12 +904,12 @@ static CFBTInsertCode addCFBurstTrieListNode(CFBurstTrieRef trie, ListNodeRef li
             list = list->next;
         }
     }
-    
+
     if (!list) {
         last->next = makeCFBurstTrieListNode(key, keylen, weight, payload);
         code = NewTerm;
     }
-    
+
     *listCount = count;
     return code;
 }
@@ -946,7 +946,7 @@ static CFBTInsertCode addCFBurstTrieLevel(CFBurstTrieRef trie, TrieLevelRef root
         root->weight += weight;
         root->payload = payload;
     }
-    
+
     return code;
 }
 #if 0
@@ -960,7 +960,7 @@ static void findCFBurstTrieList(CFBurstTrieRef trie, TrieCursor *cursor, void *c
     len = len <= 0 ? 0 : len;
     while (list) {
         int lencompare = list->length-len;
-        if (list->length >= len && 
+        if (list->length >= len &&
             (len == 0 || memcmp(list->string, cursor->prefix+cursor->keylen, len) == 0)) {
             memcpy(cursor->key+cursor->keylen, list->string, list->length);
             cursor->key[cursor->keylen+list->length] = 0;
@@ -986,7 +986,7 @@ static void findCFBurstTrieMappedPage(CFBurstTrieRef trie, MapCursor *cursor, vo
             int lencompare = (entry->strlen+entry->pfxLen)-len;
             if (lastEntry && entry->pfxLen>lastEntry->pfxLen) memcpy(pfx+lastEntry->pfxLen, lastEntry->string, entry->pfxLen-lastEntry->pfxLen);
             if (lencompare >= 0 &&
-                (len == 0 || (__builtin_memcmp(pfx, cursor->prefix+cursor->keylen, entry->pfxLen) == 0 && 
+                (len == 0 || (__builtin_memcmp(pfx, cursor->prefix+cursor->keylen, entry->pfxLen) == 0 &&
                               __builtin_memcmp(entry->string, cursor->prefix+cursor->keylen+entry->pfxLen, cursor->prefixlen-cursor->keylen-entry->pfxLen) == 0))) {
                 memcpy(cursor->key+cursor->keylen, pfx, entry->pfxLen);
                 memcpy(cursor->key+cursor->keylen+entry->pfxLen, entry->string, entry->strlen);
@@ -1016,7 +1016,7 @@ static void findCFBurstTrieLevel(CFBurstTrieRef trie, TrieCursor *cursor, bool e
     if (cursor->keylen < cursor->prefixlen) {
         cursor->next = ((TrieLevelRef)NextTrie_GetPtr(cursor->next))->slots[cursor->prefix[cursor->keylen]];
         cursor->key[cursor->keylen++] = cursor->prefix[cursor->keylen];
-        
+
         if (NextTrie_GetKind(cursor->next) == TrieKind) {
             findCFBurstTrieLevel(trie, cursor, exactmatch, ctx, callback);
         } else if (NextTrie_GetKind(cursor->next) == ListKind) {
@@ -1036,19 +1036,19 @@ static void findCFBurstTrieCompactMappedLevel(CFBurstTrieRef trie, MapCursor *cu
     if (cursor->keylen < cursor->prefixlen) {
         uint8_t mykey = *(cursor->prefix+cursor->keylen);
         cursor->key[cursor->keylen++] = *(cursor->prefix+cursor->keylen);
-        
+
         uint8_t slot = mykey / 64;
         uint8_t bit = mykey % 64;
         uint32_t item = 0;
         uint64_t bword = root->bitmap[slot];
-        
+
         if (bword & (1ull << bit)) {
             // ** Count all the set bits up to this bit
             for (int i=0; i < slot; i++) item += __builtin_popcountll(root->bitmap[i]);
             item += __builtin_popcountll(bword & ((1ull << bit)-1));
-            uint32_t offset = root->slots[item]; 
+            uint32_t offset = root->slots[item];
             cursor->next = offset;
-            
+
             if (DiskNextTrie_GetKind(offset) == TrieKind) {
                 findCFBurstTrieMappedLevel(trie, cursor, exactmatch, ctx, callback);
             } else if (DiskNextTrie_GetKind(offset) == CompactTrieKind) {
@@ -1071,7 +1071,7 @@ static void findCFBurstTrieMappedLevel(CFBurstTrieRef trie, MapCursor *cursor, b
         uint8_t slot = *(cursor->prefix+cursor->keylen);
         cursor->next = root->slots[slot];
         cursor->key[cursor->keylen++] = slot;
-        
+
         if (DiskNextTrie_GetKind(cursor->next) == TrieKind) {
             findCFBurstTrieMappedLevel(trie, cursor, exactmatch, ctx, callback);
         } else if (DiskNextTrie_GetKind(cursor->next) == CompactTrieKind) {
@@ -1087,8 +1087,8 @@ static void findCFBurstTrieMappedLevel(CFBurstTrieRef trie, MapCursor *cursor, b
 }
 
 static void traverseCFBurstTrieLevel(CFBurstTrieRef trie, TrieLevelRef root, TrieCursor *cursor, bool exactmatch, void *ctx, bool (*callback)(void *, const uint8_t *, uint32_t, bool))
-{       
-    cursor->key[cursor->keylen] = 0;    
+{
+    cursor->key[cursor->keylen] = 0;
     uint32_t len = cursor->keylen;
     for (int i=0; i < CHARACTER_SET_SIZE; i++) {
         NextTrie next = root->slots[i];
@@ -1110,14 +1110,14 @@ static void traverseCFBurstTrieLevel(CFBurstTrieRef trie, TrieLevelRef root, Tri
 
 static void traverseCFBurstTrieMappedLevel(CFBurstTrieRef trie, MapTrieLevelRef root, MapCursor *cursor, bool exactmatch, void *ctx, bool (*callback)(void *, const uint8_t *, uint32_t, bool))
 {
-    cursor->key[cursor->keylen] = 0;    
+    cursor->key[cursor->keylen] = 0;
     uint32_t len = cursor->keylen;
-    
+
     for (int i=0; i < CHARACTER_SET_SIZE; i++) {
         uint32_t offset = (uint32_t)root->slots[i];
         cursor->keylen = len;
         cursor->key[cursor->keylen++] = i;
-        
+
         if (DiskNextTrie_GetKind(offset) == TrieKind) {
             MapTrieLevelRef level = (MapTrieLevelRef)DiskNextTrie_GetPtr(trie->mapBase, offset);
             if (level->payload && callback(ctx, cursor->key, level->payload, cursor->prefixlen==cursor->keylen)) return;
@@ -1139,7 +1139,7 @@ static void traverseCFBurstTrieMappedLevel(CFBurstTrieRef trie, MapTrieLevelRef 
 static void traverseCFBurstTrieCompactMappedLevel(CFBurstTrieRef trie, CompactMapTrieLevelRef root, MapCursor *cursor, bool exactmatch, void *ctx, bool (*callback)(void *, const uint8_t *, uint32_t, bool))
 {
     cursor->key[cursor->keylen] = 0;
-    uint32_t len = cursor->keylen;    
+    uint32_t len = cursor->keylen;
     for (uint32_t c=0; c < CHARACTER_SET_SIZE; c++) {
         //** This could be optimized to remember what the last slot/item was and not count bits over and over.
         uint8_t mykey = c;
@@ -1148,14 +1148,14 @@ static void traverseCFBurstTrieCompactMappedLevel(CFBurstTrieRef trie, CompactMa
         uint32_t item = 0;
         uint64_t bword = root->bitmap[slot];
         cursor->keylen = len;
-        
+
         if (bword & (1ull << bit)) {
             // ** Count all the set bits up to this bit
             for (int i=0; i < slot; i++) item += __builtin_popcountll(root->bitmap[i]);
             item += __builtin_popcountll(bword & ((1ull << bit)-1));
             uint32_t offset = root->slots[item];
             cursor->key[cursor->keylen++] = mykey;
-            
+
             if(DiskNextTrie_GetKind(offset) == CompactTrieKind) {
                 CompactMapTrieLevelRef level = (CompactMapTrieLevelRef)DiskNextTrie_GetPtr(trie->mapBase, offset);
                 if (level->payload && callback(ctx, cursor->key, level->payload, cursor->prefixlen==cursor->keylen)) return;
@@ -1187,7 +1187,7 @@ static void traverseCFBurstTrieWithCursor(CFBurstTrieRef trie, const uint8_t *pr
             csr.keylen = 0;
             findCFBurstTrieMappedLevel(trie, &csr, exactmatch, ctx, callback);
         }
-    } else {    
+    } else {
         TrieCursor csr;
         csr.next = ((unsigned long)&trie->root)|TrieKind;
         csr.prefix = prefix;
@@ -1731,7 +1731,7 @@ static Boolean burstTrieCompactTrieMappedFind(CompactDiskTrieLevelRef trie, char
                 return burstTrieMappedFind((DiskTrieLevelRef)DiskNextTrie_GetPtr(map, offset), map, key+1, length-1, payload, prefix);
             } else if(DiskNextTrie_GetKind(offset) == CompactTrieKind) {
                 return burstTrieCompactTrieMappedFind((CompactDiskTrieLevelRef)DiskNextTrie_GetPtr(map, offset), map, key+1, length-1, payload, prefix);
-            } 
+            }
             else {
                 if(DiskNextTrie_GetKind(offset) == ListKind) {
                     return burstTrieMappedPageFind((StringPage *)DiskNextTrie_GetPtr(map, offset), key+1, length-1, payload, prefix);
@@ -1766,7 +1766,7 @@ static Boolean burstTrieMappedPageFind(StringPage *page, const UInt8 *key, uint3
                 memcpy(pfx+entry->pfxLen, entry->string, MIN(255-entry->pfxLen, length-entry->pfxLen));
                 cur += sizeof(*entry) + strlen - entry->pfxLen;
             }
-        }        
+        }
     } else {
         while (cur < end) {
             StringPageEntry *entry = (StringPageEntry *)&page->data[cur];
@@ -1778,8 +1778,8 @@ static Boolean burstTrieMappedPageFind(StringPage *page, const UInt8 *key, uint3
             } else {
                 cur += sizeof(*entry) + strlen;
             }
-        }        
-        
+        }
+
     }
     return success;
 }
@@ -1794,19 +1794,19 @@ static bool serializeCFBurstTrieLevels(CFBurstTrieRef trie, TrieLevelRef root, u
 {
     bool dense = true;
     int count = 0;
-    
+
     for (int i=0; i < CHARACTER_SET_SIZE; i++) if (root->slots[i]) count++;
-    
+
     uint32_t this_offset = *offset;
-    
+
     if ((trie->cflags & kCFBurstTrieBitmapCompression) && count < MAX_BITMAP_SIZE && !isroot) {
         size_t size = sizeof(CompactMapTrieLevel) + sizeof(uint32_t) * count;
         int offsetSlot = 0;
-        
+
         CompactMapTrieLevel *maptrie = (CompactMapTrieLevel *)alloca(size);
         bzero(maptrie, size);
         *offset += size;
-        
+
         for (int i=0; i < CHARACTER_SET_SIZE; i++) {
             NextTrie next = root->slots[i];
             if (next) {
@@ -1828,17 +1828,17 @@ static bool serializeCFBurstTrieLevels(CFBurstTrieRef trie, TrieLevelRef root, u
             }
         }
         maptrie->payload = root->payload;
-        
+
         int bitcount = 0;
         for (int i=0; i < 4; i++) bitcount += __builtin_popcountll(maptrie->bitmap[i]);
         assert(bitcount == count);
-        
+
         pwrite(fd, maptrie, size, this_offset+start_offset);
         dense = false;
     } else {
         MapTrieLevel maptrie;
         *offset += sizeof(maptrie);
-        
+
         for (int i=0; i < CHARACTER_SET_SIZE; i++) {
             NextTrie next = root->slots[i];
             if (NextTrie_GetKind(next) == TrieKind) {
@@ -1856,7 +1856,7 @@ static bool serializeCFBurstTrieLevels(CFBurstTrieRef trie, TrieLevelRef root, u
         maptrie.payload = root->payload;
         pwrite(fd, &maptrie, sizeof(maptrie), this_offset+start_offset);
     }
-    
+
     if (dispose) free(root);
     return dense;
 }
@@ -1865,7 +1865,7 @@ static void serializeCFBurstTrieList(CFBurstTrieRef trie, ListNodeRef listNode, 
 {
     uint32_t listCount;
     size_t size = trie->containerSize;
-    
+
     // ** Temp list of nodes to sort
     ListNodeRef *nodes = (ListNodeRef *)malloc(sizeof(ListNodeRef) * size);
     for (listCount = 0; listNode; listCount++) {
@@ -1876,30 +1876,30 @@ static void serializeCFBurstTrieList(CFBurstTrieRef trie, ListNodeRef listNode, 
         nodes[listCount] = listNode;
         listNode = listNode->next;
     }
-    
+
     char _buffer[MAX_BUFFER_SIZE];
     size_t bufferSize = (sizeof(Page) + size * (sizeof(PageEntryPacked) + MAX_STRING_SIZE));
     char *buffer = bufferSize < MAX_BUFFER_SIZE ? _buffer : (char *) malloc(bufferSize);
-    
+
     Page *page = (Page *)buffer;
     uint32_t current = 0;
-    
+
     if (trie->cflags & kCFBurstTriePrefixCompression) {
         qsort(nodes, listCount, sizeof(ListNodeRef), nodeStringCompare);
-        
+
         ListNodeRef last = 0;
         for (int i=0; i < listCount; i++) {
             listNode = nodes[i];
             uint8_t pfxLen = 0;
             if (last) {
-                for ( ; 
-                     pfxLen < CHARACTER_SET_SIZE-1 && 
-                     pfxLen < listNode->length && 
-                     pfxLen < last->length && 
-                     listNode->string[pfxLen] == last->string[pfxLen]; 
+                for ( ;
+                     pfxLen < CHARACTER_SET_SIZE-1 &&
+                     pfxLen < listNode->length &&
+                     pfxLen < last->length &&
+                     listNode->string[pfxLen] == last->string[pfxLen];
                      pfxLen++);
             }
-            
+
             PageEntryPacked *entry = (PageEntryPacked *)(&page->data[current]);
             entry->strlen = listNode->length - pfxLen;
             entry->payload = listNode->payload;
@@ -1913,7 +1913,7 @@ static void serializeCFBurstTrieList(CFBurstTrieRef trie, ListNodeRef listNode, 
             qsort(nodes, listCount, sizeof(ListNodeRef), nodeStringCompare);
         else
             qsort(nodes, listCount, sizeof(ListNodeRef), nodeWeightCompare);
-        
+
         for (int i=0; i < listCount; i++) {
             listNode = nodes[i];
             PageEntry *entry = (PageEntry *)(&page->data[current]);
@@ -1923,11 +1923,11 @@ static void serializeCFBurstTrieList(CFBurstTrieRef trie, ListNodeRef listNode, 
             current += listNode->length + sizeof(PageEntry);
         }
     }
-    
+
     size_t len = (sizeof(Page) + current + 3) & ~3;
     page->length = current;
     write(fd, page, len);
-    
+
     free(nodes);
     if (buffer != _buffer) free(buffer);
 }
@@ -1962,26 +1962,26 @@ static size_t serializeCFBurstTrie(CFBurstTrieRef trie, size_t start_offset, int
     header.size = 0;
     header.flags = trie->cflags;
     header.reserved[0] = 0;
-    
+
     uint32_t offset;
     lseek(fd, start_offset, SEEK_SET);
-    
+
     size_t header_size = sizeof(header);
     write(fd, &header, header_size);
-    
+
     serializeCFBurstTrieLists(trie, &trie->root, start_offset, fd);
-    
+
     offset = lseek(fd, 0, SEEK_CUR) - start_offset;
     size_t off = offsetof(TrieHeader, rootOffset);
     size_t offsize = sizeof(offset);
     pwrite(fd, &offset, offsize, off+start_offset);
-    
+
     serializeCFBurstTrieLevels(trie, &trie->root, &offset, start_offset, false, true, fd);
-    
+
     size_t off2 = offsetof(TrieHeader, size);
     offsize = sizeof(offset);
     pwrite(fd, &offset, offsize, off2+start_offset);
-    
+
     offset = lseek(fd, 0, SEEK_END);
     return (size_t)(offset-start_offset);
 }

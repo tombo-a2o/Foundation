@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -37,7 +37,7 @@
 #include <CoreFoundation/CFXMLParser.h>
 #include <CoreFoundation/CFNumber.h>
 #include "CFXMLInputStream.h"
-#include <CoreFoundation/CFUniChar.h> 
+#include <CoreFoundation/CFUniChar.h>
 #include "CFInternal.h"
 
 #pragma GCC diagnostic push
@@ -47,7 +47,7 @@ struct __CFXMLParser {
     CFRuntimeBase _cfBase;
 
     _CFXMLInputStream input;
-    
+
     void **stack;
     void **top;
     UInt32 capacity;
@@ -93,7 +93,7 @@ static const CFRuntimeClass __CFXMLParserClass = {
     __CFXMLParserDeallocate,
     NULL,
     NULL,
-    NULL,      // 
+    NULL,      //
     __CFXMLParserCopyDescription
 };
 
@@ -238,7 +238,7 @@ static CFXMLParserRef __CFXMLParserInit(CFAllocatorRef alloc, CFURLRef dataSourc
         FAULT_CALLBACK((void **)&(parser->callBacks.endXMLStructure));
         FAULT_CALLBACK((void **)&(parser->callBacks.resolveExternalEntity));
         FAULT_CALLBACK((void **)&(parser->callBacks.handleError));
-        
+
         if (context) {
             parser->context = *context;
             if (parser->context.info && parser->context.retain) {
@@ -302,7 +302,7 @@ Boolean CFXMLParserParse(CFXMLParserRef parser) {
         }
         return false;
     }
-    
+
     // Create the document
     parser->stack = (void **)CFAllocatorAllocate(CFGetAllocator(parser), 16 * sizeof(void *), 0);
     parser->capacity = 16;
@@ -324,7 +324,7 @@ Boolean CFXMLParserParse(CFXMLParserRef parser) {
 
 /* The next several functions are all intended to parse past a particular XML structure.  They expect parser->curr to be set to the first content character of their structure (e.g. parseXMLComment expects parser->curr to be set just past "<!--").  They parse to the end of their structure, calling any necessary callbacks along the way, and advancing parser->curr as they go.  They either return void (not possible for the parse to fail) or they return a Boolean (success/failure).  The calling routines are expected to catch returned Booleans and fail immediately if false is returned. */
 
-// [3]  S ::= (#x20 | #x9 | #xD | #xA)+ 
+// [3]  S ::= (#x20 | #x9 | #xD | #xA)+
 static Boolean parseWhitespace(CFXMLParserRef parser) {
     CFIndex len;
     Boolean report = !(parser->options & kCFXMLParserSkipWhitespace);
@@ -358,7 +358,7 @@ static Boolean parseComment(CFXMLParserRef parser, Boolean report) {
     }
 }
 
-/* 
+/*
 [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
 [17] PITarget ::= Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
  */
@@ -367,7 +367,7 @@ static Boolean parseProcessingInstruction(CFXMLParserRef parser, Boolean report)
     const UniChar piTermination[2] = {'?', '>'};
     CFMutableStringRef str;
     CFStringRef name;
-    
+
     if (!_inputStreamScanXMLName(&parser->input, false, &name)) {
         _CFReportError(parser, kCFXMLErrorMalformedProcessingInstruction, "Found malformed processing instruction");
         return false;
@@ -409,7 +409,7 @@ static Boolean parseDTD(CFXMLParserRef parser) {
     CFXMLDocumentTypeInfo docData = {{NULL, NULL}};
     void *dtdStructure = NULL;
     CFStringRef name;
-    
+
     // First pass "DOCTYPE"
     success = _inputStreamMatchString(&parser->input, _DoctypeOpening, 7);
     success = success && _inputStreamSkipWhitespace(&parser->input, NULL) != 0;
@@ -754,7 +754,7 @@ CF_INLINE Boolean parseSystemLiteral(CFXMLParserRef parser, CFXMLExternalID *ext
  [83] PublicID ::= 'PUBLIC' S PubidLiteral
  [12] PubidLiteral ::= '"' PubidChar* '"' | "'" (PubidChar - "'")* "'"
  [13] PubidChar ::= #x20 | #xD | #xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
- [11] SystemLiteral ::= ('"' [^"]* '"') | ("'" [^']* "'") 
+ [11] SystemLiteral ::= ('"' [^"]* '"') | ("'" [^']* "'")
 */
 // This does NOT report errors itself; caller can check to see if parser->input is at EOF to determine whether the formatting failed or unexpected EOF occurred.  -- REW, 2/2/2000
 static Boolean parseExternalID(CFXMLParserRef parser, Boolean alsoAcceptPublicID, CFXMLExternalID *extID) {
@@ -1069,8 +1069,8 @@ static Boolean parseEntityDeclaration(CFXMLParserRef parser) {
 
 /*
  [28] doctypedecl ::= '<!DOCTYPE' S Name (S ExternalID)? S? ('[' (markupdecl | PEReference | S)* ']' S?)? '>'
- [29] markupdecl ::= elementdecl | AttlistDecl | EntityDecl | NotationDecl | PI | Comment 
-*/ 
+ [29] markupdecl ::= elementdecl | AttlistDecl | EntityDecl | NotationDecl | PI | Comment
+*/
 // First character should be just past '['
 static Boolean parseInlineDTD(CFXMLParserRef parser) {
     Boolean success = true;
@@ -1125,7 +1125,7 @@ static Boolean parseInlineDTD(CFXMLParserRef parser) {
                     } else {
                         _CFReportError(parser, kCFXMLErrorMalformedDTD, "Found unexpected character while parsing inline DTD");
                         return false;
-                    }                        
+                    }
                 }
             } else {
                 _CFReportError(parser, kCFXMLErrorMalformedDTD, "Found unexpected character while parsing inline DTD");
@@ -1151,7 +1151,7 @@ static Boolean parseTagContent(CFXMLParserRef parser) {
     while (!_inputStreamAtEOF(&parser->input)) {
         UniChar ch;
         CFIndex numWhitespaceCharacters;
-        
+
         _inputStreamSetMark(&parser->input);
         numWhitespaceCharacters = _inputStreamSkipWhitespace(&parser->input, NULL);
         // Don't report the whitespace yet; if the first thing we see is character data, we put the whitespace back and report it as part of the character data.
@@ -1180,7 +1180,7 @@ static Boolean parseTagContent(CFXMLParserRef parser) {
             _inputStreamGetCharacter(&parser->input, &ch);
         }
         _inputStreamClearMark(&parser->input);
-        
+
         if (ch == '&') {
             // Reference; for the time being, we don't worry about processing these; just report them as Entity references
             if (!parseEntityReference(parser, true)) return false;
@@ -1400,7 +1400,7 @@ static Boolean parseEntityReference(CFXMLParserRef parser, Boolean report) {
                     num += 10 + (ch - 'A');
                 } else {
                     parser->errorString = CFStringCreateWithFormat(parser->allocator, NULL, CFSTR("Encountered unexpected character %c at line %d"), ch, lineNumber(parser));
-                    return;                    
+                    return;
                 }
             }
             parser->errorString = CFStringCreateWithCString(parser->allocator, "Encountered unexpected EOF", kCFStringEncodingASCII);
@@ -1423,7 +1423,7 @@ static Boolean parsePCData(CFXMLParserRef parser) {
     _inputStreamSetMark(&parser->input);
     while (!done && _inputStreamGetCharacter(&parser->input, &ch)) {
         switch (ch) {
-            case '<': 
+            case '<':
             case '&':
                 _inputStreamReturnCharacter(&parser->input, ch);
                 done = true;
@@ -1459,7 +1459,7 @@ static Boolean parseCloseTag(CFXMLParserRef parser, CFStringRef tag) {
 
     // We can get away with testing pointer equality between tag & closeTag because scanXMLName guarantees the strings it returns are unique.
     if (_inputStreamMatchString(&parser->input, beginEndTag, 2) && _inputStreamScanXMLName(&parser->input, false, &closeTag) && closeTag == tag) {
-        
+
         UniChar ch;
         _inputStreamSkipWhitespace(&parser->input, NULL);
         if (!_inputStreamGetCharacter(&parser->input, &ch)) {
@@ -1472,7 +1472,7 @@ static Boolean parseCloseTag(CFXMLParserRef parser, CFStringRef tag) {
     } else {
         mismatch = true;
     }
-        
+
     if (unexpectedEOF || mismatch) {
         if (unexpectedEOF) {
             parser->errorString = CFStringCreateWithFormat(CFGetAllocator(parser), NULL, CFSTR("Encountered unexpected EOF while parsing close tag for <%@>"), tag);
@@ -1506,7 +1506,7 @@ static Boolean parseTag(CFXMLParserRef parser) {
     }
 
     _inputStreamSkipWhitespace(&parser->input, NULL);
-    
+
     if (!parseAttributes(parser)) return false; // parsed directly into parser->argDict ; parseAttributes consumes any trailing whitespace
     data.attributes = parser->argDict;
     data.attributeOrder = parser->argArray;
@@ -1590,7 +1590,7 @@ static Boolean parseAttributeValue(CFXMLParserRef parser, CFMutableStringRef str
                 ;
         }
     }
-    
+
     if (success && _inputStreamAtEOF(&parser->input)) {
         success = false;
     }
@@ -1611,7 +1611,7 @@ static Boolean parseAttributeValue(CFXMLParserRef parser, CFMutableStringRef str
  [25] Eq ::= S? '=' S?
 */
 
-// Expects parser->curr to be at the first content character; will consume the trailing whitespace.  
+// Expects parser->curr to be at the first content character; will consume the trailing whitespace.
 Boolean parseAttributes(CFXMLParserRef parser) {
     UniChar ch;
     CFMutableDictionaryRef dict;
@@ -1632,7 +1632,7 @@ Boolean parseAttributes(CFXMLParserRef parser) {
         CFArrayRemoveAllValues(parser->argArray);
     }
     dict = parser->argDict;
-    array = parser->argArray; 
+    array = parser->argArray;
     while (!failure && _inputStreamPeekCharacter(&parser->input, &ch) && ch != '>' && ch != '/') {
         CFStringRef key;
         CFMutableStringRef value;
@@ -1645,7 +1645,7 @@ Boolean parseAttributes(CFXMLParserRef parser) {
                 return false;
         }
         _inputStreamSkipWhitespace(&parser->input, NULL);
-        if (!_inputStreamGetCharacter(&parser->input, &ch) || ch != '=') { 
+        if (!_inputStreamGetCharacter(&parser->input, &ch) || ch != '=') {
             failure = true;
             break;
         }
@@ -1677,7 +1677,7 @@ Boolean parseAttributes(CFXMLParserRef parser) {
  [1]  document ::= prolog element Misc*
  [22] prolog ::= XMLDecl? Misc* (doctypedecl Misc*)?
  [27] Misc ::= Comment | PI | S
- [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>' 
+ [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
 
  We treat XMLDecl as a plain old PI, since PI is part of Misc.  This changes the prolog and document productions to
  [22-1] prolog ::= Misc* (doctypedecl Misc*)?
@@ -1744,7 +1744,7 @@ static Boolean parseXML(CFXMLParserRef parser) {
             }
         }
     }
-    
+
     if (!success) return false;
     if (!sawElement) {
         _CFReportError(parser, kCFXMLErrorElementlessDocument, "No element found in document");
@@ -1869,32 +1869,32 @@ CFXMLTreeRef CFXMLTreeCreateFromDataWithError(CFAllocatorRef allocator, CFDataRe
                 CFIndex rawnum;
                 CFNumberRef cfnum;
                 CFStringRef errstring;
-                
+
                 rawnum = CFXMLParserGetLocation(parser);
                 cfnum = CFNumberCreate(allocator, kCFNumberSInt32Type, &rawnum);
                 if(cfnum) {
                     CFDictionaryAddValue((CFMutableDictionaryRef)*errorDict, kCFXMLTreeErrorLocation, cfnum);
-                    CFRelease(cfnum);                    
+                    CFRelease(cfnum);
                 }
-                
+
                 rawnum = CFXMLParserGetLineNumber(parser);
                 cfnum = CFNumberCreate(allocator, kCFNumberSInt32Type, &rawnum);
                 if(cfnum) {
                     CFDictionaryAddValue((CFMutableDictionaryRef)*errorDict, kCFXMLTreeErrorLineNumber, cfnum);
-                    CFRelease(cfnum);                    
+                    CFRelease(cfnum);
                 }
 
                 rawnum = CFXMLParserGetStatusCode(parser);
                 cfnum = CFNumberCreate(allocator, kCFNumberSInt32Type, &rawnum);
                 if(cfnum) {
                     CFDictionaryAddValue((CFMutableDictionaryRef)*errorDict, kCFXMLTreeErrorStatusCode, cfnum);
-                    CFRelease(cfnum);                    
+                    CFRelease(cfnum);
                 }
 
                 errstring = CFXMLParserCopyErrorDescription(parser);
                 if(errstring) {
                     CFDictionaryAddValue((CFMutableDictionaryRef)*errorDict, kCFXMLTreeErrorDescription, errstring);
-                    CFRelease(errstring);                    
+                    CFRelease(errstring);
                 }
             }
         }
@@ -1956,7 +1956,7 @@ CFStringRef CFXMLCreateStringByEscapingEntities(CFAllocatorRef allocator, CFStri
         CFStringAppend(newString, remainder);
         CFRelease(remainder);
     }
-    
+
     CFRelease(startChars);
     return newString;
 }

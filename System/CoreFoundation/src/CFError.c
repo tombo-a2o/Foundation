@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -98,12 +98,12 @@ struct __CFError {		// Potentially interesting to keep layout same as NSError (b
     CFDictionaryRef userInfo;	// !!! Could avoid allocating this slot if userInfo is NULL, but probably not worth its weight in code since CFErrors are rare
 };
 
-/* CFError equal checks for equality of domain, code, and userInfo. 
+/* CFError equal checks for equality of domain, code, and userInfo.
 */
 static Boolean __CFErrorEqual(CFTypeRef cf1, CFTypeRef cf2) {
     CFErrorRef err1 = (CFErrorRef)cf1;
     CFErrorRef err2 = (CFErrorRef)cf2;
-    
+
     // First do quick checks of code and domain (in that order for performance)
     if (CFErrorGetCode(err1) != CFErrorGetCode(err2)) return false;
     if (!CFEqual(CFErrorGetDomain(err1), CFErrorGetDomain(err2))) return false;
@@ -113,16 +113,16 @@ static Boolean __CFErrorEqual(CFTypeRef cf1, CFTypeRef cf2) {
     CFDictionaryRef dict2 = CFErrorCopyUserInfo(err2);
 
     Boolean result = false;
-    
+
     if (dict1 == dict2) {
         result = true;
     } else if (dict1 && dict2 && CFEqual(dict1, dict2)) {
         result = true;
     }
-    
+
     if (dict1) CFRelease(dict1);
     if (dict2) CFRelease(dict2);
-    
+
     return result;
 }
 
@@ -134,7 +134,7 @@ static CFHashCode __CFErrorHash(CFTypeRef cf) {
     return CFHash(err->domain) + err->code;
 }
 
-/* This is the full debug description. Shows the description (possibly localized), plus the domain, code, and userInfo explicitly. If there is a debug description, shows that as well. 
+/* This is the full debug description. Shows the description (possibly localized), plus the domain, code, and userInfo explicitly. If there is a debug description, shows that as well.
 */
 static CFStringRef __CFErrorCopyDescription(CFTypeRef cf) {
     return _CFErrorCreateDebugDescription((CFErrorRef)cf);
@@ -216,7 +216,7 @@ static CFDictionaryRef _CFErrorGetUserInfo(CFErrorRef err) {
 */
 static CFStringRef _CFErrorCopyUserInfoKey(CFErrorRef err, CFStringRef key) {
     CFStringRef result = NULL;
-    // First consult the userInfo dictionary   
+    // First consult the userInfo dictionary
     CFDictionaryRef userInfo = _CFErrorGetUserInfo(err);
     if (userInfo) result = (CFStringRef)CFDictionaryGetValue(userInfo, key);
     // If that doesn't work, consult the callback
@@ -240,10 +240,10 @@ CFStringRef _CFErrorCreateLocalizedDescription(CFErrorRef err) {
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
     // Cache the CF bundle since we will be using it for localized strings.
     CFBundleRef cfBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.CoreFoundation"));
-    
+
     if (!cfBundle) {	// This should be rare, but has been observed in the wild, due to running out of file descriptors. Normally we might not go to such extremes, but since we want to be able to present reasonable errors even in the case of errors such as running out of file descriptors, why not. This is CFError after all. !!! Be sure to have the same logic here as below for going through various options for fetching the strings.
 #endif
-    
+
 	CFStringRef result = NULL, reasonOrDesc;
 
 	if ((reasonOrDesc = _CFErrorCopyUserInfoKey(err, kCFErrorLocalizedFailureReasonKey))) {	    // First look for kCFErrorLocalizedFailureReasonKey
@@ -308,10 +308,10 @@ CFStringRef _CFErrorCreateLocalizedRecoverySuggestion(CFErrorRef err) {
 static void userInfoKeyValueShow(const void *key, const void *value, void *context) {
     CFStringRef desc;
     if (CFEqual(key, kCFErrorUnderlyingErrorKey) && (desc = CFErrorCopyDescription((CFErrorRef)value))) {	// We check desc, see <rdar://problem/8415727>
-	CFStringAppendFormat((CFMutableStringRef)context, NULL, CFSTR("%@=%p \"%@\", "), key, value, desc); 
+	CFStringAppendFormat((CFMutableStringRef)context, NULL, CFSTR("%@=%p \"%@\", "), key, value, desc);
 	CFRelease(desc);
     } else {
-	CFStringAppendFormat((CFMutableStringRef)context, NULL, CFSTR("%@=%@, "), key, value); 
+	CFStringAppendFormat((CFMutableStringRef)context, NULL, CFSTR("%@=%@, "), key, value);
     }
 }
 
@@ -428,13 +428,13 @@ static CFMutableDictionaryRef _CFErrorCallBackTable = NULL;
 */
 static CFTypeRef _CFErrorPOSIXCallBack(CFErrorRef err, CFStringRef key) {
     if (!CFEqual(key, kCFErrorDescriptionKey) && !CFEqual(key, kCFErrorLocalizedFailureReasonKey)) return NULL;
-    
+
     const char *errCStr = strerror(CFErrorGetCode(err));
     CFStringRef errStr = (errCStr && strlen(errCStr)) ? CFStringCreateWithCString(kCFAllocatorSystemDefault, errCStr, kCFStringEncodingUTF8) : NULL;
-    
+
     if (!errStr) return NULL;
     if (CFEqual(key, kCFErrorDescriptionKey)) return errStr;	// If all we wanted was the non-localized description, we're done
-    
+
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS
     // We need a kCFErrorLocalizedFailureReasonKey, so look up a possible localization for the error message
     // Look for the bundle in /System/Library/CoreServices/CoreTypes.bundle
@@ -469,7 +469,7 @@ static CFTypeRef _CFErrorPOSIXCallBack(CFErrorRef err, CFStringRef key) {
 	CFRelease(paths);
     }
 #endif
-    
+
     return errStr;
 }
 
@@ -501,7 +501,7 @@ static void _CFErrorInitializeCallBackTable(void) {
         // Note, even though the table looks like it was initialized, we go on to register the items on this thread as well, since otherwise we might consult the table before the items are actually registered.
     }
     CFErrorSetCallBackForDomain(kCFErrorDomainPOSIX, _CFErrorPOSIXCallBack);
-#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED    
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED
     CFErrorSetCallBackForDomain(kCFErrorDomainMach, _CFErrorMachCallBack);
 #endif
 }

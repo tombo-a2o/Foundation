@@ -1,10 +1,24 @@
-//
-//  NSNetServices.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSNetServices.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import <Foundation/NSNetServices.h>
 #import <Foundation/NSException.h>
@@ -118,7 +132,7 @@ CF_PRIVATE
         [NSException raise:NSInvalidArgumentException format:@"TXT record data cannot be nil"];
         return nil;
     }
-    
+
     NSDictionary *dict = (NSDictionary *)CFNetServiceCreateDictionaryWithTXTData(kCFAllocatorDefault, (CFDataRef)txtData);
     return [dict autorelease];
 }
@@ -130,7 +144,7 @@ CF_PRIVATE
         [NSException raise:NSInvalidArgumentException format:@"txt record dictionary cannot be nil"];
         return nil;
     }
-    
+
     NSData *data = (NSData *)CFNetServiceCreateTXTDataWithDictionary(kCFAllocatorDefault, (CFDictionaryRef)txtDictionary);
     return [data autorelease];
 }
@@ -147,7 +161,7 @@ static void _netServiceMonitorCallBack(CFNetServiceMonitorRef theMonitor, CFNetS
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name port:(int)port
 {
     self = [super init];
-    
+
     if (self)
     {
         _netService = CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, port);
@@ -167,7 +181,7 @@ static void _netServiceMonitorCallBack(CFNetServiceMonitorRef theMonitor, CFNetS
         }
         [self _scheduleInDefaultRunLoopForMode:kCFRunLoopCommonModes];
     }
-    
+
     return self;
 }
 

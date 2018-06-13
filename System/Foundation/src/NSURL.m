@@ -1,10 +1,24 @@
-//
-//  NSURL.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSURL.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import <Foundation/NSURL.h>
 #import <Foundation/NSFileManager.h>
@@ -67,7 +81,7 @@ OBJC_PROTOCOL_IMPL_PUSH
     }
     BOOL isDir = NO;
     [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir];
-    
+
     if (!_CFURLInitWithFileSystemPath([self _cfurl], (CFStringRef)path, kCFURLPOSIXPathStyle, isDir, NULL))
     {
         [self release];
@@ -131,9 +145,9 @@ OBJC_PROTOCOL_IMPL_PUSH
 {
     if (str == nil)
     {
-        return nil; 
+        return nil;
         // See initWithString:relativeToURL:
-        // This is the lack of consistency Gotham needs right now, not the consistency Gotham deserves. 
+        // This is the lack of consistency Gotham needs right now, not the consistency Gotham deserves.
     }
     return [[[self alloc] initWithString:str relativeToURL:url] autorelease];
 }
@@ -364,7 +378,7 @@ OBJC_PROTOCOL_IMPL_PUSH
         [coder encodeValueOfObjCType:@encode(BOOL) at:&hasBase];
         if (hasBase)
         {
-             [coder encodeObject:baseURL];   
+             [coder encodeObject:baseURL];
         }
         else
         {
@@ -436,7 +450,7 @@ OBJC_PROTOCOL_IMPL_POP
         {
             return nil; // how can this happen in the wild?
         }
-        
+
         if (!CFURLCanBeDecomposed(url))
         {
             return [(NSString *)CFURLCopyResourceSpecifier(url) autorelease];
@@ -455,12 +469,12 @@ OBJC_PROTOCOL_IMPL_POP
                     {
                         return nil;
                     }
-                    
+
                     if (res == nil)
                     {
                         return path;
                     }
-                    
+
                     return [NSString stringWithFormat:@"%@%@", path, res];
                 }
                 else if (path == nil)
@@ -755,7 +769,7 @@ OBJC_PROTOCOL_IMPL_PUSH
         return NULL;
     }
     size_t sz = 1024;
-    
+
     UInt8 *buffer = malloc(sz);
     if (buffer == NULL)
     {
@@ -789,7 +803,7 @@ OBJC_PROTOCOL_IMPL_PUSH
         [NSException raise:NSInvalidArgumentException format:@"Unable to convert url %@ to file system representation", self];
         return NULL;
     }
-    
+
     return (const char *)[[NSData dataWithBytesNoCopy:buffer length:sz] bytes];
 }
 OBJC_PROTOCOL_IMPL_POP

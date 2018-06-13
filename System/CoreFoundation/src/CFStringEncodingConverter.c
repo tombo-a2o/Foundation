@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -225,7 +225,7 @@ static CFIndex __CFDefaultToBytesFallbackProc(const UniChar *characters, CFIndex
             return __CFDefaultToBytesFallbackProc(&theChar, 1, bytes, maxByteLen, usedByteLen);
         }
     }
-    
+
     if (maxByteLen) *bytes = byte;
     *usedByteLen = filledBytesLen;
     return processCharLen;
@@ -563,7 +563,7 @@ CF_INLINE _CFEncodingConverter *__CFEncodingConverterFromDefinition(const CFStri
 
         case kCFStringEncodingConverterPlatformSpecific:
             break;
-            
+
         default: // Shouln't be here
             return NULL;
     }
@@ -581,7 +581,7 @@ CF_INLINE const CFStringEncodingConverter *__CFStringEncodingConverterGetDefinit
 
         case kCFStringEncodingMacRoman:
             return &__CFConverterMacRoman;
-            
+
         case kCFStringEncodingWindowsLatin1:
             return &__CFConverterWinLatin1;
 
@@ -678,9 +678,9 @@ uint32_t CFStringEncodingUnicodeToBytes(uint32_t encoding, uint32_t flags, const
             return kCFStringEncodingConversionSuccess;
         } else if ((maxByteLen > 0) && ((maxByteLen - usedLen) < 10)) { // could be filled outbuf
             UTF16Char character = characters[convertedCharLen];
-            
+
             if (((character >= kSurrogateLowStart) && (character <= kSurrogateLowEnd)) || ((character >= kSurrogateHighStart) && (character <= kSurrogateHighEnd) && ((1 == (numChars - convertedCharLen)) || (characters[convertedCharLen + 1] < kSurrogateLowStart) || (characters[convertedCharLen + 1] > kSurrogateLowEnd)))) return kCFStringEncodingInvalidInputStream;
-            
+
             return kCFStringEncodingInsufficientOutputBufferLength;
         } else {
             return kCFStringEncodingInvalidInputStream;
@@ -872,7 +872,7 @@ CF_PRIVATE CFIndex CFStringEncodingCharLengthForBytes(uint32_t encoding, uint32_
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
         if (kCFStringEncodingConverterICU == converter->definition->encodingClass) return __CFStringEncodingICUCharLength((const char *)converter->toBytes, flags, bytes, numBytes);
 #endif
-        
+
         if (kCFStringEncodingConverterPlatformSpecific == converter->definition->encodingClass) return __CFStringEncodingPlatformCharLengthForBytes(encoding, flags, bytes, numBytes);
 
         if (1 == converter->definition->maxBytesPerChar) return numBytes;

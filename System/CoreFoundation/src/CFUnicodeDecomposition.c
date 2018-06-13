@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -192,7 +192,7 @@ static CFIndex __CFUniCharRecursivelyDecomposeCharacter(UTF32Char character, UTF
 
     return usedLength;
 }
-    
+
 #define HANGUL_SBASE 0xAC00
 #define HANGUL_LBASE 0x1100
 #define HANGUL_VBASE 0x1161
@@ -277,14 +277,14 @@ bool CFUniCharDecompose(const UTF16Char *src, CFIndex length, CFIndex *consumedL
             if (needToReorder && __CFUniCharIsNonBaseCharacter(currentChar)) {
                 if ((decompBufferLen + 1) >= decompBufferSize) {
                     UTF32Char *newBuffer;
-                    
+
                     decompBufferSize += MAX_BUFFER_LENGTH;
                     newBuffer = (UTF32Char *)CFAllocatorAllocate(kCFAllocatorSystemDefault, sizeof(UTF32Char) * decompBufferSize, 0);
                     memmove(newBuffer, decompBuffer, (decompBufferSize - MAX_BUFFER_LENGTH) * sizeof(UTF32Char));
                     if (decompBuffer != buffer) CFAllocatorDeallocate(kCFAllocatorSystemDefault, decompBuffer);
                     decompBuffer = newBuffer;
                 }
-                
+
                 if (__CFUniCharIsDecomposableCharacterWithFlag(currentChar, isHFSPlus)) { // Vietnamese accent, etc.
                     decompBufferLen += CFUniCharDecomposeCharacter(currentChar, decompBuffer + decompBufferLen, decompBufferSize - decompBufferLen);
                 } else {
@@ -391,7 +391,7 @@ CF_PRIVATE CFIndex CFUniCharCompatibilityDecompose(UTF32Char *convertedChars, CF
             ++convertedChars;
         }
     }
-    
+
     return length;
 }
 

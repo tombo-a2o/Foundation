@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -66,21 +66,21 @@ enum {
 	MIN_STATUS_CODE_BIT	= 0,
         // ..status bits...
 	MAX_STATUS_CODE_BIT	= 4,
-    
+
 	CONSTANT_CALLBACKS	= 5,
 	CALLING_CLIENT		= 6,	// MUST remain 6 since it's value is used elsewhere.
-	
+
     HAVE_CLOSED			= 7,
-    
+
     // Values above used to be defined and others may rely on their values
-    
+
     // Values below should not matter if they are re-ordered or shift
-    
+
     SHARED_SOURCE
 };
 
 
-/* CALLING_CLIENT really determines whether stream events will be sent to the client immediately, or posted for the next time through the runloop.  Since the client may not be prepared for re-entrancy, we must always set/clear this bit around public entry points. -- REW, 9/5/2001 
+/* CALLING_CLIENT really determines whether stream events will be sent to the client immediately, or posted for the next time through the runloop.  Since the client may not be prepared for re-entrancy, we must always set/clear this bit around public entry points. -- REW, 9/5/2001
     Also, CALLING_CLIENT is now used from CFFilteredStream.c (which has a copy of the #define above).  Really gross.  We should find a way to avoid that.... -- REW, 3/27/2002  */
 // Used in CFNetwork too
 
@@ -127,37 +127,37 @@ CF_INLINE CFRunLoopSourceRef _CFStreamCopySource(struct _CFStream* stream) {
 
         if (source)
             CFRetain(source);
-        
+
         _CFStreamUnlock(stream);
     }
-    
+
     return source;
 }
 
 CF_INLINE void _CFStreamSetSource(struct _CFStream* stream, CFRunLoopSourceRef source, Boolean invalidateOldSource) {
 	CFRunLoopSourceRef oldSource = NULL;
-	
+
 	if (stream) {
 		_CFStreamLock(stream);
 		if (stream->client) {
 			oldSource = stream->client->rlSource;
 			if (oldSource != NULL)
 				CFRetain(oldSource);
-			
+
 			stream->client->rlSource = source;
 			if (source != NULL)
 				CFRetain(source);
 		}
 		_CFStreamUnlock(stream);
 	}
-	
+
 	if (oldSource) {
 		// Lose our extra retain
 		CFRelease(oldSource);
-		
+
 		if (invalidateOldSource)
 			CFRunLoopSourceInvalidate(oldSource);
-		
+
 		// And lose the one that held it in our stream as well
 		CFRelease(oldSource);
 	}
@@ -225,24 +225,24 @@ static void _CFStreamDetachSource(struct _CFStream* stream) {
 			_CFStreamSetSource(stream, NULL, TRUE);
         }
         else {
-            
+
             CFArrayRef runLoopAndSourceKey;
             CFMutableArrayRef list;
 			CFIndex count;
 			CFIndex i;
-            
+
             __CFSpinLock(&sSourceLock);
-            
+
             runLoopAndSourceKey = (CFArrayRef)CFDictionaryGetValue(sSharedSources, stream);
             list = (CFMutableArrayRef)CFDictionaryGetValue(sSharedSources, runLoopAndSourceKey);
-            
+
 			count = CFArrayGetCount(list);
 			i = CFArrayGetFirstIndexOfValue(list, CFRangeMake(0, count), stream);
             if (i != kCFNotFound) {
                 CFArrayRemoveValueAtIndex(list, i);
 				count--;
             }
-            
+
             CFAssert(CFArrayGetFirstIndexOfValue(list, CFRangeMake(0, CFArrayGetCount(list)), stream) == kCFNotFound, __kCFLogAssertion, "CFStreamClose: stream found twice in its shared source's list");
 
 			if (count == 0) {
@@ -253,11 +253,11 @@ static void _CFStreamDetachSource(struct _CFStream* stream) {
 				}
                 CFDictionaryRemoveValue(sSharedSources, runLoopAndSourceKey);
             }
-            
+
             CFDictionaryRemoveValue(sSharedSources, stream);
-            
+
 			_CFStreamSetSource(stream, NULL, count == 0);
-			
+
             __CFBitClear(stream->flags, SHARED_SOURCE);
 
             __CFSpinUnlock(&sSourceLock);
@@ -307,7 +307,7 @@ static void __CFStreamDeallocate(CFTypeRef cf) {
         if (stream->client->runLoopsAndModes) {
             CFRelease(stream->client->runLoopsAndModes);
         }
-        
+
         CFAllocatorDeallocate(alloc, stream->client);
         stream->client = NULL; // Just in case finalize, below, calls back in to us
     }
@@ -392,7 +392,7 @@ static struct _CFStream *_CFStreamCreate(CFAllocatorRef allocator, Boolean isRea
         newStream->client = NULL;
         newStream->info = NULL;
         newStream->callBacks = NULL;
-		
+
         newStream->streamLock = CFSpinLockInit;
         newStream->previousRunloopsAndModes = NULL;
         newStream->queue = NULL;
@@ -505,7 +505,7 @@ CF_EXPORT CFReadStreamRef CFReadStreamCreate(CFAllocatorRef alloc, const CFReadS
         cb->schedule = (void (*)(struct _CFStream *, CFRunLoopRef, CFStringRef, void *))callbacks->schedule;
         cb->unschedule = (void (*)(struct _CFStream *, CFRunLoopRef, CFStringRef, void *))callbacks->unschedule;
    }
-    
+
     newStream->callBacks = cb;
     return (CFReadStreamRef)newStream;
 }
@@ -554,7 +554,7 @@ CF_EXPORT CFWriteStreamRef CFWriteStreamCreate(CFAllocatorRef alloc, const CFWri
         cb->canRead = NULL;
         cb->write = (CFIndex(*)(CFWriteStreamRef stream, const UInt8 *buffer, CFIndex bufferLength, CFErrorRef *error, void *info))cbV1->write;
         cb->canWrite = (Boolean(*)(CFWriteStreamRef stream, CFErrorRef *error, void *info))cbV1->canWrite;
-        cb->close = (void (*)(struct _CFStream *, void *))cbV1->close;        
+        cb->close = (void (*)(struct _CFStream *, void *))cbV1->close;
         cb->copyProperty = (CFTypeRef (*)(struct _CFStream *, CFStringRef, void *))cbV1->copyProperty;
         cb->setProperty = (Boolean (*)(struct _CFStream *, CFStringRef, CFTypeRef, void *))cbV1->setProperty;
         cb->requestEvents = (void(*)(struct _CFStream *, CFOptionFlags, void *))cbV1->requestEvents;
@@ -573,7 +573,7 @@ CF_EXPORT CFWriteStreamRef CFWriteStreamCreate(CFAllocatorRef alloc, const CFWri
         cb->canRead = NULL;
         cb->write = callbacks->write;
         cb->canWrite = callbacks->canWrite;
-        cb->close = (void (*)(struct _CFStream *, void *))callbacks->close;        
+        cb->close = (void (*)(struct _CFStream *, void *))callbacks->close;
         cb->copyProperty = (CFTypeRef (*)(struct _CFStream *, CFStringRef, void *))callbacks->copyProperty;
         cb->setProperty = (Boolean (*)(struct _CFStream *, CFStringRef, CFTypeRef, void *))callbacks->setProperty;
         cb->requestEvents = (void(*)(struct _CFStream *, CFOptionFlags, void *))callbacks->requestEvents;
@@ -622,7 +622,7 @@ static void _signalEventSync(struct _CFStream* stream, CFOptionFlags whatToSigna
                  * should break pout of this loop */
             }
         }
-        
+
         if (release)
             (*release) (info);
     }
@@ -641,7 +641,7 @@ static void _signalEventQueue(dispatch_queue_t q, struct _CFStream* stream, CFOp
 static void _cfstream_solo_signalEventSync(void* info)
 {
     CFTypeID typeID = CFGetTypeID((CFTypeRef) info);
-    
+
     if (typeID != CFReadStreamGetTypeID() && typeID != CFWriteStreamGetTypeID()) {
 	CFLog(__kCFLogAssertion, CFSTR("Expected a read or write stream for %p"), info);
 #if defined(DEBUG)
@@ -656,7 +656,7 @@ static void _cfstream_solo_signalEventSync(void* info)
         if (queue) dispatch_retain(queue);
         CFRetain(stream);
         _CFStreamUnlock(stream);
-        
+
 	/* Since the array version holds a retain, we do it here as well, as opposed to taking a second retain in the client callback */
         if (queue == 0)
             _signalEventSync(stream, whatToSignal);
@@ -671,7 +671,7 @@ static void _cfstream_solo_signalEventSync(void* info)
 static void _cfstream_shared_signalEventSync(void* info)
 {
     CFTypeID typeID = CFGetTypeID((CFTypeRef) info);
-    
+
     if (typeID != CFArrayGetTypeID()) {
 	CFLog(__kCFLogAssertion, CFSTR("Expected an array for %p"), info);
 #if defined(DEBUG)
@@ -734,7 +734,7 @@ static void _cfstream_shared_signalEventSync(void* info)
 }
 
 /* This routine is to be considered unsafe... */
-static CFArrayRef _CFStreamGetRunLoopsAndModes(struct _CFStream *stream) 
+static CFArrayRef _CFStreamGetRunLoopsAndModes(struct _CFStream *stream)
 {
     CFArrayRef result = NULL;
     if (stream && stream->client) {
@@ -753,7 +753,7 @@ static CFArrayRef _CFStreamGetRunLoopsAndModes(struct _CFStream *stream)
     return result;
 }
 
-static CFArrayRef _CFStreamCopyRunLoopsAndModes(struct _CFStream *stream) 
+static CFArrayRef _CFStreamCopyRunLoopsAndModes(struct _CFStream *stream)
 {
     CFArrayRef result = NULL;
     if (stream && stream->client) {
@@ -798,7 +798,7 @@ static void _wakeUpRunLoop(struct _CFStream *stream) {
                 }
             }
         }
-        if (NULL != rl && CFRunLoopIsWaiting(rl)) 
+        if (NULL != rl && CFRunLoopIsWaiting(rl))
             CFRunLoopWakeUp(rl);
         CFRelease(rlArray);
     }
@@ -823,7 +823,7 @@ CF_PRIVATE void _CFStreamSignalEvent(struct _CFStream *stream, CFStreamEventType
         // cannot send open completed; that happened already
         event &= ~kCFStreamEventOpenCompleted;
     }
-    
+
     // Change status if appropriate
     if (event & kCFStreamEventOpenCompleted && status == kCFStreamStatusOpening) {
         _CFStreamSetStatusCode(stream, kCFStreamStatusOpen);
@@ -843,25 +843,25 @@ CF_PRIVATE void _CFStreamSignalEvent(struct _CFStream *stream, CFStreamEventType
         _CFStreamSetStatusCode(stream, kCFStreamStatusError);
     }
 
-    // Now signal any pertinent event 
+    // Now signal any pertinent event
     if (stream->client && (stream->client->when & event) != 0) {
         CFRunLoopSourceRef source = _CFStreamCopySource(stream);
-        
+
         if (source) {
             Boolean signalNow = FALSE;
-        
+
             stream->client->whatToSignal |= event;
-        
+
             if (synchronousAllowed && !__CFBitIsSet(stream->flags, CALLING_CLIENT)) {
-            
+
                 CFRunLoopRef rl = CFRunLoopGetCurrent();
                 CFStringRef mode = CFRunLoopCopyCurrentMode(rl);
-            
+
                 if (mode) {
                     if (CFRunLoopContainsSource(rl, source, mode))
                         signalNow = TRUE;
                 }
-                if (mode) 
+                if (mode)
                     CFRelease(mode);
             }
 
@@ -875,7 +875,7 @@ CF_PRIVATE void _CFStreamSignalEvent(struct _CFStream *stream, CFStreamEventType
                 }
                 _wakeUpRunLoop(stream);
             }
-		
+
             CFRelease(source);
         }
     }
@@ -1043,7 +1043,7 @@ CF_EXPORT Boolean CFReadStreamHasBytesAvailable(CFReadStreamRef readStream) {
     const struct _CFStreamCallBacks *cb;
     if (status != kCFStreamStatusOpen && status != kCFStreamStatusReading) {
         return FALSE;
-    } 
+    }
     cb  = _CFStreamGetCallBackPtr(stream);
     if (cb->canRead == NULL) {
         return TRUE;  // No way to know without trying....
@@ -1076,7 +1076,7 @@ CFIndex CFReadStreamRead(CFReadStreamRef readStream, UInt8 *buffer, CFIndex buff
         __CFBitClear(stream->flags, CALLING_CLIENT);
         status = _CFStreamGetStatus(stream);
     }
-        
+
     if (status != kCFStreamStatusOpen && status != kCFStreamStatusReading && status != kCFStreamStatusAtEnd) {
         return -1;
     } else  if (status == kCFStreamStatusAtEnd) {
@@ -1178,7 +1178,7 @@ CF_EXPORT Boolean CFWriteStreamCanAcceptBytes(CFWriteStreamRef writeStream) {
     const struct _CFStreamCallBacks *cb;
     if (status != kCFStreamStatusOpen && status != kCFStreamStatusWriting) {
         return FALSE;
-    } 
+    }
     cb  = _CFStreamGetCallBackPtr(stream);
     if (cb->canWrite == NULL) {
         return TRUE;  // No way to know without trying....
@@ -1365,7 +1365,7 @@ CF_EXPORT Boolean CFReadStreamSetClient(CFReadStreamRef readStream, CFOptionFlag
         return [is _setCFClientFlags:streamEvents callback:clientCB context:clientContext];
     }
 #endif
-    
+
     streamEvents &= ~kCFStreamEventCanAcceptBytes;
     return _CFStreamSetClient((struct _CFStream *)readStream, streamEvents, (void (*)(struct _CFStream *, CFStreamEventType, void *))clientCB, clientContext);
 }
@@ -1414,23 +1414,23 @@ CF_EXPORT void *_CFWriteStreamGetClient(CFWriteStreamRef writeStream) {
 
 CF_PRIVATE void _CFStreamScheduleWithRunLoop(struct _CFStream *stream, CFRunLoopRef runLoop, CFStringRef runLoopMode) {
     const struct _CFStreamCallBacks *cb = _CFStreamGetCallBackPtr(stream);
-    
+
     if (! stream->client) {
         _initializeClient(stream);
         if (!stream->client) return; // we don't support asynch.
     }
-    
+
     if (! stream->client->rlSource) {
 	/* No source, so we join the shared source group */
         CFTypeRef a[] = { runLoop, runLoopMode };
-        
+
         CFArrayRef runLoopAndSourceKey = CFArrayCreate(kCFAllocatorSystemDefault, a, sizeof(a) / sizeof(a[0]), &kCFTypeArrayCallBacks);
 
         __CFSpinLock(&sSourceLock);
-        
+
         if (!sSharedSources)
             sSharedSources = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-        
+
         CFMutableArrayRef listOfStreamsSharingASource = (CFMutableArrayRef)CFDictionaryGetValue(sSharedSources, runLoopAndSourceKey);
         if (listOfStreamsSharingASource) {
 			struct _CFStream* aStream = (struct _CFStream*) CFArrayGetValueAtIndex(listOfStreamsSharingASource, 0);
@@ -1459,35 +1459,35 @@ CF_PRIVATE void _CFStreamScheduleWithRunLoop(struct _CFStream *stream, CFRunLoop
             CFDictionaryAddValue(sSharedSources, runLoopAndSourceKey, listOfStreamsSharingASource);
 
             ctxt.info = listOfStreamsSharingASource;
-            
+
 			CFRunLoopSourceRef source = CFRunLoopSourceCreate(kCFAllocatorSystemDefault, 0, &ctxt);
 			_CFStreamSetSource(stream, source, FALSE);
             CFRunLoopAddSource(runLoop, source, runLoopMode);
 			CFRelease(source);
         }
-        
+
         CFArrayAppendValue(listOfStreamsSharingASource, stream);
         CFDictionaryAddValue(sSharedSources, stream, runLoopAndSourceKey);
-        
+
         CFRelease(runLoopAndSourceKey);
         CFRelease(listOfStreamsSharingASource);
-        
+
         __CFBitSet(stream->flags, SHARED_SOURCE);
 
         __CFSpinUnlock(&sSourceLock);
     }
     else if (__CFBitIsSet(stream->flags, SHARED_SOURCE)) {
         /* We were sharing, but now we'll get our own source */
-	
+
         CFArrayRef runLoopAndSourceKey;
         CFMutableArrayRef listOfStreamsSharingASource;
         CFIndex count, i;
-        
+
         CFAllocatorRef alloc = CFGetAllocator(stream);
         CFRunLoopSourceContext ctxt = {
             0,
             (void *)stream,
-            NULL,														// Do not use CFRetain/CFRelease callbacks here; that will cause a retain loop 
+            NULL,														// Do not use CFRetain/CFRelease callbacks here; that will cause a retain loop
             NULL,														// Do not use CFRetain/CFRelease callbacks here; that will cause a retain loop
             (CFStringRef(*)(const void *))CFCopyDescription,
             NULL,
@@ -1498,17 +1498,17 @@ CF_PRIVATE void _CFStreamScheduleWithRunLoop(struct _CFStream *stream, CFRunLoop
         };
 
         __CFSpinLock(&sSourceLock);
-        
+
         runLoopAndSourceKey = (CFArrayRef)CFRetain((CFTypeRef)CFDictionaryGetValue(sSharedSources, stream));
         listOfStreamsSharingASource = (CFMutableArrayRef)CFDictionaryGetValue(sSharedSources, runLoopAndSourceKey);
-        
+
         count = CFArrayGetCount(listOfStreamsSharingASource);
         i = CFArrayGetFirstIndexOfValue(listOfStreamsSharingASource, CFRangeMake(0, count), stream);
         if (i != kCFNotFound) {
             CFArrayRemoveValueAtIndex(listOfStreamsSharingASource, i);
             count--;
         }
-        
+
         if (count == 0) {
 			CFRunLoopSourceRef source = _CFStreamCopySource(stream);
 			if (source) {
@@ -1517,22 +1517,22 @@ CF_PRIVATE void _CFStreamScheduleWithRunLoop(struct _CFStream *stream, CFRunLoop
 			}
             CFDictionaryRemoveValue(sSharedSources, runLoopAndSourceKey);
         }
-        
+
         CFDictionaryRemoveValue(sSharedSources, stream);
-        
+
 		_CFStreamSetSource(stream, NULL, count == 0);
-		
+
         __CFBitClear(stream->flags, SHARED_SOURCE);
 
         __CFSpinUnlock(&sSourceLock);
-        
+
 		CFRunLoopSourceRef source = CFRunLoopSourceCreate(alloc, 0, &ctxt);
 		_CFStreamSetSource(stream, source, FALSE);
         CFRunLoopAddSource((CFRunLoopRef)CFArrayGetValueAtIndex(runLoopAndSourceKey, 0), source, (CFStringRef)CFArrayGetValueAtIndex(runLoopAndSourceKey, 1));
         CFRelease(runLoopAndSourceKey);
-        
+
         CFRunLoopAddSource(runLoop, source, runLoopMode);
-		
+
 		CFRelease(source);
     } else {
 	/* We're not sharing, so just add the source to the rl & mode */
@@ -1542,7 +1542,7 @@ CF_PRIVATE void _CFStreamScheduleWithRunLoop(struct _CFStream *stream, CFRunLoop
 			CFRelease(source);
 		}
     }
-    
+
     _CFStreamLock(stream);
     if (!stream->client->runLoopsAndModes) {
         stream->client->runLoopsAndModes = CFArrayCreateMutable(CFGetAllocator(stream), 0, &kCFTypeArrayCallBacks);
@@ -1557,7 +1557,7 @@ CF_PRIVATE void _CFStreamScheduleWithRunLoop(struct _CFStream *stream, CFRunLoop
         cb->schedule(stream, runLoop, runLoopMode, _CFStreamGetInfoPointer(stream));
         __CFBitClear(stream->flags, CALLING_CLIENT);
     }
-    
+
     /*
      * If we've got events pending, we need to wake up and signal
      */
@@ -1588,7 +1588,7 @@ CF_EXPORT void CFReadStreamScheduleWithRunLoop(CFReadStreamRef stream, CFRunLoop
         return;
     }
 #endif
-    
+
     _CFStreamScheduleWithRunLoop((struct _CFStream *)stream, runLoop, runLoopMode);
 }
 
@@ -1618,7 +1618,7 @@ CF_PRIVATE void _CFStreamUnscheduleFromRunLoop(struct _CFStream *stream, CFRunLo
     const struct _CFStreamCallBacks *cb = _CFStreamGetCallBackPtr(stream);
     if (!stream->client) return;
     if (!stream->client->rlSource) return;
-    
+
     if (!__CFBitIsSet(stream->flags, SHARED_SOURCE)) {
 		CFRunLoopSourceRef source = _CFStreamCopySource(stream);
 		if (source) {
@@ -1631,17 +1631,17 @@ CF_PRIVATE void _CFStreamUnscheduleFromRunLoop(struct _CFStream *stream, CFRunLo
         CFIndex count, i;
 
         __CFSpinLock(&sSourceLock);
-        
+
         runLoopAndSourceKey = (CFArrayRef)CFDictionaryGetValue(sSharedSources, stream);
         list = (CFMutableArrayRef)CFDictionaryGetValue(sSharedSources, runLoopAndSourceKey);
-        
+
         count = CFArrayGetCount(list);
         i = CFArrayGetFirstIndexOfValue(list, CFRangeMake(0, count), stream);
         if (i != kCFNotFound) {
             CFArrayRemoveValueAtIndex(list, i);
             count--;
         }
-        
+
         if (count == 0) {
 			CFRunLoopSourceRef source = _CFStreamCopySource(stream);
 			if (source) {
@@ -1650,16 +1650,16 @@ CF_PRIVATE void _CFStreamUnscheduleFromRunLoop(struct _CFStream *stream, CFRunLo
 			}
             CFDictionaryRemoveValue(sSharedSources, runLoopAndSourceKey);
         }
-        
+
         CFDictionaryRemoveValue(sSharedSources, stream);
-        
+
         _CFStreamSetSource(stream, NULL, count == 0);
 
         __CFBitClear(stream->flags, SHARED_SOURCE);
 
         __CFSpinUnlock(&sSourceLock);
     }
-    
+
     _CFStreamLock(stream);
     _CFStreamRemoveRunLoopAndModeFromArray(stream->client->runLoopsAndModes, runLoop, runLoopMode);
     checkRLMArray(stream->client->runLoopsAndModes);
@@ -1794,14 +1794,14 @@ static CFRunLoopRef _legacyStreamRunLoop()
             dispatch_release(sem);
         }
     });
-    
+
     return sLegacyRL;
 }
 
 static dispatch_queue_t _CFStreamCopyDispatchQueue(struct _CFStream* stream)
 {
     dispatch_queue_t result = NULL;
-    
+
     _CFStreamLock(stream);
     if (stream->client) {
         result = stream->queue;
@@ -1936,22 +1936,22 @@ void _CFStreamSourceScheduleWithRunLoop(CFRunLoopSourceRef source, CFMutableArra
 {
     CFIndex count;
     CFRange range;
-    
+
     checkRLMArray(runLoopsAndModes);
 
     count = CFArrayGetCount(runLoopsAndModes);
     range = CFRangeMake(0, count);
-    
+
     while (range.length) {
-        
+
         CFIndex i = CFArrayGetFirstIndexOfValue(runLoopsAndModes, range, runLoop);
-        
+
         if (i == kCFNotFound)
             break;
-            
+
         if (CFEqual(CFArrayGetValueAtIndex(runLoopsAndModes, i + 1), runLoopMode))
             return;
-        
+
         range.location = i + 2;
         range.length = count - range.location;
     }
@@ -1959,7 +1959,7 @@ void _CFStreamSourceScheduleWithRunLoop(CFRunLoopSourceRef source, CFMutableArra
 	// Add the new values.
     CFArrayAppendValue(runLoopsAndModes, runLoop);
     CFArrayAppendValue(runLoopsAndModes, runLoopMode);
-    
+
 	// Schedule the source on the new loop and mode.
     if (source)
         CFRunLoopAddSource(runLoop, source, runLoopMode);
@@ -1971,33 +1971,33 @@ void _CFStreamSourceUnscheduleFromRunLoop(CFRunLoopSourceRef source, CFMutableAr
 {
     CFIndex count;
 	CFRange range;
-    
+
     count = CFArrayGetCount(runLoopsAndModes);
     range = CFRangeMake(0, count);
-	
+
     checkRLMArray(runLoopsAndModes);
 
 	while (range.length) {
-    
+
 		CFIndex i = CFArrayGetFirstIndexOfValue(runLoopsAndModes, range, runLoop);
-		
+
 		// If not found, it's not scheduled on it.
 		if (i == kCFNotFound)
 			return;
-			
+
 		// Make sure it is scheduled in this mode.
 		if (CFEqual(CFArrayGetValueAtIndex(runLoopsAndModes, i + 1), runLoopMode)) {
 
 			// Remove mode and runloop from the list.
             CFArrayReplaceValues(runLoopsAndModes, CFRangeMake(i, 2), NULL, 0);
-            
+
             // Remove it from the runloop.
             if (source)
                 CFRunLoopRemoveSource(runLoop, source, runLoopMode);
-			
+
 			return;
 		}
-		
+
         range.location = i + 2;
         range.length = count - range.location;
 	}
@@ -2047,7 +2047,7 @@ void _CFStreamSourceUncheduleFromAllRunLoops(CFRunLoopSourceRef source, CFArrayR
 Boolean _CFStreamRemoveRunLoopAndModeFromArray(CFMutableArrayRef runLoopsAndModes, CFRunLoopRef rl, CFStringRef mode) {
     CFIndex idx, cnt;
     Boolean found = FALSE;
-    
+
     if (!runLoopsAndModes) return FALSE;
 
     checkRLMArray(runLoopsAndModes);

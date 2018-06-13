@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -84,11 +84,11 @@ CFStringRef CFStringGetNameOfEncoding(CFStringEncoding theEncoding) {
 
     if (!theName) {
         const char *encodingName = __CFStringEncodingGetName(theEncoding);
-        
+
         if (encodingName) {
             theName = CFStringCreateWithCString(kCFAllocatorSystemDefault, encodingName, kCFStringEncodingASCII);
         }
-        
+
         if (theName) {
             if (!mappingTable) mappingTable = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 0, (const CFDictionaryKeyCallBacks *)NULL, &kCFTypeDictionaryValueCallBacks);
 
@@ -117,13 +117,13 @@ CFStringEncoding CFStringConvertIANACharSetNameToEncoding(CFStringRef charsetNam
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
     if (kCFStringEncodingInvalidId == encoding) encoding = __CFStringEncodingGetFromICUName(name);
 #endif
-    
+
 
     // handling Java name variant for MS codepages
     if ((kCFStringEncodingInvalidId == encoding) && !strncasecmp(name, "ms950", strlen("ms950"))) { // <rdar://problem/12903398> “MS950” is not recognized
         encoding = __CFStringEncodingGetFromCanonicalName("cp950");
     }
-    
+
     return encoding;
 }
 
@@ -176,7 +176,7 @@ enum {
     NSWindowsCP1250StringEncoding = 15,    /* WinLatin2 */
     NSISO2022JPStringEncoding = 21,         /* ISO 2022 Japanese encoding for e-mail */
     NSMacOSRomanStringEncoding = 30,
-    
+
     NSProprietaryStringEncoding = 65536    /* Installation-specific encoding */
 };
 #endif
@@ -294,11 +294,11 @@ static SInt32 __CompareSpecials(const UCollator *collator, CFOptionFlags options
 	if (U_SUCCESS(icuStatus)) {
 		int32_t	startOffset1 = 0;
 		int32_t	startOffset2 = 0;
-		
+
 		while (true) {
 			int32_t	elemOrder1, elemOrder2;
 			int32_t	offset1, offset2;
-			
+
 			elemOrder1 = ucol_next(collElems1, &icuStatus);
 			elemOrder2 = ucol_next(collElems2, &icuStatus);
 			if ( U_FAILURE(icuStatus) || elemOrder1 == (int32_t)UCOL_NULLORDER || elemOrder2 == (int32_t)UCOL_NULLORDER ) {
@@ -342,14 +342,14 @@ static SInt32 __CompareSpecials(const UCollator *collator, CFOptionFlags options
 					}
 				}
 			}
-			
+
 			startOffset1 = offset1;
 			startOffset2 = offset2;
 		}
 		ucol_closeElements(collElems1);
 		ucol_closeElements(collElems2);
 	}
-	
+
 	return (orderWidth != 0)? orderWidth: orderCompos;
 }
 
@@ -446,7 +446,7 @@ static void __collatorFinalize(UCollator *collator) {
 
 // -------------------------------------------------------------------------------------------------
 // __CompareTextDefault
-// 
+//
 // A primary difference is denoted by values 2/-2 in orderP. Other differences are indicated with a -1/1.
 // A negative value indicates that text1 sorts before text2.
 // -------------------------------------------------------------------------------------------------
@@ -455,10 +455,10 @@ static OSStatus __CompareTextDefault(UCollator *collator, CFOptionFlags options,
 	// collator must have default settings restored on exit from this function
 
 	*equivalentP = true;
-	*orderP = 0;	
+	*orderP = 0;
 
 	if (options & kCFCompareNumerically) {
-	    UErrorCode icuStatus = U_ZERO_ERROR;	
+	    UErrorCode icuStatus = U_ZERO_ERROR;
 	    ucol_setAttribute(collator, UCOL_NUMERIC_COLLATION, UCOL_ON, &icuStatus);
 	}
 
@@ -469,7 +469,7 @@ static OSStatus __CompareTextDefault(UCollator *collator, CFOptionFlags options,
 		*orderP = (icuResult == UCOL_LESS) ? -2 : 2;
 	}
 	if (*orderP == 0) {
-		UErrorCode icuStatus = U_ZERO_ERROR;	
+		UErrorCode icuStatus = U_ZERO_ERROR;
                 ucol_setAttribute(collator, UCOL_NORMALIZATION_MODE, UCOL_ON, &icuStatus);
                 ucol_setAttribute(collator, UCOL_STRENGTH, (options & kCFCompareDiacriticInsensitive) ? UCOL_PRIMARY : UCOL_SECONDARY, &icuStatus);
                 ucol_setAttribute(collator, UCOL_CASE_LEVEL, (options & kCFCompareCaseInsensitive) ? UCOL_OFF : UCOL_ON, &icuStatus);
@@ -501,7 +501,7 @@ static OSStatus __CompareTextDefault(UCollator *collator, CFOptionFlags options,
 	// If strings are equivalent but we care about order and have not yet checked
 	// to the level of code point order, then do some more checks for order
 	if (*orderP == 0) {
-		UErrorCode icuStatus = U_ZERO_ERROR;	
+		UErrorCode icuStatus = U_ZERO_ERROR;
 		// First try to see if ICU can find any differences above code point level
                 ucol_setAttribute(collator, UCOL_NORMALIZATION_MODE, UCOL_ON, &icuStatus);
 		ucol_setAttribute(collator, UCOL_STRENGTH, UCOL_TERTIARY, &icuStatus);
@@ -528,7 +528,7 @@ static OSStatus __CompareTextDefault(UCollator *collator, CFOptionFlags options,
 	}
 
 	if (options & kCFCompareNumerically) {
-	    UErrorCode icuStatus = U_ZERO_ERROR;	
+	    UErrorCode icuStatus = U_ZERO_ERROR;
 	    ucol_setAttribute(collator, UCOL_NUMERIC_COLLATION, UCOL_OFF, &icuStatus);
 	}
 	return 0; // noErr
@@ -589,29 +589,29 @@ CF_PRIVATE CFComparisonResult _CFCompareStringsWithLocale(CFStringInlineBuffer *
     static const uint8_t *nonBaseBMP = NULL;
     static const uint8_t *punctBMP = NULL;
     static const uint8_t *controlBMP = NULL;
-    
+
     if (NULL == alnumBMP) {
 	alnumBMP = CFUniCharGetBitmapPtrForPlane(kCFUniCharAlphaNumericCharacterSet, 0);
 	nonBaseBMP = CFUniCharGetBitmapPtrForPlane(kCFUniCharNonBaseCharacterSet, 0);
 	punctBMP = CFUniCharGetBitmapPtrForPlane(kCFUniCharPunctuationCharacterSet, 0);
 	controlBMP = CFUniCharGetBitmapPtrForPlane(kCFUniCharControlAndFormatterCharacterSet, 0);
     }
-    
+
     // Determine the range of characters surrodiing the current index significant for localized comparison. The range is extended backward and forward as long as they are contextual. Contextual characters include all letters and punctuations. Since most control/format characters are ignorable in localized comparison, we also include them extending forward.
-    
+
     range1.location = str1Range.location;
     range2.location = str2Range.location;
-    
+
     // go backward
     // The characters upto the current index are already determined to be equal by the CFString's standard character folding algorithm. Extend as long as truly contextual (all letters and punctuations).
     if (range1.location > 0) {
 	range1.location = __extendLocationBackward(range1.location - 1, str1, nonBaseBMP, punctBMP);
     }
-    
+
     if (range2.location > 0) {
 	range2.location = __extendLocationBackward(range2.location - 1, str2, nonBaseBMP, punctBMP);
     }
-    
+
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED
     // First we try to use the last one used on this thread, if the locale is the same,
@@ -632,7 +632,7 @@ CF_PRIVATE CFComparisonResult _CFCompareStringsWithLocale(CFStringInlineBuffer *
     }
 #endif
 #endif
-    
+
     characters1 = CFStringGetCharactersPtrFromInlineBuffer(str1, range1);
     characters2 = CFStringGetCharactersPtrFromInlineBuffer(str2, range2);
 
@@ -643,7 +643,7 @@ CF_PRIVATE CFComparisonResult _CFCompareStringsWithLocale(CFStringInlineBuffer *
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_WINDOWS || DEPLOYMENT_TARGET_LINUX
         if ((NULL != collator) && (__CompareTextDefault(collator, options, characters1, range1.length, characters2, range2.length, &isEqual, &order) == 0 /* noErr */)) {
             compResult = ((isEqual && !forcedOrdering) ? kCFCompareEqualTo : ((order < 0) ? kCFCompareLessThan : kCFCompareGreaterThan));
-        } else 
+        } else
 #endif
         {
             compResult = ((memcmp(characters1, characters2, sizeof(UniChar) * range1.length) < 0) ? kCFCompareLessThan : kCFCompareGreaterThan);
@@ -686,10 +686,10 @@ CF_PRIVATE CFComparisonResult _CFCompareStringsWithLocale(CFStringInlineBuffer *
             }
 
             if (str2Range.location < str2Max) {
-		str2Range.location = __extendLocationForward(str2Range.location, str2, alnumBMP, punctBMP, controlBMP, str2Max);                
+		str2Range.location = __extendLocationForward(str2Range.location, str2, alnumBMP, punctBMP, controlBMP, str2Max);
                 range2.length = (str2Range.location - range2.location);
                 characters2 = CFStringGetCharactersPtrFromInlineBuffer(str2, range2);
-                
+
                 if (NULL == characters2) {
                     if ((0 > buffer2Len) || (range2.length > kCFStringCompareAllocationIncrement)) {
                         if (buffer2Len < range2.length) {
@@ -716,7 +716,7 @@ CF_PRIVATE CFComparisonResult _CFCompareStringsWithLocale(CFStringInlineBuffer *
                     if (forcedOrdering && (kCFCompareEqualTo == compResult) && (0 != order)) compResult = ((order < 0) ? kCFCompareLessThan : kCFCompareGreaterThan);
                     order = 0;
                 }
-            } else 
+            } else
 #endif
             {
                 order = memcmp(characters1, characters2, sizeof(UTF16Char) * ((range1.length < range2.length) ? range1.length : range2.length));
@@ -757,7 +757,7 @@ CF_PRIVATE CFComparisonResult _CFCompareStringsWithLocale(CFStringInlineBuffer *
 	_CFSetTSD(__CFTSDKeyCollatorLocale, (void *)CFRetain(compareLocale), NULL);
     }
 #endif
-    
+
     return compResult;
 }
 

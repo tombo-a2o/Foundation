@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -1448,7 +1448,7 @@ static CFHashCode __CFNumberHash_old(CFTypeRef cf) {
 #define BUFFER_SIZE 100
 #define emitChar(ch) \
     {if (buf - stackBuf == BUFFER_SIZE) {CFStringAppendCharacters(mstr, stackBuf, BUFFER_SIZE); buf = stackBuf;} *buf++ = ch;}
-                 
+
 static void __CFNumberEmitInt64_old(CFMutableStringRef mstr, int64_t value, int32_t width, UniChar pad, bool explicitPlus) {
     UniChar stackBuf[BUFFER_SIZE], *buf = stackBuf;
     uint64_t uvalue, factor, tmp;
@@ -1551,7 +1551,7 @@ static CFStringRef __CFNumberCopyFormattingDescription_old(CFTypeRef cf, CFDicti
     int64_t value;
     switch (__CFNumberGetType_old(number)) {
     case kCFNumberSInt32Type:
-    case kCFNumberSInt64Type: 
+    case kCFNumberSInt64Type:
         value = (__CFNumberGetType_old(number) == kCFNumberSInt32Type) ? number->value.valSInt32 : number->value.valSInt64;
         mstr = CFStringCreateMutable(kCFAllocatorSystemDefault, 0);
         __CFNumberEmitInt64_old(mstr, value, 0, ' ', false);
@@ -1588,7 +1588,7 @@ s->high = (int64_t)s->low;
 type = kCFNumberSInt64Type;
 }
 
-    
+
     equivType = __CFNumberGetCanonicalTypeForType_old(type);
 
     storageType = __CFNumberGetStorageTypeForType_old(type);
@@ -1599,7 +1599,7 @@ type = kCFNumberSInt64Type;
     }
     SET_VALUE((__CFNumberValue_old *)&(num->value), equivType, valuePtr);
     __CFBitfieldSetValue(((struct __CFNumber_old *)num)->_base._cfinfo[CF_INFO_BITS], 6, 0, (uint8_t)storageType);
-    
+
 if (__CFNumberGetType_old(num) == 0) printf("*** ERROR: new number %p type is 0 (%d)\n", num, storageType);
     return num;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2005 Apple Computer, Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 /* CFFTPStream.c
@@ -401,18 +401,18 @@ enum {
     kFlagBitGotError,		// Used to protect when dequeueing as a result of an
                        		// error and trying to requeue orphaned items.
 	kFlagBitCompleteDeferred,	// During RETR, set by first code executed (no data on the datastream or getting a complete response)
-	
+
     // _CFFTPNetConnection flags
     kFlagBitMultiline	= 0,	// In the process of a multiline response
     kFlagBitReturnToIdle,	// Return back to the idle state before proceeding to next request
     kFlagBitIsXServer,		// This connection is to an OS X server
     kFlagBitLeftForDead,	// Connection has no pending requests but is still in cache
     kFlagBitHTTPLitmus,		// Indicates having sent the early HTTP test
-    
+
     // Other constants
     kBufferGrowthSize	= 2048,	// Growth factor used for reading responses to commands
     kFTPTimeoutInSeconds = 180,	// Timeout for stale connections sitting in the connection cache
-    
+
     // CFNetConnection types for cache key
     kCFNetConnectionTypeFTP,
     kCFNetConnectionTypeFTPS,
@@ -427,31 +427,31 @@ enum {
 #endif
 
 typedef struct {
-    
+
     UInt32			_flags;
-    
+
     CFURLRef			_url;
     CFURLRef			_newUrl;
     CFTypeRef			_dataStream;
     CFTypeRef			_userStream;	// CFReadStreamRef if GET; CFWriteStreamRef if PUT
-    
+
     CFStreamError		_error;		// Currently just use for fallback from proxy to proxy
-    
+
     CFSocketRef			_server;
-    
+
     CFDictionaryRef		_attributes;
     long long			_offset;
-    
+
     CFMutableArrayRef		_runloops;
-    
+
     CFMutableDictionaryRef	_properties;
 
     CFReadStreamRef		_proxyStream;
     CFArrayRef			_proxies;
     CFIndex			_current;
-    
+
     _CFNetConnectionRef		_connection;
-    
+
 } _CFFTPStreamContext;
 
 
@@ -460,23 +460,23 @@ typedef struct {
 #pragma mark CFNetConnection Context
 #endif
 
-// This information needs to be carried over from request to request on a connection.	
+// This information needs to be carried over from request to request on a connection.
 typedef struct {
-    
+
     UInt32			_flags;
-    
+
     _CFNetConnectionCacheKey	_key;		// Needed for stream creation
-    
+
     UInt32			_result;
     _CFFTPStreamState		_state;
     CFStringRef			_root;		// This is the root directory (base url)
-    
+
     CFIndex			_recvCount;	// Number of relevant bytes in the receive buffer
     CFIndex			_sendCount;	// Number of relevant bytes in the send buffer
-    
+
     CFMutableDataRef		_recvBuffer;	// Used for leftovers (buffer can be larger than byte count)
     CFMutableDataRef		_sendBuffer;	// Used for leftovers (buffer can be larger than byte count)
-    
+
 } _CFFTPNetConnectionContext;
 
 
@@ -610,14 +610,14 @@ _FTPStreamFinalize(CFTypeRef stream, _CFFTPStreamContext* ctxt) {
     if (ctxt->_newUrl)
         CFRelease(ctxt->_newUrl);
 
-    
-    
+
+
     CFRelease(ctxt->_runloops);
     CFRelease(ctxt->_properties);
 
     if (ctxt->_proxies)
         CFRelease(ctxt->_proxies);
-    
+
     if (ctxt->_attributes)
         CFRelease(ctxt->_attributes);
 
@@ -646,9 +646,9 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
 			   _CFFTPStreamContext* ctxt)
 {
     CFAllocatorRef alloc = CFGetAllocator(stream);
-    
+
     UInt32 type = kCFNetConnectionTypeFTP;
-    
+
     _CFFTPNetConnectionContext template;
 
     CFTypeRef proxyUrl = NULL;
@@ -660,11 +660,11 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
 
     CFStringRef scheme = CFURLCopyScheme(ctxt->_url);
     SInt32 port = CFURLGetPortNumber(ctxt->_url);
-    CFStringRef host = CFURLCopyHostName(ctxt->_url);    
+    CFStringRef host = CFURLCopyHostName(ctxt->_url);
 
     if (!ctxt->_proxies) {
 
-        
+
         CFDictionaryRef info = CFDictionaryGetValue(ctxt->_properties, kCFStreamPropertyFTPProxy);
         if (info) {
 			CFRetain(info);
@@ -689,18 +689,18 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
                                                         &ctxt->_proxyStream);
 		if (info)
 			CFRelease(info);
-		
+
         ctxt->_current = 0;
 
         // If ctxt->_proxies is NULL, there has been an error and
         // need to error out the stream now.
         if (!ctxt->_proxies) {
-            
+
             CFRelease(scheme);
             CFRelease(host);
 
             if (ctxt->_proxyStream) {
-                
+
 				_CFTypeScheduleOnMultipleRunLoops(ctxt->_proxyStream, ctxt->_runloops);
 
                 *openComplete = FALSE;
@@ -732,14 +732,14 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
 
     ctxt->_error.domain = 0;
     ctxt->_error.error = 0;
-    
+
     CFDictionaryRemoveValue(ctxt->_properties, kCFStreamPropertyFTPProxy);
     CFDictionaryRemoveValue(ctxt->_properties, kCFStreamPropertySOCKSProxy);
     __CFBitClear(ctxt->_flags, kFlagBitReadHTTPResponse);
     __CFBitClear(ctxt->_flags, kFlagBitIsHTTPRequest);
-    
+
     proxyUrl = (CFTypeRef)CFArrayGetValueAtIndex(ctxt->_proxies, ctxt->_current);
-    
+
     if (!CFEqual(proxyUrl, kCFNull)) {
 
         CFStringRef pScheme = CFURLCopyScheme(proxyUrl);
@@ -750,15 +750,15 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
             SInt32 p = CFURLGetPortNumber(proxyUrl);
             CFNumberRef pPort = CFNumberCreate(alloc, kCFNumberSInt32Type, &p);
             CFMutableDictionaryRef pInfo = CFDictionaryCreateMutable(alloc, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-            
+
             CFDictionaryAddValue(pInfo, kCFStreamPropertyFTPProxyHost, pHost);
             CFDictionaryAddValue(pInfo, kCFStreamPropertyFTPProxyPort, pPort);
-            
+
             CFDictionaryAddValue(ctxt->_properties, kCFStreamPropertyFTPProxy, pInfo);
             CFRelease(pInfo);
-            
+
             proxyHost = pHost;
-            
+
             CFRelease(pHost);
             CFRelease(pPort);
         }
@@ -768,7 +768,7 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
 
         else if (CFEqual(pScheme, kSOCKS5SchemeString))
             _SetSOCKS5ProxyInformation(alloc, ctxt, proxyUrl);
-		
+
         else if ((CFStringCompare(pScheme, kHTTPSchemeString, kCFCompareCaseInsensitive) == kCFCompareEqualTo) ||
                  (CFStringCompare(pScheme, kHTTPSSchemeString, kCFCompareCaseInsensitive) == kCFCompareEqualTo))
         {
@@ -792,24 +792,24 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
 
         CFRelease(pScheme);
     }
-    
+
     if (CFStringCompare(scheme, kFTPSchemeString, kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
         if (port == -1)
             port = 21;
-            
+
         if (proxyHost)
             type = kCFNetConnectionTypeFTPProxy;
     }
     else {
-        
+
         CFTypeRef ssl = CFDictionaryGetValue(ctxt->_properties, kCFStreamPropertySocketSecurityLevel);
-        
+
         if (!ssl)
             _FTPStreamSetProperty(stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL, ctxt);
-            
+
         if (port == -1)
             port = 990;
-            
+
         if (proxyHost)
             type = kCFNetConnectionTypeFTPSProxy;
         else
@@ -817,15 +817,15 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
     }
 
     CFRelease(scheme);
-                
+
     *openComplete = FALSE;
     memset(error, 0, sizeof(error[0]));
-    
+
     if (!ctxt->_connection) {
-        
+
         CFMutableArrayRef expired = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
         _CFNetConnectionCacheKey key = createConnectionCacheKey(host, port, type, ctxt->_properties);
-    
+
         memset(&template, 0, sizeof(template));
         template._state = kFTPStateConnect;
         template._key = key;
@@ -838,7 +838,7 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
         lockConnectionCache(gFTPConnectionCache);
         CFDictionaryApplyFunction( gFTPConnectionTimeouts, (CFDictionaryApplierFunction)_FTPConnectionCacheExpiration, expired);
         unlockConnectionCache(gFTPConnectionCache);
-        
+
         ctxt->_connection = findOrCreateNetConnection(gFTPConnectionCache,
                                                       alloc,
                                                       _kFTPConnectionCallBacks,
@@ -846,7 +846,7 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
                                                       key,
                                                       usePersistent,
                                                       ctxt->_properties);
-        
+
         lockConnectionCache(gFTPConnectionCache);
         CFDictionaryRemoveValue(gFTPConnectionTimeouts, ctxt->_connection);
         if (CFArrayGetCount(expired)) {
@@ -861,12 +861,12 @@ _FTPStreamOpen(CFTypeRef stream, CFStreamError* error, Boolean* openComplete,
         }
         CFRelease(expired);
         unlockConnectionCache(gFTPConnectionCache);
-        
+
         releaseConnectionCacheKey(key);
     }
-    
+
     CFRelease(host);
-    
+
     if (!ctxt->_connection) {
         *openComplete = TRUE;
         error->error = errno;
@@ -902,30 +902,30 @@ _FTPStreamOpenCompleted(CFTypeRef stream, CFStreamError* error, _CFFTPStreamCont
     if (ctxt->_proxyStream)
         _ProxyStreamCallBack(ctxt->_proxyStream, ctxt);
 #endif
-    
+
     if (ctxt->_dataStream) {
-    
+
         CFStreamStatus status;
         CFTypeID i = CFReadStreamGetTypeID();
-        
+
         if (CFGetTypeID(ctxt->_dataStream) == i)
             status = CFReadStreamGetStatus((CFReadStreamRef)ctxt->_dataStream);
         else
             status = CFWriteStreamGetStatus((CFWriteStreamRef)ctxt->_dataStream);
-        
+
         switch (status) {
-            
+
             case kCFStreamStatusNotOpen:
             case kCFStreamStatusOpening:
                 break;
-                
+
             case kCFStreamStatusError:
                 if (CFGetTypeID(stream) == i)
                     *error = CFReadStreamGetError((CFReadStreamRef)stream);
                 else
                     *error = CFWriteStreamGetError((CFWriteStreamRef)stream);
                 return TRUE;
-                
+
             default:
                 return TRUE;
         }
@@ -981,17 +981,17 @@ _FTPStreamOpenCompleted(CFTypeRef stream, CFStreamError* error, _CFFTPStreamCont
 
         if (src) {
             CFRunLoopRef rl = CFRunLoopGetCurrent();
-            
+
             CFRunLoopAddSource(rl, src, kCFFTPStreamOpenCompleted);
-            
+
             CFRunLoopRunInMode(kCFFTPStreamOpenCompleted, 0.0, TRUE);
-            
+
             CFRunLoopRemoveSource(rl, src, kCFFTPStreamOpenCompleted);
-            
+
             CFRelease(src);
         }
     }
-    
+
     return result;
 }
 
@@ -1001,7 +1001,7 @@ _FTPStreamRead(CFReadStreamRef stream, UInt8* buffer, CFIndex bufferLength, CFSt
 			   Boolean* atEOF, _CFFTPStreamContext* ctxt)
 {
 	CFIndex result = 0;
-	
+
 	*atEOF = FALSE;
 	memset(error, 0, sizeof(error[0]));
 
@@ -1019,14 +1019,14 @@ _FTPStreamRead(CFReadStreamRef stream, UInt8* buffer, CFIndex bufferLength, CFSt
             CFReadStreamUnscheduleFromRunLoop(s, rl, kCFFTPStreamOpenCompleted);
             CFRelease(s);
         }
-        
+
 	while (ctxt->_connection && (!ctxt->_dataStream || !CFReadStreamHasBytesAvailable((CFReadStreamRef)ctxt->_dataStream))) {
-    
+
         CFWriteStreamRef requestStreams;
         CFReadStreamRef responseStreams;
-    
+
         _CFNetConnectionGetState(ctxt->_connection, TRUE, ctxt);
-    
+
         if (!ctxt->_connection) {
             *error = CFReadStreamGetError((CFReadStreamRef)ctxt->_userStream);
             if (error->error) {
@@ -1037,18 +1037,18 @@ _FTPStreamRead(CFReadStreamRef stream, UInt8* buffer, CFIndex bufferLength, CFSt
         }
 
         else {
-			
+
             requestStreams = _CFNetConnectionGetRequestStream(ctxt->_connection);
             responseStreams = _CFNetConnectionGetResponseStream(ctxt->_connection);
-        
+
             if (responseStreams) {
                 *error = CFReadStreamGetError(responseStreams);
             }
-            
+
             if (!error->error && requestStreams) {
                 *error = CFWriteStreamGetError(requestStreams);
             }
-            
+
             if (error->error) {
 
                 if ((((_CFFTPNetConnectionContext*)_CFNetConnectionGetInfoPointer(ctxt->_connection))->_state == kFTPStateConnect) &&
@@ -1068,7 +1068,7 @@ _FTPStreamRead(CFReadStreamRef stream, UInt8* buffer, CFIndex bufferLength, CFSt
             }
         }
     }
-		
+
     if (ctxt->_dataStream) {
 
         result = CFReadStreamRead((CFReadStreamRef)ctxt->_dataStream, buffer, bufferLength);
@@ -1126,7 +1126,7 @@ _FTPStreamRead(CFReadStreamRef stream, UInt8* buffer, CFIndex bufferLength, CFSt
             *error = CFReadStreamGetError((CFReadStreamRef)ctxt->_dataStream);
         }
     }
-    
+
     return result;
 }
 
@@ -1140,7 +1140,7 @@ _FTPStreamCanRead(CFReadStreamRef stream, _CFFTPStreamContext* ctxt) {
     if (ctxt->_proxyStream)
         _ProxyStreamCallBack(ctxt->_proxyStream, ctxt);
 #endif
-    
+
     if (ctxt->_connection) {
 
         _CFNetConnectionGetState(ctxt->_connection, TRUE, ctxt);
@@ -1185,7 +1185,7 @@ _FTPStreamCanRead(CFReadStreamRef stream, _CFFTPStreamContext* ctxt) {
             }
         }
     }
-	
+
     if (ctxt->_dataStream) {
 
         result = CFReadStreamHasBytesAvailable((CFReadStreamRef)ctxt->_dataStream);
@@ -1194,7 +1194,7 @@ _FTPStreamCanRead(CFReadStreamRef stream, _CFFTPStreamContext* ctxt) {
         // and HTTP stream is at the end.
         if (!result && CFReadStreamGetStatus((CFReadStreamRef)ctxt->_dataStream) == kCFStreamStatusAtEnd)
             result = TRUE;
-		
+
         if (result && __CFBitIsSet(ctxt->_flags, kFlagBitIsHTTPRequest) && !__CFBitIsSet(ctxt->_flags, kFlagBitReadHTTPResponse)) {
 
             CFStreamError error;
@@ -1244,14 +1244,14 @@ _FTPStreamWrite(CFWriteStreamRef stream, const UInt8* buffer, CFIndex bufferLeng
             CFReadStreamUnscheduleFromRunLoop(s, rl, kCFFTPStreamOpenCompleted);
             CFRelease(s);
         }
-        
+
 	while (ctxt->_connection && (!ctxt->_dataStream || !CFWriteStreamCanAcceptBytes((CFWriteStreamRef)ctxt->_dataStream))) {
-    
+
         CFWriteStreamRef requestStreams;
         CFReadStreamRef responseStreams;
-    
+
         _CFNetConnectionGetState(ctxt->_connection, TRUE, ctxt);
-    
+
         if (!ctxt->_connection) {
             *error = CFWriteStreamGetError((CFWriteStreamRef)ctxt->_userStream);
             if (error->error)
@@ -1262,15 +1262,15 @@ _FTPStreamWrite(CFWriteStreamRef stream, const UInt8* buffer, CFIndex bufferLeng
         else {
             requestStreams = _CFNetConnectionGetRequestStream(ctxt->_connection);
             responseStreams = _CFNetConnectionGetResponseStream(ctxt->_connection);
-        
+
             if (responseStreams) {
                 *error = CFReadStreamGetError(responseStreams);
             }
-            
+
             if (!error->error && requestStreams) {
                 *error = CFWriteStreamGetError(requestStreams);
             }
-            
+
             if (error->error) {
                 result = -1;
                 break;
@@ -1293,7 +1293,7 @@ _FTPStreamWrite(CFWriteStreamRef stream, const UInt8* buffer, CFIndex bufferLeng
             *error = CFWriteStreamGetError((CFWriteStreamRef)ctxt->_dataStream);
         }
     }
-    
+
     return result;
 }
 
@@ -1307,7 +1307,7 @@ _FTPStreamCanWrite(CFWriteStreamRef stream, _CFFTPStreamContext* ctxt) {
     if (ctxt->_proxyStream)
         _ProxyStreamCallBack(ctxt->_proxyStream, ctxt);
 #endif
-    
+
     if (ctxt->_connection) {
 
         _CFNetConnectionGetState(ctxt->_connection, TRUE, ctxt);
@@ -1352,7 +1352,7 @@ _FTPStreamCanWrite(CFWriteStreamRef stream, _CFFTPStreamContext* ctxt) {
             }
         }
     }
-        
+
     if (ctxt->_dataStream)
         return CFWriteStreamCanAcceptBytes((CFWriteStreamRef)ctxt->_dataStream);
 
@@ -1366,14 +1366,14 @@ _FTPStreamClose(CFTypeRef stream, _CFFTPStreamContext* ctxt) {
     _InvalidateServer(ctxt);
 
     if (ctxt->_proxyStream) {
-	
+
 		_CFTypeUnscheduleFromMultipleRunLoops(ctxt->_proxyStream, ctxt->_runloops);
 
         CFReadStreamClose(ctxt->_proxyStream);
         CFRelease(ctxt->_proxyStream);
         ctxt->_proxyStream = NULL;
     }
-    
+
     if (ctxt->_dataStream) {
 
         if (CFGetTypeID(ctxt->_dataStream) == CFReadStreamGetTypeID())
@@ -1383,17 +1383,17 @@ _FTPStreamClose(CFTypeRef stream, _CFFTPStreamContext* ctxt) {
 
 			_CFTypeInvalidate(ctxt->_dataStream);
 			_CFTypeUnscheduleFromMultipleRunLoops(ctxt->_dataStream, ctxt->_runloops);
-            
+
             CFWriteStreamClose((CFWriteStreamRef)(ctxt->_dataStream));
             CFRelease(ctxt->_dataStream);
             ctxt->_dataStream = NULL;
         }
     }
-	
+
     if (ctxt->_connection) {
-        
+
         int state = _CFNetConnectionGetState(ctxt->_connection, FALSE, ctxt);
-        
+
         if (state != kTransmittingRequest)
             _CFNetConnectionDequeue(ctxt->_connection, ctxt);
         else {
@@ -1405,7 +1405,7 @@ _FTPStreamClose(CFTypeRef stream, _CFFTPStreamContext* ctxt) {
                                            (CFRunLoopRef)CFArrayGetValueAtIndex(a, i),
                                            (CFStringRef)CFArrayGetValueAtIndex(a, i + 1));
             }
-            
+
             _CFNetConnectionRequestIsComplete(ctxt->_connection, ctxt);
             _CFNetConnectionResponseIsComplete(ctxt->_connection, ctxt);
         }
@@ -1417,23 +1417,23 @@ _FTPStreamClose(CFTypeRef stream, _CFFTPStreamContext* ctxt) {
 _FTPStreamCopyProperty(CFTypeRef stream, CFStringRef propertyName, _CFFTPStreamContext* ctxt) {
 
     CFTypeRef value = NULL;
-    
+
     if (CFEqual(propertyName, kCFStreamPropertyFTPUsePassiveMode)) {
         value = CFRetain(__CFBitIsSet(ctxt->_flags, kFlagBitPerformPASV) ? kCFBooleanTrue : kCFBooleanFalse);
     }
-	
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPFetchResourceInfo)) {
         value = CFRetain(__CFBitIsSet(ctxt->_flags, kFlagBitPerformSTAT) ? kCFBooleanTrue : kCFBooleanFalse);
     }
-	
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPFetchNameList)) {
         value = CFRetain(__CFBitIsSet(ctxt->_flags, kFlagBitPerformNLST) ? kCFBooleanTrue : kCFBooleanFalse);
     }
-	
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPFileTransferOffset)) {
         value = CFNumberCreate(CFGetAllocator(ctxt->_properties), kCFNumberLongLongType, &ctxt->_offset);
     }
-	
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPResourceSize)) {
         if (ctxt->_attributes) {
             CFNumberRef original = CFDictionaryGetValue(ctxt->_attributes, kCFFTPResourceSize);
@@ -1446,15 +1446,15 @@ _FTPStreamCopyProperty(CFTypeRef stream, CFStringRef propertyName, _CFFTPStreamC
         CFBooleanRef contains = CFDictionaryGetValue(ctxt->_properties, propertyName);
         value = contains ? CFRetain(contains) : CFRetain(kCFBooleanTrue);
     }
-    
+
     else if (CFEqual(propertyName, _kCFStreamPropertyFTPLogInOnly)) {
         value = CFRetain(__CFBitIsSet(ctxt->_flags, kFlagBitLogInOnly) ? kCFBooleanTrue : kCFBooleanFalse);
     }
-    
+
     else if (CFEqual(propertyName, _kCFStreamPropertyFTPRemoveResource)) {
         value = CFRetain(__CFBitIsSet(ctxt->_flags, kFlagBitRemoveResource) ? kCFBooleanTrue : kCFBooleanFalse);
     }
-    
+
     else if (CFEqual(propertyName, _kCFStreamPropertyFTPNewResourceName)) {
         value = ctxt->_newUrl ? CFRetain(ctxt->_newUrl) : NULL;
     }
@@ -1471,10 +1471,10 @@ _FTPStreamCopyProperty(CFTypeRef stream, CFStringRef propertyName, _CFFTPStreamC
         (_CFNetConnectionGetCurrentRequest(ctxt->_connection) == ctxt))
     {
         CFTypeRef s = _CFNetConnectionGetResponseStream(ctxt->_connection);
-        
+
         if (s)
             value = CFReadStreamCopyProperty((CFReadStreamRef)s, propertyName);
-            
+
         if (!value) {
             s = _CFNetConnectionGetRequestStream(ctxt->_connection);
             if (s)
@@ -1484,9 +1484,9 @@ _FTPStreamCopyProperty(CFTypeRef stream, CFStringRef propertyName, _CFFTPStreamC
 
     // If every avenue has been tried, try grabbing from the local properties.
     if (!value) {
-    
+
         CFTypeRef orig = CFDictionaryGetValue(ctxt->_properties, propertyName);
-        
+
         if (orig) {
             CFTypeID i = CFGetTypeID(orig);
             if (i == CFStringGetTypeID())
@@ -1509,67 +1509,67 @@ _FTPStreamSetProperty(CFTypeRef stream, CFStringRef propertyName,
 					  CFTypeRef propertyValue, _CFFTPStreamContext* ctxt)
 {
     Boolean result = FALSE;
-	
+
     // **FIXME** Flow-changing properties should check to see if the
     // state machine is beyond their respective command before setting
     // successfully.
-    
+
     if (CFEqual(propertyName, kCFStreamPropertyFTPProxy)) {
-        
+
         if (!ctxt->_connection && !ctxt->_dataStream) {
-        
+
             if (!propertyValue) {
                 CFDictionaryRemoveValue(ctxt->_properties, propertyName);
                 result = TRUE;
             }
-            
+
             else if (CFGetTypeID(propertyValue) == CFDictionaryGetTypeID()) {
 
                 CFDictionaryRemoveValue(ctxt->_properties, kCFStreamPropertySOCKSProxy);
                 CFDictionarySetValue(ctxt->_properties, propertyName, propertyValue);
-				
+
 
 #if defined(__MACH__)
 				// Attempt to set the passive bit based upon proxy dictionary from SC.
 				CFTypeRef p = CFDictionaryGetValue(propertyValue, kSCPropNetProxiesFTPPassive);
 				// Only set the bit if it wasn't set explicitly and there is a value.
 				if (!__CFBitIsSet(ctxt->_flags, kFlagBitDidSetPassiveBit) && p) {
-				
+
 					// If it's a number, set it based upon zero or non-zero.
 					if (CFGetTypeID(p) == CFNumberGetTypeID()) {
-						
+
 						SInt32 val;
-						
+
 						CFNumberGetValue(p, kCFNumberSInt32Type, &val);
-						
+
 						if (val)
 							__CFBitSet(ctxt->_flags, kFlagBitPerformPASV);
 						else
 							__CFBitClear(ctxt->_flags, kFlagBitPerformPASV);
 					}
-					
+
 					else if (p == kCFBooleanFalse) {
 						__CFBitClear(ctxt->_flags, kFlagBitPerformPASV);
 					}
 				}
 #endif
-				
+
                 result = TRUE;
             }
         }
     }
-    
+
     else if (CFEqual(propertyName, kCFStreamPropertySOCKSProxy)) {
-        
+
         if (!ctxt->_connection && !ctxt->_dataStream) {
 
             if (!propertyValue) {
                 CFDictionaryRemoveValue(ctxt->_properties, propertyName);
                 result = TRUE;
             }
-            
+
             else if (CFGetTypeID(propertyValue) == CFDictionaryGetTypeID()) {
-                
+
                 if (!CFDictionaryGetValue(ctxt->_properties, kCFStreamPropertyFTPProxy)) {
 
                     CFDictionaryRemoveValue(ctxt->_properties, kCFStreamPropertyFTPProxy);
@@ -1579,88 +1579,88 @@ _FTPStreamSetProperty(CFTypeRef stream, CFStringRef propertyName,
             }
         }
     }
-    
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPUsePassiveMode)) {
-        
+
         // Default mode (NULL or true) indicate passive use
         if (propertyValue && CFEqual(propertyValue, kCFBooleanFalse))
             __CFBitClear(ctxt->_flags, kFlagBitPerformPASV);
         else
             __CFBitSet(ctxt->_flags, kFlagBitPerformPASV);
-            
+
 		__CFBitSet(ctxt->_flags, kFlagBitDidSetPassiveBit);
 
         result = TRUE;
     }
-    
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPFetchResourceInfo)) {
-    
+
         // Default is not to perform the STAT command
         if (propertyValue && CFEqual(propertyValue, kCFBooleanTrue))
             __CFBitSet(ctxt->_flags, kFlagBitPerformSTAT);
         else
             __CFBitClear(ctxt->_flags, kFlagBitPerformSTAT);
-            
+
         result = TRUE;
     }
-    
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPFetchNameList)) {
-    
+
         // Default is not to perform the NLST command
         if (propertyValue && CFEqual(propertyValue, kCFBooleanTrue))
             __CFBitSet(ctxt->_flags, kFlagBitPerformNLST);
         else
             __CFBitClear(ctxt->_flags, kFlagBitPerformNLST);
-            
+
         result = TRUE;
     }
-    
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPFileTransferOffset)) {
-    
+
         // Default is to not perform the offset (or offset to zero)
         if (!propertyValue)
             ctxt->_offset = 0;
         else
             CFNumberGetValue(propertyValue, kCFNumberLongLongType, &ctxt->_offset);
-                    
+
         result = TRUE;
     }
-    
+
     else if (CFEqual(propertyName, _kCFStreamPropertyFTPLogInOnly)) {
         if (propertyValue && CFEqual(propertyValue, kCFBooleanTrue))
             __CFBitSet(ctxt->_flags, kFlagBitLogInOnly);
         else
             __CFBitClear(ctxt->_flags, kFlagBitLogInOnly);
-        
+
         result = TRUE;
     }
-    
+
     else if (CFEqual(propertyName, _kCFStreamPropertyFTPRemoveResource)) {
         if (propertyValue && CFEqual(propertyValue, kCFBooleanTrue))
             __CFBitSet(ctxt->_flags, kFlagBitRemoveResource);
         else
             __CFBitClear(ctxt->_flags, kFlagBitRemoveResource);
-            
+
         result = TRUE;
     }
-    
+
     else if (CFEqual(propertyName, _kCFStreamPropertyFTPNewResourceName)) {
-    
+
         CFURLRef temp = ctxt->_newUrl;
         ctxt->_newUrl = propertyValue ? CFURLCopyAbsoluteURL(propertyValue) : NULL;
         if (temp)
             CFRelease(temp);
-        
+
         result = TRUE;
     }
-    
+
     // kCFStreamPropertyFTPResourceSize can not be set.
     else if (CFEqual(propertyName, kCFStreamPropertyFTPResourceSize)) {
         result = FALSE;
     }
-        
+
     else if (CFEqual(propertyName, kCFStreamPropertyFTPAttemptPersistentConnection)) {
-        
+
         if (!propertyValue || !CFEqual(propertyValue, kCFBooleanFalse))
             CFDictionaryRemoveValue(ctxt->_properties, propertyName);
         else
@@ -1711,17 +1711,17 @@ _FTPStreamSetProperty(CFTypeRef stream, CFStringRef propertyName,
     }
 
     else {
-    
+
         if (ctxt->_dataStream) {
             if (CFGetTypeID(ctxt->_dataStream) == CFReadStreamGetTypeID())
                 result = CFReadStreamSetProperty((CFReadStreamRef)ctxt->_dataStream, propertyName, propertyValue);
             else
                 result = CFWriteStreamSetProperty((CFWriteStreamRef)ctxt->_dataStream, propertyName, propertyValue);
         }
-        
+
         // **FIXME** Set the property on the control stream if there is one.  It should also
         // orphan the remaining queued items.
-        
+
         if (!result) {
             if (propertyValue)
                 CFDictionarySetValue(ctxt->_properties, propertyName, propertyValue);
@@ -1743,13 +1743,13 @@ _FTPStreamSchedule(CFTypeRef stream, CFRunLoopRef runLoop,
 
 		if (ctxt->_proxyStream)
 			CFReadStreamScheduleWithRunLoop(ctxt->_proxyStream, runLoop, runLoopMode);
-		
+
 		if (ctxt->_server)
 			_CFTypeScheduleOnRunLoop(ctxt->_server, runLoop, runLoopMode);
 
 		if (ctxt->_dataStream)
 			_CFTypeScheduleOnRunLoop(ctxt->_dataStream, runLoop, runLoopMode);
-			
+
 		if (ctxt->_connection)
 			_CFNetConnectionSchedule(ctxt->_connection, ctxt, runLoop, runLoopMode);
 	}
@@ -1764,13 +1764,13 @@ _FTPStreamUnschedule(CFTypeRef stream, CFRunLoopRef runLoop,
 
 		if (ctxt->_proxyStream)
 			CFReadStreamUnscheduleFromRunLoop(ctxt->_proxyStream, runLoop, runLoopMode);
-		
+
 		if (ctxt->_server)
 			_CFTypeUnscheduleFromRunLoop(ctxt->_server, runLoop, runLoopMode);
 
 		if (ctxt->_dataStream)
 			_CFTypeUnscheduleFromRunLoop(ctxt->_dataStream, runLoop, runLoopMode);
-			
+
 		if (ctxt->_connection)
 			_CFNetConnectionUnschedule(ctxt->_connection, ctxt, runLoop, runLoopMode);
     }
@@ -1789,32 +1789,32 @@ _CFFTPNetConnectionContextCreate(CFAllocatorRef alloc, const _CFFTPNetConnection
     _CFFTPNetConnectionContext* ctxt = (_CFFTPNetConnectionContext*)CFAllocatorAllocate(alloc,
                                                                                         sizeof(ctxt[0]),
                                                                                         0);
-                                                                                          
+
     memmove(ctxt, template, sizeof(ctxt[0]));
     ctxt->_key = (_CFNetConnectionCacheKey)connCacheKeyRetain(alloc, template->_key);
-	
+
     if (!ctxt->_recvBuffer)
         ctxt->_recvBuffer = CFDataCreateMutable(alloc, 0);
-        
+
     if (!ctxt->_sendBuffer)
         ctxt->_sendBuffer = CFDataCreateMutable(alloc, 0);
     __CFBitClear(ctxt->_flags, kFlagBitIsXServer);
-    
+
     return (const void*)ctxt;
 }
 
 
 /* static */ void
 _CFFTPNetConnectionContextFinalize(CFAllocatorRef alloc, const _CFFTPNetConnectionContext* ctxt) {
-    
+
     connCacheKeyRelease(alloc, ctxt->_key);
-    
+
     if (ctxt->_root)
         CFRelease(ctxt->_root);
-    
+
     if (ctxt->_recvBuffer)
         CFRelease(ctxt->_recvBuffer);
-        
+
     if (ctxt->_sendBuffer)
         CFRelease(ctxt->_sendBuffer);
 
@@ -1829,23 +1829,23 @@ _FTPConnectionCreateStreams(CFAllocatorRef alloc,
                             CFReadStreamRef* responseStream)
 {
     CFStreamError result = {0, 0};
-    
+
     UInt32 type;
     SInt32 port;
     CFStringRef host;
     CFDictionaryRef properties;
-    
+
     getValuesFromKey(ctxt->_key, &host, &port, &type, &properties);
 
     *requestStream = NULL;
     *responseStream = NULL;
-	
+
     // Get the correct host and port if using proxy.
     if ((type == kCFNetConnectionTypeFTPProxy) || (type == kCFNetConnectionTypeFTPSProxy)) {
-        
+
         CFDictionaryRef proxy = CFDictionaryGetValue(properties, kCFStreamPropertyFTPProxy);
         CFNumberRef cfport = CFDictionaryGetValue(proxy, kCFStreamPropertyFTPProxyPort);
-    
+
         host = CFDictionaryGetValue(proxy, kCFStreamPropertyFTPProxyHost);
         if (cfport)
             CFNumberGetValue(cfport, kCFNumberSInt32Type, &port);
@@ -1862,12 +1862,12 @@ _FTPConnectionCreateStreams(CFAllocatorRef alloc,
 		CFArrayCallBacks cb = {0, NULL, NULL, NULL, NULL};
 		const void* values[2] = {_CFStreamSocketCreatedCallBack, NULL};
 		CFArrayRef callback = CFArrayCreate(alloc, values, sizeof(values) / sizeof(values[0]), &cb);
-		
+
 		if (callback) {
 			CFWriteStreamSetProperty(*requestStream, CFSTR("_kCFStreamSocketCreatedCallBack"), callback);
 			CFRelease(callback);
 		}
-	
+
         CFDictionaryApplyFunction(properties, (CFDictionaryApplierFunction)_StreamPropertyApplier, *responseStream);
         CFDictionaryApplyFunction(properties, (CFDictionaryApplierFunction)_StreamPropertyApplier, *requestStream);
     }
@@ -1899,19 +1899,19 @@ _FTPConnectionRequestStateChanged(_CFFTPStreamContext* ctxt, int newState,
         case kQueued:
             ctxt->_connection = connection;
             break;
-        
+
         case kTransmittingRequest:
             {
                 CFArrayRef a = ctxt->_runloops;
                 int i, count = CFArrayGetCount(a);
-                
+
                 for (i = 0; i < count; i += 2) {
                     _CFNetConnectionSchedule(connection,
                                              ctxt,
                                              (CFRunLoopRef)CFArrayGetValueAtIndex(a, i),
                                              (CFStringRef)CFArrayGetValueAtIndex(a, i + 1));
                 }
-                
+
                 if (netCtxt->_state == kFTPStateIdle)
                     _StartProcess(netCtxt, ctxt);
                 else if (netCtxt->_state > kFTPStateIdle) {
@@ -1920,7 +1920,7 @@ _FTPConnectionRequestStateChanged(_CFFTPStreamContext* ctxt, int newState,
                 }
             }
             break;
-            
+
         case kFinished:
 //        case kCancelled:
             {
@@ -1932,33 +1932,33 @@ _FTPConnectionRequestStateChanged(_CFFTPStreamContext* ctxt, int newState,
                     CFDictionarySetValue(gFTPConnectionTimeouts, ctxt->_connection, CFDateCreate(kCFAllocatorDefault, CFAbsoluteTimeGetCurrent() + kFTPTimeoutInSeconds));
             }
             // NOTE that this falls through to kOrphaned on purpose.
-            
+
         case kOrphaned:
             {
                 CFArrayRef a = ctxt->_runloops;
                 int i, count = CFArrayGetCount(a);
 
                 _CFNetConnectionDequeue(connection, ctxt);
-                
+
                 for (i = 0; i < count; i += 2) {
                     _CFNetConnectionUnschedule(connection,
                                                ctxt,
                                                (CFRunLoopRef)CFArrayGetValueAtIndex(a, i),
                                                (CFStringRef)CFArrayGetValueAtIndex(a, i + 1));
                 }
-                
+
                 CFRelease(ctxt->_connection);
                 ctxt->_connection = NULL;
-            
+
                 if ((newState == kOrphaned) && !__CFBitIsSet(ctxt->_flags, kFlagBitGotError)) {
-                    
+
                     CFStreamError error;
                     Boolean open;
-                    
+
                     _FTPStreamOpen(ctxt->_userStream, &error, &open, ctxt);
-                    
+
                     if (open) {
-                        
+
                         CFStreamEventType event = kCFStreamEventErrorOccurred;
                         if (!error.error)
                             event = kCFStreamEventOpenCompleted;
@@ -1970,9 +1970,9 @@ _FTPConnectionRequestStateChanged(_CFFTPStreamContext* ctxt, int newState,
                     }
                 }
             }
-            
+
             break;
-                
+
         default:
             break;
     }
@@ -1984,7 +1984,7 @@ _FTPConnectionTransmitRequest(_CFFTPStreamContext* ctxt, _CFNetConnectionRef con
 
     CFWriteStreamRef wStream = _CFNetConnectionGetRequestStream(connection);
 	CFReadStreamRef rStream = _CFNetConnectionGetResponseStream(connection);
-	
+
     if (CFWriteStreamCanAcceptBytes(wStream)) {
         if (__CFBitIsSet(netCtxt->_flags, kFlagBitHTTPLitmus))
             _FTPRequestStreamCallBack(ctxt, wStream, kCFStreamEventCanAcceptBytes, connection, netCtxt);
@@ -2031,7 +2031,7 @@ _FTPConnectionTransmitRequest(_CFFTPStreamContext* ctxt, _CFNetConnectionRef con
 
             CFRelease(user);
             __CFBitSet(netCtxt->_flags, kFlagBitHTTPLitmus);	// NOTE that this is set before the call to WriteCommand
-    
+
             if (cmd) {
                 _WriteCommand(netCtxt, ctxt, cmd);
                 CFRelease(cmd);
@@ -2045,7 +2045,7 @@ _FTPConnectionTransmitRequest(_CFFTPStreamContext* ctxt, _CFNetConnectionRef con
             }
         }
     }
-	
+
     if (ctxt->_connection && CFReadStreamHasBytesAvailable(rStream))
 		_FTPConnectionReceiveResponse(ctxt, connection, netCtxt);
 }
@@ -2059,7 +2059,7 @@ _FTPConnectionReceiveResponse(_CFFTPStreamContext* ctxt, _CFNetConnectionRef con
 
     if (CFReadStreamHasBytesAvailable(rStream))
             _FTPResponseStreamCallBack(ctxt, rStream, kCFStreamEventHasBytesAvailable, connection, netCtxt);
-	
+
     if (ctxt->_connection && CFWriteStreamCanAcceptBytes(wStream))
 		_FTPConnectionTransmitRequest(ctxt, connection, netCtxt);
 }
@@ -2075,12 +2075,12 @@ _FTPResponseStreamCallBack(_CFFTPStreamContext* ctxt, CFReadStreamRef stream,
         case kCFStreamEventHasBytesAvailable:
             {
                 CFIndex i, canRead = CFDataGetLength(netCtxt->_recvBuffer) - netCtxt->_recvCount;
-                
+
                 // **FIXME** There are false positives coming through in
                 // heavily threaded tests.
                 if (!CFReadStreamHasBytesAvailable(stream))
                     return;
-                
+
                 if (canRead < kBufferGrowthSize) {
                     CFDataSetLength(netCtxt->_recvBuffer, netCtxt->_recvCount + kBufferGrowthSize);
                     if (CFDataGetLength(netCtxt->_recvBuffer) < (netCtxt->_recvCount + kBufferGrowthSize)) {
@@ -2105,16 +2105,16 @@ _FTPResponseStreamCallBack(_CFFTPStreamContext* ctxt, CFReadStreamRef stream,
 
                         _CFNetConnectionLost(ctxt->_connection);
                         _CFNetConnectionDequeue(ctxt->_connection, ctxt);
-						
+
 						CFRelease(ctxt->_connection);
 						ctxt->_connection = NULL;
-						
+
                         _FTPStreamOpen(ctxt->_userStream, &error, &openComplete, ctxt);
                     }
                     else
                         _FTPResponseStreamCallBack(ctxt, stream, kCFStreamEventEndEncountered, conn, netCtxt);
                 }
-                else {						
+                else {
 
                     netCtxt->_recvCount += i;
 
@@ -2137,7 +2137,7 @@ _FTPResponseStreamCallBack(_CFFTPStreamContext* ctxt, CFReadStreamRef stream,
                 _ReportError(ctxt, &error);
             }
             break;
-			
+
         default:
             break;
     }
@@ -2188,7 +2188,7 @@ _FTPRequestStreamCallBack(_CFFTPStreamContext* ctxt, CFWriteStreamRef stream,
                 _ReportError(ctxt, &error);
             }
             break;
-			
+
         default:
             break;
     }
@@ -2207,25 +2207,25 @@ _FTPRunLoopArrayCallBack(_CFFTPStreamContext *ctxt, _CFNetConnectionRef conn, _C
 
 /* static */ Boolean
 _IsRoot(CFURLRef url) {
-    Boolean isAbsolute;  
+    Boolean isAbsolute;
     CFStringRef strictPath, resourceSpecifier;
     strictPath = CFURLCopyStrictPath(url, &isAbsolute);
     resourceSpecifier = CFURLCopyResourceSpecifier(url);
     if (!strictPath && !resourceSpecifier)  return TRUE;
     if (strictPath) CFRelease(strictPath);
     if (resourceSpecifier) CFRelease(resourceSpecifier);
-    return FALSE;     
+    return FALSE;
 }
 
 /* static */ void
 _FTPConnectionCacheCreate(void) {
-	
+
 	if (!_kFTPConnectionCallBacks) {
-		
+
 		_kFTPConnectionCallBacks = (_CFNetConnectionCallBacks*)CFAllocatorAllocate(kCFAllocatorDefault, sizeof(_kFTPConnectionCallBacks[0]), 0);
-		
+
 		assert(_kFTPConnectionCallBacks != NULL);
-		
+
 		_kFTPConnectionCallBacks->version = 0;
 		_kFTPConnectionCallBacks->create = (const void* (*)(CFAllocatorRef, const void*))_CFFTPNetConnectionContextCreate;
 		_kFTPConnectionCallBacks->finalize = (void (*)(CFAllocatorRef, const void*))_CFFTPNetConnectionContextFinalize;
@@ -2237,7 +2237,7 @@ _FTPConnectionCacheCreate(void) {
 		_kFTPConnectionCallBacks->requestStreamCallBack = (void (*)(void*, CFWriteStreamRef, CFStreamEventType, _CFNetConnectionRef, const void*))_FTPRequestStreamCallBack;
 		_kFTPConnectionCallBacks->runLoopAndModesArrayForRequest = (CFArrayRef (*)(void *, _CFNetConnectionRef, const void*))_FTPRunLoopArrayCallBack;
 	}
-	
+
     gFTPConnectionTimeouts = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     gFTPConnectionCache = createConnectionCache();
 }
@@ -2316,7 +2316,7 @@ _SetSOCKS5ProxyInformation(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt, CFUR
 
 /* static */ void
 _StartHTTPRequest(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt, CFStreamError* error, CFURLRef proxyUrl) {
-	
+
     CFURLRef url;
     CFHTTPMessageRef msg;
     CFMutableDictionaryRef pInfo;
@@ -2325,7 +2325,7 @@ _StartHTTPRequest(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt, CFStreamError
     CFStringRef user = CFDictionaryGetValue(ctxt->_properties, kCFStreamPropertyFTPUserName);
     CFStringRef pass = CFDictionaryGetValue(ctxt->_properties, kCFStreamPropertyFTPPassword);
     CFHTTPMessageRef resp = (CFHTTPMessageRef)CFDictionaryGetValue(ctxt->_properties, _kCFStreamPropertyFTPLastHTTPResponse);
-    
+
     __CFBitSet(ctxt->_flags, kFlagBitIsHTTPRequest);
 
     memset(error, 0, sizeof(error[0]));
@@ -2404,7 +2404,7 @@ _StartHTTPRequest(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt, CFStreamError
 
     ctxt->_dataStream = CFReadStreamCreateForHTTPRequest(alloc, msg);
     CFRelease(msg);
-    
+
     if (!ctxt->_dataStream) {
         error->error = errno;
         error->domain = kCFStreamErrorDomainPOSIX;
@@ -2424,7 +2424,7 @@ _StartHTTPRequest(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt, CFStreamError
         SInt32 p = CFURLGetPortNumber(proxyUrl);
         CFNumberRef pPort = CFNumberCreate(alloc, kCFNumberSInt32Type, &p);
         CFBooleanRef persistent = (CFBooleanRef)CFDictionaryGetValue(ctxt->_properties, kCFStreamPropertyFTPAttemptPersistentConnection);
-        
+
         pInfo = CFDictionaryCreateMutable(alloc, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 
         if (CFStringCompare(pScheme, kHTTPSchemeString, kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
@@ -2437,10 +2437,10 @@ _StartHTTPRequest(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt, CFStreamError
         }
         CFReadStreamSetProperty((CFReadStreamRef)ctxt->_dataStream, kCFStreamPropertyHTTPProxy, pInfo);
         CFRelease(pInfo);
-        
+
         if (!persistent || CFEqual(persistent, kCFBooleanTrue))
             CFReadStreamSetProperty((CFReadStreamRef)ctxt->_dataStream, kCFStreamPropertyHTTPAttemptPersistentConnection, kCFBooleanTrue);
-        
+
         CFDictionaryApplyFunction(ctxt->_properties, (CFDictionaryApplierFunction)_StreamPropertyApplier, (void*)ctxt->_dataStream);
 
         CFReadStreamSetClient((CFReadStreamRef)ctxt->_dataStream, ~0L, (CFReadStreamClientCallBack)_DataStreamCallBack, &streamCtxt);
@@ -2463,15 +2463,15 @@ _ProcessHTTPResponse(_CFFTPStreamContext* ctxt, CFStreamError* error) {
     CFHTTPMessageRef resp = (CFHTTPMessageRef)CFReadStreamCopyProperty((CFReadStreamRef)ctxt->_dataStream, kCFStreamPropertyHTTPResponseHeader);
 
     memset(error, 0, sizeof(error[0]));
-    
+
     if (!resp)
         return FALSE;
 
     code = CFHTTPMessageGetResponseStatusCode(resp);
-    
+
     if (code < 300)
         __CFBitSet(ctxt->_flags, kFlagBitReadHTTPResponse);
-    
+
     else if (code == 407 && !__CFBitIsSet(ctxt->_flags, kFlagBit407TriedOnce) &&
              CFDictionaryGetValue(ctxt->_properties, kCFStreamPropertyFTPProxyUser) &&
              CFDictionaryGetValue(ctxt->_properties, kCFStreamPropertyFTPProxyPassword))
@@ -2490,7 +2490,7 @@ _ProcessHTTPResponse(_CFFTPStreamContext* ctxt, CFStreamError* error) {
         error->domain = kCFStreamErrorDomainFTP;
         error->error = code;
     }
-    
+
     CFRelease(resp);
 
     return TRUE;
@@ -2499,11 +2499,11 @@ _ProcessHTTPResponse(_CFFTPStreamContext* ctxt, CFStreamError* error) {
 
 /* static */ void
 _RollOverHTTPRequest(_CFFTPStreamContext* ctxt, CFStreamError* error) {
-    
+
     Boolean openComplete = FALSE;
 
     _ReleaseDataReadStream(ctxt);
-    
+
     ctxt->_current++;
     ctxt->_error = *error;
     __CFBitClear(ctxt->_flags, kFlagBit407TriedOnce);
@@ -2516,9 +2516,9 @@ _RollOverHTTPRequest(_CFFTPStreamContext* ctxt, CFStreamError* error) {
 _CFStreamSocketCreatedCallBack(int fd, void* ctxt) {
 
 	int yes = 1;
-	
+
 	(void)ctxt;		/* unused */
-	
+
 	setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (void*)&yes, sizeof(yes));
 }
 
@@ -2527,13 +2527,13 @@ _CFStreamSocketCreatedCallBack(int fd, void* ctxt) {
 _DataStreamCallBack(CFTypeRef stream, CFStreamEventType type, _CFFTPStreamContext* ctxt) {
 
     if (__CFBitIsSet(ctxt->_flags, kFlagBitIsHTTPRequest) || type != kCFStreamEventEndEncountered) {
-        
+
         CFStreamError error;
         CFTypeID i = CFReadStreamGetTypeID();
-        
+
         if (CFGetTypeID(stream) == i)
             error = CFReadStreamGetError((CFReadStreamRef)stream);
-        else 
+        else
             error = CFWriteStreamGetError((CFWriteStreamRef)stream);
 
         if (__CFBitIsSet(ctxt->_flags, kFlagBitIsHTTPRequest) && !__CFBitIsSet(ctxt->_flags, kFlagBitReadHTTPResponse))
@@ -2582,7 +2582,7 @@ _ReleaseDataReadStream(_CFFTPStreamContext* ctxt) {
     CFReadStreamRef s = (CFReadStreamRef)ctxt->_dataStream;
 
     CFReadStreamSetClient(s, 0, NULL, NULL);
-	
+
 	_CFTypeUnscheduleFromMultipleRunLoops(s, a);
 
     CFReadStreamClose(s);
@@ -2597,46 +2597,46 @@ _SocketCallBack(CFSocketRef s, CFSocketCallBackType type, CFDataRef address,
 {
     CFStreamClientContext streamCtxt = {0, ctxt, NULL, NULL, NULL};
     CFAllocatorRef alloc = CFGetAllocator(ctxt->_properties);
-    
+
     if (!data || (*((CFSocketNativeHandle*)data) == -1)) {
         CFStreamError error = {_kCFStreamErrorDomainNativeSockets, *((int*)data)};
         _ReportError(ctxt, &error);
     }
-    
+
     if (type != kCFSocketAcceptCallBack)
         return;
-    
+
     if (__CFBitIsSet(ctxt->_flags, kFlagBitPerformUpload))
 		_CFSocketStreamCreatePair(alloc, NULL, 0, *((CFSocketNativeHandle*)data), NULL, NULL, (CFWriteStreamRef*)&ctxt->_dataStream);
     else
 		_CFSocketStreamCreatePair(alloc, NULL, 0, *((CFSocketNativeHandle*)data), NULL, (CFReadStreamRef*)&ctxt->_dataStream, NULL);
-    
+
     CFDictionaryApplyFunction(ctxt->_properties, (CFDictionaryApplierFunction)_StreamPropertyApplier, (void*)ctxt->_dataStream);
-    
+
     if (CFGetTypeID(ctxt->_dataStream) == CFReadStreamGetTypeID()) {
-    
+
         CFReadStreamSetClient((CFReadStreamRef)ctxt->_dataStream, ~0L, (CFReadStreamClientCallBack)_DataStreamCallBack, &streamCtxt);
-        
+
 		_CFTypeScheduleOnMultipleRunLoops(ctxt->_dataStream, ctxt->_runloops);
-        
+
         CFReadStreamOpen((CFReadStreamRef)ctxt->_dataStream);
     }
     else {
-    
+
         CFWriteStreamSetClient((CFWriteStreamRef)ctxt->_dataStream, ~0L, (CFWriteStreamClientCallBack)_DataStreamCallBack, &streamCtxt);
-        
+
 		_CFTypeScheduleOnMultipleRunLoops(ctxt->_dataStream, ctxt->_runloops);
-        
+
         CFWriteStreamOpen((CFWriteStreamRef)ctxt->_dataStream);
     }
-    
+
     _InvalidateServer(ctxt);
 }
 
 
 /* static */ void
 _StreamPropertyApplier(CFTypeRef key, CFTypeRef value, CFTypeRef stream) {
-    
+
     if (CFGetTypeID(stream) == CFReadStreamGetTypeID())
         CFReadStreamSetProperty((CFReadStreamRef)stream, key, value);
     else
@@ -2661,23 +2661,23 @@ _ReportError(_CFFTPStreamContext* ctxt, CFStreamError* error) {
 
     if (ctxt->_connection)
         _CFNetConnectionErrorOccurred(ctxt->_connection, error);
-    
+
     if (ctxt->_dataStream) {
-		
+
         if (CFGetTypeID(ctxt->_dataStream) == CFReadStreamGetTypeID())
             _ReleaseDataReadStream(ctxt);
-		
+
         else {
-			
+
 			_CFTypeInvalidate(ctxt->_dataStream);
 			_CFTypeUnscheduleFromMultipleRunLoops(ctxt->_dataStream, ctxt->_runloops);
-            
+
             CFWriteStreamClose((CFWriteStreamRef)(ctxt->_dataStream));
             CFRelease(ctxt->_dataStream);
             ctxt->_dataStream = NULL;
         }
     }
-	
+
     if (CFGetTypeID(ctxt->_userStream) == CFReadStreamGetTypeID())
         CFReadStreamSignalEvent((CFReadStreamRef)ctxt->_userStream, kCFStreamEventErrorOccurred, error);
     else
@@ -2697,9 +2697,9 @@ _ConnectionComplete(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCt
                                    (CFRunLoopRef)CFArrayGetValueAtIndex(a, i),
                                    (CFStringRef)CFArrayGetValueAtIndex(a, i + 1));
     }
-    
+
     ctxt->_state = kFTPStateIdle;
-    
+
     _CFNetConnectionRequestIsComplete(ftpCtxt->_connection, ftpCtxt);
 
        // was this a RETR command?
@@ -2772,7 +2772,7 @@ _PASVAddressParser(const UInt8* buffer, struct sockaddr_in* saddr)
         }
         walk ++;
     }
-    
+
     return FALSE;
 }
 
@@ -2801,7 +2801,7 @@ _GetProtocolFamily(_CFFTPStreamContext* ctxt, UInt8* buffer)
     socklen_t addrlen = SOCK_MAXADDRLEN;
     struct sockaddr* addr = (struct sockaddr*)&(buffer[0]);
     u_char result = 255;
-    
+
     CFWriteStreamRef wStream = _CFNetConnectionGetRequestStream(ctxt->_connection);
     native = CFWriteStreamCopyProperty(wStream, kCFStreamPropertySocketNativeHandle);
     if (native) {
@@ -2820,7 +2820,7 @@ _CreateListenerForContext(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt) {
     CFDataRef native = NULL;
     CFDataRef address = NULL;
     CFRunLoopSourceRef src = NULL;
-    
+
     do {
         int yes = 1;
         UInt8 buffer[SOCK_MAXADDRLEN];
@@ -2829,19 +2829,19 @@ _CreateListenerForContext(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt) {
         struct sockaddr_in* addr4 = (struct sockaddr_in*)&(buffer[0]);
         struct sockaddr_in6* addr6 = (struct sockaddr_in6*)&(buffer[0]);
         CFSocketContext socketCtxt = {0, ctxt, NULL, NULL, NULL};
-    
+
         CFWriteStreamRef wStream = _CFNetConnectionGetRequestStream(ctxt->_connection);
-    
+
         native = CFWriteStreamCopyProperty(wStream, kCFStreamPropertySocketNativeHandle);
-        
+
         if (!native)
             break;
-    
+
         memset(buffer, 0, sizeof(buffer));
-            
+
         if (getsockname(*((int*)CFDataGetBytePtr(native)), addr, &addrlen))
             break;
-    
+
         CFRelease(native);
         native = NULL;
 
@@ -2852,12 +2852,12 @@ _CreateListenerForContext(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt) {
                                        kCFSocketAcceptCallBack,
                                        (CFSocketCallBack)&_SocketCallBack,
                                        &socketCtxt);
-                                                
+
         if (!ctxt->_server)
             break;
-            
+
         setsockopt(CFSocketGetNative(ctxt->_server), SOL_SOCKET, SO_REUSEADDR, (void*)&yes, sizeof(yes));
-            
+
         if (addr->sa_family == AF_INET)
             addr4->sin_port = 0;
         else
@@ -2865,10 +2865,10 @@ _CreateListenerForContext(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt) {
 
         // Wrap the native address structure for CFSocketCreate.
         address = CFDataCreateWithBytesNoCopy(alloc, (const UInt8*)addr, (addr->sa_family == AF_INET) ? sizeof(addr4[0]) : sizeof(addr6[0]), kCFAllocatorNull);
-        
+
         if (!address)
             break;
-			
+
         // Set the local binding which causes the socket to start listening.
         if (CFSocketSetAddress(ctxt->_server, address) != kCFSocketSuccess)
             break;
@@ -2878,11 +2878,11 @@ _CreateListenerForContext(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt) {
 
         if (!ctxt->_runloops)
             return TRUE;
-            
+
         src = CFSocketCreateRunLoopSource(alloc, ctxt->_server, 0);
         if (!src)
             break;
-        
+
 		_CFTypeScheduleOnMultipleRunLoops(src, ctxt->_runloops);
 
         CFRelease(src);
@@ -2890,18 +2890,18 @@ _CreateListenerForContext(CFAllocatorRef alloc, _CFFTPStreamContext* ctxt) {
         return TRUE;
 
     } while (0);
-    
+
     if (native)
         CFRelease(native);
-        
+
     if (address)
         CFRelease(address);
-        
+
     if (src)
         CFRelease(src);
-        
+
     _InvalidateServer(ctxt);
-    
+
     return FALSE;
 }
 
@@ -2911,7 +2911,7 @@ _StartTransfer(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
 
     CFStringRef cmd, target = CFURLCopyLastPathComponent(ftpCtxt->_url);
     CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_properties);
-	
+
     if (__CFBitIsSet(ftpCtxt->_flags, kFlagBitPerformUpload)) {
         ctxt->_state = kFTPStateSTOR;
         cmd = CFStringCreateWithFormat(alloc, NULL, kCFFTPSTORCommandString, target);
@@ -2964,7 +2964,7 @@ _StartTransfer(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
     }
 
     if (target) CFRelease(target);
-    
+
     _WriteCommand(ctxt, ftpCtxt, cmd);
     CFRelease(cmd);
 }
@@ -2972,17 +2972,17 @@ _StartTransfer(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
 
 /* static */ void
 _InvalidateServer(_CFFTPStreamContext* ctxt) {
-        
+
     if (!ctxt->_server)
         return;
-    
-    if (ctxt->_runloops) {    
+
+    if (ctxt->_runloops) {
 		_CFTypeUnscheduleFromMultipleRunLoops(ctxt->_server, ctxt->_runloops);
     }
-    
+
     CFSocketInvalidate(ctxt->_server);
     CFRelease(ctxt->_server);
-    
+
     ctxt->_server = NULL;
 }
 
@@ -3005,7 +3005,7 @@ _CreatePathForContext(CFAllocatorRef alloc, _CFFTPNetConnectionContext* ctxt, _C
 			path = temp;
 		}
 	}
-	
+
     else if (ctxt->_root) {
         CFStringRef temp = CFStringCreateWithFormat(alloc, NULL, kCFFTPPathFormatString, ctxt->_root, path);
         if (temp) {
@@ -3013,30 +3013,30 @@ _CreatePathForContext(CFAllocatorRef alloc, _CFFTPNetConnectionContext* ctxt, _C
             path = temp;
         }
     }
-    
+
     return path;
 }
 
 
 /* static */ void
 _WriteCommand(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, CFStringRef cmd) {
-	
+
     UInt8* buffer;
     CFIndex dlen = CFDataGetLength(ctxt->_sendBuffer);
     CFIndex slen = CFStringGetLength(cmd);
     CFIndex req = CFStringGetBytes(cmd, CFRangeMake(0, slen), kCFStringEncodingMacRoman, '_', FALSE, NULL, 0, NULL);
-    
+
     CFWriteStreamRef wStream = _CFNetConnectionGetRequestStream(ftpCtxt->_connection);
-	
+
     if ((dlen - ctxt->_sendCount) < req)
         CFDataSetLength(ctxt->_sendBuffer, dlen + req - (dlen - ctxt->_sendCount));
-	
+
     buffer = CFDataGetMutableBytePtr(ctxt->_sendBuffer);
-    
+
     CFStringGetBytes(cmd, CFRangeMake(0, slen), kCFStringEncodingMacRoman, '_', FALSE, buffer + ctxt->_sendCount, req, NULL);
-    
+
     ctxt->_sendCount += req;
-    
+
     if (ctxt->_sendCount && CFWriteStreamCanAcceptBytes(wStream)) {
         _FTPRequestStreamCallBack(ftpCtxt,
                                   wStream,
@@ -3057,45 +3057,45 @@ _HandleResponse(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
         UInt32 result = -1;
         UInt8* buffer = (UInt8*)CFDataGetMutableBytePtr(ctxt->_recvBuffer);
         Boolean isMultiline = FALSE;
-        
+
         UInt8* newline = memchr(buffer, '\n', count);
         if (!newline) break;
 
 		if (isdigit(buffer[0]) && isdigit(buffer[1]) && isdigit(buffer[2])) {
-			
+
             result = ((buffer[0] - '0') * 100) + ((buffer[1] - '0') * 10) + (buffer[2] - '0');
-			
+
 			if (buffer[3] == '-')
 				isMultiline = TRUE;
-			
+
 			else if (buffer[3] != ' ')
 				result = -1;
 		}
-            
+
         if (__CFBitIsSet(ctxt->_flags, kFlagBitMultiline)) {
-                
+
             if ((result == ctxt->_result) && !isMultiline)
                 __CFBitClear(ctxt->_flags, kFlagBitMultiline);
         }
         else {
 
             if (*(newline - 1) != '\r') break;
-            
+
             ctxt->_result = result;
-            
+
             if (!(ctxt->_result > 99) && (ctxt->_result < 600)) {
-            
+
                 CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
                 _ReportError(ftpCtxt, &error);
                 break;
             }
-                
+
             if (isMultiline)
                 __CFBitSet(ctxt->_flags, kFlagBitMultiline);
             else
                 __CFBitClear(ctxt->_flags, kFlagBitMultiline);
         }
-		
+
 		_AdvanceStateMachine(ctxt, ftpCtxt, buffer, newline - buffer, __CFBitIsSet(ctxt->_flags, kFlagBitMultiline));
 
         newline++;
@@ -3150,7 +3150,7 @@ _ConvertToCFFTPHappyURL(CFURLRef url) {
     if (!tmp)
         return NULL;
     url = tmp;
-    
+
     length = CFURLGetBytes(url, buffer, sizeof(stack_buffer));
 
     if (-1 == length) {
@@ -3183,21 +3183,21 @@ _ReadModeBits(const UInt8* str, int* mode) {
     // recognizable mode bits.  Returns false otherwise.
     Boolean result = TRUE;
     int i;
-	
+
 	for (i = 0; result && (i < 9); i += 3) {
-		
+
 		if (str[i] == 'r') *mode |= (1 << (8 - i));		// See if it's readable
 		else if (str[i] != '-') result = FALSE;			// Make sure it's another valid character then
-		
+
 		if (str[i + 1] == 'w') *mode |= (1 << (7 - i));		// See if it's writable
 		else if (str[i + 1] != '-') result = FALSE;			// Make sure it's another valid character then
-		
+
 		switch (str[i + 2]) {
-			
+
 			case 'x':
 				*mode |= (1 << (6 - i));
 				break;
-				
+
 			case 's':
 				*mode |= (1 << (6 - i));
 				if ((i / 3) == 0)
@@ -3205,28 +3205,28 @@ _ReadModeBits(const UInt8* str, int* mode) {
 				else if ((i / 3) == 1)
 					*mode |= 02000;
 				break;
-				
+
 			case 't':
 				*mode |= (1 << (6 - i));
 				if ((i / 3) == 2)
 					*mode |= 01000;
 				break;
-				
+
 			case '-':
 				break;
-				
+
 			case 'S':
 				if ((i / 3) == 0)
 					*mode |= 04000;
 				else if ((i / 3) == 1)
 					*mode |= 02000;
 				break;
-				
+
 			case 'T':
 				if ((i / 3) == 2)
 					*mode |= 01000;
 				break;
-				
+
 			default:
 				result = FALSE;
 				break;				// Any other character is invalid
@@ -3249,7 +3249,7 @@ _ReadSize(const UInt8* str, UInt64* size) {
 
     while (isdigit(*iter))
         iter++;
-    
+
     if (!isspace(*iter))
         return FALSE;
 
@@ -3265,26 +3265,26 @@ _ReadSize(const UInt8* str, UInt64* size) {
 
 /* static */ CFStringRef
 _CFStringCreateCopyWithStrippedHTML(CFAllocatorRef alloc, CFStringRef theString) {
-	
+
 	CFStringRef result = NULL;
-	
+
 	/* If it doesn't smell like html, return the retained argument. */
 	if (!CFStringHasPrefix(theString, kHTMLTagOpen) || !CFStringHasSuffix(theString, kHTMLTagClose))
 		result = CFStringCreateCopy(alloc, theString);
 
 	/* Looks like it might be html. */
 	else {
-		
+
 		/* Look forward for the close of the opening tag. */
 		CFRange r1 = CFStringFind(theString, kHTMLTagClose, 0);
-		
+
 		/* Look backward for the open of the closing tag. */
 		CFRange r2 = CFStringFind(theString, kHTMLTagOpen, kCFCompareBackwards);
-		
+
 		/* If there are no bytes between the two, just return the retained argument. */
 		if (r1.location >= r2.location)
 			result = CFStringCreateCopy(alloc, theString);
-		
+
 		/* Create a copy of the bytes between the two tags. */
 		else {
 			r1.length = (r2.location - r1.location) - 1;
@@ -3324,7 +3324,7 @@ _CFFTPGetDateTimeFunc(CFAllocatorRef alloc, const UInt8* str, CFIndex length, CF
 
     if (length < 9)
         return NULL;
-    
+
     for (month = 0; month < (sizeof(kMonthStrs) / sizeof(kMonthStrs[0])); month++) {
 
         if (!memcmp(str, kMonthStrs[month], 3)) {
@@ -3336,7 +3336,7 @@ _CFFTPGetDateTimeFunc(CFAllocatorRef alloc, const UInt8* str, CFIndex length, CF
         return NULL;
 
     month++;
-    
+
     i = 4;
     while ((i < length) && !isdigit(str[i]))
         i++;
@@ -3352,7 +3352,7 @@ _CFFTPGetDateTimeFunc(CFAllocatorRef alloc, const UInt8* str, CFIndex length, CF
         day *= 10;
         day += (str[i++] - '0');
     }
-        
+
     if ((i == length) || !isspace(str[i]))
         return NULL;
 
@@ -3365,11 +3365,11 @@ _CFFTPGetDateTimeFunc(CFAllocatorRef alloc, const UInt8* str, CFIndex length, CF
     }
 
     if ((i < length) && (str[i] == ':')) {
-        
+
         hourIsYear = FALSE;
-        
+
         i++;
-        
+
         while ((i < length) && isdigit(str[i])) {
             minute *= 10;
             minute += (str[i++] - '0');
@@ -3377,43 +3377,43 @@ _CFFTPGetDateTimeFunc(CFAllocatorRef alloc, const UInt8* str, CFIndex length, CF
     }
 
     if ((i == length) || isspace(str[i])) {
-        
+
 		CFTimeZoneRef tz = CFTimeZoneCopyDefault();
         CFAbsoluteTime t = CFAbsoluteTimeGetCurrent();
         CFGregorianDate d = CFAbsoluteTimeGetGregorianDate(t, tz);
-        
+
         if (hourIsYear) {
-            
+
             if (hour < 100)
                 d.year = 1900 + hour;
             else
                 d.year = hour;
-            
+
             d.hour = 0;
             d.minute = 0;
             d.second = 0;
-			
+
 			d.month = month;
 			d.day = day;
         }
-        
+
         else {
             CFAbsoluteTime t2;
 			CFGregorianDate d2 = CFAbsoluteTimeGetGregorianDate((t + 86400.0), tz);
-			
+
             d.hour = hour & 0xFF;
             d.minute = minute;
             d.second = 0;
-			
+
 			d.month = month;
 			d.day = day;
 			d.year = d2.year;
-			
+
 			t2 = CFGregorianDateGetAbsoluteTime(d, tz);
 			if (t2 > (t + 86400.0))
 				d.year--;
         }
-		
+
         t = CFGregorianDateGetAbsoluteTime(d, tz);
 		if (tz)
 			CFRelease(tz);
@@ -3435,31 +3435,31 @@ _ProxyStreamCallBack(CFReadStreamRef proxyStream, _CFFTPStreamContext* ctxt) {
     if (complete) {
 
         CFStreamError error = CFReadStreamGetError(ctxt->_proxyStream);
-	
+
 		_CFTypeUnscheduleFromMultipleRunLoops(ctxt->_proxyStream, ctxt->_runloops);
-        
+
         CFRelease(ctxt->_proxyStream);
         ctxt->_proxyStream = NULL;
 
         if (ctxt->_proxies) {
 
             Boolean open;
-    
+
             _FTPStreamOpen(ctxt->_userStream, &error, &open, ctxt);
-    
+
             if (open) {
-    
+
                 CFStreamEventType event = kCFStreamEventErrorOccurred;
                 if (!error.error)
                     event = kCFStreamEventOpenCompleted;
-    
+
                 if (CFGetTypeID(ctxt->_userStream) == CFReadStreamGetTypeID())
                     CFReadStreamSignalEvent((CFReadStreamRef)ctxt->_userStream, event, &error);
                 else
                     CFWriteStreamSignalEvent((CFWriteStreamRef)ctxt->_userStream, event, &error);
             }
         }
-        
+
         else {
             if (!error.error) {
                 error.domain = kCFStreamErrorDomainPOSIX;
@@ -3494,17 +3494,17 @@ _FindLine(const UInt8 *buffer, CFIndex bufferLength, const UInt8** start, const 
  * This function finds lines delimited on either side by CR or LF characters.
 */
 	CFIndex consumed;
-	
+
 	*start = NULL;
 	*end = NULL;
 	consumed = 0;
-	
+
 	if ( (buffer != NULL) && (bufferLength != 0) ) {
 		const UInt8* lastBufChar;
 		const UInt8* startOfLine;
-		
+
 		lastBufChar = buffer + bufferLength - 1;
-		
+
 		/* find the start of the line... the first non CR or LF character */
 		startOfLine = buffer;
 		while ( startOfLine <= lastBufChar ) {
@@ -3513,12 +3513,12 @@ _FindLine(const UInt8 *buffer, CFIndex bufferLength, const UInt8** start, const 
 			}
 			++startOfLine;
 		}
-		
+
 		/* if there characters left, see if there's a line */
 		if ( startOfLine <= lastBufChar ) {
 			const UInt8* endOfLine;
 			const UInt8* firstend = NULL;
-			
+
 			/* find the end of the line... the character before the next CR or LF character (if any) */
 			endOfLine = startOfLine;
 			while ( endOfLine <= lastBufChar ) {
@@ -3528,15 +3528,15 @@ _FindLine(const UInt8 *buffer, CFIndex bufferLength, const UInt8** start, const 
 				++endOfLine;
 			}
 			firstend = endOfLine;
-			
+
 			/* if endOfLine is still within buffer, we have a line */
 			if ( endOfLine <= lastBufChar ) {
 				const UInt8* lastend;
-				
+
 				/* return the first and last characters of the line */
 				*start = startOfLine;
 				*end = endOfLine;
-				
+
 				/* find the last CR or LF character after the line */
 				lastend = firstend;
 				while ( lastend <= lastBufChar ) {
@@ -3545,7 +3545,7 @@ _FindLine(const UInt8 *buffer, CFIndex bufferLength, const UInt8** start, const 
 					}
 					++lastend;
 				}
-				
+
 				/* consume everthing up through the last CR or LF character */
 				consumed = lastend - buffer;
 			}
@@ -3559,7 +3559,7 @@ _FindLine(const UInt8 *buffer, CFIndex bufferLength, const UInt8** start, const 
 			consumed = bufferLength;
 		}
 	}
-	
+
 	return ( consumed );
 }
 
@@ -3573,7 +3573,7 @@ _FindLine(const UInt8 *buffer, CFIndex bufferLength, const UInt8** start, const 
 _AdvanceStateMachine(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, const UInt8* line, CFIndex length, Boolean isMultiLine) {
 
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-        
+
         if (ctxt->_state <= kFTPStateIdle)
             __CFBitClear(ctxt->_flags, kFlagBitReturnToIdle);
         else if (ctxt->_state < kFTPStateRETR) {
@@ -3598,19 +3598,19 @@ _AdvanceStateMachine(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpC
         case kFTPStatePASS:
             if (!isMultiLine) _HandlePassword(ctxt, ftpCtxt);
             break;
-			
+
         case kFTPStateSYST:
             if (!isMultiLine) _HandleSystem(ctxt, ftpCtxt, line, length);
             break;
-            
+
         case kFTPStateSITEDIRSTYLE:
             if (!isMultiLine) _HandleSiteDirStyle(ctxt, ftpCtxt, line, length);
             break;
-            
+
         case kFTPStateSITETRUTH:
             if (!isMultiLine) _HandleSiteTruth(ctxt, ftpCtxt);
             break;
-            
+
         case kFTPStatePWD:
             if (!isMultiLine) _HandlePrintWorkingDirectory(ctxt, ftpCtxt, line, length);
             break;
@@ -3626,15 +3626,15 @@ _AdvanceStateMachine(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpC
         case kFTPStatePORT:
             if (!isMultiLine) _HandlePort(ctxt, ftpCtxt);
             break;
-			
+
         case kFTPStateSIZE:
             if (!isMultiLine) _HandleSize(ctxt, ftpCtxt, line, length);
             break;
-			
+
         case kFTPStateSTAT:
             _HandleStat(ctxt, ftpCtxt, line, length, isMultiLine);
             break;
-            
+
         case kFTPStateREST:
             if (!isMultiLine) _HandleRestart(ctxt, ftpCtxt);
             break;
@@ -3642,7 +3642,7 @@ _AdvanceStateMachine(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpC
         case kFTPStateRETR:
             if (!isMultiLine) _HandleRetrieve(ctxt, ftpCtxt);
             break;
-		
+
         case kFTPStateNLST:
             if (!isMultiLine) _HandleNameList(ctxt, ftpCtxt);
             break;
@@ -3654,27 +3654,27 @@ _AdvanceStateMachine(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpC
         case kFTPStateLIST:
             if (!isMultiLine) _HandleList(ctxt, ftpCtxt);
             break;
-            
+
         case kFTPStateSTOR:
             if (!isMultiLine) _HandleStore(ctxt, ftpCtxt);
             break;
-            
+
         case kFTPStateMKD:
             if (!isMultiLine) _HandleMakeDirectory(ctxt, ftpCtxt);
             break;
-            
+
         case kFTPStateRMD:
             if (!isMultiLine) _HandleRemoveDirectory(ctxt, ftpCtxt);
             break;
-            
+
         case kFTPStateDELE:
             if (!isMultiLine) _HandleDelete(ctxt, ftpCtxt);
             break;
-            
+
         case kFTPStateRNFR:
             if (!isMultiLine) _HandleRenameFrom(ctxt, ftpCtxt);
             break;
-            
+
         case kFTPStateRNTO:
             if (!isMultiLine) _HandleRenameTo(ctxt, ftpCtxt);
             break;
@@ -3693,22 +3693,22 @@ _HandleConnect(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, c
 
     if (ctxt->_result < 200)
         return;
-            
+
     else if (ctxt->_result >= 300) {
-            
+
         CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
         _ReportError(ftpCtxt, &error);
     }
     else {
-        
+
         CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_runloops);
-        
+
         CFStringRef system = CFStringCreateWithBytes(alloc,
                                                      line,
                                                      length,
                                                      kCFStringEncodingUTF8,
                                                      FALSE);
-		
+
 		if (!system) {
 			system = CFStringCreateWithBytes(alloc,
 											 line,
@@ -3716,17 +3716,17 @@ _HandleConnect(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, c
 											 kCFStringEncodingISOLatin1,
 											 FALSE);
 		}
-		
+
 		if (system) {
-		
+
 			CFRange range = CFRangeMake(0, CFStringGetLength(system));
-			
+
 			if (CFStringFindWithOptions(system, kCFFTPOSXSystemString, range, 0, NULL))
 				__CFBitSet(ctxt->_flags, kFlagBitIsXServer);
-			
+
 			CFRelease(system);
 		}
-        
+
         ctxt->_state = kFTPStateUSER;
     }
 }
@@ -3742,7 +3742,7 @@ _HandleUsername(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
         CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
         _ReportError(ftpCtxt, &error);
     }
-    
+
     else if (ctxt->_result >= 300) {
 
         CFStringRef cmd;
@@ -3791,7 +3791,7 @@ _HandlePassword(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
         CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
         _ReportError(ftpCtxt, &error);
     }
-    
+
     else if (ctxt->_result >= 300) {
         // **FIXME** This is not a true failure case but an account
         // is required which is not supported yet.  This would require
@@ -3799,7 +3799,7 @@ _HandlePassword(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
         CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
         _ReportError(ftpCtxt, &error);
     }
-    
+
     else {
         ctxt->_state = kFTPStateSYST;
         _WriteCommand(ctxt, ftpCtxt, kCFFTPSYSTCommandString);
@@ -3824,7 +3824,7 @@ _HandleSystem(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, co
                                          FALSE);
         range = CFRangeMake(0, CFStringGetLength(system));
     }
-    
+
     if (system && CFStringFindWithOptions(system, kCFFTPWindowsNTSystemString, range, 0, NULL)) {
         ctxt->_state = kFTPStateSITEDIRSTYLE;
         _WriteCommand(ctxt, ftpCtxt, kCFFTPSITEDIRSTYLECommandString);
@@ -3832,8 +3832,8 @@ _HandleSystem(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, co
     else if( __CFBitIsSet(ctxt->_flags, kFlagBitIsXServer)) {
         ctxt->_state = kFTPStateSITETRUTH;
         _WriteCommand(ctxt, ftpCtxt, kCFFTPSITETRUTHCommandString);
-    } else { 
-        ctxt->_state = kFTPStatePWD; 
+    } else {
+        ctxt->_state = kFTPStatePWD;
         _WriteCommand(ctxt, ftpCtxt, kCFFTPPWDCommandString);
     }
 
@@ -3848,7 +3848,7 @@ _HandleSiteDirStyle(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCt
     // Ignore the results.  If it took it fine and if not, it'll
     // just have to do.
     if ((ctxt->_result >= 200) && (ctxt->_result < 300)) {
-    
+
         CFStringRef system = CFStringCreateWithBytes(CFGetAllocator(ftpCtxt->_properties),
                                                      line,
                                                      length,
@@ -3862,16 +3862,16 @@ _HandleSiteDirStyle(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCt
             CFRelease(system);
             return;
         }
-        
+
         CFRelease(system);
     }
 
     if( __CFBitIsSet(ctxt->_flags, kFlagBitIsXServer)) {
         ctxt->_state = kFTPStateSITETRUTH;
         _WriteCommand(ctxt, ftpCtxt, kCFFTPSITETRUTHCommandString);
-    } else { 
+    } else {
         ctxt->_state = kFTPStatePWD;
-        _WriteCommand(ctxt, ftpCtxt, kCFFTPPWDCommandString); 
+        _WriteCommand(ctxt, ftpCtxt, kCFFTPPWDCommandString);
     }
 }
 
@@ -3896,20 +3896,20 @@ _HandlePrintWorkingDirectory(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamConte
     // Only care about trying to parse out the root directory
     // if PWD succeeded.
     if ((ctxt->_result >= 200) && (ctxt->_result < 300)) {
-        
+
         const UInt8* first = memchr(line, '"', length);
-        
+
         if (first) {
             const UInt8* last = line + length - 1;
-            
+
             first++;
-            
+
             while  ( last != first) {
                 if (*last == '"') {
-                    
+
                     if (*(last - 1) == '/')
                         last--;
-                    
+
                     ctxt->_root = CFStringCreateWithBytes(CFGetAllocator(ftpCtxt->_properties),
                                                           first,
                                                           last - first,
@@ -3917,7 +3917,7 @@ _HandlePrintWorkingDirectory(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamConte
                                                           FALSE);
                     break;
                 }
-                
+
                 last--;
             }
         }
@@ -3953,13 +3953,13 @@ _HandleChangeDirectory(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ft
     //		250, 421, 500, 501, 502, 530, 550
 
     if (__CFBitIsSet(ctxt->_flags, kFlagBitLeftForDead) && (ctxt->_result == 421)) {
-        
+
         CFStreamError error;
         Boolean openComplete;
-        
+
         _CFNetConnectionLost(ftpCtxt->_connection);
         _CFNetConnectionDequeue(ftpCtxt->_connection, ftpCtxt);
-        
+
         _FTPStreamOpen(ftpCtxt->_userStream, &error, &openComplete, ftpCtxt);
     }
 
@@ -3973,12 +3973,12 @@ _HandleChangeDirectory(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ft
 
         CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_properties);
         __CFBitClear(ctxt->_flags, kFlagBitLeftForDead);
-        
+
         // Only allow the special SPI stuff on the WriteStream for now
         if (__CFBitIsSet(ftpCtxt->_flags, kFlagBitPerformUpload)) {
 
             CFStringRef target = CFURLCopyLastPathComponent(ftpCtxt->_url);
-			
+
             // Performing a RMD or DELE
             if (__CFBitIsSet(ftpCtxt->_flags, kFlagBitRemoveResource)) {
 
@@ -4114,10 +4114,10 @@ _HandlePassive(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, c
         u_char family = _GetProtocolFamily(ftpCtxt, buf);
         struct sockaddr_in addr4;
         struct sockaddr_in6 addr6;
-                
+
         if (family == AF_INET6)
             memcpy(&addr6, buf, sizeof(struct sockaddr_in6));
-            
+
         if ((family == AF_INET && !_PASVAddressParser(line, &addr4)) ||
             (family == AF_INET6 && !_EPSVPortParser(line, &addr6)))
         {
@@ -4128,7 +4128,7 @@ _HandlePassive(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, c
             CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_properties);
             CFStreamClientContext streamCtxt = {0, ftpCtxt, NULL, NULL, NULL};
             CFSocketSignature sig;
-    
+
             sig.protocolFamily = family;
             sig.socketType = SOCK_STREAM;
             sig.protocol = IPPROTO_TCP;
@@ -4142,7 +4142,7 @@ _HandlePassive(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, c
                 _ReportError(ftpCtxt, &error);
                 return;
             }
-            
+
             if (__CFBitIsSet(ftpCtxt->_flags, kFlagBitPerformUpload))
 				_CFSocketStreamCreatePair(alloc, NULL, 0, 0, &sig, NULL, (CFWriteStreamRef*)&ftpCtxt->_dataStream);
             else
@@ -4157,12 +4157,12 @@ _HandlePassive(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, c
             }
 
             if (__CFBitIsSet(ftpCtxt->_flags, kFlagBitPerformUpload))
-                CFWriteStreamSetClient((CFWriteStreamRef)ftpCtxt->_dataStream, ~0L, (CFWriteStreamClientCallBack)_DataStreamCallBack, &streamCtxt); 
-            else 
-                CFReadStreamSetClient((CFReadStreamRef)ftpCtxt->_dataStream, ~0L, (CFReadStreamClientCallBack)_DataStreamCallBack, &streamCtxt); 
-			
+                CFWriteStreamSetClient((CFWriteStreamRef)ftpCtxt->_dataStream, ~0L, (CFWriteStreamClientCallBack)_DataStreamCallBack, &streamCtxt);
+            else
+                CFReadStreamSetClient((CFReadStreamRef)ftpCtxt->_dataStream, ~0L, (CFReadStreamClientCallBack)_DataStreamCallBack, &streamCtxt);
+
 			_CFTypeScheduleOnMultipleRunLoops(ftpCtxt->_dataStream, ftpCtxt->_runloops);
-            
+
             CFDictionaryApplyFunction(ftpCtxt->_properties, (CFDictionaryApplierFunction)_StreamPropertyApplier, (void*)ftpCtxt->_dataStream);
 
             _StartTransfer(ctxt, ftpCtxt);
@@ -4176,7 +4176,7 @@ _HandlePort(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
 
     // Valid returns for PORT are:
     //		200, 421, 500, 501, 530
-    
+
     if ((ctxt->_result < 200) || (ctxt->_result >= 300)) {
         CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
         _ReportError(ftpCtxt, &error);
@@ -4207,7 +4207,7 @@ _HandleStat(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, cons
 
         CFStringRef cmd;
         CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_properties);
-    
+
 		if (!ftpCtxt->_offset) {
 			CFStringRef path = _CreatePathForContext(alloc, ctxt, ftpCtxt);
 
@@ -4238,28 +4238,28 @@ _HandleSize(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, cons
 
     CFStringRef cmd;
     CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_properties);
-	
+
 	// If SIZE failed, attempt to issue the STAT command instead.
 	if ((ctxt->_result >= 500) && (ctxt->_result < 600)) {
-		
+
 		CFStringRef target = CFURLCopyLastPathComponent(ftpCtxt->_url);
-		
+
 		if (ftpCtxt->_attributes) {
 			CFRelease(ftpCtxt->_attributes);
 			ftpCtxt->_attributes = NULL;
 		}
-		
+
 		ctxt->_state = kFTPStateSTAT;
 		cmd = CFStringCreateWithFormat(alloc, NULL, kCFFTPSTATCommandString, target);
 		if (target) CFRelease(target);
 	}
-    
+
     else {
-		
+
 		if (ctxt->_result == 213) {
 
 			CFIndex i = 0;
-			
+
 			while ((i < length) && isdigit(line[i]))
 				i++;
 
@@ -4283,12 +4283,12 @@ _HandleSize(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt, cons
 						ftpCtxt->_attributes = CFDictionaryCreate(alloc, keys, values, 1,
 																  &kCFTypeDictionaryKeyCallBacks,
 																  &kCFTypeDictionaryValueCallBacks);
-		
+
 						CFRelease(values[0]);
 					}
 				}
 			}
-			
+
 		}
 
 		if (!ftpCtxt->_offset) {
@@ -4323,20 +4323,20 @@ _HandleRestart(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
         CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
         _ReportError(ftpCtxt, &error);
     }
-    
+
     else {
         CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_properties);
         CFStringRef cmd, path = _CreatePathForContext(alloc, ctxt, ftpCtxt);
-    
+
         cmd = CFStringCreateWithFormat(alloc, NULL, kCFFTPRETRCommandString, path);
         CFRelease(path);
-        
+
         ctxt->_state = kFTPStateRETR;
                __CFBitClear(ftpCtxt->_flags, kFlagBitCompleteDeferred);
-                
+
         if (ftpCtxt->_dataStream)
             CFReadStreamOpen((CFReadStreamRef)ftpCtxt->_dataStream);
-        
+
         _WriteCommand(ctxt, ftpCtxt, cmd);
         CFRelease(cmd);
     }
@@ -4353,17 +4353,17 @@ _HandleRetrieve(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
         return;
 
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-        
+
         ctxt->_state = kFTPStateIdle;
         _StartProcess(ctxt, ftpCtxt);
     }
     else {
-    
+
         if (ctxt->_result >= 300) {
             CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
             _ReportError(ftpCtxt, &error);
         }
-        
+
         else if (ctxt->_result >= 200) {
             _ConnectionComplete(ctxt, ftpCtxt);
         }
@@ -4376,12 +4376,12 @@ _HandleNameList(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
 
     // Valid returns for NLST are:
     //		125, 150, 226, 250, 425, 426, 451, 450, 500, 501, 502, 421, 530
-    
+
     if (ctxt->_result < 200)
         return;
-        
+
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-        
+
         ctxt->_state = kFTPStateIdle;
         _StartProcess(ctxt, ftpCtxt);
     }
@@ -4390,7 +4390,7 @@ _HandleNameList(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
             CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
             _ReportError(ftpCtxt, &error);
         }
-        
+
         else {
             _ConnectionComplete(ctxt, ftpCtxt);
         }
@@ -4400,15 +4400,15 @@ _HandleNameList(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
 
 /* static */ void
 _HandleList(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
-	
+
     // Valid returns for LIST are:
     //		125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 502, 530
-	
+
     if (ctxt->_result < 200)
         return;
-    
+
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-        
+
         ctxt->_state = kFTPStateIdle;
         _StartProcess(ctxt, ftpCtxt);
     }
@@ -4433,9 +4433,9 @@ _HandleStore(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
 
     if (ctxt->_result < 200)
         return;
-    
+
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-        
+
         ctxt->_state = kFTPStateIdle;
         _StartProcess(ctxt, ftpCtxt);
     }
@@ -4458,7 +4458,7 @@ _HandleMakeDirectory(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpC
     //		257, 421, 500, 501, 502, 530, 550
 
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-            
+
         ctxt->_state = kFTPStateIdle;
         _StartProcess(ctxt, ftpCtxt);
     }
@@ -4481,7 +4481,7 @@ _HandleRemoveDirectory(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ft
     //		250, 421, 500, 501, 502, 530, 550
 
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-            
+
         ctxt->_state = kFTPStateIdle;
         _StartProcess(ctxt, ftpCtxt);
     }
@@ -4504,7 +4504,7 @@ _HandleDelete(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
     //		250, 421, 450, 500, 501, 502, 530, 550
 
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-            
+
         ctxt->_state = kFTPStateIdle;
         _StartProcess(ctxt, ftpCtxt);
     }
@@ -4525,7 +4525,7 @@ _HandleRenameFrom(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt
 
 	// Valid returns for RNFR are:
 	//		350, 421, 450, 500, 501, 502, 530, 550
-    
+
     if ((ctxt->_result < 300) || (ctxt->_result >= 400)) {
         CFStreamError error = {kCFStreamErrorDomainFTP, ctxt->_result};
         _ReportError(ftpCtxt, &error);
@@ -4534,16 +4534,16 @@ _HandleRenameFrom(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt
         CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_properties);
         CFStringRef cmd, path;
         CFURLRef url = ftpCtxt->_url;
-        
+
         // **FIXME** Total hack for easily getting the path for the new URL.
         ftpCtxt->_url = ftpCtxt->_newUrl;
         path = _CreatePathForContext(alloc, ctxt, ftpCtxt);
         ftpCtxt->_url = url;
-        
+
         ctxt->_state = kFTPStateRNTO;
         cmd = CFStringCreateWithFormat(alloc, NULL, kCFFTPRNTOCommandString, path);
         CFRelease(path);
-        
+
         _WriteCommand(ctxt, ftpCtxt, cmd);
         CFRelease(cmd);
     }
@@ -4557,7 +4557,7 @@ _HandleRenameTo(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
     //		250, 421, 500, 501, 502, 503, 530, 532, 553
 
     if (__CFBitIsSet(ctxt->_flags, kFlagBitReturnToIdle)) {
-            
+
         ctxt->_state = kFTPStateIdle;
         _StartProcess(ctxt, ftpCtxt);
     }
@@ -4575,7 +4575,7 @@ _HandleRenameTo(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) 
 
 /* static */ void
 _StartProcess(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
-    
+
     if (__CFBitIsSet(ftpCtxt->_flags, kFlagBitLogInOnly)) {
         if (CFGetTypeID(ftpCtxt->_userStream) == CFReadStreamGetTypeID())
             CFReadStreamSignalEvent((CFReadStreamRef)ftpCtxt->_userStream, kCFStreamEventOpenCompleted, NULL);
@@ -4587,7 +4587,7 @@ _StartProcess(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
 
         CFStringRef path, cmd;
         CFAllocatorRef alloc = CFGetAllocator(ftpCtxt->_properties);
-        
+
         __CFBitClear(ctxt->_flags, kFlagBitReturnToIdle);
 
         // Check if this request is for a directory listing.  If so, need to CWD
@@ -4606,13 +4606,13 @@ _StartProcess(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
             CFRelease(ftpCtxt->_url);
             ftpCtxt->_url = old;
         }
-        
+
         cmd = CFStringCreateWithFormat(alloc, NULL, kCFFTPCWDCommandString, path);
         CFRelease(path);
-        
+
         ctxt->_state = kFTPStateCWD;
         _WriteCommand(ctxt, ftpCtxt, cmd);
-        
+
         CFRelease(cmd);
     }
 }
@@ -4627,7 +4627,7 @@ _StartProcess(_CFFTPNetConnectionContext* ctxt, _CFFTPStreamContext* ftpCtxt) {
 
 /* CF_EXPORT */ CFWriteStreamRef
 CFWriteStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
-    
+
     CFWriteStreamRef result = NULL;
     CFStringRef temp;
     _CFFTPStreamContext* ctxt;
@@ -4637,13 +4637,13 @@ CFWriteStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
 
     if (!ftpURL || !(ftpURL = _ConvertToCFFTPHappyURL(ftpURL)))
         return result;
-    
+
     temp = CFURLCopyScheme(ftpURL);
     if (!temp) {
         CFRelease(ftpURL);
         return result;
     }
-        
+
     if ((CFStringCompare(temp, kFTPSchemeString, 0) != kCFCompareEqualTo) &&
         (CFStringCompare(temp, kFTPSSchemeString, 0) != kCFCompareEqualTo))
     {
@@ -4651,15 +4651,15 @@ CFWriteStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
         CFRelease(temp);
         return result;
     }
-    
+
     CFRelease(temp);
-    
+
     temp = CFURLCopyHostName(ftpURL);
     if (!temp) {
         CFRelease(ftpURL);
         return result;
     }
-    
+
     CFRelease(temp);
 
     // get and validate username/password (if any)
@@ -4680,14 +4680,14 @@ CFWriteStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
 	    return result;
 	 }
     }
-    
+
     ctxt = (_CFFTPStreamContext*)CFAllocatorAllocate(alloc,
                                                      sizeof(ctxt[0]),
                                                      0);
     if (ctxt) {
 
         memset(ctxt, 0, sizeof(ctxt[0]));
-        
+
         __CFBitSet(ctxt->_flags, kFlagBitPerformPASV);
         __CFBitSet(ctxt->_flags, kFlagBitPerformUpload);
 
@@ -4700,11 +4700,11 @@ CFWriteStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
                                                       &kCFTypeDictionaryValueCallBacks);
 
         if (ctxt->_url && ctxt->_runloops && ctxt->_properties) {
-			
+
 			CFWriteStreamCallBacksV1 _FTPWriteStreamCallBacks;
 
 			memset(&_FTPWriteStreamCallBacks, 0, sizeof(_FTPWriteStreamCallBacks));
-			
+
 			_FTPWriteStreamCallBacks.version = 1;
 			_FTPWriteStreamCallBacks.finalize = (void (*)(CFWriteStreamRef, void*))_FTPStreamFinalize;
 			_FTPWriteStreamCallBacks.copyDescription = (CFStringRef (*)(CFWriteStreamRef, void*))_FTPStreamCopyDescription;
@@ -4717,14 +4717,14 @@ CFWriteStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
 			_FTPWriteStreamCallBacks.setProperty = (Boolean (*)(CFWriteStreamRef, CFStringRef, CFTypeRef, void*))_FTPStreamSetProperty;
 			_FTPWriteStreamCallBacks.schedule = (void (*)(CFWriteStreamRef, CFRunLoopRef, CFStringRef, void*))_FTPStreamSchedule;
 			_FTPWriteStreamCallBacks.unschedule = (void (*)(CFWriteStreamRef, CFRunLoopRef, CFStringRef, void*))_FTPStreamUnschedule;
-			
+
             result = CFWriteStreamCreate(alloc, (CFWriteStreamCallBacks*)&_FTPWriteStreamCallBacks, ctxt);
 		}
-    
+
         if (result) {
 
             ctxt->_userStream = result;		// Don't retain for fear of loop.
-            
+
             if (username) {
 		// the username in the ftpURL was validated above
 		CFWriteStreamSetProperty(result, kCFStreamPropertyFTPUserName_prevalidated, username);
@@ -4748,16 +4748,16 @@ CFWriteStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
             CFAllocatorDeallocate(alloc, ctxt);
         }
     }
-    
+
     CFRelease(ftpURL);
-    
+
     if (username) {
 	CFRelease(username);
     }
     if (password) {
 	CFRelease(password);
     }
-    
+
     return result;
 }
 
@@ -4773,13 +4773,13 @@ CFReadStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
 
     if (!ftpURL || !(ftpURL = _ConvertToCFFTPHappyURL(ftpURL)))
         return result;
-    
+
     temp = CFURLCopyScheme(ftpURL);
     if (!temp) {
         CFRelease(ftpURL);
         return result;
     }
-    
+
     if ((CFStringCompare(temp, kFTPSchemeString, 0) != kCFCompareEqualTo) &&
         (CFStringCompare(temp, kFTPSSchemeString, 0) != kCFCompareEqualTo))
     {
@@ -4787,17 +4787,17 @@ CFReadStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
         CFRelease(temp);
         return result;
     }
-    
+
     CFRelease(temp);
-    
+
     temp = CFURLCopyHostName(ftpURL);
     if (!temp) {
         CFRelease(ftpURL);
         return result;
     }
-    
+
     CFRelease(temp);
-    
+
     // get and validate username/password (if any)
     username = CFURLCopyUserName(ftpURL);
     if (username) {
@@ -4816,7 +4816,7 @@ CFReadStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
 	    return result;
 	 }
     }
-    
+
     ctxt = (_CFFTPStreamContext*)CFAllocatorAllocate(alloc,
                                                      sizeof(ctxt[0]),
                                                      0);
@@ -4825,7 +4825,7 @@ CFReadStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
         memset(ctxt, 0, sizeof(ctxt[0]));
 
         __CFBitSet(ctxt->_flags, kFlagBitPerformPASV);
-        
+
         ctxt->_url = CFURLCopyAbsoluteURL(ftpURL);
 
         ctxt->_runloops = CFArrayCreateMutable(alloc, 0, &kCFTypeArrayCallBacks);
@@ -4835,11 +4835,11 @@ CFReadStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
                                                       &kCFTypeDictionaryValueCallBacks);
 
         if (ctxt->_url && ctxt->_runloops && ctxt->_properties) {
-			
+
 			CFReadStreamCallBacksV1 _FTPReadStreamCallBacks;
 
 			memset(&_FTPReadStreamCallBacks, 0, sizeof(_FTPReadStreamCallBacks));
-			
+
 			_FTPReadStreamCallBacks.version = 1;
 			_FTPReadStreamCallBacks.finalize = (void (*)(CFReadStreamRef, void*))_FTPStreamFinalize;
 			_FTPReadStreamCallBacks.copyDescription = (CFStringRef (*)(CFReadStreamRef, void*))_FTPStreamCopyDescription;
@@ -4852,14 +4852,14 @@ CFReadStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
 			_FTPReadStreamCallBacks.setProperty = (Boolean (*)(CFReadStreamRef, CFStringRef, CFTypeRef, void*))_FTPStreamSetProperty;
 			_FTPReadStreamCallBacks.schedule = (void (*)(CFReadStreamRef, CFRunLoopRef, CFStringRef, void*))_FTPStreamSchedule;
 			_FTPReadStreamCallBacks.unschedule = (void (*)(CFReadStreamRef, CFRunLoopRef, CFStringRef, void*))_FTPStreamUnschedule;
-			
+
             result = CFReadStreamCreate(alloc, (CFReadStreamCallBacks*)&_FTPReadStreamCallBacks, ctxt);
 		}
-        
+
         if (result) {
 
             ctxt->_userStream = result;		// Don't retain for fear of loop.
-            
+
             if (username) {
 		// the username in the ftpURL was validated above
 		CFReadStreamSetProperty(result, kCFStreamPropertyFTPUserName_prevalidated, username);
@@ -4870,13 +4870,13 @@ CFReadStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
 	    }
         }
         else {
-            
+
             if (ctxt->_url)
                 CFRelease(ctxt->_url);
 
             if (ctxt->_runloops)
                 CFRelease(ctxt->_runloops);
-            
+
             if (ctxt->_properties)
                 CFRelease(ctxt->_properties);
 
@@ -4885,20 +4885,20 @@ CFReadStreamCreateWithFTPURL(CFAllocatorRef alloc, CFURLRef ftpURL) {
     }
 
     CFRelease(ftpURL);
-    
+
     if (username) {
 	CFRelease(username);
     }
     if (password) {
 	CFRelease(password);
     }
-    
+
     return result;
 }
 
 
 /* CF_EXPORT */ CFIndex
-CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer, 
+CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer,
                                  CFIndex bufferLength, CFDictionaryRef *parsed)
 {
 	CFIndex totalConsumed;	// total characters consumed from buffer
@@ -4910,25 +4910,25 @@ CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer,
     if ( (buffer != NULL) && (bufferLength != 0) ) {
 		const UInt8* scanStart;	// starting location to scan for line
 		CFIndex scanLength;		// length to scan for line
-		
+
 		scanStart = buffer;
 		scanLength = bufferLength;
 		do {
 			CFIndex consumed;	// number of characters consumed by _FindLine
 			const UInt8* first;	// if not NULL, the beginning of the line to parse
 			const UInt8* eol;	// if not NULL, the first EOL character after the line (more may have been consumed)
-			
+
 			/* find a line (if possible) and consume as many characters as possible */
 			consumed = _FindLine(scanStart, scanLength, &first, &eol);
 			totalConsumed += consumed;
 			scanStart += consumed;
 			scanLength -= consumed;
-			
+
 			if ( first == NULL ) {
 				/* a line was not found so break */
 				break;
 			}
-			
+
 			// If it's not the summary line, parse it.
 			if (memcmp("total ", first, 6)) {
 
@@ -4978,66 +4978,66 @@ CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer,
 						case '-': type = DT_REG; break;		// Regular file.
 						default: type = DT_UNKNOWN; break;
 					}
-		
+
 					mode = 0;
-		
+
 					// Enough bytes to consider the mode field?
 					if ((eol - fields[0]) < 11)
 						hadModeBits = FALSE;
-					
+
 					else
 						hadModeBits = _ReadModeBits(&fields[0][1], &mode);
-					
+
 					// Continue establishing the other information if room.  Start with date as the next anchor.
 					if (fields[3] && fields[4]) {
-						
+
 						int i = 3;
 						UInt64 size = 0;
 						const UInt8* user = NULL;
 						const UInt8* group = NULL;
 						CFDateRef date = NULL;
-						
+
 						// Shoot to establish the next anchor, the date/time.
 						while (fields[i]) {
-							
+
 							// Try to get the date/time.
 							const UInt8* end = _CFFTPGetDateTimeFunc(alloc, fields[i], eol - fields[i], &date);
-							
+
 							// If built one, find out where it ended and the name begins.
 							if (date) {
-								
+
 								int j = i - 1;
-								
+
 								// Walk backwards from the date to find the size.
 								while (j >= 0) {
-									
+
 									// Allow "mode" field to be the size if no mode bits were there.
 									if (!j && hadModeBits)
 										break;
-									
+
 									// Try to convert to size.
 									if (_ReadSize(fields[j], &size)) {
-										
+
 										foundSize = TRUE;
-										
+
 										j--;	// Assume the previous field to be group.
-										
+
 										// If it's not the first field or the mode bits
 										// weren't in the first field, call it the group.
 										if (j || !hadModeBits) {
-											
+
 											group = fields[j];
-											
+
 											j--;	// Assume the previous field to be user.
-											
+
 											// If there is another field and it's not the
 											// mode bits, use it for the user field, otherwise
 											// assume the user and group were a single field.
 											if (!j && hadModeBits)
 												user = group;
-											
+
 											else {
-												
+
 												UInt64 linkcount = 0;
 												if (hadModeBits && (j == 1) && _ReadSize(fields[j], &linkcount))
 													user = group;
@@ -5045,37 +5045,37 @@ CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer,
 													user = fields[j];
 											}
 										}
-										
+
 										// Found size so break out of here.
 										break;
 									}
 								}
-								
+
 								// Find out what the next field is.
 								while (fields[i] && (end > fields[i]))
 									i++;
 								break;
 							}
-							
+
 							// Try the next field as a date/time.
 							i++;
 						}
-						
+
 						// Found a date but is there a name field?
 						if (fields[i] && date) {
-							
+
 							int j = 0;
 							const UInt8* tmp = NULL;
 							const UInt8* name = fields[i];
 							const UInt8* link = NULL;
 							const void *keys[kResourceInfoItemCount], *values[kResourceInfoItemCount];
-							
+
 							// If it's a link, find the link information.
 							if (type == DT_LNK) {
-								
+
 								// Hunt for the "->" separator.
 								while (fields[i]) {
-									
+
 									// If found, save the link.
 									if (!memcmp(fields[i++], "->", 2)) {
 										link = fields[i];
@@ -5083,16 +5083,16 @@ CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer,
 									}
 								}
 							}
-							
+
 							// If there were mode bits, save them in the values.
 							if (hadModeBits) {
 								keys[j] = kCFFTPResourceMode;
 								values[j] = CFNumberCreate(alloc, kCFNumberSInt32Type, &mode);
 								if (values[j]) j++;
 							}
-							
+
 							// Save the name in the values.
-							keys[j] = kCFFTPResourceName;						
+							keys[j] = kCFFTPResourceName;
 							values[j] = CFStringCreateWithBytes(alloc, name, !link ? eol - name : (fields[i - 1] - 1) - name, kCFStringEncodingMacRoman, FALSE);
 							if (values[j]) {
 								CFStringRef temp = _CFStringCreateCopyWithStrippedHTML(alloc, values[j]);
@@ -5102,7 +5102,7 @@ CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer,
 								}
 								j++;
 							}
-							
+
 							// If there was a link, save it.
 							if (link) {
 								keys[j]   = kCFFTPResourceLink;
@@ -5114,86 +5114,86 @@ CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer,
 								values[j] = CFStringCreateWithCString(alloc, "", kCFStringEncodingUTF8);
 								if (values[j]) j++;
 							}
-							
+
 							// If the size was found, save the other bits.
 							if (foundSize) {
-								
+
 								if (group && (group == user)) {
-									
+
 									const char kUserGroupSeparators[] = {'|', ':', '/', '\\'};
 									const UInt8* sep = NULL;
 									const UInt8* end = user;
-									
+
 									while (!isspace(*end))
 										end++;
-									
+
 									for (i = 0; !sep && (i < (sizeof(kUserGroupSeparators) / sizeof(kUserGroupSeparators[0]))); i++)
 										sep = memchr(user, kUserGroupSeparators[i], end - user);
-									
+
 									if (sep) {
 										tmp = sep;		// Set tmp so length of user is properly calculated.
 										group = sep + 1;
 									}
-									
+
 									// NOTE that if no separator is found, user and group will get the
 									// same value.
 								}
-								
+
 								if (user) {
-									
+
 									if (!tmp) {
 										for (tmp = user; !isspace(*tmp); tmp++)
 											/* Do nothing. */ ;
 									}
-									
+
 									// Save the owner.  There is only one if a size was found.
 									keys[j]   = kCFFTPResourceOwner;
 									values[j] = CFStringCreateWithBytes(alloc, user, tmp - user, kCFStringEncodingMacRoman, FALSE);
 									if (values[j]) j++;
 								}
-								
+
 								if (group) {
-									
+
 									for (tmp = group; !isspace(*tmp); tmp++)
 										/* Do nothing. */ ;
-									
+
 									// Save the group.  There is only one if a size was found.
 									keys[j]   = kCFFTPResourceGroup;
 									values[j] = CFStringCreateWithBytes(alloc, group, tmp - group, kCFStringEncodingMacRoman, FALSE);
 									if (values[j]) j++;
 								}
-								
+
 								// Save the size.
 								keys[j]   = kCFFTPResourceSize;
 								values[j] = CFNumberCreate(alloc, kCFNumberLongLongType, &size);
 								if (values[j]) j++;
 							}
-							
+
 							// Save the file type.
 							keys[j]   = kCFFTPResourceType;
 							values[j] = CFNumberCreate(alloc, kCFNumberIntType, &type);
 							if (values[j]) j++;
-							
+
 							// Save the date.
 							keys[j]   = kCFFTPResourceModDate;
 							values[j++] = CFRetain(date);		// Extra retain because it's released twice.
-							
+
 							// Create the dictionary of information for the user.
 							*parsed = CFDictionaryCreate(alloc, keys, values, j, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-							
+
 							// Release all the items that had been created.
 							for (--j; j >= 0; j--)
 								CFRelease(values[j]);
-							
+
 							// Did the parse, so bail.
 							break;
 						}
-						
+
 						// If date was allocated, release it.
 						if (date)
 							CFRelease(date);
 					}
-		
+
 					// No mode bits, so deal with only a name.
 					if (!hadModeBits) {
 						const void *keys[1], *values[1];
@@ -5201,35 +5201,35 @@ CFFTPCreateParsedResourceListing(CFAllocatorRef alloc, const UInt8 *buffer,
 						// Save the name in the values.
 						keys[0] = kCFFTPResourceName;
 						values[0] = CFStringCreateWithBytes(alloc, fields[0], eol - fields[0], kCFStringEncodingMacRoman, FALSE);
-						
+
 
 						// Create the dictionary of information for the user.
 						if (values[0]) {
-							
+
 							if (!CFStringHasPrefix(values[0], kHTMLTagOpen) || !CFStringHasSuffix(values[0], kHTMLTagClose)) {
-								
+
 								*parsed = CFDictionaryCreate(alloc, keys, values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-								
+
 								CFRelease(values[0]);
-								
+
 								// Did the parse, so bail.
 								break;
 							}
-							
+
 							CFRelease(values[0]);
 						}
 					}
 				}
 			}
-			
+
 			// Bail if at the end or beyond.
 			if ( totalConsumed >= bufferLength ) {
 				break;
 			}
-			
+
 		} while (1);
 	}
-	
+
     // Return the number of bytes parsed.
     return ( totalConsumed );
 }

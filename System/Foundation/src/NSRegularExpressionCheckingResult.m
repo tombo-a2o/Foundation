@@ -1,10 +1,24 @@
-//
-//  NSRegularExpressionCheckingResult.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSRegularExpressionCheckingResult.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import "NSRegularExpressionCheckingResult.h"
 #import <Foundation/NSArray.h>
@@ -38,14 +52,14 @@ typedef NS_ENUM(NSUInteger, NSRegularExpressionCheckingResultLimits) {
     NSArray *ranges = self.rangeArray;
     NSMutableArray *newRanges = [NSMutableArray array];
     NSUInteger numRanges = ranges.count;
-    
+
     if (numRanges != 0)
     {
         for (NSUInteger i = 0; i < numRanges; ++i)
         {
             NSValue *rangeValue = [ranges objectAtIndex:i];
             NSRange range = [rangeValue rangeValue];
-            
+
             if (range.location != NSNotFound)
             {
                 if (offset < 0 && range.location < offset)
@@ -57,9 +71,9 @@ typedef NS_ENUM(NSUInteger, NSRegularExpressionCheckingResultLimits) {
             [newRanges addObject:[NSValue valueWithRange:range]];
         }
     }
-    
+
     NSRegularExpressionCheckingResult *result = [[[[self class] alloc] initWithRangeArray:newRanges regularExpression:self.regularExpression] autorelease];
-    
+
     return result;
 }
 
@@ -299,11 +313,11 @@ typedef NS_ENUM(NSUInteger, NSRegularExpressionCheckingResultLimits) {
 - (BOOL)_adjustRangesWithOffset:(NSInteger)offset
 {
     NSMutableArray *ranges = [NSMutableArray arrayWithCapacity:_rangeArray.count];
-    
+
     for (NSValue *range in _rangeArray)
     {
         NSRange r = { 0, 0 };
-        
+
         [range getValue:&r];
         r.location += offset;
         [ranges addObject:[NSValue valueWithBytes:&r objCType:@encode(NSRange)]];
@@ -317,7 +331,7 @@ typedef NS_ENUM(NSUInteger, NSRegularExpressionCheckingResultLimits) {
 {
     NSValue *range = [_rangeArray objectAtIndex:0];
     NSRange result = { 0, 0 };
-    
+
     [range getValue:&result];
     return result;
 }

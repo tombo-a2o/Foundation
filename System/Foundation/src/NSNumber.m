@@ -1,10 +1,24 @@
-//
-//  NSNumber.m
-//  Foundation
-//
-//  Copyright (c) 2014 Apportable. All rights reserved.
-//  Copyright (c) 2014-2017 Tombo Inc. All rights reserved.
-//
+/*
+ *  NSNumber.m
+ *  Foundation
+ *
+ *  Copyright (c) 2014 Apportable. All rights reserved.
+ *  Copyright (c) 2014- Tombo Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License, version 2.1.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
 #import <Foundation/NSDecimalNumber.h>
 
@@ -62,12 +76,12 @@ static inline id newDecodedNumber(NSCoder *coder)
 
         // Decode the number value
         NSUInteger size = 0;
-        NSGetSizeAndAlignment(encodeType, &size, NULL); 
+        NSGetSizeAndAlignment(encodeType, &size, NULL);
         char buffer[size];
 
         [coder decodeValueOfObjCType:encodeType at:buffer];
 
-        // Box 
+        // Box
         switch (*encodeType)
         {
             case _C_CHR:
@@ -295,7 +309,7 @@ static inline id newDecodedNumber(NSCoder *coder)
 
             // Encode the number value
             NSUInteger size = 0;
-            NSGetSizeAndAlignment(encodeType, &size, NULL); 
+            NSGetSizeAndAlignment(encodeType, &size, NULL);
             char buffer[size];
             CFNumberType cfNumberType = CFNumberGetType((CFNumberRef)self);
 
@@ -313,12 +327,12 @@ static inline id newDecodedNumber(NSCoder *coder)
         [NSException raise:NSInvalidArgumentException format:@"cannot compare to nil"];
         return NSOrderedSame;
     }
-    
+
     if (self == other)
     {
         return NSOrderedSame;
     }
-    
+
     const char *type = [self objCType];
     const char *otherType = [other objCType];
     if (*type == _C_DBL || *type == _C_FLT)
@@ -380,7 +394,7 @@ static inline id newDecodedNumber(NSCoder *coder)
     {
         return YES;
     }
-    
+
     return [self compare:number] == NSOrderedSame;
 }
 
@@ -606,12 +620,12 @@ static inline id newDecodedNumber(NSCoder *coder)
     {
         return YES;
     }
-    
+
     if (![other isNSNumber__])
     {
         return NO;
     }
-    
+
     return [self isEqualToNumber:other];
 }
 
@@ -621,7 +635,7 @@ static inline id newDecodedNumber(NSCoder *coder)
     {
         return YES;
     }
-    
+
     return [self compare:other] == NSOrderedSame;
 }
 

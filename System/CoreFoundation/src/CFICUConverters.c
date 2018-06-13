@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -53,18 +53,18 @@ typedef struct {
 
 static void __CFICUThreadDataDestructor(void *context) {
     __CFICUThreadData * data = (__CFICUThreadData *)context;
-    
+
     if (NULL != data->_converters) { // scan to make sure deallocation
         UConverter **converter = data->_converters;
         UConverter **limit = converter + data->_numSlots;
-        
+
         while (converter < limit) {
             if (NULL != converter) ucnv_close(*converter);
             ++converter;
         }
         CFAllocatorDeallocate(NULL, data->_converters);
     }
-    
+
     CFAllocatorDeallocate(NULL, data);
 }
 
@@ -114,10 +114,10 @@ CF_PRIVATE CFStringEncoding __CFStringEncodingGetFromICUName(const char *icuName
 
         // Try WINDOWS platform
         name = ucnv_getStandardName(icuName, "WINDOWS", &errorCode);
-        
+
         if (NULL != name) {
             if ((0 == strncasecmp_l(name, "windows-", strlen("windows-"), NULL)) && (0 != (codepage = strtol(name + strlen("windows-"), &endPtr, 10))) && (*endPtr == '\0')) return __CFStringEncodingGetFromWindowsCodePage(codepage);
-            
+
             if (strncasecmp_l(icuName, name, strlen(name), NULL) && (kCFStringEncodingInvalidId != (encoding = __CFStringEncodingGetFromCanonicalName(name)))) return encoding;
         }
 
@@ -374,18 +374,18 @@ CF_PRIVATE CFIndex __CFStringEncodingICUToUnicode(const char *icuName, uint32_t 
     if (0 == maxCharLen) {
         UTF16Char buffer[MAX_BUFFER_SIZE];
         CFIndex totalLength = 0;
-        
+
         while ((source < sourceLimit) && (U_ZERO_ERROR == errorCode)) {
             destination = buffer;
             destinationLimit = destination + MAX_BUFFER_SIZE;
-            
+
             ucnv_toUnicode(converter, (UChar **)&destination, (const UChar *)destinationLimit, &source, sourceLimit, NULL, flush, &errorCode);
-            
+
             totalLength += (destination - buffer);
-            
+
             if (U_BUFFER_OVERFLOW_ERROR == errorCode) errorCode = U_ZERO_ERROR;
         }
-        
+
         if (NULL != usedCharLen) *usedCharLen = totalLength;
     } else {
         ucnv_toUnicode(converter, (UChar **)&destination, (const UChar *)destinationLimit, &source, sourceLimit, NULL, flush, &errorCode);
@@ -405,9 +405,9 @@ CF_PRIVATE CFIndex __CFStringEncodingICUToUnicode(const char *icuName, uint32_t 
 #undef MAX_ERROR_BUFFER_LEN
 
 	    errorCode = U_ZERO_ERROR;
-	    
+
 	    ucnv_getInvalidChars(converter, errorBuffer, &errorLength, &errorCode);
-	    
+
 	    if (U_ZERO_ERROR == errorCode) {
 #if HAS_ICU_BUG_6025527
                 // Another ICU oddness here. ucnv_getInvalidUChars() writes the '\0' terminator, and errorLength includes the extra byte.
@@ -424,7 +424,7 @@ CF_PRIVATE CFIndex __CFStringEncodingICUToUnicode(const char *icuName, uint32_t 
 
 	*usedByteLen = source - (const char *)bytes;
     }
-    
+
     status |= __CFStringEncodingConverterReleaseICUConverter(converter, flags, status);
 
     return status;

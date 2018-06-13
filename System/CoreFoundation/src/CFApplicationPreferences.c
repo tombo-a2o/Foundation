@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2017 Tombo Inc. All Rights Reserved.
+ * Copyright (c) 2014- Tombo Inc.
  *
  * This source code is a modified version of the objc4 sources released by Apple Inc. under
  * the terms of the APSL version 2.0 (see below).
@@ -10,14 +10,14 @@
  * Copyright (c) 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -25,7 +25,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -60,7 +60,7 @@ CFPropertyListRef CFPreferencesCopyAppValue(CFStringRef key, CFStringRef appName
     _CFApplicationPreferences *standardPrefs;
     CFAssert1(appName != NULL, __kCFLogAssertion, "%s(): Cannot access application preferences with a NULL application name", __PRETTY_FUNCTION__);
     CFAssert1(key != NULL, __kCFLogAssertion, "%s(): Cannot access preferences with a NULL key", __PRETTY_FUNCTION__);
-    
+
     standardPrefs = _CFStandardApplicationPreferences(appName);
     return standardPrefs ? _CFApplicationPreferencesCreateValueForKey2(standardPrefs, key) : NULL;
 }
@@ -182,13 +182,13 @@ void CFPreferencesSetAppValue(CFStringRef key, CFTypeRef value, CFStringRef appN
 
 
 static CFSpinLock_t __CFApplicationPreferencesLock = CFSpinLockInit; // Locks access to __CFStandardUserPreferences
-static CFMutableDictionaryRef __CFStandardUserPreferences = NULL; // Mutable dictionary; keys are app names, values are _CFApplicationPreferences 
+static CFMutableDictionaryRef __CFStandardUserPreferences = NULL; // Mutable dictionary; keys are app names, values are _CFApplicationPreferences
 
 Boolean CFPreferencesAppSynchronize(CFStringRef appName) {
     _CFApplicationPreferences *standardPrefs;
     Boolean result;
     CFAssert1(appName != NULL, __kCFLogAssertion, "%s(): Cannot access application preferences with a NULL application name", __PRETTY_FUNCTION__);
-    
+
     // Do not call _CFStandardApplicationPreferences(), as we do not want to create the preferences only to synchronize
     __CFSpinLock(&__CFApplicationPreferencesLock);
     if (__CFStandardUserPreferences)  {
@@ -279,10 +279,10 @@ static CFMutableDictionaryRef computeDictRep(_CFApplicationPreferences *self, Bo
     CFIndex cnt = CFArrayGetCount(searchList);
     CFDictionaryRef subdomainDict;
     CFMutableDictionaryRef dictRep;
-    
+
     dictRep = CFDictionaryCreateMutable(alloc, 0, &kCFTypeDictionaryKeyCallBacks, & kCFTypeDictionaryValueCallBacks);
     _CFDictionarySetCapacity(dictRep, 260);	// avoid lots of rehashing
-    
+
     // For each subdomain triplet in the domain, iterate over dictionaries, adding them if necessary to the dictRep
     for (idx = cnt; idx--;) {
         CFPreferencesDomainRef domain = (CFPreferencesDomainRef)CFArrayGetValueAtIndex(searchList, idx);
@@ -405,7 +405,7 @@ CFDictionaryRef _CFPrefsCopyAppDictionary(_CFApplicationPreferences *prefs) {
     return retVal;
 }
 
-// Do NOT release the domain after adding it to the array; domain_expression should not return a retained object  -- REW, 8/26/99 
+// Do NOT release the domain after adding it to the array; domain_expression should not return a retained object  -- REW, 8/26/99
 #define ADD_DOMAIN(domain_expression) domain = domain_expression; if (domain) {CFArrayAppendValue(search, domain);}
 void _CFApplicationPreferencesSetStandardSearchList(_CFApplicationPreferences *appPreferences) {
     /* Here is how the domains end up in priority order in a search list.  Only a subset of these are setup by default.
@@ -512,7 +512,7 @@ void _CFDeallocateApplicationPreferences(_CFApplicationPreferences *self) {
     if (cachedPrefs == self) {
         CFDictionaryRemoveValue(__CFStandardUserPreferences, self->_appName);
     }
-    
+
     if (self->_dictRep) CFRelease(self->_dictRep);
     CFRelease(self->_search);
     CFRelease(self->_appName);
@@ -550,13 +550,13 @@ static void _CFApplicationPreferencesSetSearchList(_CFApplicationPreferences *se
 
 void CFPreferencesAddSuitePreferencesToApp(CFStringRef appName, CFStringRef suiteName) {
     _CFApplicationPreferences *appPrefs;
-    
+
     appPrefs = _CFStandardApplicationPreferences(appName);
     _CFApplicationPreferencesAddSuitePreferences(appPrefs, suiteName);
 }
 
 void _CFApplicationPreferencesAddSuitePreferences(_CFApplicationPreferences *appPrefs, CFStringRef suiteName) {
-    CFPreferencesDomainRef domain; 
+    CFPreferencesDomainRef domain;
     CFIndex idx;
     CFRange range;
 
@@ -622,7 +622,7 @@ void CFPreferencesRemoveSuitePreferencesFromApp(CFStringRef appName, CFStringRef
     _CFApplicationPreferences *appPrefs;
 
     appPrefs = _CFStandardApplicationPreferences(appName);
-    
+
     _CFApplicationPreferencesRemoveSuitePreferences(appPrefs, suiteName);
 }
 
